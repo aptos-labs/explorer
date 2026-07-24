@@ -11,6 +11,9 @@ import Box from "@mui/material/Box";
 import React from "react";
 import type {Types} from "~/types/aptos";
 import {getTransaction} from "../../../api";
+import ApiKeyConfirmDialog from "../../../components/ApiKeyConfirmDialog";
+import {useNetworkName} from "../../../global-config/GlobalConfig";
+import {useExplorerSettings} from "../../../settings";
 import useFunctionFilter, {
   type FunctionFilterParams,
 } from "../../../api/hooks/useFunctionFilter";
@@ -290,6 +293,14 @@ const ACCOUNT_TRANSACTIONS_QUERY = `
   }
 `;
 
+/**
+ * Above this estimated request count, we ask the user to confirm and/or
+ * configure an API key before kicking off the export. The number is
+ * deliberately conservative — even a few hundred unauthenticated
+ * requests are often enough to be throttled on a shared IP.
+ */
+const CSV_EXPORT_API_KEY_WARNING_THRESHOLD = 200;
+
 function CSVExportButton({
   address,
   totalTransactionCount,
@@ -299,9 +310,15 @@ function CSVExportButton({
 }) {
   const [isExporting, setIsExporting] = React.useState(false);
   const [exportProgress, setExportProgress] = React.useState(0);
+  const [showApiKeyConfirm, setShowApiKeyConfirm] = React.useState(false);
   const aptosClient = useAptosClient();
   const logEvent = useLogEventWithBasic();
   const sdkV2Client = useSdkV2Client();
+  const networkName = useNetworkName();
+  const {settings} = useExplorerSettings();
+  const hasApiKey = Boolean(
+    settings.geomiDevApiKeyOverridesByNetwork[networkName],
+  );
 
   const isRateLimitError = (error: unknown): boolean => {
     if (error && typeof error === "object") {
@@ -496,48 +513,108 @@ function CSVExportButton({
 
       const transactions: Types.Transaction[] = [];
       const failedVersions: number[] = [];
-      const batchSize = 10;
 
-      for (let i = 0; i < versions.length; i += batchSize) {
-        const batch = versions.slice(i, i + batchSize);
+      // Batch by ledger-version range using `/v1/transactions?start=X&limit=Y`
+      // (which returns every transaction type in that range — user, state
+      // checkpoint, block metadata). Per-version REST falls back for any
+      // gaps the batch didn't fill (e.g. ranges so sparse that fetching
+      // the full span is wasteful) so an export of 10k transactions issues
+      // ~100 REST calls instead of ~10 000.
+      const sortedVersions = [...versions].sort((a, b) => a - b);
+      const fetchedByVersion = new Map<number, Types.Transaction>();
+      const RANGE_BATCH_LIMIT = 100;
+      let cursor = 0;
+      while (cursor < sortedVersions.length) {
+        const rangeStart = sortedVersions[cursor];
+        // Pick the largest contiguous slice of `sortedVersions` whose total
+        // span fits within `RANGE_BATCH_LIMIT`.
+        let end = cursor;
+        while (
+          end + 1 < sortedVersions.length &&
+          sortedVersions[end + 1] - rangeStart + 1 <= RANGE_BATCH_LIMIT
+        ) {
+          end++;
+        }
+        const rangeEnd = sortedVersions[end];
+        const span = rangeEnd - rangeStart + 1;
 
-        const batchPromises = batch.map(async (version) => {
-          try {
-            return await retryWithBackoff(
-              async () => {
-                return await getTransaction(
-                  {txnHashOrVersion: version},
-                  aptosClient,
-                );
-              },
-              3,
-              500,
-            );
-          } catch (error) {
-            console.error(
-              `Failed to fetch transaction ${version} after retries:`,
-              error,
-            );
-            failedVersions.push(version);
-            return null;
+        try {
+          const txnsInRange = await retryWithBackoff(
+            async () =>
+              await aptosClient.getTransactions({
+                start: BigInt(rangeStart),
+                limit: span,
+              }),
+            3,
+            500,
+          );
+          for (const txn of txnsInRange) {
+            if (!("version" in txn) || txn.version == null) continue;
+            const v = Number(txn.version);
+            if (Number.isFinite(v)) fetchedByVersion.set(v, txn);
           }
-        });
+        } catch (error) {
+          console.error(
+            `Failed to fetch transaction range ${rangeStart}..${rangeEnd} after retries:`,
+            error,
+          );
+        }
 
-        const batchResults = await Promise.all(batchPromises);
-        const validTransactions = batchResults.filter(
-          (txn): txn is Types.Transaction => txn !== null,
-        );
-        transactions.push(...validTransactions);
-
-        const processedSoFar = i + batchSize;
+        cursor = end + 1;
         const fetchProgress =
-          50 + Math.round((processedSoFar / versions.length) * 50);
+          50 + Math.round((cursor / sortedVersions.length) * 50);
         setExportProgress(Math.min(fetchProgress, 100));
 
-        if (i + batchSize < versions.length) {
-          const delay = validTransactions.length < batch.length ? 300 : 100;
-          await sleep(delay);
+        if (cursor < sortedVersions.length) {
+          await sleep(100);
         }
+      }
+
+      // Per-version fallback for anything the batched fetch missed (sparse
+      // ranges, or rows skipped because the range exceeded the cap).
+      const missingVersions = sortedVersions.filter(
+        (v) => !fetchedByVersion.has(v),
+      );
+      if (missingVersions.length > 0) {
+        const FALLBACK_BATCH = 10;
+        for (let i = 0; i < missingVersions.length; i += FALLBACK_BATCH) {
+          const batch = missingVersions.slice(i, i + FALLBACK_BATCH);
+          const results = await Promise.all(
+            batch.map(async (version) => {
+              try {
+                return await retryWithBackoff(
+                  async () =>
+                    await getTransaction(
+                      {txnHashOrVersion: version},
+                      aptosClient,
+                    ),
+                  3,
+                  500,
+                );
+              } catch (error) {
+                console.error(
+                  `Failed to fetch transaction ${version} after retries:`,
+                  error,
+                );
+                failedVersions.push(version);
+                return null;
+              }
+            }),
+          );
+          for (let j = 0; j < results.length; j++) {
+            const txn = results[j];
+            if (txn) fetchedByVersion.set(batch[j], txn);
+          }
+          if (i + FALLBACK_BATCH < missingVersions.length) {
+            await sleep(200);
+          }
+        }
+      }
+
+      // Restore caller-requested order.
+      for (const v of versions) {
+        const txn = fetchedByVersion.get(v);
+        if (txn) transactions.push(txn);
       }
 
       if (failedVersions.length > 0) {
@@ -599,21 +676,54 @@ function CSVExportButton({
     }
   };
 
+  const handleClick = () => {
+    const exportable = Math.min(
+      totalTransactionCount,
+      MAX_DISPLAYABLE_TRANSACTIONS,
+    );
+    // The batched implementation issues roughly `ceil(span / 100)` range
+    // fetches plus per-version REST fallbacks for sparse rows. Use the
+    // version-count as a worst-case proxy so the warning over-estimates
+    // rather than under-estimates request volume.
+    if (!hasApiKey && exportable >= CSV_EXPORT_API_KEY_WARNING_THRESHOLD) {
+      setShowApiKeyConfirm(true);
+      return;
+    }
+    handleExport();
+  };
+
+  const exportable = Math.min(
+    totalTransactionCount,
+    MAX_DISPLAYABLE_TRANSACTIONS,
+  );
+
   return (
-    <Button
-      variant="outlined"
-      startIcon={
-        isExporting ? <CircularProgress size={16} /> : <DownloadIcon />
-      }
-      onClick={handleExport}
-      disabled={isExporting}
-      size="small"
-    >
-      {isExporting
-        ? totalTransactionCount > 100
-          ? `Exporting... ${exportProgress}%`
-          : "Exporting..."
-        : `Export CSV (${Math.min(totalTransactionCount, MAX_DISPLAYABLE_TRANSACTIONS).toLocaleString()})`}
-    </Button>
+    <>
+      <Button
+        variant="outlined"
+        startIcon={
+          isExporting ? <CircularProgress size={16} /> : <DownloadIcon />
+        }
+        onClick={handleClick}
+        disabled={isExporting}
+        size="small"
+      >
+        {isExporting
+          ? totalTransactionCount > 100
+            ? `Exporting... ${exportProgress}%`
+            : "Exporting..."
+          : `Export CSV (${exportable.toLocaleString()})`}
+      </Button>
+      <ApiKeyConfirmDialog
+        open={showApiKeyConfirm}
+        actionLabel={`export up to ${exportable.toLocaleString()} transactions`}
+        estimatedRequests={exportable}
+        onContinue={() => {
+          setShowApiKeyConfirm(false);
+          handleExport();
+        }}
+        onCancel={() => setShowApiKeyConfirm(false)}
+      />
+    </>
   );
 }

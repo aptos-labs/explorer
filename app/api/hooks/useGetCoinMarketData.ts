@@ -1,9 +1,8 @@
 import {useQuery} from "@tanstack/react-query";
 import {useMemo} from "react";
 import {useNetworkName} from "../../global-config";
+import {resolveCoingeckoUrl} from "./coingeckoProxy";
 import type {CoinDescription} from "./useGetCoinList";
-
-const COINGECKO_API_ENDPOINT = "https://api.coingecko.com/api/v3/coins/markets";
 
 // Rate limiting: CoinGecko free tier allows 10-50 calls/minute depending on endpoint and usage.
 // We add a delay between batch requests to avoid hitting rate limits.
@@ -68,7 +67,11 @@ export async function getCoinMarketData(
     };
 
     const queryString = new URLSearchParams(query);
-    const url = `${COINGECKO_API_ENDPOINT}?${queryString}`;
+    const url = resolveCoingeckoUrl(
+      "markets",
+      "/coins/markets",
+      queryString.toString(),
+    );
 
     try {
       const response = await fetch(url, {
