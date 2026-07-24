@@ -58,7 +58,7 @@ overrides:
   lodash: 4.18.1
   node-forge: 1.4.0
   uuid: 14.0.0
-  undici: 7.28.0
+  undici: 8.9.0
 
 patchedDependencies:
   "@netlify/edge-functions-dev@1.0.16": patches/@netlify__edge-functions-dev@1.0.16.patch
