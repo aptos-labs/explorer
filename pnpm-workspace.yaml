@@ -31,7 +31,7 @@ allowBuilds:
 overrides:
   "@aptos-labs/wallet-standard": 1.0.0
   "@aptos-labs/ts-sdk": 7.2.0
-  "@babel/core": 7.29.7
+  "@babel/core": 8.0.1
   "@opentelemetry/core": 2.8.0
   axios: 1.18.0
   esbuild: 0.28.1
