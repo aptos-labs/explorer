@@ -19,6 +19,8 @@ minimumReleaseAgeExclude:
   - tar@7.5.18
   # Renovate security update: brace-expansion@5.0.7
   - brace-expansion@5.0.7
+  # Renovate security update: axios@1.18.0
+  - axios@1.18.0
 
 allowBuilds:
   "@parcel/watcher": false
@@ -31,7 +33,7 @@ overrides:
   "@aptos-labs/ts-sdk": 7.2.0
   "@babel/core": 7.29.7
   "@opentelemetry/core": 2.8.0
-  axios: 1.16.0
+  axios: 1.18.0
   esbuild: 0.28.1
   form-data: 4.0.6
   js-yaml: 4.2.0
