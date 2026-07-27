@@ -21,6 +21,8 @@ minimumReleaseAgeExclude:
   - axios@1.18.0
   # Renovate security update: js-yaml@4.3.0
   - js-yaml@4.3.0
+  # Renovate security update: tar@7.5.18
+  - tar@7.5.18
 
 allowBuilds:
   "@parcel/watcher": false
@@ -37,7 +39,7 @@ overrides:
   esbuild: 0.28.1
   form-data: 4.0.6
   js-yaml: 4.3.0
-  tar: 7.5.16
+  tar: 7.5.18
   tmp: 0.2.7
   d3-array: 3.2.4
   d3-color: 3.1.0
