@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+
+- **pnpm audit — dependency security updates**: Bumped direct `vite` from `8.0.16` to `8.2.0`. Updated `pnpm-workspace.yaml` overrides for transitive packages flagged by `pnpm audit`: `tar@7.5.22`, `brace-expansion@5.0.9`, `undici@7.29.0`, `fast-uri@3.1.5`, `postcss@8.5.23`, `@opentelemetry/core@2.10.0`, `@opentelemetry/propagator-jaeger@2.10.0`, `svgo@4.0.2`, and `sharp@0.35.3`. `pnpm audit` now reports no known vulnerabilities. `minimumReleaseAgeExclude` was refreshed so only in-window packages (`fast-uri@3.1.5`, plus existing Renovate pins) remain excepted from the 5-day release-age gate.
+
 ### Changed
 
 - **TypeScript 6 → 7 upgrade**: Bumped `typescript` from `6.0.3` to `7.0.2`, the native Go-based compiler. `pnpm lint` / `tsc --noEmit` now use the TypeScript 7 `tsc` binary (typically much faster type-checking). No `tsconfig.json` or source changes were required; Vite 8 / Biome do not depend on the legacy TypeScript programmatic API, so the side-by-side `@typescript/typescript6` compatibility package is not needed for this repo.
