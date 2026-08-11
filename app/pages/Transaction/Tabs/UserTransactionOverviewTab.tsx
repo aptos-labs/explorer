@@ -17,6 +17,8 @@ import GasValue from "../../../components/IndividualPageContent/ContentValue/Gas
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {LearnMoreTooltip} from "../../../components/IndividualPageContent/LearnMoreTooltip";
 import {TransactionStatus} from "../../../components/TransactionStatus";
+import {useNetworkName} from "../../../global-config/GlobalConfig";
+import type {NetworkName} from "../../../lib/constants";
 import {standardizeAddress, tryStandardizeAddress} from "../../../utils";
 import {extractEntryFunctionPayload} from "../../../utils/cliCommand";
 import {
@@ -24,6 +26,19 @@ import {
   isEncryptedTransactionPayload,
 } from "../../../utils/transactionPayload";
 import {parseExpirationTimestamp} from "../../utils";
+import {CctpRecipientDisplay} from "../cctp/CctpRecipientDisplay";
+import {buildCctpScanUrl} from "../cctp/cctpScan";
+import {
+  formatAptosCctpRecipient,
+  formatCctpRecipient,
+} from "../cctp/formatRecipient";
+import {
+  type CctpBridgeIn,
+  type CctpBridgeOut,
+  enrichCctpBridgeInActions,
+  parseCctpDepositForBurnEvent,
+  parseCctpMintAndWithdrawEvent,
+} from "../cctp/parseCctpEvents";
 import {getLearnMoreTooltip} from "../helpers";
 import {
   findCoinData,
@@ -350,7 +365,8 @@ type EventAction =
   | FungibleAssetTransfer
   | LegacyTokenDeposit
   | LegacyTokenWithdraw
-  | Wormhole
+  | CctpBridgeOut
+  | CctpBridgeIn
   | DecibelPerpOrder
   | DecibelPerpDeposit
   | DecibelPerpWithdraw;
@@ -552,7 +568,8 @@ const parsers = [
   parseHyperionEvent,
   parseTappEvent,
   parseEarniumEvent,
-  parseWormholeBurnEvent,
+  parseCctpDepositForBurnEvent,
+  parseCctpMintAndWithdrawEvent,
 
   // staking / unstaking actions
   parseAmisLSDEvent,
@@ -766,12 +783,14 @@ function TransactionActionsRow({
   }
 
   const {data: coinData} = useGetCoinList();
+  const networkName = useNetworkName();
+  const enrichedActions = enrichCctpBridgeInActions(events, actions);
 
   return (
     <ContentRow
       title="Actions:"
       // biome-ignore lint/suspicious/useIterableCallbackReturn: all union cases are covered
-      value={actions.map((action, i) => {
+      value={enrichedActions.map((action, i) => {
         switch (action.actionType) {
           case "swap":
             return swapAction(coinData, action, i);
@@ -797,8 +816,16 @@ function TransactionActionsRow({
             return legacyTokenWithdrawAction(action, i);
           case "legacy token deposit":
             return legacyTokenDepositAction(action, i);
-          case "wormhole burn":
-            return wormholeBurnAction(transaction.hash, coinData, action, i);
+          case "cctp bridge out":
+            return cctpBridgeOutAction(
+              transaction.hash,
+              networkName,
+              coinData,
+              action,
+              i,
+            );
+          case "cctp bridge in":
+            return cctpBridgeInAction(coinData, action, i);
           case "perp order":
             return decibelPerpOrderAction(action, i);
           case "perp deposit":
@@ -2843,17 +2870,22 @@ function hexToUtf8(hexWith0x: string): string {
   return TEXT_DECODER.decode(Hex.fromHexString(hexWith0x).toUint8Array());
 }
 
-type Wormhole = {
-  actionType: "wormhole burn";
-  assetData: AssetData[];
-};
-
-const wormholeBurnAction = (
-  hash: string,
+const cctpBridgeOutAction = (
+  transactionHash: string,
+  networkName: NetworkName,
   coinData: {data: CoinDescription[]} | undefined,
-  action: Wormhole,
+  action: CctpBridgeOut,
   i: number,
 ) => {
+  const recipient = formatCctpRecipient(
+    action.destination_domain,
+    action.mint_recipient,
+  );
+  const scanUrl = buildCctpScanUrl(networkName, transactionHash);
+  const assetData: AssetData[] = [
+    {asset: action.burn_token, amount: action.amount},
+  ];
+
   return (
     <Box
       key={`action-${i}`}
@@ -2876,14 +2908,14 @@ const wormholeBurnAction = (
           flexWrap: "wrap",
         }}
       >
-        <span>{"🔥️ Bridged out"}</span>
-        {action.assetData.map((asset, index) => (
+        <span>Bridged out</span>
+        {assetData.map((asset, index) => (
           <LiquidityAssetContent
             key={`action-${i}-asset-${asset.asset}`}
             asset={asset}
             coinData={coinData}
             index={index}
-            totalAssets={action.assetData.length}
+            totalAssets={assetData.length}
           />
         ))}
       </Box>
@@ -2893,49 +2925,119 @@ const wormholeBurnAction = (
           alignItems: "center",
           gap: 1,
           width: {xs: "100%", sm: "auto"},
+          flexWrap: "wrap",
         }}
       >
-        <span>
-          <Link
-            href={`https://wormholescan.io/#/tx/${hash}?network=Mainnet`}
-            underline="none"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Open WormholeScan in new tab`}
-            sx={{
-              fontSize: 12,
-            }}
-          >
-            on Wormhole
-            <OpenInNew sx={{fontSize: 12}} />
-          </Link>
-        </span>
+        <span>to</span>
+        <CctpRecipientDisplay recipient={recipient} />
+        <span>on {recipient.chainName}</span>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+        }}
+      >
+        {scanUrl ? (
+          <span>
+            <Link
+              href={scanUrl}
+              underline="none"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open CCTP transfer on WormholeScan in new tab"
+              sx={{fontSize: 12}}
+            >
+              on CCTP
+              <OpenInNew sx={{fontSize: 12}} />
+            </Link>
+          </span>
+        ) : null}
       </Box>
     </Box>
   );
 };
 
-function parseWormholeBurnEvent(event: Types.Event): Wormhole | undefined {
-  if (
-    event.type !==
-    "0x9bce6734f7b63e835108e3bd8c36743d4709fe435f44791918801d0989640a9d::token_messenger::DepositForBurn"
-  ) {
-    return undefined;
-  }
+const cctpBridgeInAction = (
+  coinData: {data: CoinDescription[]} | undefined,
+  action: CctpBridgeIn,
+  i: number,
+) => {
+  const recipient = formatAptosCctpRecipient(action.mint_recipient);
+  const sourceRecipient =
+    action.source_domain !== undefined && action.source_sender !== undefined
+      ? formatCctpRecipient(action.source_domain, action.source_sender)
+      : undefined;
+  const assetData: AssetData[] = [
+    {asset: action.mint_token, amount: action.amount},
+  ];
 
-  const data: {
-    amount: string;
-    burn_token: string;
-  } = event.data;
-
-  const amount = Number(data.amount);
-  const assetData: AssetData[] = [{asset: data.burn_token, amount: amount}];
-
-  return {
-    actionType: "wormhole burn",
-    assetData,
-  };
-}
+  return (
+    <Box
+      key={`action-${i}`}
+      sx={{
+        marginBottom: 1,
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        columnGap: 1,
+        rowGap: 0.5,
+        width: "100%",
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+          flexWrap: "wrap",
+        }}
+      >
+        <span>Bridged in</span>
+        {assetData.map((asset, index) => (
+          <LiquidityAssetContent
+            key={`action-${i}-asset-${asset.asset}`}
+            asset={asset}
+            coinData={coinData}
+            index={index}
+            totalAssets={assetData.length}
+          />
+        ))}
+        <span>via CCTP</span>
+      </Box>
+      {sourceRecipient ? (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            width: {xs: "100%", sm: "auto"},
+            flexWrap: "wrap",
+          }}
+        >
+          <span>from</span>
+          <CctpRecipientDisplay recipient={sourceRecipient} />
+          <span>on {sourceRecipient.chainName}</span>
+        </Box>
+      ) : null}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          width: {xs: "100%", sm: "auto"},
+          flexWrap: "wrap",
+        }}
+      >
+        <span>to</span>
+        <CctpRecipientDisplay recipient={recipient} />
+      </Box>
+    </Box>
+  );
+};
 
 // ---------------------------------------------------------------------------
 // Decibel Perps

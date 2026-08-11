@@ -71,6 +71,9 @@ importers:
       '@noble/hashes':
         specifier: 2.2.0
         version: 2.2.0
+      '@scure/base':
+        specifier: 2.2.0
+        version: 2.2.0
       '@tanstack/react-query':
         specifier: 5.100.11
         version: 5.100.11(react@19.2.5)

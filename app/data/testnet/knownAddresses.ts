@@ -40,6 +40,12 @@ export const testnetKnownAddresses: Record<string, string> = {
   // Burn Address
   "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff":
     "Burn Address",
+
+  // Circle CCTP (testnet)
+  "0x5f9b937419dda90aa06c1836b7847f65bbbe3f1217567758dc2488be31a477b9":
+    "Circle CCTP TokenMessenger",
+  "0x081e86cebf457a0c6004f35bd648a2794698f52e0dde09a48619dcd3d4cc23d9":
+    "Circle CCTP MessageTransmitter",
 };
 
 /**

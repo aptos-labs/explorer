@@ -31,6 +31,16 @@ const mainnetLabeledBranding: Record<string, KnownAddressBranding> = {
     icon: "/address-icons/bridge-celer.png",
     description: "Celer cBridge and inter-chain liquidity contracts on Aptos.",
   },
+  "0x9bce6734f7b63e835108e3bd8c36743d4709fe435f44791918801d0989640a9d": {
+    icon: "https://circle.com/usdc-icon",
+    description:
+      "Circle CCTP TokenMessengerMinter on Aptos: burns USDC for cross-chain mint via CCTP.",
+  },
+  "0x177e17751820e4b4371873ca8c30279be63bdea63b88ed0f2239c2eea10f1772": {
+    icon: "https://circle.com/usdc-icon",
+    description:
+      "Circle CCTP MessageTransmitter on Aptos: generalized message passing for CCTP.",
+  },
 
   // DEX & AMM deployers
   "0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa": {

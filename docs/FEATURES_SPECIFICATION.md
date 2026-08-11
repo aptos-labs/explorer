@@ -265,7 +265,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **Location** | `UserTransactionOverviewTab.tsx` → `TransactionActionsRow`. |
 | **DEX swaps** | ThalaSwap (v1, v2, CL), Liquidswap (v0, v0.5), PancakeSwap, SushiSwap, AnimeSwap, Obric, Aux Exchange, Cellana Finance, Thetis Market, Cetus, Hyperion, Tapp, Earnium. The same parsers apply to fullnode-decrypted encrypted entry-function payloads. |
 | **LSD/staking** | Amnis, TruFi, ThalaLSD, Kofi. |
-| **Other actions** | Econia order/fill, Wormhole burn, token mint/burn, object transfer, fungible transfers, legacy token deposit/withdraw, claim fees/rewards, add/remove liquidity. |
+| **Other actions** | Econia order/fill, Circle CCTP bridge out/in (with cross-chain recipient formatting for EVM, Noble bech32, Solana base58, Sui, Aptos), token mint/burn, object transfer, fungible transfers, legacy token deposit/withdraw, claim fees/rewards, add/remove liquidity. |
 
 ### FEAT-TXN-010 — Transaction Trace Tab (Sentio)
 
@@ -1314,6 +1314,10 @@ top of the HTML site.
 | `app/pages/Transaction/txnTabValues.test.ts` | FEAT-TXN-001 (tab selection by transaction type, trace tab only for user txns), FEAT-TXN-012 (conditional Modules tab) |
 | `app/pages/Transaction/transactionModuleChanges.test.ts` | FEAT-TXN-012 (parse PublishPackage events and module write-set rows) |
 | `app/pages/Transaction/txnTabInvariants.test.ts` | FEAT-TXN-009 (DEX/LSD protocol coverage), TransactionTypeName enum values |
+| `app/pages/Transaction/cctp/formatRecipient.test.ts` | FEAT-TXN-009 (CCTP mint recipient formatting: EVM, Noble, Solana, Sui, Aptos) |
+| `app/pages/Transaction/cctp/domains.test.ts` | FEAT-TXN-009 (CCTP domain names and EVM domain recipient formatting) |
+| `app/pages/Transaction/cctp/parseCctpEvents.test.ts` | FEAT-TXN-009 (CCTP DepositForBurn / MintAndWithdraw event parsing) |
+| `app/pages/Transaction/cctp/cctpScan.test.ts` | FEAT-TXN-009 (WormholeScan transfer link helper) |
 | `app/pages/Account/hooks/useAccountTabValues.test.ts` | FEAT-ACCOUNT-005 (tab set computation: all GraphQL/object/multisig combos, invariants) |
 | `app/pages/Account/Tabs/ModulesTab/Contract.test.ts` | FEAT-MODULES-001 (contract result utilities, copy serialization) |
 | `app/pages/Account/Error.test.tsx` | FEAT-MODULES-008 (`AccountError` optional NOT_FOUND title/message) |
