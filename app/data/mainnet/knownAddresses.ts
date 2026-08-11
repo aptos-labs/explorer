@@ -38,6 +38,10 @@ export const mainnetKnownAddresses: Record<string, string> = {
     "LayerZero Token",
   "0x8d87a65ba30e09357fa2edea2c80dbac296e5dec2b18287113500b902942929d":
     "Celer Bridge",
+  "0x9bce6734f7b63e835108e3bd8c36743d4709fe435f44791918801d0989640a9d":
+    "Circle CCTP TokenMessenger",
+  "0x177e17751820e4b4371873ca8c30279be63bdea63b88ed0f2239c2eea10f1772":
+    "Circle CCTP MessageTransmitter",
 
   // DEX
   "0xc7efb4076dbe143cbcd98cfaaa929ecfc8f299203dfff63b95ccb6bfe19850fa":
