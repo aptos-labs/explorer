@@ -30,7 +30,12 @@ import {
   useTheme,
 } from "@mui/material";
 import React, {type ReactNode, useEffect, useMemo, useState} from "react";
-import {Controller, type SubmitHandler, useForm} from "react-hook-form";
+import {
+  Controller,
+  type SubmitHandler,
+  type UseFormHandleSubmit,
+  useForm,
+} from "react-hook-form";
 import type {Types} from "~/types/aptos";
 import {view} from "../../../../api";
 import {ResponseErrorType} from "../../../../api/client";
@@ -190,9 +195,7 @@ type ContractFormType = {
   ledgerVersion?: string;
 };
 
-type FormTriggerSubmit = (
-  handler: SubmitHandler<ContractFormType>,
-) => (e?: React.BaseSyntheticEvent) => Promise<void>;
+type FormTriggerSubmit = UseFormHandleSubmit<ContractFormType>;
 
 function getErrorMessage(error: unknown): string {
   if (error instanceof Error) {
