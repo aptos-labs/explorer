@@ -47,8 +47,8 @@ The `src/` folder is nearly drained — only `src/components/IndividualPageConte
 - [ ] Create backup branch
 
 ### During Upgrade
-- [ ] Update package.json
-- [ ] Run `pnpm install`
+- [ ] Update package.json to versions that satisfy **both** Aikido Safe Chain (48h minimum package age; only `@aptos-labs/*` is excluded) **and** pnpm `minimumReleaseAge` (5 days)
+- [ ] Run `pnpm install` through Safe Chain-wrapped pnpm (CI does this automatically). Never `--safe-chain-skip-minimum-package-age`, never `SAFE_CHAIN_MINIMUM_PACKAGE_AGE_HOURS=0`, never widen `SAFE_CHAIN_MINIMUM_PACKAGE_AGE_EXCLUSIONS`
 - [ ] Fix TypeScript errors
 - [ ] Update deprecated API usage
 - [ ] Run full test suite
@@ -87,9 +87,11 @@ The `src/` folder is nearly drained — only `src/components/IndividualPageConte
 ## Commands
 
 ```bash
-pnpm outdated         # Check for updates
-pnpm update           # Update within ranges
-pnpm add pkg@latest   # Update to latest
+pnpm outdated         # Check for updates (does not install)
+# Installs must go through Aikido Safe Chain. Pin exact versions that are
+# at least 5 days old (pnpm minimumReleaseAge) and 48h old (Safe Chain).
+# Do not `pnpm add pkg@latest` — that ignores the age gates.
+pnpm add pkg@<age-eligible-version>
 ```
 
 ## Refactoring Principles

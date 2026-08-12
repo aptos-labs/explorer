@@ -6,6 +6,8 @@ This document serves as the canonical source of truth for AI coding assistants w
 
 ```bash
 # Node: see `.node-version` (matches CI via actions/setup-node node-version-file)
+# Installs must run through Aikido Safe Chain (CI wraps `pnpm` automatically).
+# Never `--safe-chain-skip-minimum-package-age`. Only `@aptos-labs/*` is age-excluded.
 pnpm install            # Install dependencies
 pnpm routes:generate    # TanStack route tree (also runs before dev/build/lint/test via pre* scripts)
 pnpm dev                # Dev server on port 3030
@@ -252,6 +254,7 @@ This repository uses a multi-agent workflow with 7 specialized roles. Each role 
 - [ ] If the PR is user-visible or release-worthy: `CHANGELOG.md` updated under **[Unreleased]**
 - [ ] If a feature was added, changed, or removed: `docs/FEATURES_SPECIFICATION.md` updated with the corresponding `FEAT-*` entry
 - [ ] If Netlify deployment files changed: no new Netlify Edge Functions without explicit approval (see [Netlify and Edge Functions](#netlify-and-edge-functions))
+- [ ] If dependencies or the lockfile changed: installs went through Aikido Safe Chain (48h age floor, no skip flag, only `@aptos-labs/*` excluded)
 
 **Outputs**: Review feedback, approval or change requests
 
@@ -471,6 +474,19 @@ Environment variables in this repository are a **contract with deployments** (Ne
 - **Do not remove a hardcoded default that backs an env var** without restoring an equivalent safe default. The env var pattern `import.meta.env.X || "<default>"` is load-bearing: the `||` branch is what keeps the app working when the variable is unset.
 - **When adding a new env var**: document it in `.env.example` with a comment explaining what it controls, declare its TypeScript type in `app/types/declarations.d.ts` if it is `VITE_`-prefixed, and add it to `.github/workflows/ci.yml` if CI needs it.
 - **When you must rename or remove an env var**: search the entire repo (`rg VITE_FOO`, `rg APTOS_FOO`), update `.env.example`, `app/types/declarations.d.ts`, `.github/workflows/*.yml`, `netlify.toml`, and any docs in the same PR, **and** call it out under `CHANGELOG.md` → `[Unreleased]` so operators know to update their dashboards.
+
+### Aikido Safe Chain (required for every install)
+
+CI wraps **every** `pnpm` invocation with [Aikido Safe Chain](https://github.com/AikidoSec/safe-chain) via `.github/actions/setup-node-pnpm` (`aptos-labs/actions/aikidosec-safe-chain`). Safe Chain MITM-proxies the npm registry, blocks malware against Aikido Intel, and **suppresses package versions newer than 48 hours**. That is in addition to pnpm's own `minimumReleaseAge: 7200` (5 days) in `pnpm-workspace.yaml`.
+
+**Rules for all agents (no exceptions without explicit human approval):**
+
+- **Do not bypass Safe Chain.** Never run `pnpm install` / `pnpm add` / `pnpm update` / `pnpm fetch` through a raw pnpm binary that is not Safe Chain-wrapped. In this repo's CI the wrapper is automatic; locally, put Safe Chain shims first on `PATH` (or use the same `setup-ci` install CI uses) before mutating the lockfile.
+- **Do not skip the age gate.** Never pass `--safe-chain-skip-minimum-package-age`, never set `SAFE_CHAIN_MINIMUM_PACKAGE_AGE_HOURS=0`, and never lower the 48-hour floor.
+- **Do not widen the exclusion list.** The only Safe Chain age-check exclusion is `@aptos-labs/*` (`SAFE_CHAIN_MINIMUM_PACKAGE_AGE_EXCLUSIONS`). Do not add other packages or scopes.
+- **Do not use `minimumReleaseAgeExclude` as a bypass.** pnpm's 5-day gate is stricter than Safe Chain's 48 hours. Version-pinned exclude entries are allowed only as a temporary, audited exception for a package that still sits inside the 5-day window; remove the entry once that version ages out. An empty exclude list is the default.
+- **When bumping dependencies:** pick versions that already satisfy **both** gates (Safe Chain 48h **and** pnpm 5 days). First-party `@aptos-labs/*` may be newer than 48 hours; they still must pass pnpm's 5-day gate unless an audited `minimumReleaseAgeExclude` entry exists.
+- **After a lockfile change:** re-run install through Safe Chain so tarballs are scanned (`✔ Safe-chain: Scanned N packages, no malware found`). A frozen-lockfile install that only reuses the local store is not a scan.
 
 ---
 

@@ -45,6 +45,7 @@ You are acting as the **Reviewer** for the Aptos Explorer project.
 - [ ] No secrets or API keys in code
 - [ ] User input sanitized
 - [ ] External links use `rel="noopener noreferrer"`
+- [ ] Lockfile / dependency changes: Aikido Safe Chain was not bypassed (48h age floor, no skip flag, only `@aptos-labs/*` excluded)
 
 ### Accessibility
 - [ ] Proper semantic HTML
