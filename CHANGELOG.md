@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
-- **pnpm audit — nanoid override**: Added a `nanoid@3.3.18` override so the PostCSS 3.x line picks up the GHSA-2v37-7h3g-55p8 fix (`customAlphabet` / `customRandom` infinite loop when `size` is 0). `image-size` (GHSA-w3rx-r6r6-pgpr / GHSA-5p2g-fcmc-qvqq) and `extract-zip` (GHSA-jmr9-qjv8-65gv) remain reported: no patched npm releases exist (`image-size@2.0.3` and `extract-zip@2.0.2` are unpublished). Both are transitive through `@netlify/vite-plugin-tanstack-start` (dev-only Netlify local tooling). Stale `minimumReleaseAgeExclude` entries were cleared now that locked versions are older than the 5-day gate.
+- **pnpm audit — nanoid override**: Added a `nanoid@3.3.18` override so the PostCSS 3.x line picks up the GHSA-2v37-7h3g-55p8 fix (`customAlphabet` / `customRandom` infinite loop when `size` is 0). `image-size` (GHSA-w3rx-r6r6-pgpr / GHSA-5p2g-fcmc-qvqq) and `extract-zip` (GHSA-jmr9-qjv8-65gv) remain reported: no patched npm releases exist (`image-size@2.0.3` and `extract-zip@2.0.2` are unpublished). Both are transitive through `@netlify/vite-plugin-tanstack-start` (dev-only Netlify local tooling). Stale `minimumReleaseAgeExclude` entries were cleared now that locked versions are older than the 5-day gate. The updated lockfile was re-fetched through Aikido Safe Chain (malware scan of 1057 packages, 48h minimum package age, `@aptos-labs/*` the only age exclusion).
 
 ### Changed
 

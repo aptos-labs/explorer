@@ -16,9 +16,15 @@ runs:
         cache: pnpm
         registry-url: "https://registry.npmjs.org"
 
-    - name: Allow first-party @aptos-labs/* packages through safe-chain age check
+    - name: Aikido Safe Chain age policy
       shell: bash
-      run: echo "SAFE_CHAIN_MINIMUM_PACKAGE_AGE_EXCLUSIONS=@aptos-labs/*" >> "${GITHUB_ENV}"
+      run: |
+        # 48h is Safe Chain's default minimum package age. Set it explicitly so
+        # agents and future action edits cannot silently drop the floor to 0.
+        # The only age-check exclusion is first-party @aptos-labs/* packages.
+        # Do not add other names, and do not pass --safe-chain-skip-minimum-package-age.
+        echo "SAFE_CHAIN_MINIMUM_PACKAGE_AGE_HOURS=48" >> "${GITHUB_ENV}"
+        echo "SAFE_CHAIN_MINIMUM_PACKAGE_AGE_EXCLUSIONS=@aptos-labs/*" >> "${GITHUB_ENV}"
 
     - name: Setup AikidoSec Safe Chain
       uses: aptos-labs/actions/aikidosec-safe-chain@fdd3a3a628c840d5c35086a87e9cc3141b635505 # main (2026-05-20)
