@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-07-21 (rev 24)
+> Last updated: 2026-08-12 (rev 25)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -361,7 +361,7 @@ The explorer **cannot** do the following:
 - **Frontend**: React 19 with TypeScript 7.0
 - **Routing**: TanStack Router (file-based routing) with SSR via TanStack Start
 - **Data Fetching**: TanStack Query v5 (React Query) with prefetching and caching
-- **UI**: Material-UI (MUI) v7
+- **UI**: Material-UI (MUI) v9
 - **Build**: Vite 8 (Rolldown + Oxc) with SSR and Netlify deployment
 - **Blockchain SDK**: `@aptos-labs/ts-sdk` for fullnode REST and indexer GraphQL
 

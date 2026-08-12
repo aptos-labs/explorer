@@ -1,5 +1,4 @@
 diff --git a/dist/node/main.js b/dist/node/main.js
-index 4d66fb56936f7c8148b46ffeb8f398d2a16e06f0..c3b3b8dd2e344bd5212d82e7fd59fafb2114f780 100644
 --- a/dist/node/main.js
 +++ b/dist/node/main.js
 @@ -230,7 +230,12 @@ var EdgeFunctionsHandler = class {
