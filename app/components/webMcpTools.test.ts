@@ -40,16 +40,12 @@ describe("isAddressLike", () => {
   ])("accepts %s", (v) => {
     expect(isAddressLike(v)).toBe(true);
   });
-  it.each([
-    "",
-    "bob",
-    "0x",
-    "xyz.apt.foo",
-    "0xGHIJ",
-    "foo",
-  ])("rejects %s", (v) => {
-    expect(isAddressLike(v)).toBe(false);
-  });
+  it.each(["", "bob", "0x", "xyz.apt.foo", "0xGHIJ", "foo"])(
+    "rejects %s",
+    (v) => {
+      expect(isAddressLike(v)).toBe(false);
+    },
+  );
 });
 
 describe("buildWebMcpTools", () => {
