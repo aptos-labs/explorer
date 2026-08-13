@@ -118,8 +118,8 @@ importers:
         specifier: 3.0.8
         version: 3.0.8
       pako:
-        specifier: 2.1.0
-        version: 2.1.0
+        specifier: 3.0.1
+        version: 3.0.1
       react:
         specifier: 19.2.8
         version: 19.2.8
@@ -176,8 +176,8 @@ importers:
         specifier: 30.0.0
         version: 30.0.0
       '@types/pako':
-        specifier: 2.0.4
-        version: 2.0.4
+        specifier: 3.0.0
+        version: 3.0.0
       '@types/react':
         specifier: 19.2.18
         version: 19.2.18
@@ -2065,8 +2065,9 @@ packages:
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
 
-  '@types/pako@2.0.4':
-    resolution: {integrity: sha512-VWDCbrLeVXJM9fihYodcLiIv0ku+AlOa/TQ1SvYOaBuyrSKgEcro95LJyIsJ4vSo6BXIxOKxiJAat04CmST9Fw==}
+  '@types/pako@3.0.0':
+    resolution: {integrity: sha512-MtIzg1Ul1GxhHZLq6oSKvWQENKqmfK1fdaW+SDcPJe7+YcJVo6AbmkW0BvGFH6+559+hEuCwdXZZe8F85lBPkA==}
+    deprecated: This is a stub types definition. pako provides its own type definitions, so you do not need this installed.
 
   '@types/parse-json@4.0.2':
     resolution: {integrity: sha512-dISoDXWWQwUquiKsyZ4Ng+HX2KsPL7LyHKHQwgGFEA3IaKac4Obd+h2a/a6waisAoepJlBcx9paWqjA8/HVjCw==}
@@ -4351,6 +4352,9 @@ packages:
 
   pako@2.1.0:
     resolution: {integrity: sha512-w+eufiZ1WuJYgPXbV/PO3NCMEc3xqylkKHzp8bxp1uW4qaSNQUkwmLLEc3kKsfz8lpV1F8Ht3U1Cm+9Srog2ug==}
+
+  pako@3.0.1:
+    resolution: {integrity: sha512-GupotUUI0mlhugKjUs4bjOwLt3nrehy9Ys2dxC0GtgVef5cnKggkDMmf2bq2poCCuVXopWPmqsc9VDT2iJUy+w==}
 
   parent-module@1.0.1:
     resolution: {integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==}
@@ -7525,7 +7529,9 @@ snapshots:
 
   '@types/normalize-package-data@2.4.4': {}
 
-  '@types/pako@2.0.4': {}
+  '@types/pako@3.0.0':
+    dependencies:
+      pako: 2.1.0
 
   '@types/parse-json@4.0.2': {}
 
@@ -9844,6 +9850,8 @@ snapshots:
   package-json-from-dist@1.0.1: {}
 
   pako@2.1.0: {}
+
+  pako@3.0.1: {}
 
   parent-module@1.0.1:
     dependencies:
