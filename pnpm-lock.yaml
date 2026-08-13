@@ -42,7 +42,7 @@ overrides:
   nanoid: 6.0.1
 
 patchedDependencies:
-  '@babel/core@8.0.1': 05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a
+  '@babel/core@8.0.1': 30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f
   '@netlify/edge-functions-dev@1.0.23': 3ea42690d94413db7efd2ecc16324b13771e74dbc03fc8bef01180b991a7ce44
 
 importers:
@@ -5687,7 +5687,7 @@ snapshots:
 
   '@babel/compat-data@8.0.0': {}
 
-  '@babel/core@8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a)':
+  '@babel/core@8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f)':
     dependencies:
       '@babel/code-frame': 8.0.0
       '@babel/generator': 8.0.0
@@ -7107,54 +7107,54 @@ snapshots:
     dependencies:
       acorn: 8.16.0
 
-  '@svgr/babel-plugin-add-jsx-attribute@8.0.0(@babel/core@8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a))':
+  '@svgr/babel-plugin-add-jsx-attribute@8.0.0(@babel/core@8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f))':
     dependencies:
-      '@babel/core': 8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a)
+      '@babel/core': 8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f)
 
-  '@svgr/babel-plugin-remove-jsx-attribute@8.0.0(@babel/core@8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a))':
+  '@svgr/babel-plugin-remove-jsx-attribute@8.0.0(@babel/core@8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f))':
     dependencies:
-      '@babel/core': 8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a)
+      '@babel/core': 8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f)
 
-  '@svgr/babel-plugin-remove-jsx-empty-expression@8.0.0(@babel/core@8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a))':
+  '@svgr/babel-plugin-remove-jsx-empty-expression@8.0.0(@babel/core@8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f))':
     dependencies:
-      '@babel/core': 8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a)
+      '@babel/core': 8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f)
 
-  '@svgr/babel-plugin-replace-jsx-attribute-value@8.0.0(@babel/core@8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a))':
+  '@svgr/babel-plugin-replace-jsx-attribute-value@8.0.0(@babel/core@8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f))':
     dependencies:
-      '@babel/core': 8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a)
+      '@babel/core': 8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f)
 
-  '@svgr/babel-plugin-svg-dynamic-title@8.0.0(@babel/core@8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a))':
+  '@svgr/babel-plugin-svg-dynamic-title@8.0.0(@babel/core@8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f))':
     dependencies:
-      '@babel/core': 8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a)
+      '@babel/core': 8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f)
 
-  '@svgr/babel-plugin-svg-em-dimensions@8.0.0(@babel/core@8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a))':
+  '@svgr/babel-plugin-svg-em-dimensions@8.0.0(@babel/core@8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f))':
     dependencies:
-      '@babel/core': 8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a)
+      '@babel/core': 8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f)
 
-  '@svgr/babel-plugin-transform-react-native-svg@8.1.0(@babel/core@8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a))':
+  '@svgr/babel-plugin-transform-react-native-svg@8.1.0(@babel/core@8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f))':
     dependencies:
-      '@babel/core': 8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a)
+      '@babel/core': 8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f)
 
-  '@svgr/babel-plugin-transform-svg-component@8.0.0(@babel/core@8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a))':
+  '@svgr/babel-plugin-transform-svg-component@8.0.0(@babel/core@8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f))':
     dependencies:
-      '@babel/core': 8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a)
+      '@babel/core': 8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f)
 
-  '@svgr/babel-preset@8.1.0(@babel/core@8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a))':
+  '@svgr/babel-preset@8.1.0(@babel/core@8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f))':
     dependencies:
-      '@babel/core': 8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a)
-      '@svgr/babel-plugin-add-jsx-attribute': 8.0.0(@babel/core@8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a))
-      '@svgr/babel-plugin-remove-jsx-attribute': 8.0.0(@babel/core@8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a))
-      '@svgr/babel-plugin-remove-jsx-empty-expression': 8.0.0(@babel/core@8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a))
-      '@svgr/babel-plugin-replace-jsx-attribute-value': 8.0.0(@babel/core@8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a))
-      '@svgr/babel-plugin-svg-dynamic-title': 8.0.0(@babel/core@8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a))
-      '@svgr/babel-plugin-svg-em-dimensions': 8.0.0(@babel/core@8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a))
-      '@svgr/babel-plugin-transform-react-native-svg': 8.1.0(@babel/core@8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a))
-      '@svgr/babel-plugin-transform-svg-component': 8.0.0(@babel/core@8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a))
+      '@babel/core': 8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f)
+      '@svgr/babel-plugin-add-jsx-attribute': 8.0.0(@babel/core@8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f))
+      '@svgr/babel-plugin-remove-jsx-attribute': 8.0.0(@babel/core@8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f))
+      '@svgr/babel-plugin-remove-jsx-empty-expression': 8.0.0(@babel/core@8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f))
+      '@svgr/babel-plugin-replace-jsx-attribute-value': 8.0.0(@babel/core@8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f))
+      '@svgr/babel-plugin-svg-dynamic-title': 8.0.0(@babel/core@8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f))
+      '@svgr/babel-plugin-svg-em-dimensions': 8.0.0(@babel/core@8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f))
+      '@svgr/babel-plugin-transform-react-native-svg': 8.1.0(@babel/core@8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f))
+      '@svgr/babel-plugin-transform-svg-component': 8.0.0(@babel/core@8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f))
 
   '@svgr/core@8.1.0(typescript@7.0.2)':
     dependencies:
-      '@babel/core': 8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a)
-      '@svgr/babel-preset': 8.1.0(@babel/core@8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a))
+      '@babel/core': 8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f)
+      '@svgr/babel-preset': 8.1.0(@babel/core@8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f))
       camelcase: 6.3.0
       cosmiconfig: 8.3.6(typescript@7.0.2)
       snake-case: 3.0.4
@@ -7168,8 +7168,8 @@ snapshots:
 
   '@svgr/plugin-jsx@8.1.0(@svgr/core@8.1.0(typescript@7.0.2))':
     dependencies:
-      '@babel/core': 8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a)
-      '@svgr/babel-preset': 8.1.0(@babel/core@8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a))
+      '@babel/core': 8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f)
+      '@svgr/babel-preset': 8.1.0(@babel/core@8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f))
       '@svgr/core': 8.1.0(typescript@7.0.2)
       '@svgr/hast-util-to-babel-ast': 8.0.0
       svg-parser: 2.0.4
@@ -7383,7 +7383,7 @@ snapshots:
 
   '@tanstack/router-plugin@1.168.30(@tanstack/react-router@1.170.27(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(supports-color@7.2.0)(vite@8.2.1(@types/node@25.6.0)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.0))':
     dependencies:
-      '@babel/core': 8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a)
+      '@babel/core': 8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f)
       '@babel/template': 7.29.7
       '@babel/types': 7.29.7
       '@tanstack/router-core': 1.171.22
@@ -7423,7 +7423,7 @@ snapshots:
   '@tanstack/start-plugin-core@1.171.34(@tanstack/react-router@1.170.27(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(supports-color@7.2.0)(vite@8.2.1(@types/node@25.6.0)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.0))':
     dependencies:
       '@babel/code-frame': 7.27.1
-      '@babel/core': 8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a)
+      '@babel/core': 8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f)
       '@babel/types': 7.29.7
       '@tanstack/router-core': 1.171.22
       '@tanstack/router-generator': 1.167.28(supports-color@7.2.0)
@@ -8022,7 +8022,7 @@ snapshots:
 
   babel-dead-code-elimination@1.0.12(supports-color@7.2.0):
     dependencies:
-      '@babel/core': 8.0.1(patch_hash=05ae1bd038db5b86b49af4baa4f8950868aaa940d343e3944910bcbd7495747a)
+      '@babel/core': 8.0.1(patch_hash=30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f)
       '@babel/parser': 7.29.7
       '@babel/traverse': 7.29.7(supports-color@7.2.0)
       '@babel/types': 7.29.7

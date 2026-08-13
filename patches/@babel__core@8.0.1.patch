@@ -9,6 +9,25 @@ index 0000000000000000000000000000000000000000..aa8944a8aba35c9ccefd972ddf497186
 +export * from "./index.js";
 +import * as Babel from "./index.js";
 +export default Babel;
+diff --git a/lib/index-shared.js b/lib/index-shared.js
+index 83c4f65164c77943fd311cc4b0b803b6461367ca..f2e09ab61ec7f081e3746961b7e2b6cb3a8d58d3 100644
+--- a/lib/index-shared.js
++++ b/lib/index-shared.js
+@@ -2238,9 +2238,12 @@ function createConfigItem(target, options, callback) {
+   if (callback !== undefined) {
+     beginHiddenCallStack(createConfigItemRunner.errback)(target, options, callback);
+   } else if (typeof options === "function") {
+-    beginHiddenCallStack(createConfigItemRunner.errback)(target, undefined, callback);
++    beginHiddenCallStack(createConfigItemRunner.errback)(target, undefined, options);
+   } else {
+-    throw new Error("Starting from Babel 8.0.0, the 'createConfigItem' function expects a callback. If you need to call it synchronously, please use 'createConfigItemSync'.");
++    // Babel 7 compatibility: SVGR and other Babel 7 callers still invoke
++    // createConfigItem() synchronously. Babel 8 renamed that to
++    // createConfigItemSync(); keep the old signature working.
++    return beginHiddenCallStack(createConfigItemRunner.sync)(target, options);
+   }
+ }
+ 
 diff --git a/package.json b/package.json
 index 2a628e373acd7d506a4235c367f78e7ccfbaaab0..f54b1909e1a0d078d7f6ec5ef1df3e61116d06e5 100644
 --- a/package.json
