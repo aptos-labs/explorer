@@ -1,0 +1,8 @@
+{
+  "resource": "https://explorer.aptoslabs.com/",
+  "resource_name": "Aptos Explorer",
+  "resource_documentation": "https://explorer.aptoslabs.com/auth.md",
+  "authorization_servers": [],
+  "bearer_methods_supported": [],
+  "scopes_supported": []
+}

@@ -1017,13 +1017,17 @@ top of the HTML site.
 
 | Aspect | Detail |
 |--------|--------|
-| **Link headers (RFC 8288)** | `netlify.toml` sets a `Link` response header on `/` and `/*` advertising `</.well-known/api-catalog>`, `</.well-known/agent-skills/index.json>`, `</.well-known/mcp/server-card.json>`, `</llms.txt>`, `</llms-full.txt>`, and `</sitemap.xml>`. |
+| **Link headers (RFC 8288)** | `app/ssr.tsx` attaches `Link` + `Vary: Accept` on every TanStack Start function response (`attachAgentDiscoveryHeaders`). `netlify.toml` sets the same `Link` values on `/` and `/*` for **static** assets (Netlify header rules do not apply to SSR function responses). Advertised: `</.well-known/api-catalog>`, `</.well-known/agent-skills/index.json>`, `</.well-known/mcp/server-card.json>`, `</.well-known/agent-card.json>`, `</.well-known/oauth-protected-resource>`, `</llms.txt>`, `</llms-full.txt>`, `</auth.md>`, `</sitemap.xml>`. |
 | **API catalog (RFC 9727)** | `public/.well-known/api-catalog` served as `application/linkset+json`. Lists upstream Aptos fullnode REST APIs (mainnet/testnet/devnet), the indexer GraphQL API, and the explorer itself, with `service-desc`, `service-doc`, and `status` links. |
 | **Agent Skills index** | `public/.well-known/agent-skills/index.json` conforms to cloudflare/agent-skills-discovery-rfc v0.2.0. Publishes `aptos-explorer-urls` and `aptos-explorer-search` skills, each with a SHA-256 `digest`. Regenerate via `node scripts/update-agent-skills-index.mjs`. |
 | **MCP Server Card** | `public/.well-known/mcp/server-card.json` publishes a draft SEP-1649 / SEP-2127 MCP Server Card with `serverInfo`, a WebMCP transport endpoint, read-only tool capabilities, and the currently exposed browser WebMCP navigation tools. Served as `application/json` with CORS enabled for agent discovery. |
+| **A2A Agent Card** | `public/.well-known/agent-card.json` publishes name, version, `supportedInterfaces`, capabilities, and skills aligned with the WebMCP navigation tools. Describes HTTPS GET / markdown / WebMCP interaction; it does **not** claim an A2A JSON-RPC task endpoint. |
+| **auth.md** | `public/auth.md` (H1 contains `auth.md`). Documents that the explorer is a public read-only site: no agent registration, no OAuth Authorization Server, no `POST /agent/auth`. |
+| **OAuth Protected Resource (RFC 9728)** | `public/.well-known/oauth-protected-resource` with `resource` = `https://explorer.aptoslabs.com/`, empty `authorization_servers`, and `resource_documentation` pointing at `/auth.md`. There is **no** `/.well-known/oauth-authorization-server` / OpenID configuration — inventing token endpoints would be misleading. |
 | **Content Signals** | `public/robots.txt` declares `Content-Signal: ai-train=no, search=yes, ai-input=yes` at the top of the file and inside every AI-crawler `User-agent` group (contentsignals.org / draft-romm-aipref-contentsignals). |
-| **Markdown negotiation** | TanStack Start SSR (`app/ssr.tsx` via `app/utils/markdownHomeNegotiation.ts`) returns bundled `public/llms.txt` with `Content-Type: text/markdown` when the homepage request has `Accept: text/markdown`; HTML remains the default for browsers. Helper: `app/utils/acceptMarkdown.ts` (`prefersMarkdown`). |
+| **Markdown negotiation** | The SSR **outer** `fetch` in `app/ssr.tsx` (via `negotiateMarkdownRequest`) runs **before** TanStack Start's HTML-only Accept gate, which otherwise returns HTTP 500 JSON for `Accept: text/markdown`. Homepage serves bundled `public/llms.txt`; other HTML routes serve a short path stub. Headers: `Content-Type: text/markdown`, `Vary: Accept`, `X-Markdown-Source`, `X-Markdown-Tokens`. Helper: `app/utils/acceptMarkdown.ts` (`prefersMarkdown`). |
 | **WebMCP** | `app/components/WebMCPProvider.tsx` registers read-only navigation tools (`search_explorer`, `open_transaction`, `open_account`, `open_block`, `open_releases`, `open_coin`) on `navigator.modelContext` when supported. Tool definitions live in `app/components/webMcpTools.ts`; registration is cleaned up via `AbortSignal` on unmount. |
+| **Out of repo** | DNS-AID (`_index._agents.explorer.aptoslabs.com` SVCB/HTTPS) and Web Bot Auth (`/.well-known/http-message-signatures-directory`) require DNS / outbound-bot signing keys and are documented in `docs/LLM_ACCESS.md`, not implemented as fake records. |
 
 ---
 
@@ -1271,7 +1275,10 @@ top of the HTML site.
 | `app/utils/netlifyHeaders.test.ts` | FEAT-SEO-004 (homepage and global RFC 8288 discovery `Link` headers) |
 | `app/utils/mcpServerCard.test.ts` | FEAT-SEO-004 (MCP Server Card minimum fields and advertised WebMCP tools) |
 | `app/utils/acceptMarkdown.test.ts` | FEAT-SEO-004 (`Accept: text/markdown` negotiation helper) |
-| `app/utils/markdownHomeNegotiation.test.ts` | FEAT-SEO-004 (SSR homepage markdown response headers and routing) |
+| `app/utils/markdownHomeNegotiation.test.ts` | FEAT-SEO-004 (SSR markdown response headers, homepage vs path stub, well-known skip) |
+| `app/utils/agentDiscoveryHeaders.test.ts` | FEAT-SEO-004 (SSR `Link` / `Vary: Accept` attachment, relative request URLs) |
+| `app/utils/agentCard.test.ts` | FEAT-SEO-004 (A2A Agent Card fields and WebMCP-aligned skills) |
+| `app/utils/authDiscovery.test.ts` | FEAT-SEO-004 (`/auth.md` H1 + public RFC 9728 PRM) |
 | `app/components/webMcpTools.test.ts` | FEAT-SEO-004 (WebMCP navigation tools: routing, validation) |
 | `app/utils/routerParams.test.ts` | FEAT-ROUTING-003 (`pathSplatToSegments` normalization) |
 | `app/api/hooks/aptosFeatureFlagsUpstream.test.ts` | FEAT-RELEASES-001 (upstream Rust enum parse for unlisted feature flag names) |

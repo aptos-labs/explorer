@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-08-12 (rev 25)
+> Last updated: 2026-08-13 (rev 26)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -403,31 +403,61 @@ canonical user experience.
   SEP-2127 draft), served as `application/json`. Publishes `serverInfo`,
   the WebMCP transport endpoint (`https://explorer.aptoslabs.com/`), and
   the read-only navigation tool capabilities exposed by the Explorer.
+- **`/.well-known/agent-card.json`** — A2A Agent Card (agent-card.json).
+  Describes explorer navigation skills. This origin does **not** expose an
+  A2A JSON-RPC task endpoint; agents should use HTTPS GET (HTML or
+  `Accept: text/markdown`) and WebMCP in supporting browsers.
+- **`/.well-known/oauth-protected-resource`** — RFC 9728 Protected Resource
+  Metadata. `authorization_servers` is an empty array: explorer pages are
+  public and unauthenticated. See `/auth.md`.
+- **`/auth.md`** — Auth.md-style agent registration document. States that
+  no agent registration or OAuth Authorization Server is offered.
 
 ### HTTP Link headers (RFC 8288)
 
-The home page (and, as a fallback, every path) responds with a `Link`
-header that advertises the api-catalog, the MCP Server Card, the
-agent-skills index, and both `llms.txt` / `llms-full.txt`. Example:
+SSR HTML responses (TanStack Start Netlify Function) **and** static files
+include a `Link` header advertising the api-catalog, MCP Server Card, A2A
+card, OAuth PRM, agent-skills index, `auth.md`, and both `llms.txt` /
+`llms-full.txt`. Netlify `[[headers]]` alone are not enough: function
+responses do not inherit those rules, so `app/ssr.tsx` attaches the same
+header. Example:
 
 ```
 Link: </.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json",
       </.well-known/agent-skills/index.json>; rel="https://agentskills.io/rel/index"; type="application/json",
-      </.well-known/mcp/server-card.json>; rel="https://modelcontextprotocol.io/rel/server-card"; type="application/json",
+      </.well-known/mcp/server-card.json>; rel="service-desc"; type="application/json"; title="MCP Server Card",
+      </.well-known/agent-card.json>; rel="describedby"; type="application/json"; title="A2A Agent Card",
+      </.well-known/oauth-protected-resource>; rel="oauth-protected-resource"; type="application/json",
       </llms.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Summary)",
       </llms-full.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Full)",
+      </auth.md>; rel="describedby"; type="text/markdown"; title="auth.md",
       </sitemap.xml>; rel="sitemap"; type="application/xml"
 ```
 
 ### Markdown content negotiation
 
-When a request to `/` (or `/index.html`) includes `Accept: text/markdown`,
-TanStack Start SSR (`app/ssr.tsx` / `app/utils/markdownHomeNegotiation.ts`)
-serves the same content as `/llms.txt` (bundled at build time) with
-`Content-Type: text/markdown; charset=utf-8`, a `Vary: Accept` header, and an
-`X-Markdown-Source` hint pointing to the underlying file. Browsers (which
-request `text/html`) are unaffected — they still receive the SSR HTML. For the
-full markdown reference, agents should fetch `/llms-full.txt` directly.
+`Accept: text/markdown` is handled on the **outer** SSR `fetch` wrapper in
+`app/ssr.tsx` **before** TanStack Start's HTML-only Accept gate (which
+otherwise returns HTTP 500 `{"error":"Only HTML requests are supported
+here"}`). Homepage (`/` / `/index.html`) serves bundled `/llms.txt` with
+`Content-Type: text/markdown; charset=utf-8`, `Vary: Accept`,
+`X-Markdown-Source`, and `X-Markdown-Tokens`. Other HTML routes get a short
+path-specific stub pointing at `/llms.txt`. Browsers requesting `text/html`
+are unaffected. For the full markdown reference, agents should fetch
+`/llms-full.txt` directly.
+
+### Operator-only: DNS-AID and Web Bot Auth
+
+These cannot be published from this repository:
+
+- **DNS for AI Discovery (DNS-AID)** — add SVCB/HTTPS (and optional TXT)
+  records at `_index._agents.explorer.aptoslabs.com` (and optionally
+  `_mcp._agents` / `_a2a._agents`) in the `aptoslabs.com` Google Cloud DNS
+  zone, preferably DNSSEC-signed. See https://www.dns-aid.org/ and
+  `docs/LLM_ACCESS.md`.
+- **Web Bot Auth** — `/.well-known/http-message-signatures-directory` is
+  for sites that **send** signed bot traffic. The explorer is a content
+  site, not an outbound bot, so it does not publish signing keys.
 
 ### WebMCP tools
 

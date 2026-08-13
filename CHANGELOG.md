@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Agent discovery — A2A card, auth.md, RFC 9728 PRM**: Published `/.well-known/agent-card.json` (A2A skill/capability card aligned with WebMCP tools; no JSON-RPC task endpoint), `/auth.md` (public site; no agent registration or OAuth Authorization Server), and `/.well-known/oauth-protected-resource` with empty `authorization_servers`. Homepage/SSR `Link` headers, `sitemap.xml`, and `llms*.txt` advertise the new files.
+
+### Fixed
+
+- **Markdown for Agents (HTTP 500)**: `Accept: text/markdown` never reached the explorer's markdown helper. TanStack Start's `createStartHandler` only allows `text/html` or `*/*` and otherwise returns `500 {"error":"Only HTML requests are supported here"}` — which is what [isitagentready.com/explorer.aptoslabs.com](https://isitagentready.com/explorer.aptoslabs.com) reported. Markdown negotiation now runs on the outer SSR `fetch` **before** Start, serves bundled `/llms.txt` on `/`, and returns a short path stub (not 500) for other HTML routes. Responses include `X-Markdown-Tokens` and `Vary: Accept`.
+- **Homepage `Link` headers missing on SSR**: Netlify `[[headers]]` in `netlify.toml` apply to static files, not TanStack Start function responses, so scans of `/` saw no RFC 8288 `Link` header. `app/ssr.tsx` now attaches the same discovery `Link` list and `Vary: Accept` to HTML SSR responses.
+
 ### Security
 
 - **pnpm audit — nanoid override**: Added a `nanoid@3.3.18` override so the PostCSS 3.x line picks up the GHSA-2v37-7h3g-55p8 fix (`customAlphabet` / `customRandom` infinite loop when `size` is 0). `image-size` (GHSA-w3rx-r6r6-pgpr / GHSA-5p2g-fcmc-qvqq) and `extract-zip` (GHSA-jmr9-qjv8-65gv) remain reported: no patched npm releases exist (`image-size@2.0.3` and `extract-zip@2.0.2` are unpublished). Both are transitive through `@netlify/vite-plugin-tanstack-start` (dev-only Netlify local tooling). Stale `minimumReleaseAgeExclude` entries were cleared now that locked versions are older than the 5-day gate. The updated lockfile was re-fetched through Aikido Safe Chain (malware scan of 1057 packages, 48h minimum package age, `@aptos-labs/*` the only age exclusion).

@@ -34,8 +34,12 @@ Searched the app route tree for per-route `head:` callbacks (TanStack Router fil
 | `public/sitemap.xml` | Discoverable URLs including `llms.txt` / `llms-full.txt` |
 | `public/.well-known/api-catalog` | RFC 9727 API catalog (`application/linkset+json`) listing upstream Aptos REST / GraphQL APIs |
 | `public/.well-known/agent-skills/index.json` | Agent Skills Discovery RFC v0.2.0 index; per-skill `SKILL.md` under `public/.well-known/agent-skills/*/` |
-| `netlify.toml` | `Link` response headers (RFC 8288) on `/` and `/*` pointing to the discovery files |
-| `app/ssr.tsx` + `app/utils/markdownHomeNegotiation.ts` | SSR serves bundled `llms.txt` as `Content-Type: text/markdown` for homepage requests (`/` and `/index.html`) when the client sends `Accept: text/markdown` |
+| `public/.well-known/mcp/server-card.json` | MCP Server Card (SEP-1649) describing WebMCP transport and tools |
+| `public/.well-known/agent-card.json` | A2A Agent Card (skill/capability discovery; no JSON-RPC task endpoint) |
+| `public/.well-known/oauth-protected-resource` | RFC 9728 PRM; empty `authorization_servers` (public site) |
+| `public/auth.md` | Auth.md-style document: no agent registration / no OAuth AS |
+| `netlify.toml` | `Link` response headers (RFC 8288) on `/` and `/*` pointing to the discovery files (static assets only) |
+| `app/ssr.tsx` + `app/utils/markdownHomeNegotiation.ts` | Outer SSR `fetch` serves markdown for `Accept: text/markdown` **before** TanStack Start's HTML-only Accept gate, and attaches discovery `Link` / `Vary: Accept` on HTML SSR responses |
 | `app/components/WebMCPProvider.tsx` + `app/components/webMcpTools.ts` | `navigator.modelContext` tools for browser-resident agents |
 
 Root [`app/routes/__root.tsx`](../app/routes/__root.tsx) exposes `<link rel="help">` / `alternate` hints to the LLM text files and mounts `<WebMCPProvider />`.
@@ -56,3 +60,24 @@ to refresh `index.json` SHA-256 digests. The drift test `app/utils/agentSkillsIn
 
 - **Local:** `pnpm routes:generate`, or it runs automatically before `dev`, `start`, `build`, `lint`, `test`, and `check` via `pre*` scripts.
 - **CI / Netlify:** `pnpm build` and [`pnpm ci:verify`](../package.json) run generation first; clone + `pnpm install` then `pnpm lint` (or any of the above) recreates the file.
+
+## DNS-AID and Web Bot Auth (not in this repo)
+
+[isitagentready.com](https://isitagentready.com/explorer.aptoslabs.com) also checks:
+
+- **DNS for AI Discovery (DNS-AID)** — SVCB/HTTPS (and optional TXT) at
+  `_index._agents.explorer.aptoslabs.com` (scanner also probes
+  `_a2a._agents` and `_mcp._agents`). `explorer.aptoslabs.com` is on Google
+  Cloud DNS (`ns-cloud-d*.googledomains.com`); records must be added in that
+  zone, preferably DNSSEC-signed. Example shape:
+
+  ```
+  _index._agents.explorer.aptoslabs.com. 3600 IN HTTPS 1 explorer.aptoslabs.com. alpn="h2" port=443
+  ```
+
+  See https://www.dns-aid.org/ and
+  [draft-mozleywilliams-dnsop-dnsaid](https://datatracker.ietf.org/doc/draft-mozleywilliams-dnsop-dnsaid/).
+
+- **Web Bot Auth** — `/.well-known/http-message-signatures-directory` is a
+  JWKS for **outbound** signed bot requests. The explorer is a content site
+  and does not publish signing keys. Do not add a dummy JWKS.
