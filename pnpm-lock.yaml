@@ -38,7 +38,7 @@ overrides:
   lodash: 4.18.1
   node-forge: 1.4.0
   uuid: 14.0.0
-  undici: 7.29.0
+  undici: 8.10.0
   nanoid: 6.0.1
 
 patchedDependencies:
@@ -5118,9 +5118,9 @@ packages:
   undici-types@8.10.0:
     resolution: {integrity: sha512-ibvdovq3nCFs8Msrd95BW+zUOq+aOVbT+wpHUoPWhztbHEoPc6oof51iFDB6Es8lTKvNvVW9jNSAB8dwrKTMGg==}
 
-  undici@7.29.0:
-    resolution: {integrity: sha512-IDxfleLmmbSskfWSUATiN1nfn2rDuvnMOqb5CWR92iIfojA0Ud+ulOAAEQ57LPr9rWmsreUyf5lwyao+7GNNVw==}
-    engines: {node: '>=20.18.1'}
+  undici@8.10.0:
+    resolution: {integrity: sha512-HvltHd7avK13QIw/oLe4qoOLyoVSoafqJ2jYOrtMRBkbYT31eiBQ8O0ehRKZiEZCMEyLFQNIADpgCWC5fALvYQ==}
+    engines: {node: '>=22.19.0'}
 
   unicorn-magic@0.1.0:
     resolution: {integrity: sha512-lRfVq8fE8gz6QMBuDM6a+LO3IAzTi05H6gCVaUpir2E1Rwpo4ZUog45KpNXKC/Mn3Yb9UDuHumeFTo9iV/D9FQ==}
@@ -5529,17 +5529,17 @@ snapshots:
       '@octokit/plugin-rest-endpoint-methods': 17.0.0(@octokit/core@7.0.6)
       '@octokit/request': 10.0.9
       '@octokit/request-error': 7.1.0
-      undici: 7.29.0
+      undici: 8.10.0
 
   '@actions/http-client@3.0.2':
     dependencies:
       tunnel: 0.0.6
-      undici: 7.29.0
+      undici: 8.10.0
 
   '@actions/http-client@4.0.1':
     dependencies:
       tunnel: 0.0.6
-      undici: 7.29.0
+      undici: 8.10.0
 
   '@actions/io@3.0.2': {}
 
@@ -9390,7 +9390,7 @@ snapshots:
       saxes: 6.0.0
       symbol-tree: 3.2.4
       tough-cookie: 6.0.2
-      undici: 7.29.0
+      undici: 8.10.0
       w3c-xmlserializer: 5.0.0
       webidl-conversions: 8.0.1
       whatwg-mimetype: 5.0.0
@@ -10697,7 +10697,7 @@ snapshots:
 
   undici-types@8.10.0: {}
 
-  undici@7.29.0: {}
+  undici@8.10.0: {}
 
   unicorn-magic@0.1.0: {}
 
