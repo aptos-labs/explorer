@@ -1,6 +1,8 @@
 // Covers additional utils exports not yet in utils.test.ts
 // FEAT-DATA-004 (identicon seed), FEAT-ROUTING-003 (entity helpers),
 // FEAT-TXN-002 (transaction sorting), FEAT-WALLET-001 (wallet sorting)
+import {Hex} from "@aptos-labs/ts-sdk";
+import {gzip} from "pako";
 import {describe, expect, it} from "vitest";
 import {
   assertNever,
@@ -11,6 +13,7 @@ import {
   isValidUrl,
   sortPetraFirst,
   sortTransactions,
+  transformCode,
 } from "./utils";
 
 describe("FEAT-ROUTING-003 — isValidStruct", () => {
@@ -106,6 +109,19 @@ describe("isValidUrl", () => {
 
   it("rejects empty string", () => {
     expect(isValidUrl("")).toBe(false);
+  });
+});
+
+describe("FEAT-MODULES-001 — transformCode", () => {
+  it("ungzips on-chain Move source stored as gzipped hex", () => {
+    // Covers FEAT-MODULES-001 — published module source is gzip-compressed hex
+    const source = "module 0x1::coin { public fun ping() {} }";
+    const hex = Hex.fromHexInput(gzip(source)).toString();
+    expect(transformCode(hex)).toBe(source);
+  });
+
+  it("returns empty string for invalid gzip payload", () => {
+    expect(transformCode("0xdeadbeef")).toBe("");
   });
 });
 
