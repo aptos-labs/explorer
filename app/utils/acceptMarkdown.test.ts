@@ -26,6 +26,10 @@ describe("prefersMarkdown", () => {
     );
   });
 
+  it("returns false when text/html has a higher q than text/markdown", () => {
+    expect(prefersMarkdown("text/html, text/markdown;q=0.5")).toBe(false);
+  });
+
   it("returns true for text/markdown with explicit q=1", () => {
     expect(prefersMarkdown("text/markdown;q=1.0")).toBe(true);
   });

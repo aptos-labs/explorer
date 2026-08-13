@@ -519,8 +519,12 @@ The explorer maintains dedicated documentation for AI systems and LLM-powered to
 | `public/.well-known/api-catalog` | RFC 9727 API catalog (`application/linkset+json`) advertising upstream Aptos REST/GraphQL APIs | A new upstream API is consumed, a chain/network is added/retired, or OpenAPI/doc/status URLs change |
 | `public/.well-known/agent-skills/index.json` | Agent Skills Discovery RFC v0.2.0 index with SHA-256 digests | Any `SKILL.md` under `public/.well-known/agent-skills/*/` is added, edited, or removed — run `node scripts/update-agent-skills-index.mjs` |
 | `public/.well-known/agent-skills/*/SKILL.md` | Individual agent skills (URL routing, search, etc.) | Feature/routing changes that affect how agents should link into the explorer |
+| `public/.well-known/mcp/server-card.json` | MCP Server Card (WebMCP transport + tools) | WebMCP tools added/removed or transport changes |
+| `public/.well-known/agent-card.json` | A2A Agent Card | Navigation skills or explorer identity change |
+| `public/.well-known/oauth-protected-resource` | RFC 9728 PRM (public site; empty `authorization_servers`) | Auth story changes |
+| `public/auth.md` | Auth.md: no agent registration / no OAuth AS | Auth story changes |
 | `netlify.toml` | `Link` response headers (RFC 8288), `Vary: Accept`, well-known Content-Types | New discovery resources, new well-known paths, or changes to the discovery URL list |
-| `app/ssr.tsx` + `app/utils/markdownHomeNegotiation.ts` | SSR serves bundled `public/llms.txt` as `Content-Type: text/markdown` for homepage requests (`/` and `/index.html`) when the client sends `Accept: text/markdown` | The markdown-for-agents contract changes, or the canonical `llms.txt` source moves |
+| `app/ssr.tsx` + `app/utils/markdownHomeNegotiation.ts` + `app/utils/agentDiscoveryHeaders.ts` | Outer SSR `fetch` serves markdown for `Accept: text/markdown` **before** TanStack Start's HTML-only Accept gate, and attaches discovery `Link` / `Vary: Accept` on HTML SSR (Netlify `[[headers]]` do not apply to functions) | The markdown-for-agents contract changes, or the canonical `llms.txt` source moves |
 | `app/utils/acceptMarkdown.ts` | Pure `Accept`-header parser (`prefersMarkdown`) used by SSR markdown negotiation | When negotiation rules change, update tests in `acceptMarkdown.test.ts` and `markdownHomeNegotiation.test.ts` |
 | `app/components/WebMCPProvider.tsx` + `app/components/webMcpTools.ts` | WebMCP tools registered on `navigator.modelContext` | A major new top-level route becomes important for agent navigation, or tool schemas need to change |
 | `scripts/update-agent-skills-index.mjs` | Regenerates `SHA-256` digests in the agent-skills index | Any change to a `SKILL.md` under `public/.well-known/agent-skills/*/` |
@@ -579,6 +583,6 @@ Machine-readable metadata for autonomous agents lives alongside the LLM docs. Ke
 - **Caching & refresh times**: See `CACHING.md`
 - **Context optimization**: See `CONTEXT_OPTIMIZATION.md`
 - **LLM/AI discoverability**: See `docs/LLM_ACCESS.md`, `public/llms.txt`, `public/llms-full.txt`, and `public/robots.txt`
-- **Agent discovery surfaces**: See `FEAT-SEO-004` in `docs/FEATURES_SPECIFICATION.md`, `public/.well-known/api-catalog`, `public/.well-known/agent-skills/index.json`, the `Link` headers in `netlify.toml`, SSR markdown negotiation (`app/utils/markdownHomeNegotiation.ts`), and the WebMCP tools in `app/components/WebMCPProvider.tsx` / `webMcpTools.ts`
+- **Agent discovery surfaces**: See `FEAT-SEO-004` in `docs/FEATURES_SPECIFICATION.md`, `public/.well-known/api-catalog`, `public/.well-known/agent-skills/index.json`, `public/.well-known/agent-card.json`, `public/auth.md`, SSR `Link` headers (`app/utils/agentDiscoveryHeaders.ts`), markdown negotiation (`app/ssr.tsx` / `app/utils/markdownHomeNegotiation.ts`), and the WebMCP tools in `app/components/WebMCPProvider.tsx` / `webMcpTools.ts`
 - **Features & test coverage**: See `docs/FEATURES_SPECIFICATION.md` for the full feature catalog with `FEAT-*` IDs, existing test coverage (Appendix B), and coverage gaps (Appendix C)
 - **Search URL for AI links**: `/?search={query}` — the home page search bar accepts this param and shows inline results

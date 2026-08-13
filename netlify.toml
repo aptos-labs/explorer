@@ -17,10 +17,9 @@
     Permissions-Policy = "geolocation=(), microphone=(), camera=(), usb=(), payment=()"
     X-XSS-Protection = "1; mode=block"
     # RFC 8288 Link headers — advertise well-known agent-discovery resources.
-    # Kept in sync with /.well-known/api-catalog, /.well-known/agent-skills/index.json,
-    # /.well-known/mcp/server-card.json, and the LLM reference docs under /llms.txt
-    # and /llms-full.txt.
-    Link = '''</.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json", </.well-known/agent-skills/index.json>; rel="https://agentskills.io/rel/index"; type="application/json", </.well-known/mcp/server-card.json>; rel="service-desc"; type="application/json"; title="MCP Server Card", </llms.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Summary)", </llms-full.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Full)", </sitemap.xml>; rel="sitemap"; type="application/xml"'''
+    # Kept in sync with DISCOVERY_LINK_VALUES in app/utils/agentDiscoveryHeaders.ts
+    # (SSR attaches the same list; these rules apply to static assets only).
+    Link = '''</.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json", </.well-known/agent-skills/index.json>; rel="https://agentskills.io/rel/index"; type="application/json", </.well-known/mcp/server-card.json>; rel="service-desc"; type="application/json"; title="MCP Server Card", </.well-known/agent-card.json>; rel="describedby"; type="application/json"; title="A2A Agent Card", </.well-known/oauth-protected-resource>; rel="oauth-protected-resource"; type="application/json", </llms.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Summary)", </llms-full.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Full)", </auth.md>; rel="describedby"; type="text/markdown"; title="auth.md", </sitemap.xml>; rel="sitemap"; type="application/xml"'''
 
 # Homepage discovery headers. Keep Link in this exact-route block so agents
 # scanning `/` can discover resources even when hosting merges only the most
@@ -29,7 +28,7 @@
   for = "/"
   [headers.values]
     Vary = "Accept"
-    Link = '''</.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json", </.well-known/agent-skills/index.json>; rel="https://agentskills.io/rel/index"; type="application/json", </.well-known/mcp/server-card.json>; rel="service-desc"; type="application/json"; title="MCP Server Card", </llms.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Summary)", </llms-full.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Full)", </sitemap.xml>; rel="sitemap"; type="application/xml"'''
+    Link = '''</.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json", </.well-known/agent-skills/index.json>; rel="https://agentskills.io/rel/index"; type="application/json", </.well-known/mcp/server-card.json>; rel="service-desc"; type="application/json"; title="MCP Server Card", </.well-known/agent-card.json>; rel="describedby"; type="application/json"; title="A2A Agent Card", </.well-known/oauth-protected-resource>; rel="oauth-protected-resource"; type="application/json", </llms.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Summary)", </llms-full.txt>; rel="alternate"; type="text/plain"; title="LLM Documentation (Full)", </auth.md>; rel="describedby"; type="text/markdown"; title="auth.md", </sitemap.xml>; rel="sitemap"; type="application/xml"'''
 
 [[headers]]
   for = "/assets/*"
@@ -128,6 +127,31 @@
     Cache-Control = "public, max-age=3600"
     Content-Type = "application/json; charset=utf-8"
     Access-Control-Allow-Origin = "*"
+
+# Well-known: A2A Agent Card
+[[headers]]
+  for = "/.well-known/agent-card.json"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+    Content-Type = "application/json; charset=utf-8"
+    Access-Control-Allow-Origin = "*"
+
+# Well-known: OAuth Protected Resource Metadata (RFC 9728)
+# The explorer is a public site (empty authorization_servers).
+[[headers]]
+  for = "/.well-known/oauth-protected-resource"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+    Content-Type = "application/json; charset=utf-8"
+    Access-Control-Allow-Origin = "*"
+
+# auth.md — agent registration / auth discovery (public, no OAuth AS)
+[[headers]]
+  for = "/auth.md"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+    Content-Type = "text/markdown; charset=utf-8"
+    X-Robots-Tag = "noarchive"
 
 # Environment variable configuration
 # VITE_NETLIFY_CONTEXT is baked into the client bundle at build time so that
