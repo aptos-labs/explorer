@@ -13,61 +13,7 @@ minimumReleaseAge: 7200
 # the 5-day window. Audit each entry on bump and remove it once the locked
 # version is comfortably older than the cutoff. See
 # https://pnpm.io/settings#minimumreleaseageexclude
-# Temporary (remove after ~2026-08-17): versions from the combined Renovate
-# bump that were published inside the 5-day gate. First-party ts-sdk 7.3.0
-# (2026-08-10); Biome 2.5.8 (2026-08-11); TanStack Router/Start patches
-# (2026-08-12); esbuild 0.28.2 (2026-08-08, a few hours inside the cutoff).
-minimumReleaseAgeExclude:
-  - "@aptos-labs/ts-sdk@7.3.0"
-  - "@biomejs/biome@2.5.8"
-  - "@biomejs/cli-darwin-arm64@2.5.8"
-  - "@biomejs/cli-darwin-x64@2.5.8"
-  - "@biomejs/cli-linux-arm64@2.5.8"
-  - "@biomejs/cli-linux-arm64-musl@2.5.8"
-  - "@biomejs/cli-linux-x64@2.5.8"
-  - "@biomejs/cli-linux-x64-musl@2.5.8"
-  - "@biomejs/cli-win32-arm64@2.5.8"
-  - "@biomejs/cli-win32-x64@2.5.8"
-  - "@esbuild/aix-ppc64@0.28.2"
-  - "@esbuild/android-arm@0.28.2"
-  - "@esbuild/android-arm64@0.28.2"
-  - "@esbuild/android-x64@0.28.2"
-  - "@esbuild/darwin-arm64@0.28.2"
-  - "@esbuild/darwin-x64@0.28.2"
-  - "@esbuild/freebsd-arm64@0.28.2"
-  - "@esbuild/freebsd-x64@0.28.2"
-  - "@esbuild/linux-arm@0.28.2"
-  - "@esbuild/linux-arm64@0.28.2"
-  - "@esbuild/linux-ia32@0.28.2"
-  - "@esbuild/linux-loong64@0.28.2"
-  - "@esbuild/linux-mips64el@0.28.2"
-  - "@esbuild/linux-ppc64@0.28.2"
-  - "@esbuild/linux-riscv64@0.28.2"
-  - "@esbuild/linux-s390x@0.28.2"
-  - "@esbuild/linux-x64@0.28.2"
-  - "@esbuild/netbsd-arm64@0.28.2"
-  - "@esbuild/netbsd-x64@0.28.2"
-  - "@esbuild/openbsd-arm64@0.28.2"
-  - "@esbuild/openbsd-x64@0.28.2"
-  - "@esbuild/openharmony-arm64@0.28.2"
-  - "@esbuild/sunos-x64@0.28.2"
-  - "@esbuild/win32-arm64@0.28.2"
-  - "@esbuild/win32-ia32@0.28.2"
-  - "@esbuild/win32-x64@0.28.2"
-  - "@tanstack/react-router@1.170.27"
-  - "@tanstack/react-start@1.168.44"
-  - "@tanstack/react-start-client@1.168.25"
-  - "@tanstack/react-start-rsc@0.1.43"
-  - "@tanstack/react-start-server@1.167.32"
-  - "@tanstack/router-cli@1.167.28"
-  - "@tanstack/router-core@1.171.22"
-  - "@tanstack/router-generator@1.167.28"
-  - "@tanstack/router-plugin@1.168.30"
-  - "@tanstack/start-client-core@1.170.22"
-  - "@tanstack/start-plugin-core@1.171.34"
-  - "@tanstack/start-server-core@1.169.26"
-  - "@tanstack/start-storage-context@1.167.24"
-  - esbuild@0.28.2
+minimumReleaseAgeExclude: []
 
 allowBuilds:
   "@parcel/watcher": false
@@ -77,13 +23,13 @@ allowBuilds:
 
 overrides:
   "@aptos-labs/wallet-standard": 2.0.0
-  "@aptos-labs/ts-sdk": 7.3.0
+  "@aptos-labs/ts-sdk": 7.2.0
   "@babel/core": 8.0.1
   "@opentelemetry/core": 2.10.0
   "@opentelemetry/propagator-jaeger": 2.10.0
   axios: 1.19.0
   brace-expansion: 5.0.9
-  esbuild: 0.28.2
+  esbuild: 0.28.1
   form-data: 4.0.6
   js-yaml: 5.2.3
   postcss: 8.5.26
