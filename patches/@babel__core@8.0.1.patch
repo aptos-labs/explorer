@@ -1,0 +1,33 @@
+diff --git a/lib/default-export.js b/lib/default-export.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..aa8944a8aba35c9ccefd972ddf497186a86d9d69
+--- /dev/null
++++ b/lib/default-export.js
+@@ -0,0 +1,5 @@
++// Compatibility shim: Babel 8 dropped the default export. TanStack Start
++// (and other Babel 7 consumers) still do `import babel from "@babel/core"`.
++export * from "./index.js";
++import * as Babel from "./index.js";
++export default Babel;
+diff --git a/package.json b/package.json
+index 2a628e373acd7d506a4235c367f78e7ccfbaaab0..f54b1909e1a0d078d7f6ec5ef1df3e61116d06e5 100644
+--- a/package.json
++++ b/package.json
+@@ -2,7 +2,7 @@
+   "name": "@babel/core",
+   "version": "8.0.1",
+   "description": "Babel compiler core.",
+-  "main": "./lib/index.js",
++  "main": "./lib/default-export.js",
+   "author": "The Babel Team (https://babel.dev/team)",
+   "license": "MIT",
+   "publishConfig": {
+@@ -74,7 +74,7 @@
+   "exports": {
+     ".": {
+       "types": "./lib/index.d.ts",
+-      "default": "./lib/index.js"
++      "default": "./lib/default-export.js"
+     },
+     "./package.json": "./package.json"
+   },

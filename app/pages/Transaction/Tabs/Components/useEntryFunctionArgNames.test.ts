@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import {Hex} from "@aptos-labs/ts-sdk";
 import {renderHook} from "@testing-library/react";
-import pako from "pako";
+import {gzip} from "pako";
 import {afterEach, describe, expect, it, vi} from "vitest";
 
 const packagesMock = vi.fn(
@@ -15,7 +15,7 @@ import {useEntryFunctionArgNames} from "./useEntryFunctionArgNames";
 
 /** Move source is stored gzip-compressed hex (see `transformCode`). */
 function gzipHex(source: string): string {
-  return Hex.fromHexInput(pako.gzip(source)).toString();
+  return Hex.fromHexInput(gzip(source)).toString();
 }
 
 function withPackages(moduleName: string, source: string) {

@@ -442,7 +442,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | Sub-tab | URL segment | Content |
 |---------|-------------|---------|
 | Packages | `packages` | Package sidebar, `MovePackageManifest`, version-aware via ledger version. |
-| Code | `code` | Module selector, `ModuleHeader` (entry fn count, bytecode size), source vs decompiled Move vs disassembly. |
+| Code | `code` | Module selector, `ModuleHeader` (entry fn count, bytecode size), source vs decompiled Move vs disassembly. Published source is gzip-decompressed from on-chain module source hex (`transformCode`). |
 | Run | `run` | Wallet-connected entry function execution forms (type args, args, ANS address resolution, `useSubmitTransaction`). Disabled for historical versions. |
 | View | `view` | View function calls via `view` API with result display/copy. Disabled for historical versions. |
 
@@ -457,7 +457,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | Aspect | Detail |
 |--------|--------|
 | **Condition** | Publish history has ≥ 2 versions. |
-| **Display** | Side-by-side diff of module source between versions. |
+| **Display** | Side-by-side diff of module source between versions. Source is gzip-decompressed from on-chain module source hex (`transformCode`). |
 
 ### FEAT-MODULES-004 — Move Decompiler
 
@@ -1339,7 +1339,7 @@ top of the HTML site.
 | `app/utils/routeRedirects.test.ts` | FEAT-ACCOUNT-012 (entity default tab redirects for all route types), FEAT-TOKEN-004 (legacy numeric redirect), FEAT-VALIDATORS-006 (validators/validators-enhanced redirects), FEAT-SEARCH-001 (header search navigation), FEAT-WALLET-002 (wallet network mismatch), FEAT-ACCOUNT-002 (DeFi portfolio URLs) |
 | `app/utils/walletNetwork.test.ts` | FEAT-WALLET-002 (loopback RPC + `custom` vs explorer `local` for non-Petra) |
 | `app/utils/rateLimiter.test.ts` | FEAT-RATELIMIT-002 (rate limit error detection, URL endpoint extraction) |
-| `app/utils/utilsCoverage.test.ts` | FEAT-ROUTING-003 (isValidStruct), FEAT-TXN-002 (sortTransactions), FEAT-WALLET-001 (sortPetraFirst), FEAT-MODULES-004 (bytecode size), FEAT-MODULES-001 (param names, function line numbers), isValidUrl, assertNever |
+| `app/utils/utilsCoverage.test.ts` | FEAT-ROUTING-003 (isValidStruct), FEAT-TXN-002 (sortTransactions), FEAT-WALLET-001 (sortPetraFirst), FEAT-MODULES-004 (bytecode size), FEAT-MODULES-001 (param names, function line numbers, gzip `transformCode`), isValidUrl, assertNever |
 | `app/data/bannedCollections.test.ts` | FEAT-ACCOUNT-008 (scam collection detection: registry shape, hex keys, reason strings) |
 | `app/data/knownAddresses.test.ts` | FEAT-DATA-002 (known address system: labels, branding, fallback), FEAT-DATA-005 (emojicoin registry address) |
 | `app/pages/Validators/validatorTabs.test.ts` | FEAT-VALIDATORS-001 (tab enum values, uniqueness) |

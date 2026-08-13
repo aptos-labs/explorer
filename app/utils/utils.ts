@@ -9,7 +9,7 @@ import type {
   AdapterWallet,
 } from "@aptos-labs/wallet-adapter-react";
 import {differenceInMilliseconds, format} from "date-fns";
-import pako from "pako";
+import {ungzip} from "pako";
 import type {Types} from "~/types/aptos";
 
 /**
@@ -181,8 +181,8 @@ export async function fetchJsonResponse(url: string) {
  */
 export function transformCode(source: string): string {
   try {
-    return pako.ungzip(Hex.fromHexString(source).toUint8Array(), {
-      to: "string",
+    return ungzip(Hex.fromHexString(source).toUint8Array(), {
+      toText: true,
     });
   } catch {
     return "";
