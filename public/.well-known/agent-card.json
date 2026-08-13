@@ -68,20 +68,20 @@
       "outputModes": ["text/html", "text/markdown"]
     },
     {
-      "id": "open-coin",
-      "name": "Open coin",
-      "description": "Open /coin/{type} for a fully-qualified Move coin type such as 0x1::aptos_coin::AptosCoin.",
-      "tags": ["coin", "fungible-asset", "aptos"],
-      "examples": ["Show APT coin info on Aptos explorer"],
-      "inputModes": ["text/plain"],
-      "outputModes": ["text/html", "text/markdown"]
-    },
-    {
       "id": "open-releases",
       "name": "Open releases hub",
       "description": "Open /releases for network deployment status, AIPs, or SDK and tool releases (tabs: networks, aips, sdks).",
       "tags": ["releases", "aips", "sdk", "aptos"],
       "examples": ["What is the current Aptos mainnet framework release?"],
+      "inputModes": ["text/plain"],
+      "outputModes": ["text/html", "text/markdown"]
+    },
+    {
+      "id": "open-coin",
+      "name": "Open coin",
+      "description": "Open /coin/{type} for a fully-qualified Move coin type such as 0x1::aptos_coin::AptosCoin.",
+      "tags": ["coin", "fungible-asset", "aptos"],
+      "examples": ["Show APT coin info on Aptos explorer"],
       "inputModes": ["text/plain"],
       "outputModes": ["text/html", "text/markdown"]
     }
