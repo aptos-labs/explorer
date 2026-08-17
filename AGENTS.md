@@ -453,8 +453,14 @@ Copy `.env.example` to `.env.local` and uncomment the variables you need. Common
 # APTOS_MAINNET_API_KEY=AG-...
 # APTOS_TESTNET_API_KEY=AG-...
 
+# Per-network fullnode REST URL overrides (client bundle). Must be VITE_-prefixed.
+# VITE_APTOS_MAINNET_URL=https://api.mainnet.aptoslabs.com/v1
+# VITE_APTOS_TESTNET_URL=https://api.testnet.staging.aptoslabs.com/v1
+# VITE_APTOS_DEVNET_URL=https://api.devnet.staging.aptoslabs.com/v1
+# VITE_APTOS_LOCAL_URL=http://127.0.0.1:8080/v1
+
 # Optional custom endpoints / analytics.
-# APTOS_DEVNET_URL=https://api.devnet.staging.aptoslabs.com/v1
+# APTOS_DEVNET_URL — deprecated alias for VITE_APTOS_DEVNET_URL (never injected by Vite).
 # REACT_APP_GTM_ID=GTM-XXXXXXX
 
 # Feature tier banner — also overridable at runtime via the `feature_name` cookie.

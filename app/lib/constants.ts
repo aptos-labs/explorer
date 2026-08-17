@@ -1,17 +1,30 @@
 /**
  * Network Configuration
  */
+// Overrides must be `VITE_`-prefixed: `envPrefix` in vite.config.ts only injects
+// `VITE_`/`REACT_APP_` vars into `import.meta.env`, so the unprefixed
+// `APTOS_DEVNET_URL` alias below never resolves and is kept only for
+// backward compatibility. Trailing slashes are stripped further down.
 export const devnetUrl =
+  import.meta.env.VITE_APTOS_DEVNET_URL ||
   import.meta.env.APTOS_DEVNET_URL ||
   "https://api.devnet.staging.aptoslabs.com/v1";
 
 export const networks: Record<string, string> = {
-  mainnet: "https://api.mainnet.aptoslabs.com/v1",
-  testnet: "https://api.testnet.staging.aptoslabs.com/v1",
+  mainnet:
+    import.meta.env.VITE_APTOS_MAINNET_URL ||
+    "https://api.mainnet.aptoslabs.com/v1",
+  testnet:
+    import.meta.env.VITE_APTOS_TESTNET_URL ||
+    "https://api.testnet.staging.aptoslabs.com/v1",
   devnet: devnetUrl,
-  decibel: "https://api.netna.aptoslabs.com/v1",
-  shelbynet: "https://api.shelbynet.staging.shelby.xyz/v1",
-  local: "http://127.0.0.1:8080/v1",
+  decibel:
+    import.meta.env.VITE_APTOS_DECIBEL_URL ||
+    "https://api.netna.aptoslabs.com/v1",
+  shelbynet:
+    import.meta.env.VITE_APTOS_SHELBYNET_URL ||
+    "https://api.shelbynet.staging.shelby.xyz/v1",
+  local: import.meta.env.VITE_APTOS_LOCAL_URL || "http://127.0.0.1:8080/v1",
 };
 
 export const hiddenNetworks: readonly NetworkName[] = [
