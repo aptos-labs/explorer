@@ -11,8 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Agent discovery — A2A card, auth.md, RFC 9728 PRM**: Published `/.well-known/agent-card.json` (A2A skill/capability card aligned with WebMCP tools; no JSON-RPC task endpoint), `/auth.md` (public site; no agent registration or OAuth Authorization Server), and `/.well-known/oauth-protected-resource` with empty `authorization_servers`. Homepage/SSR `Link` headers, `sitemap.xml`, and `llms*.txt` advertise the new files.
 
+- **Per-network fullnode URL overrides**: Every network in `app/lib/constants.ts` can now have its REST endpoint overridden at build time via `VITE_APTOS_<NETWORK>_URL` (`MAINNET`, `TESTNET`, `DEVNET`, `DECIBEL`, `SHELBYNET`, `LOCAL`). Previously only devnet was overridable. Trailing slashes are stripped as before.
+
 ### Fixed
 
+- **`APTOS_DEVNET_URL` never took effect**: The devnet override was read as `import.meta.env.APTOS_DEVNET_URL`, but `envPrefix` in `vite.config.ts` only injects `VITE_`/`REACT_APP_` variables, so the hardcoded fallback always won in both client and SSR builds. Use `VITE_APTOS_DEVNET_URL` instead. The old name is still read as a deprecated alias (and still does nothing) — operators setting `APTOS_DEVNET_URL` should switch to the `VITE_`-prefixed name.
 - **Markdown for Agents (HTTP 500)**: `Accept: text/markdown` never reached the explorer's markdown helper. TanStack Start's `createStartHandler` only allows `text/html` or `*/*` and otherwise returns `500 {"error":"Only HTML requests are supported here"}` — which is what [isitagentready.com/explorer.aptoslabs.com](https://isitagentready.com/explorer.aptoslabs.com) reported. Markdown negotiation now runs on the outer SSR `fetch` **before** Start, serves bundled `/llms.txt` on `/`, and returns a short path stub (not 500) for other HTML routes. Responses include `X-Markdown-Tokens` and `Vary: Accept`.
 - **Homepage `Link` headers missing on SSR**: Netlify `[[headers]]` in `netlify.toml` apply to static files, not TanStack Start function responses, so scans of `/` saw no RFC 8288 `Link` header. `app/ssr.tsx` now attaches the same discovery `Link` list and `Vary: Accept` to HTML SSR responses.
 

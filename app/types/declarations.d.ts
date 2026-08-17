@@ -29,6 +29,7 @@ declare module "react-syntax-highlighter/dist/esm/languages/hljs/ini" {
 
 declare module "react-syntax-highlighter/dist/esm/styles/hljs" {
   import type {CSSProperties} from "react";
+
   type Style = Record<string, CSSProperties>;
   export const solarizedDark: Style;
   export const solarizedLight: Style;
@@ -60,6 +61,7 @@ declare module "*.svg" {
 
 declare module "*.svg?react" {
   import React from "react";
+
   const content: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
   export default content;
 }
@@ -81,6 +83,14 @@ declare module "*.txt?raw" {
 
 // Add Vite's ImportMeta.env types
 interface ImportMetaEnv {
+  // Per-network fullnode REST URL overrides (client bundle).
+  readonly VITE_APTOS_MAINNET_URL?: string;
+  readonly VITE_APTOS_TESTNET_URL?: string;
+  readonly VITE_APTOS_DEVNET_URL?: string;
+  readonly VITE_APTOS_DECIBEL_URL?: string;
+  readonly VITE_APTOS_SHELBYNET_URL?: string;
+  readonly VITE_APTOS_LOCAL_URL?: string;
+  // Deprecated alias for VITE_APTOS_DEVNET_URL — not injected by Vite's envPrefix.
   readonly APTOS_DEVNET_URL?: string;
   readonly VITE_GRAPHQL_ENDPOINT?: string;
   readonly VITE_REST_ENDPOINT?: string;
