@@ -309,6 +309,8 @@ export const mainnetKnownAddresses: Record<string, string> = {
   "0xbae207659db88bea0cbead6da0ed00aac12edcdda169e591cd41c94180b46f3b": "USDC",
   "0xe5c5befe31ce06bc1f2fd31210988aac08af6d821b039935557a6f14c03471be":
     "USDC contract",
+  "0x0b0b819dcf8d9517ed14195a95adfae6a49bfdb49de33a532ca0aa7ee588e8e0":
+    "Near WBTC (NBTC)",
 
   // Other
   "0x7e783b349d3e89cf5931af376ebeadbfab855b3fa239b7ada8f5a92fbea6b387": "Pyth", // oracle
