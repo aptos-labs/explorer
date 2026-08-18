@@ -529,6 +529,30 @@ export const mainnetHardCodedCoins: Record<string, CoinDescription> = {
     usdPrice: null,
     panoraTags: ["Verified"],
   },
+  "0x0b0b819dcf8d9517ed14195a95adfae6a49bfdb49de33a532ca0aa7ee588e8e0": {
+    chainId: 1,
+    tokenAddress: null,
+    faAddress:
+      "0x0b0b819dcf8d9517ed14195a95adfae6a49bfdb49de33a532ca0aa7ee588e8e0",
+    name: "Near WBTC",
+    symbol: "NBTC",
+    decimals: 8,
+    panoraSymbol: null,
+    bridge: null,
+    logoUrl:
+      "https://coin-images.coingecko.com/coins/images/102175481/large/wbtc.png",
+    websiteUrl: "https://near-intents.org",
+    category: "Bridged",
+    isInPanoraTokenList: false,
+    isBanned: false,
+    panoraOrderIndex: 999999997,
+    panoraIndex: 999999997,
+    coinGeckoId: "near-intents-bridged-wbtc",
+    coinMarketCapId: null,
+    panoraUI: false,
+    usdPrice: null,
+    panoraTags: ["Bridged", "Verified"],
+  },
 };
 
 /**
@@ -581,6 +605,7 @@ export const mainnetVerifiedTokens: Record<string, string> = {
     "PROPS",
   "0x96401f1e3ab3245d056d5a1ba67eef066ac3edc4d5f1b16adc5d567e79a845b0":
     "usDCBL",
+  "0x0b0b819dcf8d9517ed14195a95adfae6a49bfdb49de33a532ca0aa7ee588e8e0": "NBTC",
 };
 
 /**

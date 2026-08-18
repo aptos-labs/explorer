@@ -5,6 +5,8 @@ import {VerifiedType, verifiedLevel} from "./VerifiedCell";
 
 const USDCBL_FA =
   "0x96401f1e3ab3245d056d5a1ba67eef066ac3edc4d5f1b16adc5d567e79a845b0";
+const NBTC_FA =
+  "0x0b0b819dcf8d9517ed14195a95adfae6a49bfdb49de33a532ca0aa7ee588e8e0";
 
 describe("FEAT-COIN-003 / FEAT-UI-002 — verifiedLevel", () => {
   it("returns NATIVE_TOKEN for APT", () => {
@@ -95,6 +97,13 @@ describe("FEAT-COIN-003 / FEAT-UI-002 — verifiedLevel", () => {
   it("returns LABS_VERIFIED for manually listed usDCBL fungible asset", () => {
     expect(manuallyVerifiedTokens[USDCBL_FA]).toBe("usDCBL");
     const result = verifiedLevel({id: USDCBL_FA, known: false}, "mainnet");
+    expect(result.level).toBe(VerifiedType.LABS_VERIFIED);
+  });
+
+  it("returns LABS_VERIFIED for manually listed Near WBTC fungible asset", () => {
+    // Covers FEAT-COIN-003 — Labs verified Near WBTC (NBTC)
+    expect(manuallyVerifiedTokens[NBTC_FA]).toBe("NBTC");
+    const result = verifiedLevel({id: NBTC_FA, known: false}, "mainnet");
     expect(result.level).toBe(VerifiedType.LABS_VERIFIED);
   });
 });

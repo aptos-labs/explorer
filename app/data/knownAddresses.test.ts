@@ -32,6 +32,16 @@ describe("FEAT-DATA-002 — Known address system", () => {
       expect(addresses[fullAddr]).toBeDefined();
     });
 
+    it("includes Near WBTC fungible asset metadata object on mainnet", () => {
+      // Covers FEAT-DATA-002 — known address label for Labs-verified NBTC
+      const addresses = getKnownAddresses("mainnet");
+      expect(
+        addresses[
+          "0x0b0b819dcf8d9517ed14195a95adfae6a49bfdb49de33a532ca0aa7ee588e8e0"
+        ],
+      ).toBe("Near WBTC (NBTC)");
+    });
+
     it("falls back to mainnet data for unknown networks", () => {
       const mainnetData = getNetworkData("mainnet");
       const unknownData = getNetworkData("local");
