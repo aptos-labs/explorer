@@ -541,7 +541,7 @@ export const mainnetHardCodedCoins: Record<string, CoinDescription> = {
     bridge: null,
     logoUrl:
       "https://coin-images.coingecko.com/coins/images/102175481/large/wbtc.png",
-    websiteUrl: "https://near-intents.org",
+    websiteUrl: "https://near.com",
     category: "Bridged",
     isInPanoraTokenList: false,
     isBanned: false,
