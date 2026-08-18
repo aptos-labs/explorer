@@ -454,9 +454,12 @@ Copy `.env.example` to `.env.local` and uncomment the variables you need. Common
 # APTOS_TESTNET_API_KEY=AG-...
 
 # Per-network fullnode REST URL overrides (client bundle). Must be VITE_-prefixed.
+# API keys remain keyed by network name even when the URL is overridden.
 # VITE_APTOS_MAINNET_URL=https://api.mainnet.aptoslabs.com/v1
 # VITE_APTOS_TESTNET_URL=https://api.testnet.staging.aptoslabs.com/v1
 # VITE_APTOS_DEVNET_URL=https://api.devnet.staging.aptoslabs.com/v1
+# VITE_APTOS_DECIBEL_URL=https://api.netna.aptoslabs.com/v1
+# VITE_APTOS_SHELBYNET_URL=https://api.shelbynet.staging.shelby.xyz/v1
 # VITE_APTOS_LOCAL_URL=http://127.0.0.1:8080/v1
 
 # Optional custom endpoints / analytics.
