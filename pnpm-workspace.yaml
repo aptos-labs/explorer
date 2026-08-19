@@ -45,7 +45,7 @@ overrides:
   d3-interpolate: 3.0.1
   defu: 6.1.7
   fast-uri: 4.1.2
-  h3-v2: npm:h3@2.0.1-rc.27
+  h3-v2: npm:h3@2.0.1-rc.26
   d3-geo: 3.1.1
   d3-selection: 3.0.0
   d3-timer: 3.0.1
@@ -54,7 +54,7 @@ overrides:
   "@tootallnate/once": 3.0.1
   lodash: 4.18.1
   node-forge: 1.4.0
-  uuid: 14.0.2
+  uuid: 14.0.1
   undici: 8.10.0
   nanoid: 6.0.1
 
