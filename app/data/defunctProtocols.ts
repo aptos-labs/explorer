@@ -264,6 +264,72 @@ export const defunctProtocols: DefunctProtocol[] = [
     infoUrl:
       "https://governance.aave.com/t/arfc-low-adoption-asset-deprecation-on-aave-v3/25401",
   },
+  {
+    address:
+      "0x9770fa9c725cbd97eb50b2be5f7416efdfd1f1554beb0750d4dae4c64e860da3",
+    name: "Aries Markets",
+    category: "Lending",
+    status: "defunct",
+    description:
+      "Margin trading and lending protocol. The official app states that Aries Markets was wound down in July 2026.",
+    defunctDate: "2026-07-01",
+    infoUrl: "https://app.ariesmarkets.xyz/",
+  },
+  {
+    address:
+      "0x2cc52445acc4c5e5817a0ac475976fbef966fedb6e30e7db792e10619c76181f",
+    name: "Kofi",
+    category: "Liquid Staking",
+    status: "defunct",
+    description:
+      "Liquid staking protocol (kAPT / stkAPT) that has shut down. The marketing site at kofi.finance may still load, but the product is no longer operating.",
+  },
+  {
+    address:
+      "0x68476f9d437e3f32fd262ba898b5e3ee0a23a1d586a6cf29a28add35f253f6f7",
+    name: "Meso Finance",
+    category: "Lending",
+    status: "defunct",
+    description:
+      "Money market whose app and docs hostnames no longer resolve. meso.finance now serves a Squarespace parking page titled Coming Soon / under construction.",
+  },
+  {
+    address:
+      "0x890812a6bbe27dd59188ade3bbdbe40a544e6e104319b7ebc6617d3eb947ac07",
+    name: "Hippo Aggregator",
+    category: "DEX",
+    status: "defunct",
+    description:
+      "Early Aptos DEX aggregator from Hippo Labs. hippo.space and aggregator.hippo.space no longer resolve.",
+  },
+  {
+    address:
+      "0xd1fd99c1944b84d1670a2536417e997864ad12303d19eac725891691b04d614e",
+    name: "Bluemove Marketplace",
+    category: "NFT Marketplace",
+    status: "defunct",
+    description:
+      "Aptos NFT marketplace. aptos.bluemove.net no longer resolves. After a July 2026 Sui DEX exploit, BlueMove announced it would permanently shut down once compensation claims were paid.",
+    infoUrl: "https://bluemove.net/",
+  },
+  {
+    address:
+      "0xcd7b88c2181881bf8e7ef741cae867aee038e75df94224496a4a81627edf7f65",
+    name: "Defy",
+    category: "DeFi",
+    status: "defunct",
+    description:
+      "Aptos DeFi protocol whose defy.finance and app.defy.finance hostnames no longer resolve.",
+  },
+  {
+    address:
+      "0x17f1e926a81639e9557f4e4934df93452945ec30bc962e11351db59eb0d78c33",
+    name: "VibrantX",
+    category: "DeFi",
+    status: "defunct",
+    description:
+      "Yield optimizer whose app.vibrantx.finance hostname no longer resolves and whose marketing domain does not complete a request.",
+  },
 ];
 
 /**

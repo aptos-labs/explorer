@@ -95,7 +95,7 @@ export const mainnetKnownAddresses: Record<string, string> = {
 
   // Lending
   "0x9770fa9c725cbd97eb50b2be5f7416efdfd1f1554beb0750d4dae4c64e860da3":
-    "Aries Markets",
+    "Aries Markets", // defunct
   "0xb7d960e5f0a58cc0817774e611d7e3ae54c6843816521f02d7ced583d6434896":
     "Aptin Finance v1", // defunct
   "0x3c1d4a86594d681ff7e5d5a233965daeabdc6a15fe5672ceeda5260038857183":
@@ -109,7 +109,7 @@ export const mainnetKnownAddresses: Record<string, string> = {
   "0x4e1854f6d332c9525e258fb6e66f84b6af8aba687bbcb832a24768c4e175feec":
     "Echo Lending",
   "0x68476f9d437e3f32fd262ba898b5e3ee0a23a1d586a6cf29a28add35f253f6f7":
-    "Meso Finance",
+    "Meso Finance", // defunct
   "0xccd1a84ccea93531d7f165b90134aa0415feb30e8757ab1632dac68c0055f5c2":
     "Superposition",
   "0x2fe576faa841347a9b1b32c869685deb75a15e3f62dfe37cbd6d52cc403a16f6":
@@ -174,20 +174,20 @@ export const mainnetKnownAddresses: Record<string, string> = {
     "Thala LSD",
   "0x6f8ca77dd0a4c65362f475adb1c26ae921b1d75aa6b70e53d0e340efd7d8bc80":
     "TruFin",
-  "0x2cc52445acc4c5e5817a0ac475976fbef966fedb6e30e7db792e10619c76181f": "Kofi",
+  "0x2cc52445acc4c5e5817a0ac475976fbef966fedb6e30e7db792e10619c76181f": "Kofi", // defunct
 
   // DeFi (other)
   "0x17f1e926a81639e9557f4e4934df93452945ec30bc962e11351db59eb0d78c33":
-    "VibrantX",
+    "VibrantX", // defunct
   "0x5ae6789dd2fec1a9ec9cccfb3acaf12e93d432f0a3a42c92fe1a9d490b7bbc06":
     "Merkle Trade", // defunct
   "0x890812a6bbe27dd59188ade3bbdbe40a544e6e104319b7ebc6617d3eb947ac07":
-    "Hippo Aggregator",
+    "Hippo Aggregator", // defunct
   "0x60955b957956d79bc80b096d3e41bad525dd400d8ce957cdeb05719ed1e4fc26":
     "Thala router",
   "0x4e5e85fd647c7e19560590831616a3c021080265576af3182535a1d19e8bc2b3":
     "Uptos Pump",
-  "0xcd7b88c2181881bf8e7ef741cae867aee038e75df94224496a4a81627edf7f65": "Defy",
+  "0xcd7b88c2181881bf8e7ef741cae867aee038e75df94224496a4a81627edf7f65": "Defy", // defunct
   "0xa3111961a31597ca770c60be02fc9f72bdee663f563e45223e79793557eef0d9":
     "Lucid Finance",
   "0xddb92cba8f18ae94c40c49ca27a2ba31eca85ce37a436e25d36c8e1f516d9c62":
@@ -215,7 +215,7 @@ export const mainnetKnownAddresses: Record<string, string> = {
   "0x2c7bccf7b31baf770fdbcc768d9e9cb3d87805e255355df5db32ac9a669010a2":
     "Topaz Marketplace", // defunct
   "0xd1fd99c1944b84d1670a2536417e997864ad12303d19eac725891691b04d614e":
-    "Bluemove Marketplace",
+    "Bluemove Marketplace", // defunct
   "0xf6994988bd40261af9431cd6dd3fcf765569719e66322c7a05cc78a89cd366d4":
     "Souffl3 Marketplace", // defunct
   "0x465a0051e8535859d4794f0af24dbf35c5349bedadab26404b20b825035ee790":

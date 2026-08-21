@@ -198,6 +198,41 @@ describe("getDefunctProtocol", () => {
         "0x04b947ed016c64bde81972d69ea7d356de670d57fd2608b129f4d94ac0d0ee61",
       )?.name,
     ).toBe("Emojicoin.fun Registry");
+    expect(
+      getDefunctProtocol(
+        "0x9770fa9c725cbd97eb50b2be5f7416efdfd1f1554beb0750d4dae4c64e860da3",
+      )?.name,
+    ).toBe("Aries Markets");
+    expect(
+      getDefunctProtocol(
+        "0x2cc52445acc4c5e5817a0ac475976fbef966fedb6e30e7db792e10619c76181f",
+      )?.name,
+    ).toBe("Kofi");
+    expect(
+      getDefunctProtocol(
+        "0x68476f9d437e3f32fd262ba898b5e3ee0a23a1d586a6cf29a28add35f253f6f7",
+      )?.name,
+    ).toBe("Meso Finance");
+    expect(
+      getDefunctProtocol(
+        "0x890812a6bbe27dd59188ade3bbdbe40a544e6e104319b7ebc6617d3eb947ac07",
+      )?.name,
+    ).toBe("Hippo Aggregator");
+    expect(
+      getDefunctProtocol(
+        "0xd1fd99c1944b84d1670a2536417e997864ad12303d19eac725891691b04d614e",
+      )?.name,
+    ).toBe("Bluemove Marketplace");
+    expect(
+      getDefunctProtocol(
+        "0xcd7b88c2181881bf8e7ef741cae867aee038e75df94224496a4a81627edf7f65",
+      )?.name,
+    ).toBe("Defy");
+    expect(
+      getDefunctProtocol(
+        "0x17f1e926a81639e9557f4e4934df93452945ec30bc962e11351db59eb0d78c33",
+      )?.name,
+    ).toBe("VibrantX");
   });
 
   it("finds Aave Aptos as winding_down", () => {
