@@ -6,7 +6,7 @@
 > code. Tests (unit, integration, E2E) should reference the feature IDs defined
 > here (e.g. `// Covers FEAT-SEARCH-001`).
 >
-> **Last updated**: 2026-07-08
+> **Last updated**: 2026-08-21
 
 ---
 
@@ -355,7 +355,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | Banner | Condition | Content |
 |--------|-----------|---------|
 | Known address branding | `useKnownAddressBranding` match | Logo (with optional `iconBadge` overlay, e.g. "0x1"), description. Per-network data from `knownAddressBranding.ts`. |
-| Defunct protocol | Mainnet, `getDefunctProtocol` match | "MAY BE DEFUNCT" warning. "Withdraw Funds" button if withdrawal plugin exists (currently no plugins registered). Dialog shows owner %, operator fee, entry function, but no in-app tx submission. |
+| Defunct protocol | Mainnet, `getDefunctProtocol` match | "MAY BE DEFUNCT" warning. "Withdraw Funds" button if withdrawal plugin exists (currently no plugins registered). Dialog shows owner %, operator fee, entry function, but no in-app tx submission. Registry in `app/data/defunctProtocols.ts` covers labeled mainnet protocols that have shut down or are winding down. Known-address labels tagged `// defunct`, `// winding_down`, or `// deprecated` in `app/data/mainnet/knownAddresses.ts` must have a matching registry row. |
 | Aptos Names promo | `useGetInDevMode` true (dev/earlydev mode) | ANS claim CTA. |
 | Petra Vault (multisig) | Account is multisig | "MULTISIG" pill + Petra Vault onboarding link. |
 
@@ -1301,7 +1301,7 @@ top of the HTML site.
 | `app/global-config/useFeatureName.test.ts` | FEAT-FLAGS-003 (cookie → env → default resolution) |
 | `app/data/knownAddressBranding.test.ts` | FEAT-DATA-002 (known address branding lookups per network) |
 | `app/data/knownAddresses.test.ts` | FEAT-DATA-002 (known address system: labels, branding, fallback), FEAT-DATA-005 (emojicoin registry address) |
-| `app/data/defunctProtocols.test.ts` | FEAT-ACCOUNT-003 (defunct protocol registry shape, uniqueness) |
+| `app/data/defunctProtocols.test.ts` | FEAT-ACCOUNT-003 (defunct protocol registry shape, uniqueness, known-address `// defunct` / `// winding_down` comment drift) |
 | `app/data/functionArgumentNameOverrides/lookup.test.ts` | FEAT-DATA-003 / FEAT-MODULES-006 (argument name override lookup) |
 | `app/types/defunctProtocol.test.ts` | FEAT-ACCOUNT-003 (withdrawal plugin validation) |
 | `app/settings/clientSettings.test.ts` | FEAT-SETTINGS-001 (settings persistence, sanitization) |

@@ -85,7 +85,7 @@ export const mainnetKnownAddresses: Record<string, string> = {
   "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c":
     "Hyperion",
   "0x487e905f899ccb6d46fdaec56ba1e0c4cf119862a16c409904b8c78fab1f5e8a":
-    "Tapp Exchange",
+    "Tapp Exchange", // defunct
   "0xec42a352cc65eca17a9fa85d0fc602295897ed6b8b8af6a6c79ef490eb8f9eba":
     "Cetus 1", // defunct
   "0xa7f01413d33ba919441888637ca1607ca0ddcbfa3c0a9ddea64743aaa560e498":
@@ -97,9 +97,9 @@ export const mainnetKnownAddresses: Record<string, string> = {
   "0x9770fa9c725cbd97eb50b2be5f7416efdfd1f1554beb0750d4dae4c64e860da3":
     "Aries Markets",
   "0xb7d960e5f0a58cc0817774e611d7e3ae54c6843816521f02d7ced583d6434896":
-    "Aptin Finance v1",
+    "Aptin Finance v1", // defunct
   "0x3c1d4a86594d681ff7e5d5a233965daeabdc6a15fe5672ceeda5260038857183":
-    "Aptin Finance v2",
+    "Aptin Finance v2", // defunct
   "0xc6bc659f1649553c1a3fa05d9727433dc03843baac29473c817d06d39e7621ba":
     "Echelon Market",
   "0x024c90c44edf46aa02c3e370725b918a59c52b5aa551388feb258bd5a1e82271":
@@ -151,21 +151,21 @@ export const mainnetKnownAddresses: Record<string, string> = {
   "0x07b90b95e1060d9d2e424c6687ba03cccaed6996cccd4868b759c9fca361fa70":
     "Yeap Vault",
 
-  // Aave (Mainnet)
+  // Aave (Mainnet) — Aptos V3 deployment is winding down
   "0x34c3e6af238f3a7fa3f3b0088cbc4b194d21f62e65a15b79ae91364de5a81a3a":
-    "Aave Acl",
+    "Aave Acl", // winding_down
   "0x531069f4741cdead39d70b76e5779863864654fae6db8a752a244ff2f9916c15":
-    "Aave Config",
+    "Aave Config", // winding_down
   "0x5eb5cc775c5a446db0f3a1c944e11563b97e6a7e1387b9fb459aa26168f738dc":
-    "Aave Data",
+    "Aave Data", // winding_down
   "0xc0338eea778de2a5348824ddbfcec033c7f7cbe18da6da40869562906b63c78c":
-    "Aave Math",
+    "Aave Math", // winding_down
   "0x12b05c42ac3209a3c6ffadff4ebb6c3e983e5115f26031d56652815b49a14245":
-    "Aave Mock Underlyings",
+    "Aave Mock Underlyings", // winding_down
   "0x249676f3faddb83d64fd101baa3f84a171ae02505d796e3edbf4861038a4b5cc":
-    "Aave Oracle",
+    "Aave Oracle", // winding_down
   "0x39ddcd9e1a39fa14f25e3f9ec8a86074d05cc0881cbf667df8a6ee70942016fb":
-    "Aave Pool",
+    "Aave Pool", // winding_down
 
   // Liquid Staking
   "0x111ae3e5bc816a5e63c2da97d0aa3886519e0cd5e4b046659fa35796bd11542a":
@@ -180,7 +180,7 @@ export const mainnetKnownAddresses: Record<string, string> = {
   "0x17f1e926a81639e9557f4e4934df93452945ec30bc962e11351db59eb0d78c33":
     "VibrantX",
   "0x5ae6789dd2fec1a9ec9cccfb3acaf12e93d432f0a3a42c92fe1a9d490b7bbc06":
-    "Merkle Trade",
+    "Merkle Trade", // defunct
   "0x890812a6bbe27dd59188ade3bbdbe40a544e6e104319b7ebc6617d3eb947ac07":
     "Hippo Aggregator",
   "0x60955b957956d79bc80b096d3e41bad525dd400d8ce957cdeb05719ed1e4fc26":
@@ -213,11 +213,11 @@ export const mainnetKnownAddresses: Record<string, string> = {
   "0x6547d9f1d481fdc21cd38c730c07974f2f61adb7063e76f9d9522ab91f090dac":
     "Wapal Launchpad",
   "0x2c7bccf7b31baf770fdbcc768d9e9cb3d87805e255355df5db32ac9a669010a2":
-    "Topaz Marketplace",
+    "Topaz Marketplace", // defunct
   "0xd1fd99c1944b84d1670a2536417e997864ad12303d19eac725891691b04d614e":
     "Bluemove Marketplace",
   "0xf6994988bd40261af9431cd6dd3fcf765569719e66322c7a05cc78a89cd366d4":
-    "Souffl3 Marketplace",
+    "Souffl3 Marketplace", // defunct
   "0x465a0051e8535859d4794f0af24dbf35c5349bedadab26404b20b825035ee790":
     "Rarible Marketplace",
   "0xe11c12ec495f3989c35e1c6a0af414451223305b579291fc8f3d9d0575a23c26":
@@ -337,11 +337,11 @@ export const mainnetKnownAddresses: Record<string, string> = {
   "0x4de5876d8a8e2be7af6af9f3ca94d9e4fafb24b5f4a5848078d8eb08f08e808a":
     "Securitize",
   "0xbabe32dbe1cb44c30363894da9f49957d6e2b94a06f2fc5c20a9d1b9e54cface":
-    "Emojicoin.fun Rewards",
+    "Emojicoin.fun Rewards", // defunct
   "0x4b947ed016c64bde81972d69ea7d356de670d57fd2608b129f4d94ac0d0ee61":
-    "Emojicoin.fun Registry",
+    "Emojicoin.fun Registry", // defunct
   "0xface729284ae5729100b3a9ad7f7cc025ea09739cd6e7252aff0beb53619cafe":
-    "Emojicoin.fun",
+    "Emojicoin.fun", // defunct
   "0xde220d873e4f5eab5859f368b86fca00fa6fd395279cf54a7d7a5020cb527391":
     "Aptos Monkeys Echo",
   "0xd0995d57c9d4839dcecfdbb34a2650172a69fcfe0444f3229fec90eddf945141":

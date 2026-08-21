@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Defunct protocol banners for more labeled projects**: Mainnet account pages now show the existing "MAY BE DEFUNCT" banner for named addresses that had shut down (or are winding down) but were missing from `defunctProtocols`: Econia Labs, Tapp Exchange, Aptin Finance v1/v2, Merkle Trade, emojicoin.fun (protocol, registry, rewards), Topaz Marketplace, Souffl3 Marketplace, and the Aave V3 Aptos deployment (`winding_down`). Known-address labels tagged `// defunct` / `// winding_down` must stay in sync with the registry.
 - **Labs verified token**: Near WBTC fungible asset (`NBTC`, metadata object `0x0b0b…e8e0` on mainnet) is included in the explorer manual verification list, known-address labels, and coin metadata merge so it shows the Labs verified badge and Near Intents branding where supported. Community listing still goes through the [Panora token list](https://github.com/PanoraExchange/Aptos-Tokens).
 - **Agent discovery — A2A card, auth.md, RFC 9728 PRM**: Published `/.well-known/agent-card.json` (A2A skill/capability card aligned with WebMCP tools; no JSON-RPC task endpoint), `/auth.md` (public site; no agent registration or OAuth Authorization Server), and `/.well-known/oauth-protected-resource` with empty `authorization_servers`. Homepage/SSR `Link` headers, `sitemap.xml`, and `llms*.txt` advertise the new files.
 

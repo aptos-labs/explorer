@@ -132,7 +132,8 @@ const mainnetLabeledBranding: Record<string, KnownAddressBranding> = {
   },
   "0x487e905f899ccb6d46fdaec56ba1e0c4cf119862a16c409904b8c78fab1f5e8a": {
     icon: "/address-icons/dex-tapp.png",
-    description: "Tapp Exchange AMM and pool contracts on Aptos.",
+    description:
+      "Tapp Exchange AMM and pool contracts on Aptos — defunct after the 31 May 2026 shutdown.",
   },
   "0xec42a352cc65eca17a9fa85d0fc602295897ed6b8b8af6a6c79ef490eb8f9eba": {
     icon: "/address-icons/dex-cetus.png",
