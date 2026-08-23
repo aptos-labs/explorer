@@ -57,15 +57,15 @@ export const mainnetKnownAddresses: Record<string, string> = {
   "0xcb8365dc9f7ac6283169598aaad7db9c7b12f52da127007f37fa4565170ff59c":
     "ThalaSwap CL Farm",
   "0x190d44266241744264b964a37b8f09863167a12d3e70cda39376cfb4e3561e12":
-    "LiquidSwap v0",
+    "LiquidSwap v0", // defunct
   "0x0163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e":
-    "LiquidSwap v0.5",
+    "LiquidSwap v0.5", // defunct
   "0x54cb0bb2c18564b86e34539b9f89cfe1186e39d89fce54e1cd007b8e61673a85":
-    "LiquidSwap v1",
+    "LiquidSwap v1", // defunct
   "0xb247ddeee87e848315caf9a33b8e4c71ac53db888cb88143d62d2370cca0ead2":
-    "LiquidSwap v1 Farms",
+    "LiquidSwap v1 Farms", // defunct
   "0x80273859084bc47f92a6c2d3e9257ebb2349668a1b0fb3db1d759a04c7628855":
-    "LiquidSwap router",
+    "LiquidSwap router", // defunct
   "0x31a6675cbe84365bf2b0cbce617ece6c47023ef70826533bde5203d32171dc3c":
     "SushiSwap", // defunct
   "0xa5d3ac4d429052674ed38adc62d010e52d7c24ca159194d17ddc196ddb7e480b":
@@ -195,7 +195,7 @@ export const mainnetKnownAddresses: Record<string, string> = {
   "0xd47ead75b923422f7967257259e7a298f029da9e5484dc7aa1a9efbd4c3ae648":
     "Native FA Redemption",
   "0x0c727553dd5019c4887581f0a89dca9c8ea400116d70e9da7164897812c6646e":
-    "Thetis Market",
+    "Thetis Market", // defunct
   "0x22ac0df99460b1ec8e4ce7dc92cf1387697bde530c7c0397c7adbb7aa49f1682":
     "Propbase Nexus",
   "0x7a38039fffd016adcac2c53795ee49325e5ec6fddf3bf02651c09f9a583655a6":
@@ -203,15 +203,15 @@ export const mainnetKnownAddresses: Record<string, string> = {
 
   // NFT Marketplace
   "0x7ccf0e6e871977c354c331aa0fccdffb562d9fceb27e3d7f61f8e12e470358e9":
-    "Wapal Aggregator",
+    "Wapal Aggregator", // defunct
   "0x584b50b999c78ade62f8359c91b5165ff390338d45f8e55969a04e65d76258c9":
-    "Wapal Marketplace",
+    "Wapal Marketplace", // defunct
   "0x80d0084f99070c5cdb4b01b695f2a8b44017e41abf4a78c2487d3b52b5a4ae37":
-    "Wapal Auction",
+    "Wapal Auction", // defunct
   "0xc777f5f82a2773d6e6f9c2e91306fc9c099a57747f64d86c59cf0acab706fd44":
-    "Wapal Launchpad V2",
+    "Wapal Launchpad V2", // defunct
   "0x6547d9f1d481fdc21cd38c730c07974f2f61adb7063e76f9d9522ab91f090dac":
-    "Wapal Launchpad",
+    "Wapal Launchpad", // defunct
   "0x2c7bccf7b31baf770fdbcc768d9e9cb3d87805e255355df5db32ac9a669010a2":
     "Topaz Marketplace", // defunct
   "0xd1fd99c1944b84d1670a2536417e997864ad12303d19eac725891691b04d614e":

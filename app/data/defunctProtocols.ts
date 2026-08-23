@@ -330,6 +330,105 @@ export const defunctProtocols: DefunctProtocol[] = [
     description:
       "Yield optimizer whose app.vibrantx.finance hostname no longer resolves and whose marketing domain does not complete a request.",
   },
+  {
+    address:
+      "0x190d44266241744264b964a37b8f09863167a12d3e70cda39376cfb4e3561e12",
+    name: "LiquidSwap v0",
+    category: "DEX",
+    status: "defunct",
+    description:
+      "First LiquidSwap (Pontem) AMM deployment. The DEX is no longer available; leftover liquidity may still sit in on-chain pools. liquidswap.com may still load a marketing SPA, but app.liquidswap.com returns 404.",
+  },
+  {
+    address:
+      "0x0163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e",
+    name: "LiquidSwap v0.5",
+    category: "DEX",
+    status: "defunct",
+    description:
+      "LiquidSwap v0.5 AMM upgrade. The DEX is no longer available; leftover liquidity may still sit in on-chain pools.",
+  },
+  {
+    address:
+      "0x54cb0bb2c18564b86e34539b9f89cfe1186e39d89fce54e1cd007b8e61673a85",
+    name: "LiquidSwap v1",
+    category: "DEX",
+    status: "defunct",
+    description:
+      "LiquidSwap v1 pools and swaps. The DEX is no longer available; leftover liquidity may still sit in on-chain pools.",
+  },
+  {
+    address:
+      "0xb247ddeee87e848315caf9a33b8e4c71ac53db888cb88143d62d2370cca0ead2",
+    name: "LiquidSwap v1 Farms",
+    category: "DEX",
+    status: "defunct",
+    description:
+      "LiquidSwap v1 farming contracts. The DEX is no longer available; leftover farm deposits may still sit on-chain.",
+  },
+  {
+    address:
+      "0x80273859084bc47f92a6c2d3e9257ebb2349668a1b0fb3db1d759a04c7628855",
+    name: "LiquidSwap router",
+    category: "DEX",
+    status: "defunct",
+    description:
+      "LiquidSwap router. The DEX is no longer available; leftover routed liquidity may still sit on-chain.",
+  },
+  {
+    address:
+      "0x0c727553dd5019c4887581f0a89dca9c8ea400116d70e9da7164897812c6646e",
+    name: "Thetis Market",
+    category: "DEX",
+    status: "defunct",
+    description:
+      "DEX aggregator and perpetual venue whose thetis.market, app.thetis.market, and docs.thetis.market hostnames no longer resolve.",
+  },
+  {
+    address:
+      "0x7ccf0e6e871977c354c331aa0fccdffb562d9fceb27e3d7f61f8e12e470358e9",
+    name: "Wapal Aggregator",
+    category: "NFT Marketplace",
+    status: "defunct",
+    description:
+      "Wapal NFT aggregator. The marketplace is no longer available; wapal.io returns 404 and launchpad.wapal.io is unreachable. Docs may still load.",
+  },
+  {
+    address:
+      "0x584b50b999c78ade62f8359c91b5165ff390338d45f8e55969a04e65d76258c9",
+    name: "Wapal Marketplace",
+    category: "NFT Marketplace",
+    status: "defunct",
+    description:
+      "Wapal NFT marketplace. The product is no longer available; wapal.io returns 404.",
+  },
+  {
+    address:
+      "0x80d0084f99070c5cdb4b01b695f2a8b44017e41abf4a78c2487d3b52b5a4ae37",
+    name: "Wapal Auction",
+    category: "NFT Marketplace",
+    status: "defunct",
+    description:
+      "Wapal NFT auction contracts. The marketplace is no longer available; leftover listings may still sit on-chain.",
+  },
+  {
+    address:
+      "0xc777f5f82a2773d6e6f9c2e91306fc9c099a57747f64d86c59cf0acab706fd44",
+    name: "Wapal Launchpad V2",
+    category: "NFT Marketplace",
+    status: "defunct",
+    description:
+      "Wapal NFT launchpad v2. launchpad.wapal.io is unreachable (Cloudflare 523).",
+  },
+  {
+    address:
+      "0x6547d9f1d481fdc21cd38c730c07974f2f61adb7063e76f9d9522ab91f090dac",
+    name: "Wapal Launchpad",
+    category: "NFT Marketplace",
+    status: "defunct",
+    description:
+      "Wapal NFT launchpad. The product is no longer available; leftover mints may still sit on-chain.",
+  },
 ];
 
 /**

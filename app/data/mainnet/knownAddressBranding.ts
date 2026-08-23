@@ -72,23 +72,27 @@ const mainnetLabeledBranding: Record<string, KnownAddressBranding> = {
   "0x190d44266241744264b964a37b8f09863167a12d3e70cda39376cfb4e3561e12": {
     icon: "/address-icons/dex-liquidswap.png",
     description:
-      "LiquidSwap v0 (Pontem) AMM deployment — historical early Aptos DEX version.",
+      "LiquidSwap v0 (Pontem) AMM deployment — defunct / no longer available.",
   },
   "0x0163df34fccbf003ce219d3f1d9e70d140b60622cb9dd47599c25fb2f797ba6e": {
     icon: "/address-icons/dex-liquidswap.png",
-    description: "LiquidSwap v0.5 AMM upgrade on Aptos (historical).",
+    description:
+      "LiquidSwap v0.5 AMM upgrade on Aptos — defunct / no longer available.",
   },
   "0x54cb0bb2c18564b86e34539b9f89cfe1186e39d89fce54e1cd007b8e61673a85": {
     icon: "/address-icons/dex-liquidswap.png",
-    description: "LiquidSwap v1 pools and swaps on Aptos.",
+    description:
+      "LiquidSwap v1 pools and swaps on Aptos — defunct / no longer available.",
   },
   "0xb247ddeee87e848315caf9a33b8e4c71ac53db888cb88143d62d2370cca0ead2": {
     icon: "/address-icons/dex-liquidswap.png",
-    description: "LiquidSwap v1 farming and incentives on Aptos.",
+    description:
+      "LiquidSwap v1 farming and incentives on Aptos — defunct / no longer available.",
   },
   "0x80273859084bc47f92a6c2d3e9257ebb2349668a1b0fb3db1d759a04c7628855": {
     icon: "/address-icons/dex-liquidswap.png",
-    description: "LiquidSwap router and aggregation entry points on Aptos.",
+    description:
+      "LiquidSwap router and aggregation entry points on Aptos — defunct / no longer available.",
   },
   "0x31a6675cbe84365bf2b0cbce617ece6c47023ef70826533bde5203d32171dc3c": {
     icon: "/address-icons/dex-sushiswap.png",
