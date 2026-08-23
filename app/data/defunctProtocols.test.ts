@@ -233,6 +233,31 @@ describe("getDefunctProtocol", () => {
         "0x17f1e926a81639e9557f4e4934df93452945ec30bc962e11351db59eb0d78c33",
       )?.name,
     ).toBe("VibrantX");
+    expect(
+      getDefunctProtocol(
+        "0x190d44266241744264b964a37b8f09863167a12d3e70cda39376cfb4e3561e12",
+      )?.name,
+    ).toBe("LiquidSwap v0");
+    expect(
+      getDefunctProtocol(
+        "0x54cb0bb2c18564b86e34539b9f89cfe1186e39d89fce54e1cd007b8e61673a85",
+      )?.name,
+    ).toBe("LiquidSwap v1");
+    expect(
+      getDefunctProtocol(
+        "0x0c727553dd5019c4887581f0a89dca9c8ea400116d70e9da7164897812c6646e",
+      )?.name,
+    ).toBe("Thetis Market");
+    expect(
+      getDefunctProtocol(
+        "0x584b50b999c78ade62f8359c91b5165ff390338d45f8e55969a04e65d76258c9",
+      )?.name,
+    ).toBe("Wapal Marketplace");
+    expect(
+      getDefunctProtocol(
+        "0x6547d9f1d481fdc21cd38c730c07974f2f61adb7063e76f9d9522ab91f090dac",
+      )?.name,
+    ).toBe("Wapal Launchpad");
   });
 
   it("finds Aave Aptos as winding_down", () => {
