@@ -98,18 +98,24 @@ type StakingStatusIconProps = {
   status: number;
 };
 
-export default function StakingStatusIcon({status}: StakingStatusIconProps) {
+export function StakingStatusChip({status}: StakingStatusIconProps) {
   const theme = useTheme();
 
   const step = STAKING_STATUS_STEPS[status];
   return (
+    <Chip
+      icon={step.icon}
+      label={step.label}
+      sx={theme.palette.mode === "dark" ? step.sxDark : step.sxLight}
+      color="primary"
+    />
+  );
+}
+
+export default function StakingStatusIcon({status}: StakingStatusIconProps) {
+  return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      <Chip
-        icon={step.icon}
-        label={step.label}
-        sx={theme.palette.mode === "dark" ? step.sxDark : step.sxLight}
-        color="primary"
-      />
+      <StakingStatusChip status={status} />
     </GeneralTableCell>
   );
 }

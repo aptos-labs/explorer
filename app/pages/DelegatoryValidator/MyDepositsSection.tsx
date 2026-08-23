@@ -1,5 +1,6 @@
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {
+  Box,
   Button,
   Skeleton,
   Stack,
@@ -20,6 +21,8 @@ import {
 } from "../../api/hooks/delegations";
 import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
 import type {ValidatorData} from "../../api/hooks/useGetValidators";
+import ContentBoxSpaceBetween from "../../components/IndividualPageContent/ContentBoxSpaceBetween";
+import ContentRowSpaceBetween from "../../components/IndividualPageContent/ContentRowSpaceBetween";
 import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import StyledTooltip, {
   StyledLearnMoreTooltip,
@@ -35,11 +38,13 @@ import MyDepositsStatusTooltip from "./Components/MyDepositsStatusTooltip";
 import StakingStatusIcon, {
   STAKING_STATUS_STEPS,
   StakingStatus,
+  StakingStatusChip,
 } from "./Components/StakingStatusIcon";
 import {DelegationStateContext} from "./context/DelegationContext";
 import StakeOperationDialog from "./StakeOperationDialog";
 import {
   getStakeOperationAPTRequirement,
+  getStakeOperationLabel,
   getStakeOperationPrincipals,
   getStakeRewardsEarned,
   type StakePrincipals,
@@ -54,6 +59,9 @@ const MyDepositsCells = Object.freeze({
 });
 
 type Column = keyof typeof MyDepositsCells;
+
+const REWARD_EARNED_TOOLTIP_TEXT =
+  "Estimated rewards earned in the current staking status";
 
 function MyDepositsSectionHeaderCell({column}: {column: Column}) {
   switch (column) {
@@ -79,9 +87,7 @@ function MyDepositsSectionHeaderCell({column}: {column: Column}) {
       return (
         <GeneralTableHeaderCell
           header="REWARD EARNED"
-          tooltip={
-            <StyledLearnMoreTooltip text="Estimated rewards earned in the current staking status" />
-          }
+          tooltip={<StyledLearnMoreTooltip text={REWARD_EARNED_TOOLTIP_TEXT} />}
           textAlignRight
         />
       );
@@ -106,8 +112,6 @@ const DEFAULT_COLUMNS: Column[] = [
   "actions",
 ];
 
-const DEFAULT_COLUMNS_MOBILE: Column[] = ["amount", "status", "rewardEarned"];
-
 type MyDepositsSectionCellProps = {
   handleClickOpen: () => void;
   stake: Types.MoveValue;
@@ -125,27 +129,35 @@ function AmountCell({stake}: MyDepositsSectionCellProps) {
   );
 }
 
+function getDisplayStatus(
+  status: StakingStatus,
+  canWithdrawPendingInactive: Types.MoveValue,
+) {
+  return canWithdrawPendingInactive && status === StakingStatus.WITHDRAW_PENDING
+    ? StakingStatus.WITHDRAW_READY
+    : status;
+}
+
 function StatusCell({
   status,
   canWithdrawPendingInactive,
 }: MyDepositsSectionCellProps) {
   return (
     <StakingStatusIcon
-      status={
-        canWithdrawPendingInactive && status === StakingStatus.WITHDRAW_PENDING
-          ? StakingStatus.WITHDRAW_READY
-          : status
-      }
+      status={getDisplayStatus(status, canWithdrawPendingInactive)}
     />
   );
 }
 
-function RewardEarnedCell({
+function RewardEarnedValue({
   stake,
   status,
   stakePrincipals,
   canWithdrawPendingInactive,
-}: MyDepositsSectionCellProps) {
+}: Pick<
+  MyDepositsSectionCellProps,
+  "stake" | "status" | "stakePrincipals" | "canWithdrawPendingInactive"
+>) {
   const principalsAmount =
     status === StakingStatus.STAKED
       ? stakePrincipals?.activePrincipals
@@ -155,65 +167,78 @@ function RewardEarnedCell({
 
   const rewardsEarned = getStakeRewardsEarned(stake, principalsAmount);
 
+  if (status === StakingStatus.WITHDRAW_READY || canWithdrawPendingInactive) {
+    return <>N/A</>;
+  }
+  if (rewardsEarned === undefined) {
+    return <>In Progress</>;
+  }
+  return <APTCurrencyValue amount={rewardsEarned.toString()} />;
+}
+
+function RewardEarnedCell(props: MyDepositsSectionCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      {status === StakingStatus.WITHDRAW_READY || canWithdrawPendingInactive ? (
-        "N/A"
-      ) : rewardsEarned === undefined ? (
-        "In Progress"
-      ) : (
-        <APTCurrencyValue amount={rewardsEarned.toString()} />
-      )}
+      <RewardEarnedValue {...props} />
     </GeneralTableCell>
   );
 }
 
-function ActionsCell({
+function StakeActionButton({
   handleClickOpen,
   status,
   stakes,
   canWithdrawPendingInactive,
-}: MyDepositsSectionCellProps) {
+  fullWidth = false,
+}: Pick<
+  MyDepositsSectionCellProps,
+  "handleClickOpen" | "status" | "stakes" | "canWithdrawPendingInactive"
+> & {fullWidth?: boolean}) {
   const {account} = useWallet();
   // FIXME wallet address not guaranteed to be defined
   const balance = useGetAccountAPTBalance(addressFromWallet(account?.address));
+  const stakeOperation = getStakeOperationFromStakingStatus(
+    status,
+    canWithdrawPendingInactive,
+  );
   const requirement = getStakeOperationAPTRequirement(
     stakes,
-    getStakeOperationFromStakingStatus(status, canWithdrawPendingInactive),
+    stakeOperation,
     Number(balance?.data ?? 0),
   );
 
   const buttonDisabled =
     status !== StakingStatus.WITHDRAW_READY && requirement.disabled;
+  const label = getStakeOperationLabel(stakeOperation);
 
-  function getButtonTextFromStatus() {
-    switch (status) {
-      case StakingStatus.STAKED:
-        return "UNSTAKE";
-      case StakingStatus.WITHDRAW_PENDING:
-        return canWithdrawPendingInactive ? "WITHDRAW" : "RESTAKE";
-      case StakingStatus.WITHDRAW_READY:
-        return "WITHDRAW";
-    }
-  }
+  return (
+    <StyledTooltip
+      title={`You can't ${label.toLocaleLowerCase()} because minimum APT requirement is not met`}
+      disableHoverListener={!buttonDisabled}
+    >
+      <Box component="span" sx={{width: fullWidth ? "100%" : "auto"}}>
+        <Button
+          variant="primary"
+          size="small"
+          onClick={handleClickOpen}
+          fullWidth={fullWidth}
+          sx={{
+            maxHeight: "40px",
+            ...(fullWidth ? {minHeight: "40px"} : {width: "30px"}),
+          }}
+          disabled={buttonDisabled}
+        >
+          <Typography>{label}</Typography>
+        </Button>
+      </Box>
+    </StyledTooltip>
+  );
+}
+
+function ActionsCell(props: MyDepositsSectionCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right", paddingRight: 3}}>
-      <StyledTooltip
-        title={`You can't ${getButtonTextFromStatus().toLocaleLowerCase()} because minimum APT requirement is not met`}
-        disableHoverListener={!buttonDisabled}
-      >
-        <span>
-          <Button
-            variant="primary"
-            size="small"
-            onClick={handleClickOpen}
-            sx={{width: "30px", maxHeight: "40px"}}
-            disabled={buttonDisabled}
-          >
-            <Typography>{getButtonTextFromStatus()}</Typography>
-          </Button>
-        </span>
-      </StyledTooltip>
+      <StakeActionButton {...props} />
     </GeneralTableCell>
   );
 }
@@ -223,10 +248,146 @@ type MyDepositsSectionProps = {
   isSkeletonLoading: boolean;
 };
 
-type MyDepositRowProps = {
+type MyDepositProps = {
   stake: Types.MoveValue;
   status: StakingStatus;
+  stakes: Types.MoveValue[];
+  stakePrincipals: StakePrincipals | undefined;
+  canWithdrawPendingInactive: Types.MoveValue;
+  validatorAddress: string;
 };
+
+/**
+ * Owns the dialog state for a single deposit so both the desktop table row and
+ * the mobile card can trigger the same stake operation flow.
+ */
+function useStakeOperationDialog({
+  stake,
+  status,
+  stakes,
+  canWithdrawPendingInactive,
+  validatorAddress,
+}: Omit<MyDepositProps, "stakePrincipals">) {
+  const {connected, account, wallet} = useWallet();
+  const logEvent = useLogEventWithBasic();
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const stakeOperation = getStakeOperationFromStakingStatus(
+    status,
+    canWithdrawPendingInactive,
+  );
+
+  const handleClose = () => {
+    setDialogOpen(false);
+  };
+  const handleClickOpen = () => {
+    logEvent(`${stakeOperation}_button_clicked`, validatorAddress, {
+      wallet_address: addressFromWallet(account?.address),
+      wallet_name: wallet?.name ?? "",
+      amount: Number(stake).toString(),
+    });
+    setDialogOpen(true);
+  };
+
+  const dialog = connected ? (
+    <StakeOperationDialog
+      handleDialogClose={handleClose}
+      isDialogOpen={dialogOpen}
+      stakeOperation={stakeOperation}
+      canWithdrawPendingInactive={canWithdrawPendingInactive}
+      stakes={stakes}
+    />
+  ) : (
+    <WalletConnectionDialog
+      handleDialogClose={handleClose}
+      isDialogOpen={dialogOpen}
+    />
+  );
+
+  return {handleClickOpen, dialog};
+}
+
+function MyDepositRow({
+  columns,
+  ...deposit
+}: MyDepositProps & {
+  columns: Column[];
+}) {
+  const {handleClickOpen, dialog} = useStakeOperationDialog(deposit);
+
+  return (
+    <>
+      <GeneralTableRow>
+        {columns.map((column) => {
+          const Cell = MyDepositsCells[column];
+          return (
+            <Cell
+              key={column}
+              handleClickOpen={handleClickOpen}
+              stake={deposit.stake}
+              status={deposit.status}
+              stakePrincipals={deposit.stakePrincipals}
+              stakes={deposit.stakes}
+              canWithdrawPendingInactive={deposit.canWithdrawPendingInactive}
+            />
+          );
+        })}
+      </GeneralTableRow>
+      {dialog}
+    </>
+  );
+}
+
+function MyDepositCard(deposit: MyDepositProps) {
+  const theme = useTheme();
+  const {handleClickOpen, dialog} = useStakeOperationDialog(deposit);
+  const {stake, status, stakes, stakePrincipals, canWithdrawPendingInactive} =
+    deposit;
+
+  return (
+    <ContentBoxSpaceBetween sx={{marginTop: 0}}>
+      <Stack
+        direction="row"
+        spacing={1}
+        sx={{justifyContent: "space-between", alignItems: "flex-start"}}
+      >
+        <Stack direction="column" spacing={0.5}>
+          <Typography
+            variant="caption"
+            sx={{color: theme.palette.text.secondary}}
+          >
+            AMOUNT
+          </Typography>
+          <Typography sx={{fontWeight: 600}}>
+            <APTCurrencyValue amount={stake.toString()} />
+          </Typography>
+        </Stack>
+        <StakingStatusChip
+          status={getDisplayStatus(status, canWithdrawPendingInactive)}
+        />
+      </Stack>
+      <ContentRowSpaceBetween
+        title="Reward Earned"
+        value={
+          <RewardEarnedValue
+            stake={stake}
+            status={status}
+            stakePrincipals={stakePrincipals}
+            canWithdrawPendingInactive={canWithdrawPendingInactive}
+          />
+        }
+        tooltip={<StyledLearnMoreTooltip text={REWARD_EARNED_TOOLTIP_TEXT} />}
+      />
+      <StakeActionButton
+        handleClickOpen={handleClickOpen}
+        status={status}
+        stakes={stakes}
+        canWithdrawPendingInactive={canWithdrawPendingInactive}
+        fullWidth
+      />
+      {dialog}
+    </ContentBoxSpaceBetween>
+  );
+}
 
 export default function MyDepositsSection({
   setIsMyDepositsSectionSkeletonLoading,
@@ -258,8 +419,7 @@ function MyDepositSectionContent({
 }) {
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
-  const columns = isOnMobile ? DEFAULT_COLUMNS_MOBILE : DEFAULT_COLUMNS;
-  const {connected, account, wallet} = useWallet();
+  const {account} = useWallet();
   // FIXME: account is not guaranteed to be defined
   const walletAddress = addressFromWallet(account?.address);
   const {stakes} = useGetDelegatorStakeInfo(
@@ -300,72 +460,19 @@ function MyDepositSectionContent({
     fetchData();
   }, [validator?.owner_address, aptosClient]);
 
-  function MyDepositRow({stake, status}: MyDepositRowProps) {
-    const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-    const logEvent = useLogEventWithBasic();
-    const handleClose = () => {
-      setDialogOpen(false);
-    };
-    const handleClickOpen = () => {
-      logEvent(
-        getStakeOperationFromStakingStatus(status, canWithdrawPendingInactive) +
-          "_button_clicked",
-        validator?.owner_address,
-        {
-          wallet_address: addressFromWallet(account?.address),
-          wallet_name: wallet?.name ?? "",
-          amount: Number(stake).toString(),
-        },
-      );
-      setDialogOpen(true);
-    };
+  const deposits = stakesInfo
+    .map((stake, idx) => ({stake: Number(stake), status: idx as StakingStatus}))
+    .filter(({stake}) => stake !== 0 && !Number.isNaN(stake));
 
-    return (
-      <>
-        <GeneralTableRow>
-          {columns.map((deposit) => {
-            const Cell = MyDepositsCells[deposit];
-            return (
-              <Cell
-                key={deposit}
-                handleClickOpen={handleClickOpen}
-                stake={stake}
-                status={status}
-                stakePrincipals={stakePrincipals}
-                stakes={stakes}
-                canWithdrawPendingInactive={canWithdrawPendingInactive}
-              />
-            );
-          })}
-        </GeneralTableRow>
-        {connected ? (
-          <StakeOperationDialog
-            handleDialogClose={handleClose}
-            isDialogOpen={dialogOpen}
-            stakeOperation={getStakeOperationFromStakingStatus(
-              status,
-              canWithdrawPendingInactive,
-            )}
-            canWithdrawPendingInactive={canWithdrawPendingInactive}
-            stakes={stakes}
-          />
-        ) : (
-          <WalletConnectionDialog
-            handleDialogClose={handleClose}
-            isDialogOpen={dialogOpen}
-          />
-        )}
-      </>
-    );
+  if (isSkeletonLoading) {
+    return <MyDepositSectionSkeleton />;
   }
 
-  const hasStakes = stakesInfo.some(
-    (stake: Types.MoveValue) => stake && Number(stake) !== 0,
-  );
+  if (deposits.length === 0) {
+    return null;
+  }
 
-  return isSkeletonLoading ? (
-    <MyDepositSectionSkeleton />
-  ) : hasStakes ? (
+  return (
     <Stack>
       <Typography
         variant="h5"
@@ -375,30 +482,50 @@ function MyDepositSectionContent({
       >
         My Deposits
       </Typography>
-      <Table aria-label="My deposits" data-entity-type="deposit">
-        <TableHead>
-          <TableRow>
-            {columns.map((columnName) => (
-              <MyDepositsSectionHeaderCell
-                column={columnName}
-                key={columnName}
+      {isOnMobile ? (
+        <Stack direction="column" spacing={2} sx={{marginTop: 2}}>
+          {deposits.map(({stake, status}) => (
+            <MyDepositCard
+              key={status}
+              stake={stake}
+              status={status}
+              stakes={stakes}
+              stakePrincipals={stakePrincipals}
+              canWithdrawPendingInactive={canWithdrawPendingInactive}
+              validatorAddress={validator.owner_address}
+            />
+          ))}
+        </Stack>
+      ) : (
+        <Table aria-label="My deposits" data-entity-type="deposit">
+          <TableHead>
+            <TableRow>
+              {DEFAULT_COLUMNS.map((columnName) => (
+                <MyDepositsSectionHeaderCell
+                  column={columnName}
+                  key={columnName}
+                />
+              ))}
+            </TableRow>
+          </TableHead>
+          <GeneralTableBody>
+            {deposits.map(({stake, status}) => (
+              <MyDepositRow
+                key={status}
+                columns={DEFAULT_COLUMNS}
+                stake={stake}
+                status={status}
+                stakes={stakes}
+                stakePrincipals={stakePrincipals}
+                canWithdrawPendingInactive={canWithdrawPendingInactive}
+                validatorAddress={validator.owner_address}
               />
             ))}
-          </TableRow>
-        </TableHead>
-        <GeneralTableBody>
-          {stakesInfo.map(
-            (stake, idx) =>
-              stake &&
-              Number(stake) !== 0 && (
-                // biome-ignore lint/suspicious/noArrayIndexKey: index maps to staking status enum
-                <MyDepositRow key={idx} stake={Number(stake)} status={idx} />
-              ),
-          )}
-        </GeneralTableBody>
-      </Table>
+          </GeneralTableBody>
+        </Table>
+      )}
     </Stack>
-  ) : null;
+  );
 }
 
 function MyDepositSectionSkeleton() {

@@ -1,0 +1,30 @@
+diff --git a/lib/index.js b/lib/index.js
+index 191fdb0550e1065885f884a660fc692d50b31e36..3a0ff8c87335c268e245ed0e2554583254cf368e 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -1175,7 +1175,24 @@ class Scope {
+     return parent?.scope;
+   }
+   get references() {
+-    throw new Error("Scope#references is not available in Babel 8. Use Scope#referencesSet instead.");
++    // Babel 7 compatibility: TanStack Router's code-splitter still writes
++    // `programScope.references[name] = true`. Map that onto referencesSet.
++    if (!this.referencesSet) this.referencesSet = new Set();
++    const set = this.referencesSet;
++    return new Proxy(Object.create(null), {
++      get(_target, prop) {
++        return typeof prop === "string" ? set.has(prop) : undefined;
++      },
++      set(_target, prop, value) {
++        if (typeof prop === "string") {
++          if (value) set.add(prop);else set.delete(prop);
++        }
++        return true;
++      },
++      has(_target, prop) {
++        return typeof prop === "string" && set.has(prop);
++      }
++    });
+   }
+   get uids() {
+     throw new Error("Scope#uids is not available in Babel 8. Use Scope#uidsSet instead.");

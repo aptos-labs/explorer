@@ -233,6 +233,19 @@ export function getStakeOperationAPTRequirement(
   }
 }
 
+export function getStakeOperationLabel(stakeOperation: StakeOperation): string {
+  switch (stakeOperation) {
+    case StakeOperation.STAKE:
+      return "STAKE";
+    case StakeOperation.UNLOCK:
+      return "UNSTAKE";
+    case StakeOperation.REACTIVATE:
+      return "RESTAKE";
+    case StakeOperation.WITHDRAW:
+      return "WITHDRAW";
+  }
+}
+
 export type ValidatorStatus =
   | "Pending Active"
   | "Active"

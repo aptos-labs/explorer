@@ -20,7 +20,22 @@ export default function StyledDialog({
 }: StyledDialogProps) {
   const theme = useTheme();
   return (
-    <Dialog onClose={handleDialogClose} {...props}>
+    <Dialog
+      onClose={handleDialogClose}
+      fullWidth
+      maxWidth="sm"
+      {...props}
+      sx={[
+        {
+          "& .MuiDialog-paper": {
+            margin: {xs: 2, sm: 4},
+            width: {xs: "calc(100% - 32px)", sm: "calc(100% - 64px)"},
+            maxHeight: {xs: "calc(100% - 32px)", sm: "calc(100% - 64px)"},
+          },
+        },
+        ...(Array.isArray(props.sx) ? props.sx : [props.sx]),
+      ]}
+    >
       <IconButton
         aria-label="Close"
         onClick={handleDialogClose}
@@ -33,7 +48,9 @@ export default function StyledDialog({
       >
         <CloseIcon />
       </IconButton>
-      <Stack sx={{marginX: 4, marginY: 4}}>{children}</Stack>
+      <Stack sx={{marginX: {xs: 2, sm: 4}, marginY: {xs: 3, sm: 4}}}>
+        {children}
+      </Stack>
     </Dialog>
   );
 }

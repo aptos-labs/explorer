@@ -144,7 +144,6 @@ export default function TransactionSucceededDialog({
           rel="noopener noreferrer"
           variant="primary"
           fullWidth
-          sx={{marginX: 3}}
         >
           View Transaction
         </Button>

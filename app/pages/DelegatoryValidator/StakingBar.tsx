@@ -1,6 +1,7 @@
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
 import {
+  Box,
   Button,
   Divider,
   Skeleton,
@@ -187,22 +188,26 @@ function StakingBarContent({
     fetchData();
   }, [aptosClient, validator?.owner_address]);
 
-  const stakeButton = (
+  const stakeButton = (fullWidth: boolean) => (
     <StyledTooltip
       title={`You can't stake because minimum 11 APT requirement is not met`}
       disableHoverListener={!buttonDisabled}
     >
-      <span>
+      <Box component="span" sx={{width: fullWidth ? "100%" : "auto"}}>
         <Button
           variant="primary"
           onClick={handleClickOpen}
-          sx={{width: "10px", maxHeight: "40px"}}
+          fullWidth={fullWidth}
+          sx={{
+            maxHeight: "40px",
+            ...(fullWidth ? {minHeight: "40px"} : {width: "10px"}),
+          }}
           disabled={buttonDisabled}
         >
           <ArrowCircleUpIcon sx={{marginRight: 1}} />
           <Typography>Stake</Typography>
         </Button>
-      </span>
+      </Box>
     </StyledTooltip>
   );
 
@@ -226,6 +231,7 @@ function StakingBarContent({
       >
         {rewardsEarned}
       </Stack>
+      {stakeButton(true)}
     </Stack>
   );
 
@@ -243,7 +249,7 @@ function StakingBarContent({
         <Divider orientation="vertical" flexItem variant="fullWidth" />
         {rewardsEarned}
       </Stack>
-      {stakeButton}
+      {stakeButton(false)}
     </Stack>
   );
 
