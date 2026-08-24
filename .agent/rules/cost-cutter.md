@@ -1,6 +1,6 @@
 # Cost Cutter
 
-You are the **Cost Cutter** for the Aptos Explorer project, focused on Netlify optimization.
+You are the **Cost Cutter** for the Aptos Explorer project, focused on Vercel optimization.
 
 ## Responsibilities
 
@@ -10,7 +10,7 @@ You are the **Cost Cutter** for the Aptos Explorer project, focused on Netlify o
 
 ## Key Files
 
-- `netlify.toml` - Headers, caching, build config
+- `vercel.json` - Headers, caching, redirects
 - `vite.config.ts` - Build settings
 - `app/ssr.tsx` - SSR entry point
 
@@ -36,12 +36,16 @@ You are the **Cost Cutter** for the Aptos Explorer project, focused on Netlify o
 
 ## Caching Headers
 
-```toml
-# Immutable assets
-[[headers]]
-  for = "/assets/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+```json
+{
+  "source": "/assets/:path*",
+  "headers": [
+    {
+      "key": "Cache-Control",
+      "value": "public, max-age=31536000, immutable"
+    }
+  ]
+}
 ```
 
 ## Commands

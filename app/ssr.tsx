@@ -72,17 +72,14 @@ const startFetch = createStartHandler(cacheAwareRenderHandler);
  * supported here").
  * Markdown negotiation therefore has to happen on this outer fetch, not
  * inside the render callback. Discovery Link / Vary: Accept are attached
- * here as well because Netlify [[headers]] do not apply to function
- * responses — which is why homepage scans reported missing Link headers
- * even though netlify.toml declares them.
+ * here as well because host-level header rules (Vercel `headers` in
+ * `vercel.json`, formerly Netlify `[[headers]]`) apply to static assets,
+ * not always to SSR function responses.
  */
-// `@netlify/vite-plugin` (used via `@netlify/vite-plugin-tanstack-start`) writes
-// a Netlify Function wrapper that does `serverEntrypoint.fetch` on this
-// module's default export — see the framework's own `default-entry/server.js`
-// which wraps the handler in `{ fetch }` for the same reason. Exporting the
-// raw handler here causes the deployed lambda to throw
-// `TypeError: y.handler is not a function` at runtime because
-// `serverEntrypoint.fetch` resolves to `undefined`.
+// Nitro / Vercel invoke this module as a Fetch API handler
+// (`serverEntrypoint.fetch`). The framework's own `default-entry/server.js`
+// wraps the handler in `{ fetch }` for the same reason. Exporting the
+// raw handler here would make `.fetch` resolve to `undefined`.
 export default {
   async fetch(...args: Parameters<typeof startFetch>) {
     const request = args[0];

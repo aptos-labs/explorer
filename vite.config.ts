@@ -1,6 +1,6 @@
 import {codecovVitePlugin} from "@codecov/vite-plugin";
-import netlify from "@netlify/vite-plugin-tanstack-start";
 import {tanstackStart} from "@tanstack/react-start/plugin/vite";
+import {nitro} from "nitro/vite";
 import react from "@vitejs/plugin-react-swc";
 import {visualizer} from "rollup-plugin-visualizer";
 import type {PluginOption} from "vite";
@@ -8,6 +8,12 @@ import {perEnvironmentPlugin} from "vite";
 import compression from "vite-plugin-compression";
 import viteSvgr from "vite-plugin-svgr";
 import {configDefaults, defineConfig} from "vitest/config";
+
+// Vercel sets VERCEL_ENV at build time (production | preview | development).
+// Vite only exposes VITE_* to the client, so copy it unless already set.
+if (!process.env.VITE_VERCEL_ENV && process.env.VERCEL_ENV) {
+  process.env.VITE_VERCEL_ENV = process.env.VERCEL_ENV;
+}
 
 export default defineConfig({
   plugins: [
@@ -23,10 +29,11 @@ export default defineConfig({
         entry: "ssr",
       },
     }),
+    nitro(),
     react(),
     viteSvgr(),
-    netlify(),
-    // Pre-compress assets for faster delivery (Netlify serves these automatically)
+    // Pre-compress assets. Vercel also gzip/brotli-encodes at the CDN; the
+    // extra files remain useful for `vite preview` and non-Vercel hosts.
     compression({algorithm: "gzip", ext: ".gz"}),
     compression({algorithm: "brotliCompress", ext: ".br"}),
     // Bundle analyzer - generates stats.html after build (run: pnpm build && open stats.html)

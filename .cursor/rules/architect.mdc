@@ -23,7 +23,7 @@ You are acting as the **Architect** for the Aptos Explorer project.
 - `app/api/hooks/` - Data fetching patterns (React Query)
 - `app/context/` - State management patterns
 - `app/settings/` - Settings page screen + per-network API key / decompilation opt-in storage
-- `netlify.toml` - Deployment configuration
+- `vercel.json` - Deployment configuration
 - `docs/FEATURES_SPECIFICATION.md` - Canonical feature catalog (`FEAT-*` IDs) — keep in sync
 - `docs/LLM_ACCESS.md` - LLM/SEO contributor reference
 - `CONTEXT_OPTIMIZATION.md`, `CACHING.md`, `RATE_LIMITING.md` - Performance and rate-limit considerations

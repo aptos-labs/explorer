@@ -191,11 +191,12 @@ describe("getServerApiKey", () => {
       // biome-ignore lint/suspicious/noExplicitAny: test stub
       delete (globalThis as any).window;
     }
-    // Clear all APTOS_*_API_KEY env vars + CONTEXT for a deterministic
-    // baseline; restore in afterEach.
+    // Clear all APTOS_*_API_KEY env vars + preview markers for a
+    // deterministic baseline; restore in afterEach.
     for (const key of Object.keys(process.env)) {
       if (
         key === "CONTEXT" ||
+        key === "VERCEL_ENV" ||
         (key.startsWith("APTOS_") && key.endsWith("_API_KEY"))
       ) {
         delete process.env[key];
@@ -245,6 +246,13 @@ describe("getServerApiKey", () => {
   it("emits a console.error on Netlify preview contexts (branch-deploy)", () => {
     process.env.CONTEXT = "branch-deploy";
     expect(getServerApiKey("testnet")).toBeUndefined();
+    expect(console.error).toHaveBeenCalledTimes(1);
+  });
+
+  it("emits a console.error on Vercel preview deployments", () => {
+    process.env.VERCEL_ENV = "preview";
+    process.env.APTOS_MAINNET_API_KEY = "AG-SHOULD-BE-IGNORED";
+    expect(getServerApiKey("mainnet")).toBeUndefined();
     expect(console.error).toHaveBeenCalledTimes(1);
   });
 });
