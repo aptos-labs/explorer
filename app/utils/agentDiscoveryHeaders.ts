@@ -1,8 +1,8 @@
 /**
  * RFC 8288 Link values advertised on HTML SSR responses and markdown
- * negotiation. Kept in sync with the `Link` headers in `netlify.toml`
- * (static files still use Netlify's header rules; SSR function responses
- * do not, so the server entry must set these itself).
+ * negotiation. Kept in sync with the `Link` headers in `vercel.json`
+ * (static files still use host header rules; SSR function responses
+ * do not always inherit them, so the server entry must set these itself).
  */
 export const DISCOVERY_LINK_VALUES = [
   '</.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+json"',
@@ -24,9 +24,9 @@ function varyIncludesAccept(vary: string): boolean {
 
 /**
  * Ensure an SSR response advertises discovery `Link`s and `Vary: Accept`.
- * Netlify `[[headers]]` in `netlify.toml` apply to static assets, not to
- * TanStack Start function responses, so homepage scans must see these
- * headers on the HTML the function returns.
+ * `vercel.json` `headers` apply to static assets; SSR function responses
+ * may not inherit them, so homepage scans must see these headers on the
+ * HTML the function returns.
  */
 export function attachAgentDiscoveryHeaders(response: Response): Response {
   const headers = new Headers(response.headers);

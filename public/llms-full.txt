@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-08-13 (rev 26)
+> Last updated: 2026-08-24 (rev 27)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -362,7 +362,7 @@ The explorer **cannot** do the following:
 - **Routing**: TanStack Router (file-based routing) with SSR via TanStack Start
 - **Data Fetching**: TanStack Query v5 (React Query) with prefetching and caching
 - **UI**: Material-UI (MUI) v9
-- **Build**: Vite 8 (Rolldown + Oxc) with SSR and Netlify deployment
+- **Build**: Vite 8 (Rolldown + Oxc) with SSR and Vercel deployment
 - **Blockchain SDK**: `@aptos-labs/ts-sdk` for fullnode REST and indexer GraphQL
 
 ---
@@ -415,11 +415,11 @@ canonical user experience.
 
 ### HTTP Link headers (RFC 8288)
 
-SSR HTML responses (TanStack Start Netlify Function) **and** static files
+SSR HTML responses (TanStack Start Vercel/Nitro Node Function) **and** static files
 include a `Link` header advertising the api-catalog, MCP Server Card, A2A
 card, OAuth PRM, agent-skills index, `auth.md`, and both `llms.txt` /
-`llms-full.txt`. Netlify `[[headers]]` alone are not enough: function
-responses do not inherit those rules, so `app/ssr.tsx` attaches the same
+`llms-full.txt`. `vercel.json` `headers` alone are not enough: function
+responses do not always inherit those rules, so `app/ssr.tsx` attaches the same
 header. Example:
 
 ```

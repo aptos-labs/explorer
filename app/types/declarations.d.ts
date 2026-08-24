@@ -106,8 +106,10 @@ interface ImportMetaEnv {
   readonly VITE_APTOS_LOCAL_API_KEY?: string;
   // Server API keys are read from process.env (APTOS_<NETWORK>_API_KEY)
   // and are NOT included in ImportMetaEnv to prevent accidental client exposure.
-  // Netlify build context baked in at build time (production | deploy-preview | branch-deploy).
-  // Undefined for local development. Used to suppress API keys on preview builds.
+  // Vercel deploy env baked in at build time (copied from VERCEL_ENV in vite.config.ts).
+  // `preview` suppresses API keys. Undefined for local development.
+  readonly VITE_VERCEL_ENV?: "production" | "preview" | "development";
+  // Legacy Netlify build context. Still read so leftover env keeps working.
   readonly VITE_NETLIFY_CONTEXT?:
     | "production"
     | "deploy-preview"

@@ -124,10 +124,10 @@ This repository is often modified by automated agents. The following bar keeps t
 - **Typecheck** must pass (`pnpm lint` includes `tsc --noEmit`).
 - **`CHANGELOG.md`**: Add an entry under **[Unreleased]** when the change is **user-visible**, **behavior-changing**, or otherwise **worth calling out in release notes** (features, fixes, notable refactors, dependency upgrades that affect the app). Skip churn-only edits (typos, internal-only refactors) unless they matter to operators or contributors—use the existing section style (keep a reasonable level of detail).
 
-### Netlify and Edge Functions
+### Vercel and Edge Functions
 
-- **Do not use Netlify Edge Functions** for this project unless there is explicit human approval. Avoid adding Edge middleware or Edge-deployed handlers (for example `netlify/edge-functions/`, `[[edge_functions]]` in `netlify.toml`, or plugins that register Edge Functions). The explorer’s deployment model is TanStack Start SSR and Netlify Functions; Edge adds a different runtime, operational surface, and cost profile.
-- **Check deployment diffs**: When a change touches `netlify.toml`, files under `netlify/functions/`, `netlify/edge-functions/`, or Netlify-related build plugins, review it for accidental Edge Function adoption.
+- **Do not use Vercel Edge Functions or Edge Middleware** for this project unless there is explicit human approval. Avoid adding Edge middleware or Edge-deployed handlers (for example `middleware.ts` with the Edge runtime, `export const runtime = "edge"`, or Vercel config that moves SSR off Node). The explorer’s deployment model is TanStack Start SSR via Nitro on Vercel **Node** serverless (Fluid compute). Edge adds a different runtime, operational surface, and cost profile.
+- **Check deployment diffs**: When a change touches `vercel.json`, Nitro/Vite deploy plugins, or files that would become Vercel functions, review it for accidental Edge Function adoption.
 
 ### Product and UX
 
@@ -194,7 +194,7 @@ This repository uses a multi-agent workflow with 7 specialized roles. Each role 
 - `app/router.tsx`, `app/routes/` - Routing architecture
 - `app/api/hooks/` - Data fetching patterns
 - `app/context/` - State management
-- `netlify.toml` - Deployment configuration
+- `vercel.json` - Deployment configuration
 
 **Outputs**: Architecture docs, task definitions in `.agents/tasks/backlog.md`
 
@@ -253,7 +253,7 @@ This repository uses a multi-agent workflow with 7 specialized roles. Each role 
 - [ ] If routes/tabs were added or changed: `llms.txt`, `llms-full.txt`, and `sitemap.xml` updated
 - [ ] If the PR is user-visible or release-worthy: `CHANGELOG.md` updated under **[Unreleased]**
 - [ ] If a feature was added, changed, or removed: `docs/FEATURES_SPECIFICATION.md` updated with the corresponding `FEAT-*` entry
-- [ ] If Netlify deployment files changed: no new Netlify Edge Functions without explicit approval (see [Netlify and Edge Functions](#netlify-and-edge-functions))
+- [ ] If Vercel deployment files changed: no new Vercel Edge Functions or Edge Middleware without explicit approval (see [Vercel and Edge Functions](#vercel-and-edge-functions))
 - [ ] If dependencies or the lockfile changed: installs went through Aikido Safe Chain (48h age floor, no skip flag, only `@aptos-labs/*` excluded)
 
 **Outputs**: Review feedback, approval or change requests
@@ -328,7 +328,7 @@ pnpm test <pattern>    # Run specific tests
 
 ### 6. Cost Cutter
 
-**Focus**: Netlify deployment cost optimization
+**Focus**: Vercel deployment cost optimization
 
 **Responsibilities**:
 
@@ -336,17 +336,17 @@ pnpm test <pattern>    # Run specific tests
 - Improve serverless function efficiency (SSR, cold starts)
 - Reduce build minutes through caching strategies
 - Monitor and optimize build output size
-- Review `netlify.toml` configuration
+- Review `vercel.json` configuration
 
 **Optimization Areas**:
 
 - **Bandwidth**: Aggressive caching headers, Brotli compression, image optimization
-- **Functions**: Minimize SSR payload and Netlify Function cold starts; do **not** introduce Netlify Edge Functions (see [Netlify and Edge Functions](#netlify-and-edge-functions))
+- **Functions**: Minimize SSR payload and Vercel Node Function cold starts; do **not** introduce Vercel Edge Functions (see [Vercel and Edge Functions](#vercel-and-edge-functions))
 - **Build**: Incremental builds, dependency caching, parallel tasks
 
 **Key Files**:
 
-- `netlify.toml` - Headers, caching, build config
+- `vercel.json` - Headers, caching, redirects
 - `vite.config.ts` - Build optimization settings
 - `app/ssr.tsx` - Server-side rendering
 
@@ -474,7 +474,7 @@ Vite exposes variables prefixed with `VITE_` (and `REACT_APP_` for compatibility
 
 ### Never rename or remove an environment variable
 
-Environment variables in this repository are a **contract with deployments** (Netlify, GitHub Actions CI, contributors' `.env.local` files, downstream forks). Renaming or removing one in code does **not** unset it in those deployments — it just silently breaks behavior that depended on it, and the breakage is often invisible until users hit a regression in production (a recent example: removing the hardcoded public client-ID fallback in `app/lib/constants.ts` caused the client bundle to ship without `VITE_APTOS_<NETWORK>_API_KEY` on deployments that hadn't wired the variable, dropping every browser request into the shared anonymous rate-limit bucket).
+Environment variables in this repository are a **contract with deployments** (Vercel, GitHub Actions CI, contributors' `.env.local` files, downstream forks). Renaming or removing one in code does **not** unset it in those deployments — it just silently breaks behavior that depended on it, and the breakage is often invisible until users hit a regression in production (a recent example: removing the hardcoded public client-ID fallback in `app/lib/constants.ts` caused the client bundle to ship without `VITE_APTOS_<NETWORK>_API_KEY` on deployments that hadn't wired the variable, dropping every browser request into the shared anonymous rate-limit bucket).
 
 **Rules for all agents:**
 
@@ -482,7 +482,7 @@ Environment variables in this repository are a **contract with deployments** (Ne
 - **Do not remove** an env var that the code reads (`import.meta.env.X`, `process.env.X`) unless you have explicit human approval **and** have verified no deployment, CI workflow, `.env.example`, or downstream consumer still sets it. Removing the read site silently turns the deployment's still-set variable into dead config.
 - **Do not remove a hardcoded default that backs an env var** without restoring an equivalent safe default. The env var pattern `import.meta.env.X || "<default>"` is load-bearing: the `||` branch is what keeps the app working when the variable is unset.
 - **When adding a new env var**: document it in `.env.example` with a comment explaining what it controls, declare its TypeScript type in `app/types/declarations.d.ts` if it is `VITE_`-prefixed, and add it to `.github/workflows/ci.yml` if CI needs it.
-- **When you must rename or remove an env var**: search the entire repo (`rg VITE_FOO`, `rg APTOS_FOO`), update `.env.example`, `app/types/declarations.d.ts`, `.github/workflows/*.yml`, `netlify.toml`, and any docs in the same PR, **and** call it out under `CHANGELOG.md` → `[Unreleased]` so operators know to update their dashboards.
+- **When you must rename or remove an env var**: search the entire repo (`rg VITE_FOO`, `rg APTOS_FOO`), update `.env.example`, `app/types/declarations.d.ts`, `.github/workflows/*.yml`, `vercel.json`, and any docs in the same PR, **and** call it out under `CHANGELOG.md` → `[Unreleased]` so operators know to update their dashboards.
 
 ### Aikido Safe Chain (required for every install)
 
@@ -532,8 +532,8 @@ The explorer maintains dedicated documentation for AI systems and LLM-powered to
 | `public/.well-known/agent-card.json` | A2A Agent Card | Navigation skills or explorer identity change |
 | `public/.well-known/oauth-protected-resource` | RFC 9728 PRM (public site; empty `authorization_servers`) | Auth story changes |
 | `public/auth.md` | Auth.md: no agent registration / no OAuth AS | Auth story changes |
-| `netlify.toml` | `Link` response headers (RFC 8288), `Vary: Accept`, well-known Content-Types | New discovery resources, new well-known paths, or changes to the discovery URL list |
-| `app/ssr.tsx` + `app/utils/markdownHomeNegotiation.ts` + `app/utils/agentDiscoveryHeaders.ts` | Outer SSR `fetch` serves markdown for `Accept: text/markdown` **before** TanStack Start's HTML-only Accept gate, and attaches discovery `Link` / `Vary: Accept` on HTML SSR (Netlify `[[headers]]` do not apply to functions) | The markdown-for-agents contract changes, or the canonical `llms.txt` source moves |
+| `vercel.json` | `Link` response headers (RFC 8288), `Vary: Accept`, well-known Content-Types | New discovery resources, new well-known paths, or changes to the discovery URL list |
+| `app/ssr.tsx` + `app/utils/markdownHomeNegotiation.ts` + `app/utils/agentDiscoveryHeaders.ts` | Outer SSR `fetch` serves markdown for `Accept: text/markdown` **before** TanStack Start's HTML-only Accept gate, and attaches discovery `Link` / `Vary: Accept` on HTML SSR (Vercel `headers` in `vercel.json` do not always apply to functions) | The markdown-for-agents contract changes, or the canonical `llms.txt` source moves |
 | `app/utils/acceptMarkdown.ts` | Pure `Accept`-header parser (`prefersMarkdown`) used by SSR markdown negotiation | When negotiation rules change, update tests in `acceptMarkdown.test.ts` and `markdownHomeNegotiation.test.ts` |
 | `app/components/WebMCPProvider.tsx` + `app/components/webMcpTools.ts` | WebMCP tools registered on `navigator.modelContext` | A major new top-level route becomes important for agent navigation, or tool schemas need to change |
 | `scripts/update-agent-skills-index.mjs` | Regenerates `SHA-256` digests in the agent-skills index | Any change to a `SKILL.md` under `public/.well-known/agent-skills/*/` |
@@ -576,7 +576,7 @@ Machine-readable metadata for autonomous agents lives alongside the LLM docs. Ke
 - [ ] **New route, tab, or entity type**: consider whether the `aptos-explorer-urls` skill (`public/.well-known/agent-skills/aptos-explorer-urls/SKILL.md`) needs a new bullet under **Entity → URL template**. After editing any `SKILL.md`, run `node scripts/update-agent-skills-index.mjs` to refresh digests — the drift test `app/utils/agentSkillsIndex.test.ts` will fail otherwise.
 - [ ] **New top-level navigation surface**: if an agent should be able to open it programmatically, add a tool to `app/components/webMcpTools.ts` (with a JSON Schema `inputSchema` and `readOnlyHint: true`) and cover it in `app/components/webMcpTools.test.ts`. Do **not** add tools that mutate state or sign transactions — WebMCP tools here are strictly navigation-only.
 - [ ] **New upstream API** (new chain, new indexer, a price/analytics feed): add an `anchor` entry to `public/.well-known/api-catalog` with `service-desc` (OpenAPI URL), `service-doc`, and `status` links. Also add it to the "API Endpoints Used by the Explorer" section of `public/llms-full.txt`.
-- [ ] **New discovery resource** (anything under `/.well-known/…`): add it to both `Link` response headers in `netlify.toml` (the `/` and `/*` entries) and to the Content-Types / Cache-Control block further down. Add a `<url>` entry to `public/sitemap.xml`.
+- [ ] **New discovery resource** (anything under `/.well-known/…`): add it to both `Link` response headers in `vercel.json` (the `/` and `/(.*)` entries) and to the Content-Types / Cache-Control block further down. Add a `<url>` entry to `public/sitemap.xml`.
 - [ ] **Content Signals** (`public/robots.txt`): if the `ai-train`, `search`, or `ai-input` defaults change, update the top-level `Content-Signal` line **and** the per-AI-crawler copies (they must agree).
 - [ ] **Markdown negotiation**: SSR (`app/ssr.tsx` / `app/utils/markdownHomeNegotiation.ts`) serves bundled `llms.txt` for `Accept: text/markdown` on `/` and `/index.html`. If the canonical markdown source moves, update the bundled import and `app/utils/acceptMarkdown.ts` if parsing rules change.
 - [ ] **Docs + changelog**: add `FEAT-SEO-004` coverage notes to `docs/FEATURES_SPECIFICATION.md` (Appendix B) for new tests, and list user-facing discovery changes under `CHANGELOG.md` → `[Unreleased]`.
@@ -588,7 +588,7 @@ Machine-readable metadata for autonomous agents lives alongside the LLM docs. Ke
 - **Routing and URLs**: Read [Routing and navigation](#routing-and-navigation) above, then `app/router.tsx`, `app/routing.tsx`, and `app/routes/`
 - **Data fetching**: See patterns in `app/api/hooks/`
 - **Styling**: Review existing components in `app/components/`
-- **Deployment**: Check `netlify.toml` and `RATE_LIMITING.md`
+- **Deployment**: Check `vercel.json` and `RATE_LIMITING.md`
 - **Caching & refresh times**: See `CACHING.md`
 - **Context optimization**: See `CONTEXT_OPTIMIZATION.md`
 - **LLM/AI discoverability**: See `docs/LLM_ACCESS.md`, `public/llms.txt`, `public/llms-full.txt`, and `public/robots.txt`

@@ -1,8 +1,8 @@
 # Cost Cutter Notepad
 
-Use this notepad to track Netlify costs, optimization opportunities, and efficiency metrics.
+Use this notepad to track Vercel costs, optimization opportunities, and efficiency metrics.
 
-## Current Netlify Usage
+## Current Vercel Usage
 
 ### Bandwidth
 
@@ -37,8 +37,11 @@ Use this notepad to track Netlify costs, optimization opportunities, and efficie
 
 ### Current Headers
 
-```toml
-# From netlify.toml
+```json
+{
+  "source": "/assets/:path*",
+  "headers": [{"key": "Cache-Control", "value": "public, max-age=31536000, immutable"}]
+}
 ```
 
 ### Recommended Changes
@@ -68,4 +71,4 @@ dist/server/:
 
 ## Notes
 
-<!-- Cost observations, Netlify tips, etc. -->
+<!-- Cost observations, Vercel tips, etc. -->
