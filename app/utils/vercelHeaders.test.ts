@@ -8,6 +8,8 @@ const repoRoot = join(fileURLToPath(new URL(".", import.meta.url)), "../..");
 const vercelJson = JSON.parse(
   readFileSync(join(repoRoot, "vercel.json"), "utf8"),
 ) as {
+  framework?: string;
+  buildCommand?: string;
   headers?: Array<{
     source: string;
     headers: Array<{key: string; value: string}>;
@@ -22,6 +24,12 @@ function headerValue(source: string, key: string): string | undefined {
 }
 
 describe("vercel.json headers", () => {
+  // Covers FEAT-SEO-004 — Vercel must use Nitro SSR, not the Vite SPA preset
+  it("declares TanStack Start so Vercel does not publish the Vite SPA shell", () => {
+    expect(vercelJson.framework).toBe("tanstack-start");
+    expect(vercelJson.buildCommand).toBe("pnpm build");
+  });
+
   it("attaches RFC 8288 Link headers on / and the catch-all source", () => {
     const rootLink = headerValue("/", "Link");
     const catchAllLink = headerValue("/(.*)", "Link");

@@ -127,6 +127,7 @@ This repository is often modified by automated agents. The following bar keeps t
 ### Vercel and Edge Functions
 
 - **Do not use Vercel Edge Functions or Edge Middleware** for this project unless there is explicit human approval. Avoid adding Edge middleware or Edge-deployed handlers (for example `middleware.ts` with the Edge runtime, `export const runtime = "edge"`, or Vercel config that moves SSR off Node). The explorer’s deployment model is TanStack Start SSR via Nitro on Vercel **Node** serverless (Fluid compute). Edge adds a different runtime, operational surface, and cost profile.
+- **Keep `"framework": "tanstack-start"` in `vercel.json`**. Root `index.html` is the Vite **dev** shell (`/app/client.tsx`). If Vercel detects this as a Vite SPA, it publishes that file; browsers then request `/app/client.tsx` and get `text/html` (MIME check fails). Do not set an `outputDirectory` that points at a static Vite `dist`.
 - **Check deployment diffs**: When a change touches `vercel.json`, Nitro/Vite deploy plugins, or files that would become Vercel functions, review it for accidental Edge Function adoption.
 
 ### Product and UX

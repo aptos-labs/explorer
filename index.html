@@ -129,6 +129,9 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- Vite `vite dev` shell only. Production HTML is SSR from
+         app/routes/__root.tsx (`<Scripts />` injects hashed /assets/*.js).
+         Do not publish this file as the production document. -->
     <script type="module" src="/app/client.tsx"></script>
     <!-- PWA Service Worker Registration -->
     <script>
