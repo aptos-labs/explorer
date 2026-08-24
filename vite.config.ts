@@ -1,15 +1,15 @@
+import {rm} from "node:fs/promises";
+import {join, resolve} from "node:path";
+import {fileURLToPath} from "node:url";
 import {codecovVitePlugin} from "@codecov/vite-plugin";
 import {tanstackStart} from "@tanstack/react-start/plugin/vite";
-import {nitro} from "nitro/vite";
 import react from "@vitejs/plugin-react-swc";
+import {nitro} from "nitro/vite";
 import {visualizer} from "rollup-plugin-visualizer";
 import type {PluginOption} from "vite";
 import {perEnvironmentPlugin} from "vite";
 import compression from "vite-plugin-compression";
 import viteSvgr from "vite-plugin-svgr";
-import {rm} from "node:fs/promises";
-import {join, resolve} from "node:path";
-import {fileURLToPath} from "node:url";
 import {configDefaults, defineConfig} from "vitest/config";
 import {
   isSpaIndexHtmlOutput,
@@ -47,7 +47,13 @@ export default defineConfig({
       },
     }),
     // On Vercel (`VERCEL=1`), pin the Node serverless preset — never vercel-edge.
-    nitro(process.env.VERCEL ? {preset: "vercel"} : undefined),
+    // `renderer: false` stops Nitro from treating root `index.html` as the
+    // catch-all HTML renderer (`renderer-template`), which would return the
+    // Vite dev shell (`/app/client.tsx`) from `/__server` instead of Start SSR.
+    nitro({
+      renderer: false,
+      ...(process.env.VERCEL ? {preset: "vercel"} : {}),
+    }),
     react(),
     viteSvgr(),
     // Pre-compress assets. Vercel also gzip/brotli-encodes at the CDN; the

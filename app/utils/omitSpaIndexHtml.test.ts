@@ -62,6 +62,7 @@ describe("resolveClientBuildInput", () => {
     const viteConfig = readFileSync(join(repoRoot, "vite.config.ts"), "utf8");
     expect(viteConfig).toContain("input: clientBuildInput");
     expect(viteConfig).toContain("resolveClientBuildInput");
+    expect(viteConfig).toContain("renderer: false");
   });
 });
 
