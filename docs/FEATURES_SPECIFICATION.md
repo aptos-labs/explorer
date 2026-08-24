@@ -1018,7 +1018,7 @@ top of the HTML site.
 | Aspect | Detail |
 |--------|--------|
 | **Link headers (RFC 8288)** | `app/ssr.tsx` attaches `Link` + `Vary: Accept` on every TanStack Start function response (`attachAgentDiscoveryHeaders`). `vercel.json` sets the same `Link` values on `/` and `/(.*)` for **static** assets (Vercel header rules do not always apply to SSR function responses). Advertised: `</.well-known/api-catalog>`, `</.well-known/agent-skills/index.json>`, `</.well-known/mcp/server-card.json>`, `</.well-known/agent-card.json>`, `</.well-known/oauth-protected-resource>`, `</llms.txt>`, `</llms-full.txt>`, `</auth.md>`, `</sitemap.xml>`. |
-| **Production HTML** | SSR from `app/routes/__root.tsx` (`<Scripts />` injects hashed client assets). Root `index.html` is the Vite **dev** shell (`/app/client.tsx`) and must not be the production document. `vercel.json` sets `"framework": "tanstack-start"` so Vercel uses Nitro’s Build Output API instead of the Vite SPA preset (which would serve that shell as `text/html` for `/app/client.tsx`). |
+| **Production HTML** | SSR from `app/routes/__root.tsx` (`<Scripts />` injects hashed client assets). Root `index.html` is the Vite **dev** shell (`/app/client.tsx`) and must not be the production document. `vite.config.ts` sets the client rollup/rolldown input to `app/client.tsx` so Nitro does not copy that shell into `.vercel/output/static`. A post-build strip removes any leftover `index.html` / `.gz` / `.br` from `dist`, `.output/public`, and `.vercel/output/static`. `vercel.json` sets `"framework": "tanstack-start"` and `"buildCommand": "pnpm build"` and must **not** set `outputDirectory` (a leftover dashboard Output Directory of `dist` republishes the SPA shell). |
 | **API catalog (RFC 9727)** | `public/.well-known/api-catalog` served as `application/linkset+json`. Lists upstream Aptos fullnode REST APIs (mainnet/testnet/devnet), the indexer GraphQL API, and the explorer itself, with `service-desc`, `service-doc`, and `status` links. |
 | **Agent Skills index** | `public/.well-known/agent-skills/index.json` conforms to cloudflare/agent-skills-discovery-rfc v0.2.0. Publishes `aptos-explorer-urls` and `aptos-explorer-search` skills, each with a SHA-256 `digest`. Regenerate via `node scripts/update-agent-skills-index.mjs`. |
 | **MCP Server Card** | `public/.well-known/mcp/server-card.json` publishes a draft SEP-1649 / SEP-2127 MCP Server Card with `serverInfo`, a WebMCP transport endpoint, read-only tool capabilities, and the currently exposed browser WebMCP navigation tools. Served as `application/json` with CORS enabled for agent discovery. |
@@ -1124,7 +1124,7 @@ top of the HTML site.
 |--------|--------|
 | **Manifest** | `public/manifest.json` — standalone display, Aptos theme colors (`#0F0E0B`), icons, screenshots, categories. |
 | **Service worker** | `public/sw.js` — manual registration (not Vite plugin, for SSR compatibility). Caches static assets (favicons, manifest), fetch handler with Aptos Labs domain checks, install/activate lifecycle. |
-| **Registration** | `index.html` registers `/sw.js` with `navigator.serviceWorker.register`. |
+| **Registration** | `app/client.tsx` calls `scheduleExplorerServiceWorkerRegistration` (`app/utils/registerServiceWorker.ts`) to register `/sw.js` with `navigator.serviceWorker.register`. Root `index.html` must not contain the registration script (that file is the Vite dev shell and must not ship as the production document). |
 
 ### FEAT-PWA-002 — PWA share button & header layout
 
@@ -1274,7 +1274,8 @@ top of the HTML site.
 | `app/utils/llmsRouteCoverage.test.ts` | FEAT-SEO-003 (LLM doc drift) |
 | `app/utils/agentSkillsIndex.test.ts` | FEAT-SEO-004 (agent-skills index schema, digest integrity, frontmatter) |
 | `app/utils/vercelHeaders.test.ts` | FEAT-SEO-004 (homepage and global RFC 8288 discovery `Link` headers; `framework: tanstack-start` so production is Nitro SSR, not the Vite SPA `index.html`) |
-| `app/utils/omitSpaIndexHtml.test.ts` | FEAT-SEO-004 (Vite SPA `index.html` / `.gz` / `.br` must not be treated as production HTML) |
+| `app/utils/omitSpaIndexHtml.test.ts` | FEAT-SEO-004 (Vite SPA `index.html` / `.gz` / `.br` must not be treated as production HTML; client build input is `app/client.tsx`; strip leftover shells from Nitro/Vercel output dirs) |
+| `app/utils/registerServiceWorker.test.ts` | FEAT-PWA-001 (service worker registration from the client bundle, not the Vite HTML shell) |
 | `app/utils/mcpServerCard.test.ts` | FEAT-SEO-004 (MCP Server Card minimum fields and advertised WebMCP tools) |
 | `app/utils/acceptMarkdown.test.ts` | FEAT-SEO-004 (`Accept: text/markdown` negotiation helper) |
 | `app/utils/markdownHomeNegotiation.test.ts` | FEAT-SEO-004 (SSR markdown response headers, homepage vs path stub, well-known skip) |

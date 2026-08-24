@@ -10,6 +10,7 @@ const vercelJson = JSON.parse(
 ) as {
   framework?: string;
   buildCommand?: string;
+  outputDirectory?: string;
   headers?: Array<{
     source: string;
     headers: Array<{key: string; value: string}>;
@@ -28,6 +29,10 @@ describe("vercel.json headers", () => {
   it("declares TanStack Start so Vercel does not publish the Vite SPA shell", () => {
     expect(vercelJson.framework).toBe("tanstack-start");
     expect(vercelJson.buildCommand).toBe("pnpm build");
+    // A dashboard leftover Output Directory of `dist` publishes the Vite SPA
+    // shell. Nitro's Vercel preset writes `.vercel/output` (Build Output API);
+    // never pin outputDirectory here.
+    expect(vercelJson.outputDirectory).toBeUndefined();
   });
 
   it("attaches RFC 8288 Link headers on / and the catch-all source", () => {

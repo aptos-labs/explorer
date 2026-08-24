@@ -38,7 +38,7 @@ Searched the app route tree for per-route `head:` callbacks (TanStack Router fil
 | `public/.well-known/agent-card.json` | A2A Agent Card (skill/capability discovery; no JSON-RPC task endpoint) |
 | `public/.well-known/oauth-protected-resource` | RFC 9728 PRM; empty `authorization_servers` (public site) |
 | `public/auth.md` | Auth.md-style document: no agent registration / no OAuth AS |
-| `vercel.json` | `framework: tanstack-start` (Nitro SSR, not Vite SPA); `Link` response headers (RFC 8288) on `/` and `/(.*)` pointing to the discovery files (static assets only) |
+| `vercel.json` | `framework: tanstack-start` (Nitro SSR, not Vite SPA); `buildCommand: pnpm build`; do not set `outputDirectory`; `Link` response headers (RFC 8288) on `/` and `/(.*)` pointing to the discovery files (static assets only) |
 | `app/ssr.tsx` + `app/utils/markdownHomeNegotiation.ts` | Outer SSR `fetch` serves markdown for `Accept: text/markdown` **before** TanStack Start's HTML-only Accept gate, and attaches discovery `Link` / `Vary: Accept` on HTML SSR responses |
 | `app/components/WebMCPProvider.tsx` + `app/components/webMcpTools.ts` | `navigator.modelContext` tools for browser-resident agents |
 

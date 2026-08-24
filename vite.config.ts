@@ -9,11 +9,22 @@ import compression from "vite-plugin-compression";
 import viteSvgr from "vite-plugin-svgr";
 import {rm} from "node:fs/promises";
 import {join, resolve} from "node:path";
+import {fileURLToPath} from "node:url";
 import {configDefaults, defineConfig} from "vitest/config";
 import {
   isSpaIndexHtmlOutput,
+  resolveClientBuildInput,
   SPA_INDEX_HTML_FILES,
+  stripSpaIndexHtmlFromBuildOutputs,
 } from "./app/utils/omitSpaIndexHtml";
+
+const repoRoot = fileURLToPath(new URL(".", import.meta.url));
+const clientBuildInput = resolveClientBuildInput(repoRoot);
+
+function vitePluginOutDir(plugin: unknown): string | undefined {
+  return (plugin as {environment?: {config?: {build?: {outDir?: string}}}})
+    .environment?.config?.build?.outDir;
+}
 
 // Vercel sets VERCEL_ENV at build time (production | preview | development).
 // Vite only exposes VITE_* to the client, so copy it unless already set.
@@ -44,6 +55,8 @@ export default defineConfig({
     compression({algorithm: "gzip", ext: ".gz"}),
     compression({algorithm: "brotliCompress", ext: ".br"}),
     // After compression: drop the Vite SPA shell so it cannot shadow SSR HTML.
+    // Vite 8 / Rolldown often omits `options.dir` in writeBundle; also strip
+    // known Nitro/Vercel output roots in closeBundle.
     {
       name: "omit-spa-index-html",
       apply: "build",
@@ -56,14 +69,29 @@ export default defineConfig({
         }
       },
       async writeBundle(options) {
-        if (!options.dir) return;
-        const outDir = resolve(options.dir);
+        const dir = options.dir ?? vitePluginOutDir(this);
+        if (!dir) return;
+        const outDir = resolve(dir);
         if (outDir === resolve(process.cwd())) return;
         await Promise.all(
           SPA_INDEX_HTML_FILES.map((name) =>
             rm(join(outDir, name), {force: true}),
           ),
         );
+      },
+      async closeBundle() {
+        const extraDirs: string[] = [];
+        const envOutDir = vitePluginOutDir(this);
+        if (envOutDir) extraDirs.push(resolve(envOutDir));
+        const removed = await stripSpaIndexHtmlFromBuildOutputs(
+          repoRoot,
+          extraDirs,
+        );
+        if (removed.length > 0) {
+          console.info(
+            `[omit-spa-index-html] removed ${removed.length} SPA index file(s)`,
+          );
+        }
       },
     },
     // Bundle analyzer - generates stats.html after build (run: pnpm build && open stats.html)
@@ -125,10 +153,17 @@ export default defineConfig({
   environments: {
     client: {
       build: {
+        // Nitro defaults this to `renderer.template` (`index.html`). That
+        // copies the Vite dev shell into `.vercel/output/static`, and
+        // Vercel’s filesystem handler then serves it for `/`.
+        rollupOptions: {
+          input: clientBuildInput,
+        },
         // Vite 8 uses Rolldown. The object form `output.manualChunks` is no
         // longer supported; use Rolldown's `codeSplitting.groups` instead.
         // Each group's `test` regex is matched against the resolved module id.
         rolldownOptions: {
+          input: clientBuildInput,
           output: {
             codeSplitting: {
               groups: [
