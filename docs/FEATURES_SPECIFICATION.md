@@ -1160,6 +1160,7 @@ top of the HTML site.
 |--------|--------|
 | **Manifest** | `public/manifest.json` — standalone display, Aptos theme colors (`#0F0E0B`), icons, screenshots, categories. |
 | **Service worker** | `public/sw.js` — manual registration (not Vite plugin, for SSR compatibility). Caches static assets (favicons, manifest), fetch handler with Aptos Labs domain checks, install/activate lifecycle. |
+| **Deployment freshness** | JS and CSS requests use network-first with a versioned cache, so a deployed chunk update is picked up instead of being hidden behind a stale cache and reported as an "Update Available" error. |
 | **Registration** | `app/client.tsx` calls `scheduleExplorerServiceWorkerRegistration` (`app/utils/registerServiceWorker.ts`), which registers `/sw.js` at scope `/` on `window` `load` (immediately if the document already loaded). Registration must live in the client bundle: production HTML is SSR, so an inline script in a static HTML shell never reaches the browser. |
 
 ### FEAT-PWA-002 — PWA share button & header layout
