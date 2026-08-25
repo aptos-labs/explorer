@@ -1,18 +1,34 @@
 import {Analytics} from "@vercel/analytics/react";
-import {vercelAnalyticsBeforeSend} from "../utils/vercelAnalytics";
+import {SpeedInsights} from "@vercel/speed-insights/react";
+import {useRouterState} from "@tanstack/react-router";
+import {
+  sanitizeVercelAnalyticsPathname,
+  vercelAnalyticsBeforeSend,
+  vercelSpeedInsightsBeforeSend,
+} from "../utils/vercelAnalytics";
 
 /**
- * Client-side Vercel Web Analytics (FEAT-TELEMETRY-002).
+ * Client-side Vercel Web Analytics and Speed Insights (FEAT-TELEMETRY-002/003).
  *
- * The React component injects the tracking script on the client only. Page
- * URLs are redacted in `beforeSend` so addresses, hashes, and search text
- * are not sent to Vercel.
+ * Both scripts inject on the client only. Page URLs and vital routes are
+ * redacted so addresses, hashes, and search text are not sent to Vercel.
  */
 export function VercelAnalytics() {
+  const route = useRouterState({
+    select: (s) => sanitizeVercelAnalyticsPathname(s.location.pathname),
+  });
+
   return (
-    <Analytics
-      framework="tanstack-start"
-      beforeSend={vercelAnalyticsBeforeSend}
-    />
+    <>
+      <Analytics
+        framework="tanstack-start"
+        beforeSend={vercelAnalyticsBeforeSend}
+      />
+      <SpeedInsights
+        framework="tanstack-start"
+        route={route}
+        beforeSend={vercelSpeedInsightsBeforeSend}
+      />
+    </>
   );
 }

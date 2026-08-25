@@ -7,6 +7,7 @@ import {
   redactVercelAnalyticsUrl,
   sanitizeVercelAnalyticsPathname,
   vercelAnalyticsBeforeSend,
+  vercelSpeedInsightsBeforeSend,
 } from "./vercelAnalytics";
 
 const repoRoot = join(fileURLToPath(new URL(".", import.meta.url)), "../..");
@@ -102,10 +103,35 @@ describe("FEAT-TELEMETRY-002 — vercelAnalyticsBeforeSend", () => {
   });
 });
 
+describe("FEAT-TELEMETRY-003 — vercelSpeedInsightsBeforeSend", () => {
+  it("redacts the URL and sets route to the template pathname", () => {
+    expect(
+      vercelSpeedInsightsBeforeSend({
+        type: "vital",
+        url: "https://explorer.aptoslabs.com/account/0x1/transactions?page=2",
+        route: "/account/0x1/transactions",
+      }),
+    ).toEqual({
+      type: "vital",
+      url: "https://explorer.aptoslabs.com/account/$address/transactions",
+      route: "/account/$address/transactions",
+    });
+  });
+});
+
 describe("FEAT-TELEMETRY-002 — mount site", () => {
   it("mounts VercelAnalytics from the root route", () => {
     const root = readFileSync(join(repoRoot, "app/routes/__root.tsx"), "utf8");
     expect(root).toContain("<VercelAnalytics />");
+  });
+
+  it("injects Speed Insights from VercelAnalytics", () => {
+    const component = readFileSync(
+      join(repoRoot, "app/components/VercelAnalytics.tsx"),
+      "utf8",
+    );
+    expect(component).toContain("SpeedInsights");
+    expect(component).toContain("@vercel/speed-insights/react");
   });
 
   it("does not cache Vercel insights endpoints in the service worker", () => {
