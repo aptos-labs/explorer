@@ -15,6 +15,7 @@ const MARKDOWN_HOME_PATHS = new Set(["/", "/index.html"]);
 function shouldNegotiateMarkdown(pathname: string): boolean {
   if (pathname.startsWith("/assets/")) return false;
   if (pathname.startsWith("/.well-known/")) return false;
+  if (pathname.startsWith("/_vercel/")) return false;
   if (pathname === "/sw.js") return false;
   if (/\.[a-z0-9]+$/i.test(pathname) && pathname !== "/index.html") {
     return false;

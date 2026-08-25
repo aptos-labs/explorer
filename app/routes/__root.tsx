@@ -45,6 +45,7 @@ import {Fallback} from "../components/layout/Fallback";
 import Footer from "../components/layout/Footer";
 import Header from "../components/layout/Header";
 import RateLimitDrawer from "../components/RateLimitDrawer";
+import {VercelAnalytics} from "../components/VercelAnalytics";
 import {WebMCPProvider} from "../components/WebMCPProvider";
 import {ProvideColorMode} from "../context/color-mode";
 import {RateLimitProvider} from "../context/rate-limit";
@@ -165,6 +166,7 @@ function RootComponent() {
                       <LocalnetUnavailableModal />
                       <RateLimitDrawer />
                       <WebMCPProvider />
+                      <VercelAnalytics />
                       <GraphqlClientProvider>
                         <WalletAdapterProvider>
                           <Box
