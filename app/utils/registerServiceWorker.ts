@@ -56,11 +56,12 @@ export async function unregisterExplorerServiceWorkers(
     | null
     | undefined,
   logger: ServiceWorkerLogger = console,
-): Promise<void> {
-  if (!serviceWorker?.getRegistrations) return;
+): Promise<boolean> {
+  if (!serviceWorker?.getRegistrations) return false;
 
   try {
     const registrations = await serviceWorker.getRegistrations();
+    let unregistered = false;
     await Promise.all(
       registrations
         .filter((registration) => {
@@ -72,12 +73,15 @@ export async function unregisterExplorerServiceWorkers(
         })
         .map(async (registration) => {
           if (await registration.unregister()) {
+            unregistered = true;
             logger.log("SW unregistered:", registration.scope);
           }
         }),
     );
+    return unregistered;
   } catch (error) {
     logger.log("SW unregister failed:", error);
+    return false;
   }
 }
 
