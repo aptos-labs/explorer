@@ -13,7 +13,10 @@ function disableServerCompression(server: ViteDevServer | PreviewServer) {
   // Vite's compression middleware cannot safely consume the flattened header
   // array that srvx passes to writeHead(). Keep SSR responses uncompressed in
   // dev/preview; built static assets still use their pre-compressed files.
-  server.middlewares.use((_req, res, next) => {
+  server.middlewares.use((req, res, next) => {
+    // Prevent Vite's compression middleware from negotiating Brotli before
+    // srvx writes its flattened response headers.
+    req.headers["accept-encoding"] = "identity";
     res.setHeader("Content-Encoding", "identity");
     next();
   });

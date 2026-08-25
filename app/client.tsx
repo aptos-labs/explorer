@@ -13,7 +13,14 @@ setupModuleErrorHandler();
 if (import.meta.env.PROD) {
   scheduleExplorerServiceWorkerRegistration(window);
 } else {
-  void unregisterExplorerServiceWorkers(window.navigator.serviceWorker);
+  void unregisterExplorerServiceWorkers(window.navigator.serviceWorker).then(
+    (unregistered) => {
+      // The current page can remain controlled until the next navigation.
+      // Reload once after removing the old registration so dev immediately
+      // runs without production cache interception.
+      if (unregistered) window.location.reload();
+    },
+  );
 }
 
 // Hydrate the entire document since the root component renders the full HTML structure
