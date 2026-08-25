@@ -1,3 +1,4 @@
+import type {OutgoingHttpHeaders} from "node:http";
 import {codecovVitePlugin} from "@codecov/vite-plugin";
 import {tanstackStart} from "@tanstack/react-start/plugin/vite";
 import react from "@vitejs/plugin-react-swc";
@@ -8,6 +9,80 @@ import {perEnvironmentPlugin} from "vite";
 import compression from "vite-plugin-compression";
 import viteSvgr from "vite-plugin-svgr";
 import {configDefaults, defineConfig} from "vitest/config";
+
+function normalizeNodeHeaders(
+  headers: unknown,
+): OutgoingHttpHeaders | undefined {
+  if (!Array.isArray(headers)) return undefined;
+
+  const normalized: OutgoingHttpHeaders = {};
+  const addHeader = (name: unknown, value: unknown) => {
+    if (typeof name !== "string") return;
+    const headerValue =
+      typeof value === "string" || typeof value === "number"
+        ? value
+        : String(value);
+    const stringHeaderValue = String(headerValue);
+    const existing = normalized[name];
+    normalized[name] =
+      existing === undefined
+        ? headerValue
+        : Array.isArray(existing)
+          ? [...existing, stringHeaderValue]
+          : [String(existing), stringHeaderValue];
+  };
+
+  if (headers.every(Array.isArray)) {
+    for (const pair of headers) {
+      addHeader(pair[0], pair[1]);
+    }
+  } else {
+    for (let index = 0; index < headers.length; index += 2) {
+      addHeader(headers[index], headers[index + 1]);
+    }
+  }
+
+  return normalized;
+}
+
+function patchServerResponseHeaders(server: ViteDevServer | PreviewServer) {
+  server.middlewares.use((_req, res, next) => {
+    const writeHead = res.writeHead.bind(res) as unknown as (
+      ...args: unknown[]
+    ) => unknown;
+    res.writeHead = ((
+      statusCode: number,
+      statusMessageOrHeaders?: string | OutgoingHttpHeaders | unknown[],
+      maybeHeaders?: OutgoingHttpHeaders | unknown[],
+    ) => {
+      const hasStatusMessage = typeof statusMessageOrHeaders === "string";
+      const rawHeaders = hasStatusMessage
+        ? maybeHeaders
+        : statusMessageOrHeaders;
+      const normalizedHeaders = normalizeNodeHeaders(rawHeaders);
+
+      if (normalizedHeaders) {
+        if (hasStatusMessage) {
+          return writeHead(
+            statusCode,
+            statusMessageOrHeaders,
+            normalizedHeaders,
+          );
+        }
+        return writeHead(statusCode, normalizedHeaders);
+      }
+
+      if (maybeHeaders !== undefined) {
+        return writeHead(statusCode, statusMessageOrHeaders, maybeHeaders);
+      }
+      if (statusMessageOrHeaders !== undefined) {
+        return writeHead(statusCode, statusMessageOrHeaders);
+      }
+      return writeHead(statusCode);
+    }) as typeof res.writeHead;
+    next();
+  });
+}
 
 function disableServerCompression(server: ViteDevServer | PreviewServer) {
   // Vite's compression middleware cannot safely consume the flattened header
@@ -25,9 +100,11 @@ function disableServerCompression(server: ViteDevServer | PreviewServer) {
 const serverCompressionWorkaround: PluginOption = {
   name: "explorer:server-compression-workaround",
   configureServer(server) {
+    patchServerResponseHeaders(server);
     disableServerCompression(server);
   },
   configurePreviewServer(server) {
+    patchServerResponseHeaders(server);
     disableServerCompression(server);
   },
 };
