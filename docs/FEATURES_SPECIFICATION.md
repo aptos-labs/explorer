@@ -1019,7 +1019,8 @@ top of the HTML site.
 
 | Aspect | Detail |
 |--------|--------|
-| **Link headers (RFC 8288)** | `app/ssr.tsx` attaches `Link` + `Vary: Accept` on every TanStack Start function response (`attachAgentDiscoveryHeaders`). `netlify.toml` sets the same `Link` values on `/` and `/*` for **static** assets (Netlify header rules do not apply to SSR function responses). Advertised: `</.well-known/api-catalog>`, `</.well-known/agent-skills/index.json>`, `</.well-known/mcp/server-card.json>`, `</.well-known/agent-card.json>`, `</.well-known/oauth-protected-resource>`, `</llms.txt>`, `</llms-full.txt>`, `</auth.md>`, `</sitemap.xml>`. |
+| **Link headers (RFC 8288)** | `app/ssr.tsx` attaches `Link` + `Vary: Accept` on every TanStack Start function response (`attachAgentDiscoveryHeaders`). `vercel.json` sets the same `Link` values on `/` and `/(.*)` for **static** assets (Vercel header rules do not always apply to SSR function responses). Advertised: `</.well-known/api-catalog>`, `</.well-known/agent-skills/index.json>`, `</.well-known/mcp/server-card.json>`, `</.well-known/agent-card.json>`, `</.well-known/oauth-protected-resource>`, `</llms.txt>`, `</llms-full.txt>`, `</auth.md>`, `</sitemap.xml>`. |
+| **Production HTML** | SSR from `app/routes/__root.tsx` (`<HeadContent />` for metadata, `<Scripts />` for hashed client assets). The repository has **no root `index.html`**, and `vite.config.ts` passes `renderer: false` to `nitro()` — otherwise Nitro adopts a root `index.html` as `renderer.template`, mounts `renderer-template` on `/**`, and never installs the `ssr-renderer` handler, so every response is that raw HTML file. `vercel.json` sets `"framework": "tanstack-start"` and `"buildCommand": "pnpm build"` with no `outputDirectory`, so Vercel consumes Nitro’s `.vercel/output` Build Output API. |
 | **API catalog (RFC 9727)** | `public/.well-known/api-catalog` served as `application/linkset+json`. Lists upstream Aptos fullnode REST APIs (mainnet/testnet/devnet), the indexer GraphQL API, and the explorer itself, with `service-desc`, `service-doc`, and `status` links. |
 | **Agent Skills index** | `public/.well-known/agent-skills/index.json` conforms to cloudflare/agent-skills-discovery-rfc v0.2.0. Publishes `aptos-explorer-urls` and `aptos-explorer-search` skills, each with a SHA-256 `digest`. Regenerate via `node scripts/update-agent-skills-index.mjs`. |
 | **MCP Server Card** | `public/.well-known/mcp/server-card.json` publishes a draft SEP-1649 / SEP-2127 MCP Server Card with `serverInfo`, a WebMCP transport endpoint, read-only tool capabilities, and the currently exposed browser WebMCP navigation tools. Served as `application/json` with CORS enabled for agent discovery. |
@@ -1064,12 +1065,12 @@ top of the HTML site.
 | **Feature bar** | Non-prod → red banner: "This is the {featureLabel}." |
 | **Affects** | Aptos Names promo banner (only in dev/earlydev mode). |
 
-### FEAT-FLAGS-004 — Netlify Preview
+### FEAT-FLAGS-004 — Preview Deployments
 
 | Aspect | Detail |
 |--------|--------|
-| **Check** | `isNetlifyPreview`. |
-| **Affects** | Suppresses VITE_* API keys on preview/branch deploy builds. |
+| **Check** | `isPreviewDeployment` (Vercel `VITE_VERCEL_ENV` / `VERCEL_ENV`, plus leftover Netlify `VITE_NETLIFY_CONTEXT` / `CONTEXT` aliases). |
+| **Affects** | Suppresses API keys on preview builds. |
 
 ---
 
@@ -1125,7 +1126,7 @@ top of the HTML site.
 |--------|--------|
 | **Manifest** | `public/manifest.json` — standalone display, Aptos theme colors (`#0F0E0B`), icons, screenshots, categories. |
 | **Service worker** | `public/sw.js` — manual registration (not Vite plugin, for SSR compatibility). Caches static assets (favicons, manifest), fetch handler with Aptos Labs domain checks, install/activate lifecycle. |
-| **Registration** | `index.html` registers `/sw.js` with `navigator.serviceWorker.register`. |
+| **Registration** | `app/client.tsx` calls `scheduleExplorerServiceWorkerRegistration` (`app/utils/registerServiceWorker.ts`), which registers `/sw.js` at scope `/` on `window` `load` (immediately if the document already loaded). Registration must live in the client bundle: production HTML is SSR, so an inline script in a static HTML shell never reaches the browser. |
 
 ### FEAT-PWA-002 — PWA share button & header layout
 
@@ -1274,7 +1275,9 @@ top of the HTML site.
 | `app/utils/moduleErrorHandler.test.ts` | FEAT-ERROR-001 (chunk error handling, reload behavior) |
 | `app/utils/llmsRouteCoverage.test.ts` | FEAT-SEO-003 (LLM doc drift) |
 | `app/utils/agentSkillsIndex.test.ts` | FEAT-SEO-004 (agent-skills index schema, digest integrity, frontmatter) |
-| `app/utils/netlifyHeaders.test.ts` | FEAT-SEO-004 (homepage and global RFC 8288 discovery `Link` headers) |
+| `app/utils/vercelHeaders.test.ts` | FEAT-SEO-004 (homepage and global RFC 8288 discovery `Link` headers; `framework: tanstack-start`, `buildCommand`, and no pinned `outputDirectory` so production is Nitro SSR) |
+| `app/utils/nitroSsrRenderer.test.ts` | FEAT-SEO-004 (`nitro({renderer: false})` and no root `index.html`, so Start SSR owns the `/**` route instead of Nitro's `renderer-template`) |
+| `app/utils/registerServiceWorker.test.ts` | FEAT-PWA-001 (service worker registration from the hydrated client bundle) |
 | `app/utils/mcpServerCard.test.ts` | FEAT-SEO-004 (MCP Server Card minimum fields and advertised WebMCP tools) |
 | `app/utils/acceptMarkdown.test.ts` | FEAT-SEO-004 (`Accept: text/markdown` negotiation helper) |
 | `app/utils/markdownHomeNegotiation.test.ts` | FEAT-SEO-004 (SSR markdown response headers, homepage vs path stub, well-known skip) |

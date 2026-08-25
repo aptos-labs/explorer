@@ -8,7 +8,7 @@ Use this notepad to track architecture decisions, feature planning, and system d
 - **Routing**: TanStack Router (file-based)
 - **Data Fetching**: TanStack Query (React Query)
 - **Styling**: [Check existing components]
-- **Deployment**: Netlify
+- **Deployment**: Vercel
 
 ## Active Planning
 

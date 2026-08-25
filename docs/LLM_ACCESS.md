@@ -38,7 +38,8 @@ Searched the app route tree for per-route `head:` callbacks (TanStack Router fil
 | `public/.well-known/agent-card.json` | A2A Agent Card (skill/capability discovery; no JSON-RPC task endpoint) |
 | `public/.well-known/oauth-protected-resource` | RFC 9728 PRM; empty `authorization_servers` (public site) |
 | `public/auth.md` | Auth.md-style document: no agent registration / no OAuth AS |
-| `netlify.toml` | `Link` response headers (RFC 8288) on `/` and `/*` pointing to the discovery files (static assets only) |
+| `vercel.json` | `framework: tanstack-start` + `buildCommand: pnpm build`, no `outputDirectory` (Nitro SSR, not Vite SPA); `Link` response headers (RFC 8288) on `/` and `/(.*)` pointing to the discovery files (static assets only) |
+| `vite.config.ts` | `nitro({renderer: false})` and no root `index.html`, so TanStack Start SSR — not Nitro's `renderer-template` — answers `/**` |
 | `app/ssr.tsx` + `app/utils/markdownHomeNegotiation.ts` | Outer SSR `fetch` serves markdown for `Accept: text/markdown` **before** TanStack Start's HTML-only Accept gate, and attaches discovery `Link` / `Vary: Accept` on HTML SSR responses |
 | `app/components/WebMCPProvider.tsx` + `app/components/webMcpTools.ts` | `navigator.modelContext` tools for browser-resident agents |
 
@@ -59,7 +60,7 @@ to refresh `index.json` SHA-256 digests. The drift test `app/utils/agentSkillsIn
 [`app/routeTree.gen.ts`](../app/routeTree.gen.ts) is **generated** (gitignored). Config: [`tsr.config.json`](../tsr.config.json) (must stay aligned with `TanStackRouterVite` in [`vite.config.ts`](../vite.config.ts)).
 
 - **Local:** `pnpm routes:generate`, or it runs automatically before `dev`, `start`, `build`, `lint`, `test`, and `check` via `pre*` scripts.
-- **CI / Netlify:** `pnpm build` and [`pnpm ci:verify`](../package.json) run generation first; clone + `pnpm install` then `pnpm lint` (or any of the above) recreates the file.
+- **CI / Vercel:** `pnpm build` and [`pnpm ci:verify`](../package.json) run generation first; clone + `pnpm install` then `pnpm lint` (or any of the above) recreates the file.
 
 ## DNS-AID and Web Bot Auth (not in this repo)
 

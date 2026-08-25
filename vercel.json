@@ -1,0 +1,240 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "tanstack-start",
+  "buildCommand": "pnpm build",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "geolocation=(), microphone=(), camera=(), usb=(), payment=()"
+        },
+        { "key": "X-XSS-Protection", "value": "1; mode=block" },
+        { "key": "Vary", "value": "Accept" },
+        {
+          "key": "Link",
+          "value": "</.well-known/api-catalog>; rel=\"api-catalog\"; type=\"application/linkset+json\", </.well-known/agent-skills/index.json>; rel=\"https://agentskills.io/rel/index\"; type=\"application/json\", </.well-known/mcp/server-card.json>; rel=\"service-desc\"; type=\"application/json\"; title=\"MCP Server Card\", </.well-known/agent-card.json>; rel=\"describedby\"; type=\"application/json\"; title=\"A2A Agent Card\", </.well-known/oauth-protected-resource>; rel=\"oauth-protected-resource\"; type=\"application/json\", </llms.txt>; rel=\"alternate\"; type=\"text/plain\"; title=\"LLM Documentation (Summary)\", </llms-full.txt>; rel=\"alternate\"; type=\"text/plain\"; title=\"LLM Documentation (Full)\", </auth.md>; rel=\"describedby\"; type=\"text/markdown\"; title=\"auth.md\", </sitemap.xml>; rel=\"sitemap\"; type=\"application/xml\""
+        }
+      ]
+    },
+    {
+      "source": "/",
+      "headers": [
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "geolocation=(), microphone=(), camera=(), usb=(), payment=()"
+        },
+        { "key": "X-XSS-Protection", "value": "1; mode=block" },
+        { "key": "Vary", "value": "Accept" },
+        {
+          "key": "Link",
+          "value": "</.well-known/api-catalog>; rel=\"api-catalog\"; type=\"application/linkset+json\", </.well-known/agent-skills/index.json>; rel=\"https://agentskills.io/rel/index\"; type=\"application/json\", </.well-known/mcp/server-card.json>; rel=\"service-desc\"; type=\"application/json\"; title=\"MCP Server Card\", </.well-known/agent-card.json>; rel=\"describedby\"; type=\"application/json\"; title=\"A2A Agent Card\", </.well-known/oauth-protected-resource>; rel=\"oauth-protected-resource\"; type=\"application/json\", </llms.txt>; rel=\"alternate\"; type=\"text/plain\"; title=\"LLM Documentation (Summary)\", </llms-full.txt>; rel=\"alternate\"; type=\"text/plain\"; title=\"LLM Documentation (Full)\", </auth.md>; rel=\"describedby\"; type=\"text/markdown\"; title=\"auth.md\", </sitemap.xml>; rel=\"sitemap\"; type=\"application/xml\""
+        }
+      ]
+    },
+    {
+      "source": "/assets/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.*).svg",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
+    },
+    {
+      "source": "/(.*).png",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
+    },
+    {
+      "source": "/(.*).ico",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
+    },
+    {
+      "source": "/sw.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        },
+        { "key": "Service-Worker-Allowed", "value": "/" }
+      ]
+    },
+    {
+      "source": "/workbox-(.*).js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/manifest.webmanifest",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=86400" },
+        { "key": "Content-Type", "value": "application/manifest+json" }
+      ]
+    },
+    {
+      "source": "/manifest.json",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=86400" },
+        { "key": "Content-Type", "value": "application/manifest+json" }
+      ]
+    },
+    {
+      "source": "/llms.txt",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=86400" },
+        { "key": "Content-Type", "value": "text/plain; charset=utf-8" },
+        { "key": "X-Robots-Tag", "value": "noarchive" }
+      ]
+    },
+    {
+      "source": "/llms-full.txt",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=86400" },
+        { "key": "Content-Type", "value": "text/plain; charset=utf-8" },
+        { "key": "X-Robots-Tag", "value": "noarchive" }
+      ]
+    },
+    {
+      "source": "/sitemap.xml",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=3600" },
+        { "key": "Content-Type", "value": "application/xml; charset=utf-8" }
+      ]
+    },
+    {
+      "source": "/robots.txt",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=86400" },
+        { "key": "Content-Type", "value": "text/plain; charset=utf-8" }
+      ]
+    },
+    {
+      "source": "/.well-known/api-catalog",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=3600" },
+        { "key": "Content-Type", "value": "application/linkset+json" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    },
+    {
+      "source": "/.well-known/agent-skills/index.json",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=3600" },
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    },
+    {
+      "source": "/.well-known/mcp/server-card.json",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=3600" },
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    },
+    {
+      "source": "/.well-known/agent-card.json",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=3600" },
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    },
+    {
+      "source": "/.well-known/oauth-protected-resource",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=3600" },
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    },
+    {
+      "source": "/auth.md",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=86400" },
+        {
+          "key": "Content-Type",
+          "value": "text/markdown; charset=utf-8"
+        },
+        { "key": "X-Robots-Tag", "value": "noarchive" }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "explorer.devnet.aptos.dev" }],
+      "destination": "https://explorer.aptoslabs.com/:path*?network=devnet",
+      "statusCode": 301
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "devnet.aptos.dev" }],
+      "destination": "https://explorer.aptoslabs.com/:path*?network=devnet",
+      "statusCode": 301
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "explorer.testnet.aptos.dev" }],
+      "destination": "https://explorer.aptoslabs.com/:path*?network=testnet",
+      "statusCode": 301
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "testnet.aptos.dev" }],
+      "destination": "https://explorer.aptoslabs.com/:path*?network=testnet",
+      "statusCode": 301
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "explorer.mainnet.aptos.dev" }],
+      "destination": "https://explorer.aptoslabs.com/:path*?network=mainnet",
+      "statusCode": 301
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "mainnet.aptos.dev" }],
+      "destination": "https://explorer.aptoslabs.com/:path*?network=mainnet",
+      "statusCode": 301
+    },
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "explorer.aptos.dev" }],
+      "destination": "https://explorer.aptoslabs.com/:path*?network=mainnet",
+      "statusCode": 301
+    }
+  ]
+}

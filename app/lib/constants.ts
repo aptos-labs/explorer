@@ -68,12 +68,16 @@ const clientApiKeys: ApiKeys = {
 };
 
 /**
- * True when the build was produced by a Netlify preview deployment (deploy-preview
- * or branch-deploy context). API keys are intentionally suppressed for these
- * contexts because the keys are not scoped to preview deployment URLs.
+ * True when this client bundle was built for a hosting preview (Vercel
+ * preview, or a leftover Netlify deploy-preview / branch-deploy). API keys
+ * are suppressed because they are not scoped to preview URLs.
  * Local development and production builds are unaffected.
+ *
+ * `VITE_NETLIFY_CONTEXT` is kept as a read alias so leftover Netlify env
+ * still works during the cutover.
  */
-const isNetlifyPreview =
+const isPreviewDeployment =
+  import.meta.env.VITE_VERCEL_ENV === "preview" ||
   import.meta.env.VITE_NETLIFY_CONTEXT === "deploy-preview" ||
   import.meta.env.VITE_NETLIFY_CONTEXT === "branch-deploy";
 
@@ -116,11 +120,11 @@ export function warnIfClientMissingApiKey(network_name: NetworkName): void {
 const warnedNetworksMissingServerApiKey = new Set<NetworkName>();
 
 /**
- * Emit a one-time `console.error` on the server (SSR / Netlify Functions)
+ * Emit a one-time `console.error` on the server (SSR / Vercel Functions)
  * when `getServerApiKey` cannot find an `APTOS_<NETWORK>_API_KEY` for a
  * network that normally has one. Mirrors `warnIfClientMissingApiKey` for
  * the backend, so missing-key misconfigurations show up loudly in
- * function logs (Netlify, Sentry, etc.) instead of silently dropping
+ * function logs (Vercel, Sentry, etc.) instead of silently dropping
  * SSR / GraphQL traffic into the anonymous rate-limit bucket.
  *
  * Like the client warning, this fires at most once per network per
@@ -151,7 +155,7 @@ export function resetMissingApiKeyWarnings(): void {
 /**
  * Get the client-side API key for a network.
  * This key is safe to expose in the browser (client API key).
- * Returns undefined on Netlify preview builds unless an explicit override is
+ * Returns undefined on preview deployments unless an explicit override is
  * provided by the user in the browser.
  *
  * Emits a one-time `console.error` on the client when no key is available
@@ -167,7 +171,7 @@ export function getApiKey(
     return normalizedOverride;
   }
 
-  if (isNetlifyPreview) {
+  if (isPreviewDeployment) {
     warnIfClientMissingApiKey(network_name);
     return undefined;
   }
@@ -182,19 +186,24 @@ export function getApiKey(
  * Get the server-side API key for a network.
  * Reads from APTOS_<NETWORK>_API_KEY (no VITE_ prefix, never sent to browser).
  * Falls back to the client key if no server key is configured.
- * Returns undefined on Netlify preview builds (checked via the CONTEXT runtime var).
+ * Returns undefined on preview deployments (Vercel `VERCEL_ENV=preview`,
+ * or leftover Netlify `CONTEXT=deploy-preview|branch-deploy`).
  *
  * Emits a one-time `console.error` in the server process when no server
  * key (and no client-side fallback) is available for a network that
  * normally has one, so missing-key misconfigurations surface in
- * Netlify Function logs / Sentry instead of silently shifting SSR
+ * Vercel Function logs / Sentry instead of silently shifting SSR
  * traffic into the anonymous rate-limit bucket.
  */
 export function getServerApiKey(network_name: NetworkName): string | undefined {
-  // Netlify sets CONTEXT at SSR function runtime; suppress keys for preview contexts.
+  // Vercel sets VERCEL_ENV at SSR runtime. CONTEXT is the Netlify alias
+  // kept so leftover preview env still suppresses keys during cutover.
+  const vercelEnv =
+    typeof process !== "undefined" ? process.env.VERCEL_ENV : undefined;
   const netlifyContext =
     typeof process !== "undefined" ? process.env.CONTEXT : undefined;
   if (
+    vercelEnv === "preview" ||
     netlifyContext === "deploy-preview" ||
     netlifyContext === "branch-deploy"
   ) {

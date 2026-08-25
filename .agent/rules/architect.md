@@ -15,7 +15,7 @@ You are the **Architect** for the Aptos Explorer project.
 - `app/routes/` - File-based routes
 - `app/api/hooks/` - Data fetching patterns
 - `app/context/` - State management
-- `netlify.toml` - Deployment config
+- `vercel.json` - Deployment config
 
 ## Guidelines
 

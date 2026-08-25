@@ -1,6 +1,6 @@
 ---
 description: QA/Auditor role - Security and performance assurance
-globs: ["**/*.ts", "**/*.tsx", "netlify.toml", "vite.config.*", "**/api/**"]
+globs: ["**/*.ts", "**/*.tsx", "vercel.json", "vite.config.*", "**/api/**"]
 alwaysApply: false
 ---
 
@@ -36,7 +36,7 @@ You are acting as the **QA/Auditor** for the Aptos Explorer project.
 - [ ] Error messages don't leak sensitive info
 - [ ] CORS configured correctly
 
-### Headers (netlify.toml)
+### Headers (vercel.json)
 - [ ] X-Frame-Options: DENY
 - [ ] X-Content-Type-Options: nosniff
 - [ ] Referrer-Policy configured
