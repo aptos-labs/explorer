@@ -10,6 +10,7 @@ const vercelJson = JSON.parse(
 ) as {
   framework?: string;
   buildCommand?: string;
+  outputDirectory?: string;
   headers?: Array<{
     source: string;
     headers: Array<{key: string; value: string}>;
@@ -25,9 +26,12 @@ function headerValue(source: string, key: string): string | undefined {
 
 describe("vercel.json headers", () => {
   // Covers FEAT-SEO-004 — Vercel must use Nitro SSR, not the Vite SPA preset
-  it("declares TanStack Start so Vercel does not publish the Vite SPA shell", () => {
+  it("declares TanStack Start so Vercel consumes Nitro's Build Output API", () => {
     expect(vercelJson.framework).toBe("tanstack-start");
     expect(vercelJson.buildCommand).toBe("pnpm build");
+    // Nitro's Vercel preset writes `.vercel/output` (Build Output API v3).
+    // Pinning an output directory would republish a static Vite `dist` instead.
+    expect(vercelJson.outputDirectory).toBeUndefined();
   });
 
   it("attaches RFC 8288 Link headers on / and the catch-all source", () => {
