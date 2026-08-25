@@ -60,5 +60,6 @@ overrides:
 
 patchedDependencies:
   "@babel/core@8.0.1": patches/@babel__core@8.0.1.patch
+  "@babel/traverse@8.0.4": patches/@babel__traverse@8.0.4.patch
 
 resolutionMode: highest

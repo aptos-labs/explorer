@@ -292,7 +292,7 @@ function StakeOperationDialogContent({
       <DialogContent>
         <Stack direction="column" spacing={2}>
           {renderAmountTextField(stakes, balance)}
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={1} useFlexGap sx={{flexWrap: "wrap"}}>
             {min ? (
               <Button
                 variant="outlined"
@@ -373,7 +373,6 @@ function StakeOperationDialogContent({
           <Box
             sx={{
               width: "100%",
-              marginRight: "2rem",
             }}
           >
             <Button
@@ -381,7 +380,6 @@ function StakeOperationDialogContent({
               variant="primary"
               fullWidth
               disabled={!isAmountValid}
-              sx={{marginX: 2}}
             >
               Deposit
             </Button>
@@ -410,7 +408,7 @@ function StakeOperationDialogContent({
       <DialogContent>
         <Stack direction="column" spacing={2}>
           {renderAmountTextField(stakes)}
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={1} useFlexGap sx={{flexWrap: "wrap"}}>
             {min ? (
               <Button
                 variant="outlined"
@@ -444,7 +442,6 @@ function StakeOperationDialogContent({
           variant="primary"
           fullWidth
           disabled={amount === ""}
-          sx={{marginX: 2}}
         >
           {stakeOperation === StakeOperation.UNLOCK ? "UNSTAKE" : "RESTAKE"}
         </Button>
@@ -471,7 +468,7 @@ function StakeOperationDialogContent({
       <DialogContent>
         <Stack direction="column" spacing={2}>
           {renderAmountTextField(stakes)}
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={1} useFlexGap sx={{flexWrap: "wrap"}}>
             {percentageSelection.map((percentage) => {
               return (
                 <Button
@@ -496,7 +493,6 @@ function StakeOperationDialogContent({
           variant="primary"
           fullWidth
           disabled={amount === ""}
-          sx={{marginX: 2}}
         >
           WITHDRAW
         </Button>

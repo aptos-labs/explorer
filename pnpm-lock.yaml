@@ -43,6 +43,7 @@ overrides:
 
 patchedDependencies:
   '@babel/core@8.0.1': 30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f
+  '@babel/traverse@8.0.4': a3ae47b08170de2fbbc6b8d1a856c433b188d345ca65d4e8a5341ff6cbcbd79e
 
 importers:
 
@@ -3831,7 +3832,7 @@ snapshots:
       '@babel/helpers': 8.0.0
       '@babel/parser': 8.0.4
       '@babel/template': 8.0.0
-      '@babel/traverse': 8.0.4
+      '@babel/traverse': 8.0.4(patch_hash=a3ae47b08170de2fbbc6b8d1a856c433b188d345ca65d4e8a5341ff6cbcbd79e)
       '@babel/types': 8.0.4
       '@types/gensync': 1.0.5
       convert-source-map: 2.0.0
@@ -3929,7 +3930,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@babel/traverse@8.0.4':
+  '@babel/traverse@8.0.4(patch_hash=a3ae47b08170de2fbbc6b8d1a856c433b188d345ca65d4e8a5341ff6cbcbd79e)':
     dependencies:
       '@babel/code-frame': 8.0.0
       '@babel/generator': 8.0.0

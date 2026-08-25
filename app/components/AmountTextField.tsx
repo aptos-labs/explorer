@@ -35,6 +35,8 @@ export default function AmountTextField({
         notched
         value={amount}
         onChange={onAmountChange}
+        // Mobile keyboards default to letters without an explicit numeric hint
+        inputProps={{inputMode: "decimal", pattern: "[0-9]*[.]?[0-9]*"}}
         endAdornment={<InputAdornment position="end">APT</InputAdornment>}
         placeholder={
           balance

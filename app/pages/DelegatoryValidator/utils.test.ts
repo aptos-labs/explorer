@@ -1,7 +1,12 @@
 // Covers FEAT-VALDEL-004 — My Deposits reward estimation
 import {describe, expect, it} from "vitest";
 import type {DelegatedStakingActivity} from "../../api/hooks/delegations";
-import {getStakeOperationPrincipals, getStakeRewardsEarned} from "./utils";
+import {StakeOperation} from "../../api/hooks/delegations";
+import {
+  getStakeOperationLabel,
+  getStakeOperationPrincipals,
+  getStakeRewardsEarned,
+} from "./utils";
 
 const ANONYMIZED_DELEGATOR_ADDRESS = "0x11111111111111111111111111111111";
 const ANONYMIZED_POOL_ADDRESS = "0x22222222222222222222222222222222";
@@ -350,5 +355,16 @@ describe("FEAT-VALDEL-004 — getStakeRewardsEarned", () => {
 
   it("returns undefined until principals are available", () => {
     expect(getStakeRewardsEarned(17000000000n, undefined)).toBeUndefined();
+  });
+});
+
+// Covers FEAT-VALDEL-003 / FEAT-VALDEL-004 — action labels shared by the
+// desktop deposits table and the mobile deposit cards
+describe("FEAT-VALDEL-004 — getStakeOperationLabel", () => {
+  it("labels every delegation pool operation", () => {
+    expect(getStakeOperationLabel(StakeOperation.STAKE)).toBe("STAKE");
+    expect(getStakeOperationLabel(StakeOperation.UNLOCK)).toBe("UNSTAKE");
+    expect(getStakeOperationLabel(StakeOperation.REACTIVATE)).toBe("RESTAKE");
+    expect(getStakeOperationLabel(StakeOperation.WITHDRAW)).toBe("WITHDRAW");
   });
 });

@@ -590,13 +590,15 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **Display** | `ValidatorStakingBar` with metrics + "Stake" CTA. |
 | **Operations** | `add_stake`, `unlock`, `reactivate_stake`, `withdraw` via `0x1::delegation_pool`. |
 | **Dialog** | `StakeOperationDialog` with amount validation (`useAmountInput`, `getStakeOperationAPTRequirement`), wallet integration. |
+| **Mobile** | The "Stake" CTA is rendered in **both** layouts — full width below the metrics on mobile, inline on desktop. Dialogs are usable on narrow screens: `StyledDialog` is `fullWidth` with responsive margins, quick-amount buttons wrap, and the amount field requests a numeric keyboard (`inputMode="decimal"`). |
 
 ### FEAT-VALDEL-004 — My Deposits
 
 | Aspect | Detail |
 |--------|--------|
 | **Condition** | Wallet connected. |
-| **Display** | `MyDepositsSection` showing user's staked amounts and available operations. |
+| **Display** | `MyDepositsSection` showing user's staked amounts and available operations. Desktop renders the table (`AMOUNT`, `STATUS`, `REWARD EARNED`, `ACTIONS`). |
+| **Mobile** | Below the `md` breakpoint each deposit renders as a card (amount + status chip, reward earned row, full-width action button). The action button must be present on mobile: `UNSTAKE` / `RESTAKE` / `WITHDRAW` (label from `getStakeOperationLabel`) opens the same `StakeOperationDialog`, or `WalletConnectionDialog` when no wallet is connected. |
 | **Reward math** | Reward/principal estimation replays delegated staking activities in `(transaction_version, event_index)` order and keeps indexer `amount` values in `bigint` form so balances above JavaScript `Number.MAX_SAFE_INTEGER` do not lose precision. |
 
 ---
@@ -1294,7 +1296,8 @@ top of the HTML site.
 | `app/api/hooks/useGetAccountResource.test.ts` | FEAT-MODULES-008 (`mapRegistryQueryToAccountPackages`: 404 → empty packages, not error) |
 | `app/api/hooks/useGetValidators.test.ts` | FEAT-VALIDATORS-002 (`buildValidatorsFromSources`: empty stats JSON → chain-only rows + optional operator map; merge when JSON present; patch missing/zero operator_address rows from `0x1::stake::StakePool`; `isOperatorAddressMissing` heuristic) |
 | `app/pages/Validators/Delegation/hooks/validatorDataService.test.ts` | FEAT-VALIDATORS-003 (`getBatchUserStakes`: indexer-first lookup of pools the wallet delegates to; per-row view calls only for that subset in parallel; zero-fallback when indexer fails or individual view calls error; empty-input guard) |
-| `app/pages/DelegatoryValidator/utils.test.ts` | FEAT-VALDEL-004 (My Deposits reward replay across legacy/current delegation event names, pending-inactive withdrawal replay, same-version `event_index` ordering, zero-reward display helper) |
+| `app/pages/DelegatoryValidator/MyDepositsSection.test.tsx` | FEAT-VALDEL-004 (My Deposits action buttons exist in both layouts: mobile card list — no table — and desktop table, with `UNSTAKE` / `RESTAKE` labels derived from the stake status) |
+| `app/pages/DelegatoryValidator/utils.test.ts` | FEAT-VALDEL-004 (My Deposits reward replay across legacy/current delegation event names, pending-inactive withdrawal replay, same-version `event_index` ordering, zero-reward display helper, `getStakeOperationLabel` action labels shared by the desktop table and mobile deposit cards) |
 | `app/api/hooks/useGetFaIsDispatchable.test.ts` | FEAT-FA-002 (FA dispatch detection: `0x1::fungible_asset::DispatchFunctionStore` presence + parsing of withdraw/deposit/derived_balance `FunctionInfo`, plus `derived_supply` from `0x1::fungible_asset::DeriveSupply`, with malformed-entry rejection; React hook wrapper loading/loaded states via mocked `useGetAccountResources`) |
 | `app/pages/FungibleAsset/Tabs/DispatchablePropertiesValue.test.tsx` | FEAT-FA-002 (Dispatchable chip rendering + per-hook source links pointing at `/account/{module_address}/modules/code/{module_name}`) |
 | `app/api/hooks/confidentialAssetViews.test.ts` | FEAT-FA-002 / FEAT-COIN-002 / FEAT-ACCOUNT-007 (confidential-asset view response parsing) |
