@@ -1,175 +1,83 @@
+import CheckIcon from "@mui/icons-material/Check";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import {
   alpha,
   Box,
   CircularProgress,
-  Paper,
-  Popper,
+  IconButton,
+  Tooltip,
   useTheme,
 } from "@mui/material";
-import type React from "react";
-import {lazy, Suspense, useCallback, useEffect, useRef, useState} from "react";
+import type {CSSProperties, MouseEvent as ReactMouseEvent} from "react";
+import {lazy, Suspense} from "react";
 import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
 import EmptyValue from "./ContentValue/EmptyValue";
 
 // Dynamically import @uiw/react-json-view only on client side (React 19 compatible)
 const JsonView = lazy(() => import("@uiw/react-json-view"));
+const Copied = lazy(() =>
+  import("@uiw/react-json-view").then(({Copied: JsonCopied}) => ({
+    default: JsonCopied,
+  })),
+);
 
 const MAX_CARD_HEIGHT = 500;
-const HOVER_DELAY_MS = 500;
-const COPIED_DISPLAY_MS = 1500;
 
 type JsonViewCardProps = {
   data: unknown;
   collapsedByDefault?: boolean;
 };
 
-/**
- * Finds the copyable element (key or value) from a click/hover target.
- * Returns the element and its text content.
- */
-function findCopyableElement(
-  target: HTMLElement,
-): {text: string; element: HTMLElement} | null {
-  // Look for key elements (w-rjv-object-key class from @uiw/react-json-view)
-  const keyEl = target.closest('[class*="object-key"]');
-  if (keyEl) {
-    return {text: keyEl.textContent || "", element: keyEl as HTMLElement};
-  }
+function CopyButton({
+  copied,
+  keyName,
+  onClick,
+}: {
+  copied: boolean;
+  keyName?: string | number;
+  onClick?: (event: ReactMouseEvent<SVGSVGElement>) => void;
+}) {
+  const theme = useTheme();
+  const label = copied
+    ? "Copied"
+    : keyName === undefined
+      ? "Copy JSON value"
+      : `Copy ${String(keyName)} value`;
 
-  // Look for value elements
-  const valueEl = target.closest('[class*="value"]');
-  if (valueEl && !target.closest('[class*="copy"]')) {
-    // Remove quotes from string values
-    const text = (valueEl.textContent || "").replace(/^"|"$/g, "");
-    return {text, element: valueEl as HTMLElement};
-  }
-
-  return null;
+  return (
+    <Tooltip title={label} placement="top" arrow>
+      <IconButton
+        aria-label={label}
+        size="small"
+        onClick={(event) =>
+          onClick?.(event as unknown as ReactMouseEvent<SVGSVGElement>)
+        }
+        sx={{
+          ml: 0.5,
+          p: "2px",
+          verticalAlign: "middle",
+          color: copied
+            ? theme.palette.success.main
+            : theme.palette.text.secondary,
+          "&:hover": {
+            color: theme.palette.primary.main,
+            backgroundColor: alpha(theme.palette.primary.main, 0.12),
+          },
+        }}
+      >
+        {copied ? (
+          <CheckIcon sx={{fontSize: "0.9rem"}} />
+        ) : (
+          <ContentCopyIcon sx={{fontSize: "0.9rem"}} />
+        )}
+      </IconButton>
+    </Tooltip>
+  );
 }
 
-/**
- * Hook for click-to-copy tooltip state management.
- */
-function useCopyTooltip() {
-  const [open, setOpen] = useState(false);
-  const [status, setStatus] = useState<"idle" | "copied" | "error">("idle");
-  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
-  const hoverTimer = useRef<number | null>(null);
-  const feedbackTimer = useRef<number | null>(null);
-
-  const clearHoverTimer = useCallback(() => {
-    if (hoverTimer.current) {
-      window.clearTimeout(hoverTimer.current);
-      hoverTimer.current = null;
-    }
-  }, []);
-
-  const clearFeedbackTimer = useCallback(() => {
-    if (feedbackTimer.current) {
-      window.clearTimeout(feedbackTimer.current);
-      feedbackTimer.current = null;
-    }
-  }, []);
-
-  // Cleanup timers on unmount
-  useEffect(() => {
-    return () => {
-      if (hoverTimer.current) window.clearTimeout(hoverTimer.current);
-      if (feedbackTimer.current) window.clearTimeout(feedbackTimer.current);
-    };
-  }, []);
-
-  const handleClick = useCallback(
-    async (e: React.MouseEvent) => {
-      const copyable = findCopyableElement(e.target as HTMLElement);
-      if (!copyable) return;
-
-      e.preventDefault();
-      e.stopPropagation();
-      clearHoverTimer();
-
-      setAnchor(copyable.element);
-      setOpen(true);
-
-      try {
-        await navigator.clipboard.writeText(copyable.text);
-        setStatus("copied");
-      } catch {
-        setStatus("error");
-      }
-
-      clearFeedbackTimer();
-      feedbackTimer.current = window.setTimeout(() => {
-        setOpen(false);
-        setStatus("idle");
-        setAnchor(null);
-      }, COPIED_DISPLAY_MS);
-    },
-    [clearHoverTimer, clearFeedbackTimer],
-  );
-
-  const handleMouseOver = useCallback(
-    (e: React.MouseEvent) => {
-      if (status !== "idle") return;
-
-      const target = e.target as HTMLElement;
-
-      // Skip if still hovering the same anchor element
-      if (anchor?.contains(target)) return;
-
-      const copyable = findCopyableElement(target);
-      if (!copyable) return;
-
-      // Moving to a different element, reset timer and anchor
-      clearHoverTimer();
-      setOpen(false);
-      setAnchor(copyable.element);
-
-      hoverTimer.current = window.setTimeout(() => {
-        setOpen(true);
-        hoverTimer.current = null;
-      }, HOVER_DELAY_MS);
-    },
-    [status, anchor, clearHoverTimer],
-  );
-
-  const handleMouseOut = useCallback(
-    (e: React.MouseEvent) => {
-      if (!findCopyableElement(e.target as HTMLElement)) return;
-      clearHoverTimer();
-      if (status === "idle") {
-        setOpen(false);
-        setAnchor(null);
-      }
-    },
-    [status, clearHoverTimer],
-  );
-
-  const handleMouseLeave = useCallback(() => {
-    clearHoverTimer();
-    if (status === "idle") {
-      setOpen(false);
-      setAnchor(null);
-    }
-  }, [status, clearHoverTimer]);
-
-  const tooltipText =
-    status === "copied"
-      ? "Copied!"
-      : status === "error"
-        ? "Failed to copy"
-        : "Click to copy";
-
-  return {
-    tooltipOpen: open && anchor !== null,
-    tooltipText,
-    isError: status === "error",
-    anchor,
-    handleClick,
-    handleMouseOver,
-    handleMouseOut,
-    handleMouseLeave,
-  };
+/** Keep string copying consistent with the previous value-copy behavior. */
+function normalizeCopyText(copyText: string, value: unknown) {
+  return typeof value === "string" ? value : copyText;
 }
 
 export default function JsonViewCard({
@@ -187,39 +95,14 @@ export default function JsonViewCard({
   // Solid muted tone — alpha(primary) was ~2.1:1 on light code panels (WCAG)
   const secondaryTextColor = semanticColors.codeBlock.textSecondary;
 
-  const {
-    tooltipOpen,
-    tooltipText,
-    isError,
-    anchor,
-    handleClick,
-    handleMouseOver,
-    handleMouseOut,
-    handleMouseLeave,
-  } = useCopyTooltip();
-
   if (!data) {
     return <EmptyValue />;
   }
 
-  // Common hover styles - base properties shared by all clickable elements
-  const baseHoverStyle = {
+  const longStringHoverStyle = {
     cursor: "pointer",
     borderRadius: "2px",
     transition: "background-color 0.15s ease",
-  };
-
-  // Key hover style (coral-based)
-  const keyHoverStyle = {
-    ...baseHoverStyle,
-    "&:hover": {
-      backgroundColor: alpha(keyColor, 0.15),
-    },
-  };
-
-  // Value hover style (blue-based)
-  const valueHoverStyle = {
-    ...baseHoverStyle,
     "&:hover": {
       backgroundColor: alpha(valueColor, 0.15),
     },
@@ -227,10 +110,6 @@ export default function JsonViewCard({
 
   return (
     <Box
-      onClick={handleClick}
-      onMouseOver={handleMouseOver}
-      onMouseOut={handleMouseOut}
-      onMouseLeave={handleMouseLeave}
       sx={{
         padding: 2,
         borderRadius: 1,
@@ -239,44 +118,22 @@ export default function JsonViewCard({
         maxWidth: "100%",
         maxHeight: MAX_CARD_HEIGHT,
         position: "relative",
-
-        // Keys: coral-based hover (matches JS selector [class*="object-key"])
-        '& [class*="object-key"]': keyHoverStyle,
-
-        // All value types: blue-based hover (matches JS selector [class*="value"])
-        // Covers: string, int, float, bool, null, undefined, bigint, nan, date, url, etc.
-        '& [class*="-value"]': valueHoverStyle,
+        // Only long strings are clickable because they expand/collapse on click.
+        ".w-rjv-value-short": longStringHoverStyle,
       }}
     >
-      <Popper
-        open={tooltipOpen}
-        anchorEl={anchor}
-        placement="top"
-        sx={{zIndex: theme.zIndex.tooltip}}
-      >
-        <Paper
-          sx={{
-            px: 1,
-            py: 0.5,
-            fontSize: "0.75rem",
-            backgroundColor: isError
-              ? theme.palette.error.main
-              : theme.palette.grey[800],
-            color: theme.palette.common.white,
-          }}
-        >
-          {tooltipText}
-        </Paper>
-      </Popper>
       <Suspense fallback={<CircularProgress size={24} />}>
         <JsonView
           value={data as object}
           collapsed={collapsedByDefault ? 1 : false}
           displayDataTypes={false}
           displayObjectSize={false}
-          enableClipboard={false}
+          enableClipboard={true}
           indentWidth={24}
           shortenTextAfterLength={80}
+          beforeCopy={(copyText, _keyName, value) =>
+            normalizeCopyText(copyText, value)
+          }
           style={
             {
               fontFamily: theme.typography.fontFamily,
@@ -298,9 +155,19 @@ export default function JsonViewCard({
               "--w-rjv-colon-color": secondaryTextColor,
               "--w-rjv-ellipsis-color": secondaryTextColor,
               "--w-rjv-info-color": secondaryTextColor,
-            } as React.CSSProperties
+            } as CSSProperties
           }
-        />
+        >
+          <Copied
+            render={({"data-copied": copied, onClick}, {keyName}) => (
+              <CopyButton
+                copied={Boolean(copied)}
+                keyName={keyName}
+                onClick={onClick}
+              />
+            )}
+          />
+        </JsonView>
       </Suspense>
     </Box>
   );
