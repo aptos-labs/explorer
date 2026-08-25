@@ -1,9 +1,9 @@
 /**
- * Vercel Web Analytics helpers (FEAT-TELEMETRY-002).
+ * Vercel Web Analytics and Speed Insights helpers (FEAT-TELEMETRY-002/003).
  *
- * Explorer URLs embed addresses, hashes, and search text. Before a pageview is
- * sent, rewrite those segments to the matching route templates and drop every
- * query param except `network`.
+ * Explorer URLs embed addresses, hashes, and search text. Before a pageview or
+ * vital is sent, rewrite those segments to the matching route templates and
+ * drop every query param except `network`.
  */
 
 /** First path segment of entity pages whose second segment is an identifier. */
@@ -60,6 +60,27 @@ export function vercelAnalyticsBeforeSend<
   return {
     ...event,
     url: redactVercelAnalyticsUrl(event.url),
+  };
+}
+
+export type VercelSpeedInsightsBeforeSendEvent = {
+  type: "vital";
+  url: string;
+  route?: string;
+};
+
+/**
+ * `@vercel/speed-insights` `beforeSend` hook: same URL redaction, plus a
+ * `route` template so vitals group by page type instead of raw identifiers.
+ */
+export function vercelSpeedInsightsBeforeSend<
+  T extends VercelSpeedInsightsBeforeSendEvent,
+>(event: T): T {
+  const url = redactVercelAnalyticsUrl(event.url);
+  return {
+    ...event,
+    url,
+    route: parseAnalyticsUrl(url).pathname,
   };
 }
 
