@@ -235,7 +235,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Display** | Collapsible payload with JSON view. Long strings expand/collapse on value click without copying; row-level hover copy buttons copy the complete raw value, and text remains selectable. Encrypted payloads show encrypted / decrypted / decryption-failed state chips, encryption epoch, optional claimed entry function, separate decrypted-payload JSON when supplied by the fullnode, and the original encrypted payload JSON. |
+| **Display** | Collapsible payload with JSON view. Long strings expand/collapse on value click without copying; desktop row-level hover/focus copy buttons and touch-device persistent copy actions copy the complete raw value, while a touch-only full-JSON copy action is available and text remains selectable. Encrypted payloads show encrypted / decrypted / decryption-failed state chips, encryption epoch, optional claimed entry function, separate decrypted-payload JSON when supplied by the fullnode, and the original encrypted payload JSON. |
 | **Script decompile** | For `script_payload`, embeds `ScriptBytecodeDecompiler` — decompiles hex bytecode via WASM Move decompiler, shows decompiled Move or bytecode disassembly with copy/download/expand modal. |
 
 ### FEAT-TXN-006 — Changes Tab

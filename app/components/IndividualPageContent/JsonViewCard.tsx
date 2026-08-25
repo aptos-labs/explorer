@@ -1,83 +1,194 @@
 import CheckIcon from "@mui/icons-material/Check";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import {
   alpha,
   Box,
+  Button,
   CircularProgress,
   IconButton,
   Tooltip,
   useTheme,
 } from "@mui/material";
 import type {CSSProperties, MouseEvent as ReactMouseEvent} from "react";
-import {lazy, Suspense} from "react";
+import {lazy, Suspense, useEffect, useRef, useState} from "react";
 import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
 import EmptyValue from "./ContentValue/EmptyValue";
 
 // Dynamically import @uiw/react-json-view only on client side (React 19 compatible)
 const JsonView = lazy(() => import("@uiw/react-json-view"));
-const Copied = lazy(() =>
-  import("@uiw/react-json-view").then(({Copied: JsonCopied}) => ({
-    default: JsonCopied,
+const JsonRow = lazy(() =>
+  import("@uiw/react-json-view").then(({Row}) => ({
+    default: Row,
   })),
 );
 
 const MAX_CARD_HEIGHT = 500;
+const COPY_FEEDBACK_MS = 1500;
 
 type JsonViewCardProps = {
   data: unknown;
   collapsedByDefault?: boolean;
 };
 
-function CopyButton({
-  copied,
-  keyName,
-  onClick,
-}: {
-  copied: boolean;
-  keyName?: string | number;
-  onClick?: (event: ReactMouseEvent<SVGSVGElement>) => void;
-}) {
-  const theme = useTheme();
-  const label = copied
-    ? "Copied"
-    : keyName === undefined
-      ? "Copy JSON value"
-      : `Copy ${String(keyName)} value`;
+type CopyStatus = "idle" | "copied" | "error";
 
-  return (
-    <Tooltip title={label} placement="top" arrow>
-      <IconButton
-        aria-label={label}
-        size="small"
-        onClick={(event) =>
-          onClick?.(event as unknown as ReactMouseEvent<SVGSVGElement>)
-        }
-        sx={{
-          ml: 0.5,
-          p: "2px",
-          verticalAlign: "middle",
-          color: copied
-            ? theme.palette.success.main
-            : theme.palette.text.secondary,
-          "&:hover": {
-            color: theme.palette.primary.main,
-            backgroundColor: alpha(theme.palette.primary.main, 0.12),
-          },
-        }}
-      >
-        {copied ? (
-          <CheckIcon sx={{fontSize: "0.9rem"}} />
-        ) : (
-          <ContentCopyIcon sx={{fontSize: "0.9rem"}} />
-        )}
-      </IconButton>
-    </Tooltip>
+function stringifyCopyValue(value: unknown): string {
+  if (typeof value === "string") return value;
+  if (typeof value === "number" && value === Infinity) return "Infinity";
+  if (typeof value === "number" && Number.isNaN(value)) return "NaN";
+  if (typeof value === "bigint") return value.toString();
+  if (value instanceof Date) return value.toLocaleString();
+
+  const copyText = JSON.stringify(
+    value,
+    (_, nestedValue) =>
+      typeof nestedValue === "bigint" ? nestedValue.toString() : nestedValue,
+    2,
   );
+
+  return copyText ?? String(value);
 }
 
-/** Keep string copying consistent with the previous value-copy behavior. */
-function normalizeCopyText(copyText: string, value: unknown) {
-  return typeof value === "string" ? value : copyText;
+async function copyTextToClipboard(copyText: string) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(copyText);
+    return;
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = copyText;
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  textarea.style.pointerEvents = "none";
+  document.body.appendChild(textarea);
+
+  try {
+    textarea.select();
+    if (!document.execCommand("copy")) {
+      throw new Error("Clipboard copy failed");
+    }
+  } finally {
+    textarea.remove();
+  }
+}
+
+function CopyValueButton({
+  value,
+  keyName,
+  className,
+  label,
+  showLabel = false,
+}: {
+  value: unknown;
+  keyName?: string | number;
+  className?: string;
+  label?: string;
+  showLabel?: boolean;
+}) {
+  const theme = useTheme();
+  const [status, setStatus] = useState<CopyStatus>("idle");
+  const feedbackTimer = useRef<number | null>(null);
+  const idleLabel =
+    label ??
+    (keyName === undefined
+      ? "Copy JSON value"
+      : `Copy ${String(keyName)} value`);
+  const buttonLabel =
+    status === "copied"
+      ? "Copied"
+      : status === "error"
+        ? "Copy failed"
+        : idleLabel;
+
+  useEffect(() => {
+    return () => {
+      if (feedbackTimer.current !== null) {
+        window.clearTimeout(feedbackTimer.current);
+      }
+    };
+  }, []);
+
+  const handleClick = async (event: ReactMouseEvent<HTMLElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (feedbackTimer.current !== null) {
+      window.clearTimeout(feedbackTimer.current);
+    }
+
+    try {
+      await copyTextToClipboard(stringifyCopyValue(value));
+      setStatus("copied");
+    } catch {
+      setStatus("error");
+    }
+
+    feedbackTimer.current = window.setTimeout(() => {
+      setStatus("idle");
+      feedbackTimer.current = null;
+    }, COPY_FEEDBACK_MS);
+  };
+
+  const icon =
+    status === "copied" ? (
+      <CheckIcon sx={{fontSize: "0.9rem"}} />
+    ) : status === "error" ? (
+      <ErrorOutlineIcon sx={{fontSize: "0.9rem"}} />
+    ) : (
+      <ContentCopyIcon sx={{fontSize: "0.9rem"}} />
+    );
+
+  const buttonSx = {
+    ml: 0.5,
+    p: "2px",
+    verticalAlign: "middle",
+    color:
+      status === "copied"
+        ? theme.palette.success.main
+        : status === "error"
+          ? theme.palette.error.main
+          : theme.palette.text.secondary,
+    "&:hover": {
+      color:
+        status === "error"
+          ? theme.palette.error.dark
+          : theme.palette.primary.main,
+      backgroundColor: alpha(
+        status === "error"
+          ? theme.palette.error.main
+          : theme.palette.primary.main,
+        0.12,
+      ),
+    },
+  };
+
+  return (
+    <Tooltip title={buttonLabel} placement="top" arrow>
+      {showLabel ? (
+        <Button
+          aria-label={buttonLabel}
+          size="small"
+          variant="outlined"
+          startIcon={icon}
+          onClick={handleClick}
+          sx={{...buttonSx, p: "4px 10px"}}
+        >
+          {buttonLabel}
+        </Button>
+      ) : (
+        <IconButton
+          className={className}
+          aria-label={buttonLabel}
+          size="small"
+          onClick={handleClick}
+          sx={buttonSx}
+        >
+          {icon}
+        </IconButton>
+      )}
+    </Tooltip>
+  );
 }
 
 export default function JsonViewCard({
@@ -120,20 +231,49 @@ export default function JsonViewCard({
         position: "relative",
         // Only long strings are clickable because they expand/collapse on click.
         ".w-rjv-value-short": longStringHoverStyle,
+        ".w-rjv-line .json-copy-action": {
+          opacity: 0,
+          pointerEvents: "none",
+          transition: "opacity 0.15s ease",
+          minWidth: 32,
+          minHeight: 32,
+        },
+        ".w-rjv-line:hover .json-copy-action, .w-rjv-line:focus-within .json-copy-action":
+          {
+            opacity: 1,
+            pointerEvents: "auto",
+          },
+        "@media (hover: none), (pointer: coarse)": {
+          ".w-rjv-line .json-copy-action": {
+            opacity: 1,
+            pointerEvents: "auto",
+            minWidth: 40,
+            minHeight: 40,
+          },
+        },
       }}
     >
+      <Box
+        sx={{
+          display: "none",
+          justifyContent: "flex-end",
+          mb: 1,
+          "@media (hover: none), (pointer: coarse)": {
+            display: "flex",
+          },
+        }}
+      >
+        <CopyValueButton value={data} label="Copy JSON" showLabel />
+      </Box>
       <Suspense fallback={<CircularProgress size={24} />}>
         <JsonView
           value={data as object}
           collapsed={collapsedByDefault ? 1 : false}
           displayDataTypes={false}
           displayObjectSize={false}
-          enableClipboard={true}
+          enableClipboard={false}
           indentWidth={24}
           shortenTextAfterLength={80}
-          beforeCopy={(copyText, _keyName, value) =>
-            normalizeCopyText(copyText, value)
-          }
           style={
             {
               fontFamily: theme.typography.fontFamily,
@@ -158,13 +298,23 @@ export default function JsonViewCard({
             } as CSSProperties
           }
         >
-          <Copied
-            render={({"data-copied": copied, onClick}, {keyName}) => (
-              <CopyButton
-                copied={Boolean(copied)}
-                keyName={keyName}
-                onClick={onClick}
-              />
+          <JsonRow
+            render={(props, {keyName, value}) => (
+              <Box
+                {...props}
+                sx={{
+                  "& .json-copy-action": {
+                    display: "inline-flex",
+                  },
+                }}
+              >
+                {props.children}
+                <CopyValueButton
+                  className="json-copy-action"
+                  keyName={keyName}
+                  value={value}
+                />
+              </Box>
             )}
           />
         </JsonView>
