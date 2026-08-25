@@ -235,7 +235,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Display** | Collapsible payload with JSON view. Encrypted payloads show encrypted / decrypted / decryption-failed state chips, encryption epoch, optional claimed entry function, separate decrypted-payload JSON when supplied by the fullnode, and the original encrypted payload JSON. |
+| **Display** | Collapsible payload with JSON view. Long strings expand/collapse on value click without copying; row-level hover copy buttons copy the complete raw value, and text remains selectable. Encrypted payloads show encrypted / decrypted / decryption-failed state chips, encryption epoch, optional claimed entry function, separate decrypted-payload JSON when supplied by the fullnode, and the original encrypted payload JSON. |
 | **Script decompile** | For `script_payload`, embeds `ScriptBytecodeDecompiler` — decompiles hex bytecode via WASM Move decompiler, shows decompiled Move or bytecode disassembly with copy/download/expand modal. |
 
 ### FEAT-TXN-006 — Changes Tab
@@ -1322,6 +1322,7 @@ top of the HTML site.
 | `app/utils/cliCommand.test.ts` | CLI command generation from payloads; FEAT-TXN-002/005 (extract decrypted encrypted entry functions) |
 | `app/utils/transactionPayload.test.ts` | FEAT-TXN-002 / FEAT-TXN-005 (encrypted payload helpers: displayable entry extraction, claimed entry formatting, state labels) |
 | `app/utils/transactionPayload.localnet.test.ts` | FEAT-TXN-002 / FEAT-TXN-005 (live localnet: submit encrypted transfer, assert pending ciphertext + decrypted entry parsing; gated by `APTOS_LOCALNET=1`) |
+| `app/components/IndividualPageContent/JsonViewCard.test.tsx` | FEAT-TXN-005 (long-string expansion is separate from copying; hover copy button copies the complete raw value) |
 | `app/utils/moveDecompiler.test.ts` | FEAT-MODULES-004 (decompiler helpers) |
 | `app/utils/moveCodeNavigation.test.ts` | FEAT-MODULES-005 (cross-module link path building and resolution) |
 | `app/pages/RunScript/scriptArguments.test.ts` | FEAT-SCRIPT-001 (script argument BCS encoding, bytecode normalization) |
