@@ -127,7 +127,9 @@ This repository is often modified by automated agents. The following bar keeps t
 ### Vercel and Edge Functions
 
 - **Do not use Vercel Edge Functions or Edge Middleware** for this project unless there is explicit human approval. Avoid adding Edge middleware or Edge-deployed handlers (for example `middleware.ts` with the Edge runtime, `export const runtime = "edge"`, or Vercel config that moves SSR off Node). The explorer’s deployment model is TanStack Start SSR via Nitro on Vercel **Node** serverless (Fluid compute). Edge adds a different runtime, operational surface, and cost profile.
-- **Keep `"framework": "tanstack-start"` in `vercel.json`**. Root `index.html` is the Vite **dev** shell (`/app/client.tsx`). If Vercel detects this as a Vite SPA, it publishes that file; browsers then request `/app/client.tsx` and get `text/html` (MIME check fails). Do not set an `outputDirectory` that points at a static Vite `dist`.
+- **Keep `"framework": "tanstack-start"` and `"buildCommand": "pnpm build"` in `vercel.json`**, and do **not** set `outputDirectory` — Nitro's Vercel preset writes `.vercel/output` (Build Output API v3). If the Vercel dashboard still has Framework **Vite** or Output Directory **`dist`** left over from an import, fix them there too.
+- **Keep `renderer: false` in the `nitro()` options and do not add a root `index.html`.** Nitro resolves its HTML renderer *before* TanStack Start's SSR handler is mounted: any root `index.html` becomes `renderer.template`, the `renderer-template` handler claims the `/**` route, and Nitro then skips installing `ssr-renderer` entirely. Every request answers with that raw HTML file and SSR silently never runs. `app/utils/nitroSsrRenderer.test.ts` guards both halves.
+- **Production HTML comes from `app/routes/__root.tsx`** (`<HeadContent />` + `<Scripts />`). Put `<head>` metadata and client bootstrap code there or in `app/client.tsx` — never in a static HTML shell.
 - **Check deployment diffs**: When a change touches `vercel.json`, Nitro/Vite deploy plugins, or files that would become Vercel functions, review it for accidental Edge Function adoption.
 
 ### Product and UX

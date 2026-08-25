@@ -1,19 +1,13 @@
 import {codecovVitePlugin} from "@codecov/vite-plugin";
 import {tanstackStart} from "@tanstack/react-start/plugin/vite";
-import {nitro} from "nitro/vite";
 import react from "@vitejs/plugin-react-swc";
+import {nitro} from "nitro/vite";
 import {visualizer} from "rollup-plugin-visualizer";
 import type {PluginOption} from "vite";
 import {perEnvironmentPlugin} from "vite";
 import compression from "vite-plugin-compression";
 import viteSvgr from "vite-plugin-svgr";
-import {rm} from "node:fs/promises";
-import {join, resolve} from "node:path";
 import {configDefaults, defineConfig} from "vitest/config";
-import {
-  isSpaIndexHtmlOutput,
-  SPA_INDEX_HTML_FILES,
-} from "./app/utils/omitSpaIndexHtml";
 
 // Vercel sets VERCEL_ENV at build time (production | preview | development).
 // Vite only exposes VITE_* to the client, so copy it unless already set.
@@ -35,37 +29,21 @@ export default defineConfig({
         entry: "ssr",
       },
     }),
+    // `renderer: false` is load-bearing: Nitro adopts any root `index.html` as
+    // its renderer template, mounts `renderer-template` on `/**`, and then
+    // skips installing TanStack Start's SSR handler entirely — so every request
+    // answers with that raw HTML file instead of a rendered page.
     // On Vercel (`VERCEL=1`), pin the Node serverless preset — never vercel-edge.
-    nitro(process.env.VERCEL ? {preset: "vercel"} : undefined),
+    nitro({
+      renderer: false,
+      ...(process.env.VERCEL ? {preset: "vercel"} : {}),
+    }),
     react(),
     viteSvgr(),
     // Pre-compress assets. Vercel also gzip/brotli-encodes at the CDN; the
     // extra files remain useful for `vite preview` and non-Vercel hosts.
     compression({algorithm: "gzip", ext: ".gz"}),
     compression({algorithm: "brotliCompress", ext: ".br"}),
-    // After compression: drop the Vite SPA shell so it cannot shadow SSR HTML.
-    {
-      name: "omit-spa-index-html",
-      apply: "build",
-      enforce: "post",
-      generateBundle(_options, bundle) {
-        for (const fileName of Object.keys(bundle)) {
-          if (isSpaIndexHtmlOutput(fileName)) {
-            delete bundle[fileName];
-          }
-        }
-      },
-      async writeBundle(options) {
-        if (!options.dir) return;
-        const outDir = resolve(options.dir);
-        if (outDir === resolve(process.cwd())) return;
-        await Promise.all(
-          SPA_INDEX_HTML_FILES.map((name) =>
-            rm(join(outDir, name), {force: true}),
-          ),
-        );
-      },
-    },
     // Bundle analyzer - generates stats.html after build (run: pnpm build && open stats.html)
     visualizer({
       filename: "stats.html",
