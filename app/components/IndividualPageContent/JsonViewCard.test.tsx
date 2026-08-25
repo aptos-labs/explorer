@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import {fireEvent, render, waitFor} from "@testing-library/react";
+import {fireEvent, render, screen, waitFor} from "@testing-library/react";
 import {afterEach, describe, expect, it, vi} from "vitest";
 import JsonViewCard from "./JsonViewCard";
 
@@ -24,7 +24,7 @@ describe("FEAT-TXN-005 — JsonViewCard value interactions", () => {
     vi.restoreAllMocks();
   });
 
-  it("copies the complete raw value from the row copy button", async () => {
+  it("copies the complete raw value from a row button without hover", async () => {
     const writeText = vi.fn().mockResolvedValue(undefined);
     Object.defineProperty(navigator, "clipboard", {
       configurable: true,
@@ -39,8 +39,6 @@ describe("FEAT-TXN-005 — JsonViewCard value interactions", () => {
       if (!row) throw new Error("Function row has not rendered yet");
       return row;
     });
-
-    fireEvent.mouseEnter(functionRow);
 
     const copyButton = await waitFor(() => {
       const button = functionRow.querySelector(
@@ -76,5 +74,40 @@ describe("FEAT-TXN-005 — JsonViewCard value interactions", () => {
     expect(writeText).not.toHaveBeenCalled();
     expect(container.querySelector(".w-rjv-value-short")).toBeNull();
     expect(container.textContent).toContain(longFunction);
+  });
+
+  it("offers a mobile-friendly action for copying the full JSON value", async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: {writeText},
+    });
+
+    render(<JsonViewCard data={payload} />);
+
+    const copyJsonButton = await screen.findByRole("button", {
+      name: "Copy JSON",
+    });
+    fireEvent.click(copyJsonButton);
+
+    await waitFor(() => {
+      expect(writeText).toHaveBeenCalledWith(JSON.stringify(payload, null, 2));
+    });
+  });
+
+  it("reports a failed clipboard write", async () => {
+    const writeText = vi.fn().mockRejectedValue(new Error("Denied"));
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: {writeText},
+    });
+
+    render(<JsonViewCard data={payload} />);
+
+    fireEvent.click(await screen.findByRole("button", {name: "Copy JSON"}));
+
+    await waitFor(() => {
+      expect(screen.getByRole("button", {name: "Copy failed"})).toBeTruthy();
+    });
   });
 });
