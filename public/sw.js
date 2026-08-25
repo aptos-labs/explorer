@@ -85,6 +85,15 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // Vercel Web Analytics / Speed Insights — let the browser hit the platform
+  // endpoints and debug script directly (do not cache-first them).
+  if (
+    url.pathname.startsWith("/_vercel/") ||
+    url.hostname === "va.vercel-scripts.com"
+  ) {
+    return;
+  }
+
   // Google Fonts - Cache First (fonts rarely change)
   if (
     url.hostname === "fonts.googleapis.com" ||

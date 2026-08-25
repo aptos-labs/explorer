@@ -91,6 +91,12 @@ describe("negotiateMarkdownRequest", () => {
       headers: {Accept: "text/markdown"},
     });
     expect(negotiateMarkdownRequest(asset, sampleLlms)).toBeNull();
+
+    const vercelInsights = new Request(
+      "https://explorer.example/_vercel/insights/view",
+      {headers: {Accept: "text/markdown"}},
+    );
+    expect(negotiateMarkdownRequest(vercelInsights, sampleLlms)).toBeNull();
   });
 
   it("accepts a relative request URL without throwing", async () => {
