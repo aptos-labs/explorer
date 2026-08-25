@@ -3,23 +3,29 @@ import {tanstackStart} from "@tanstack/react-start/plugin/vite";
 import react from "@vitejs/plugin-react-swc";
 import {nitro} from "nitro/vite";
 import {visualizer} from "rollup-plugin-visualizer";
-import type {PluginOption} from "vite";
+import type {PluginOption, PreviewServer, ViteDevServer} from "vite";
 import {perEnvironmentPlugin} from "vite";
 import compression from "vite-plugin-compression";
 import viteSvgr from "vite-plugin-svgr";
 import {configDefaults, defineConfig} from "vitest/config";
 
-const previewCompressionWorkaround: PluginOption = {
-  name: "explorer:preview-compression-workaround",
+function disableServerCompression(server: ViteDevServer | PreviewServer) {
+  // Vite's compression middleware cannot safely consume the flattened header
+  // array that srvx passes to writeHead(). Keep SSR responses uncompressed in
+  // dev/preview; built static assets still use their pre-compressed files.
+  server.middlewares.use((_req, res, next) => {
+    res.setHeader("Content-Encoding", "identity");
+    next();
+  });
+}
+
+const serverCompressionWorkaround: PluginOption = {
+  name: "explorer:server-compression-workaround",
+  configureServer(server) {
+    disableServerCompression(server);
+  },
   configurePreviewServer(server) {
-    // Vite preview's compression middleware cannot safely consume the
-    // flattened header array that srvx passes to writeHead(). Keep SSR
-    // responses uncompressed in preview; built static assets still use their
-    // pre-compressed .gz/.br files.
-    server.middlewares.use((_req, res, next) => {
-      res.setHeader("Content-Encoding", "identity");
-      next();
-    });
+    disableServerCompression(server);
   },
 };
 
@@ -31,7 +37,7 @@ if (!process.env.VITE_VERCEL_ENV && process.env.VERCEL_ENV) {
 
 export default defineConfig({
   plugins: [
-    previewCompressionWorkaround,
+    serverCompressionWorkaround,
     tanstackStart({
       srcDirectory: "app",
       router: {
@@ -56,8 +62,8 @@ export default defineConfig({
     react(),
     viteSvgr(),
     // Pre-compress assets. Vercel also gzip/brotli-encodes at the CDN; these
-    // files are generated for static hosts. The preview server workaround
-    // above keeps its SSR response path out of Vite's runtime compression.
+    // files are generated for static hosts. The server workaround above keeps
+    // SSR responses out of Vite's runtime compression in dev and preview.
     compression({algorithm: "gzip", ext: ".gz"}),
     compression({algorithm: "brotliCompress", ext: ".br"}),
     // Bundle analyzer - generates stats.html after build (run: pnpm build && open stats.html)

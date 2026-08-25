@@ -7,6 +7,7 @@ import {
   EXPLORER_SERVICE_WORKER_URL,
   registerExplorerServiceWorker,
   scheduleExplorerServiceWorkerRegistration,
+  unregisterExplorerServiceWorkers,
 } from "./registerServiceWorker";
 
 const repoRoot = join(fileURLToPath(new URL(".", import.meta.url)), "../..");
@@ -93,6 +94,40 @@ describe("scheduleExplorerServiceWorkerRegistration", () => {
       {log: vi.fn()},
     );
     expect(addEventListener).not.toHaveBeenCalled();
+  });
+});
+
+describe("unregisterExplorerServiceWorkers", () => {
+  // Covers FEAT-PWA-001
+  it("unregisters only Explorer service workers", async () => {
+    const unregisterExplorer = vi.fn().mockResolvedValue(true);
+    const unregisterOther = vi.fn().mockResolvedValue(true);
+    const log = vi.fn();
+
+    await unregisterExplorerServiceWorkers(
+      {
+        getRegistrations: vi.fn().mockResolvedValue([
+          {
+            scope: "http://localhost:3000/",
+            active: {scriptURL: "http://localhost:3000/sw.js"},
+            unregister: unregisterExplorer,
+          },
+          {
+            scope: "http://localhost:3000/other/",
+            active: {scriptURL: "http://localhost:3000/other-sw.js"},
+            unregister: unregisterOther,
+          },
+        ]),
+      },
+      {log},
+    );
+
+    expect(unregisterExplorer).toHaveBeenCalledOnce();
+    expect(unregisterOther).not.toHaveBeenCalled();
+    expect(log).toHaveBeenCalledWith(
+      "SW unregistered:",
+      "http://localhost:3000/",
+    );
   });
 });
 

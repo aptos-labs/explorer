@@ -13,9 +13,22 @@ export type ServiceWorkerContainerLike = {
     scriptURL: string,
     options?: {scope?: string},
   ) => Promise<{scope: string}>;
+  getRegistrations?: () => Promise<
+    ReadonlyArray<ServiceWorkerRegistrationLike>
+  >;
 };
 
 export type ServiceWorkerLogger = Pick<Console, "log">;
+
+type ServiceWorkerVersionLike = {scriptURL: string};
+
+export type ServiceWorkerRegistrationLike = {
+  scope: string;
+  active?: ServiceWorkerVersionLike | null;
+  installing?: ServiceWorkerVersionLike | null;
+  waiting?: ServiceWorkerVersionLike | null;
+  unregister: () => Promise<boolean>;
+};
 
 export async function registerExplorerServiceWorker(
   serviceWorker: ServiceWorkerContainerLike | null | undefined,
@@ -30,6 +43,41 @@ export async function registerExplorerServiceWorker(
     logger.log("SW registered:", registration.scope);
   } catch (error) {
     logger.log("SW registration failed:", error);
+  }
+}
+
+/**
+ * Development builds must not be controlled by the production service worker.
+ * Remove an older Explorer registration left behind by a previous local run.
+ */
+export async function unregisterExplorerServiceWorkers(
+  serviceWorker:
+    | Pick<ServiceWorkerContainerLike, "getRegistrations">
+    | null
+    | undefined,
+  logger: ServiceWorkerLogger = console,
+): Promise<void> {
+  if (!serviceWorker?.getRegistrations) return;
+
+  try {
+    const registrations = await serviceWorker.getRegistrations();
+    await Promise.all(
+      registrations
+        .filter((registration) => {
+          const version =
+            registration.active ??
+            registration.waiting ??
+            registration.installing;
+          return version?.scriptURL.endsWith(EXPLORER_SERVICE_WORKER_URL);
+        })
+        .map(async (registration) => {
+          if (await registration.unregister()) {
+            logger.log("SW unregistered:", registration.scope);
+          }
+        }),
+    );
+  } catch (error) {
+    logger.log("SW unregister failed:", error);
   }
 }
 
