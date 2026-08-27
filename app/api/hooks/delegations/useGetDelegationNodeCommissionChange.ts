@@ -18,6 +18,7 @@ export function useGetDelegationNodeCommissionChange({
   validatorAddress,
 }: DelegationNodeCommissionChangeProps): DelegationNodeInfoResponse {
   const client = useAptosClient();
+  const isValidAddress = !!validatorAddress && validatorAddress.length > 0;
 
   const {
     data: nextCommission,
@@ -27,6 +28,7 @@ export function useGetDelegationNodeCommissionChange({
     queryKey: ["validatorCommissionChange", client, validatorAddress],
     queryFn: () => getValidatorCommissionChange(client, validatorAddress),
     select: (res) => Number(res ? res[0] : 0) / 100, // commission rate: 22.85% is represented as 2285
+    enabled: !!client && isValidAddress,
   });
 
   return {

@@ -607,8 +607,10 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Data** | `0x1::stake::StakePool` resource + `useGetValidators` + delegation pool list. |
+| **Data** | `0x1::stake::StakePool` is required to show the page. `useGetValidators` and the indexer delegation-pool list enrich performance stats when they have a matching row. If those lists are empty (ValidatorSet still loading, stats merge returns no rows, indexer 429), the page still renders from the StakePool resource (operator, active stake) instead of a blank main area. Pool addresses are compared after `tryStandardizeAddress` so short/long forms match. |
 | **Display** | `ValidatorTitle`, `ValidatorDetailCard` (operator, performance, delegation state, time bars via `IntervalBar` with `UNLOCK_COUNTDOWN` mode). |
+| **Loading** | While the StakePool resource is in flight, the page shows title + placeholder skeletons (not an empty main area). |
+| **Errors** | Invalid address → Invalid Input. Missing StakePool (404) → Validator Not Found. Other resource errors use the existing `AccountError` states. |
 
 ### FEAT-VALDEL-002 — Commission Change Banner
 
@@ -1353,6 +1355,8 @@ top of the HTML site.
 | `app/api/hooks/useGetAccountResource.test.ts` | FEAT-MODULES-008 (`mapRegistryQueryToAccountPackages`: 404 → empty packages, not error) |
 | `app/api/hooks/useGetValidators.test.ts` | FEAT-VALIDATORS-002 (`buildValidatorsFromSources`: empty stats JSON → chain-only rows + optional operator map; merge when JSON present; patch missing/zero operator_address rows from `0x1::stake::StakePool`; `isOperatorAddressMissing` heuristic) |
 | `app/pages/Validators/Delegation/hooks/validatorDataService.test.ts` | FEAT-VALIDATORS-003 (`getBatchUserStakes`: indexer-first lookup of pools the wallet delegates to; per-row view calls only for that subset in parallel; zero-fallback when indexer fails or individual view calls error; empty-input guard) |
+| `app/pages/DelegatoryValidator/resolveValidatorData.test.ts` | FEAT-VALDEL-001 (`resolveValidatorData`: StakePool-only fallback when validator lists are empty; prefer list stats; never-active indexer pool row; unpadded vs padded address match; missing list operator filled from StakePool) |
+| `app/pages/DelegatoryValidator/index.test.tsx` | FEAT-VALDEL-001 (`/validator/$address` renders title + staking bar + detail card when `useGetValidators` and the indexer pool list are empty but `0x1::stake::StakePool` exists) |
 | `app/pages/DelegatoryValidator/MyDepositsSection.test.tsx` | FEAT-VALDEL-004 (My Deposits action buttons exist in both layouts: mobile card list — no table — and desktop table, with `UNSTAKE` / `RESTAKE` labels derived from the stake status) |
 | `app/pages/DelegatoryValidator/utils.test.ts` | FEAT-VALDEL-004 (My Deposits reward replay across legacy/current delegation event names, pending-inactive withdrawal replay, same-version `event_index` ordering, zero-reward display helper, `getStakeOperationLabel` action labels shared by the desktop table and mobile deposit cards) |
 | `app/api/hooks/useGetFaIsDispatchable.test.ts` | FEAT-FA-002 (FA dispatch detection: `0x1::fungible_asset::DispatchFunctionStore` presence + parsing of withdraw/deposit/derived_balance `FunctionInfo`, plus `derived_supply` from `0x1::fungible_asset::DeriveSupply`, with malformed-entry rejection; React hook wrapper loading/loaded states via mocked `useGetAccountResources`) |
