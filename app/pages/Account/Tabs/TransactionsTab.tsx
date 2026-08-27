@@ -1,6 +1,7 @@
 import type {Types} from "~/types/aptos";
 import {useGetIsGraphqlClientSupported} from "../../../api/hooks/useGraphqlClient";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import {AccountTabPanelSkeleton} from "../../../components/PageLoadSkeletons";
 import AccountAllTransactions from "../Components/AccountAllTransactions";
 import AccountTransactions from "../Components/AccountTransactions";
 
@@ -15,6 +16,10 @@ export default function TransactionsTab({
   accountData,
 }: TransactionsTabProps) {
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
+
+  if (!address) {
+    return <AccountTabPanelSkeleton />;
+  }
 
   // AccountTransactions: render transactions where the account is the sender
   // AccountAllTransactions: render all transactions where the account is involved

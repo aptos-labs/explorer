@@ -4,6 +4,7 @@ import useExpandedList from "../../../components/hooks/useExpandedList";
 import CollapsibleCard from "../../../components/IndividualPageContent/CollapsibleCard";
 import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import {ResourcesListSkeleton} from "../../../components/PageLoadSkeletons";
 import ResourceDataView from "../../../components/IndividualPageContent/ResourceDataView";
 
 function ResourcesContent({
@@ -43,8 +44,15 @@ function ResourcesContent({
 
 type ResourcesTabProps = {
   resourceData: Types.MoveResource[] | undefined;
+  isLoading?: boolean;
 };
 
-export default function ResourcesTab({resourceData}: ResourcesTabProps) {
+export default function ResourcesTab({
+  resourceData,
+  isLoading = false,
+}: ResourcesTabProps) {
+  if (isLoading) {
+    return <ResourcesListSkeleton />;
+  }
   return <ResourcesContent resourceData={resourceData} />;
 }

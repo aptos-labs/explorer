@@ -1,6 +1,11 @@
 import {afterEach, describe, expect, it, vi} from "vitest";
 import {emitRateLimit} from "../context/rate-limit/rateLimitEvents";
-import {ResponseErrorType, withResponseError} from "./client";
+import {
+  isNotFoundError,
+  ResponseErrorType,
+  toResponseError,
+  withResponseError,
+} from "./client";
 
 vi.mock("../context/rate-limit/rateLimitEvents", () => ({
   emitRateLimit: vi.fn(),
@@ -48,5 +53,43 @@ describe("withResponseError", () => {
     const result = await withResponseError(Promise.resolve("data"));
     expect(result).toBe("data");
     expect(emitRateLimit).not.toHaveBeenCalled();
+  });
+});
+
+describe("isNotFoundError", () => {
+  it("matches typed NOT_FOUND errors", () => {
+    expect(isNotFoundError({type: ResponseErrorType.NOT_FOUND})).toBe(true);
+  });
+
+  it("matches HTTP 404 status objects", () => {
+    expect(isNotFoundError({status: 404})).toBe(true);
+  });
+
+  it("matches legacy Aptos API 404 Error messages", () => {
+    expect(isNotFoundError(new Error("Aptos API error 404: missing"))).toBe(
+      true,
+    );
+  });
+
+  it("does not match unrelated failures", () => {
+    expect(isNotFoundError({type: ResponseErrorType.UNHANDLED})).toBe(false);
+    expect(isNotFoundError(new Error("Network error"))).toBe(false);
+  });
+});
+
+describe("toResponseError", () => {
+  it("preserves typed ResponseError values", () => {
+    const err = {
+      type: ResponseErrorType.TOO_MANY_REQUESTS,
+      message: "slow down",
+    };
+    expect(toResponseError(err)).toEqual(err);
+  });
+
+  it("maps 404-shaped errors to NOT_FOUND", () => {
+    expect(toResponseError(new Error("Aptos API error 404: x"))).toEqual({
+      type: ResponseErrorType.NOT_FOUND,
+      message: "Aptos API error 404: x",
+    });
   });
 });

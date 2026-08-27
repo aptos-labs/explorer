@@ -6,7 +6,7 @@
 > code. Tests (unit, integration, E2E) should reference the feature IDs defined
 > here (e.g. `// Covers FEAT-SEARCH-001`).
 >
-> **Last updated**: 2026-08-25
+> **Last updated**: 2026-08-27
 
 ---
 
@@ -76,7 +76,7 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Behavior** | Global `defaultPendingComponent` shows a loading indicator during route transitions with minimum display time to reduce flicker. |
+| **Behavior** | Global `defaultPendingComponent` shows a loading indicator during route transitions with minimum display time to reduce flicker. Account and transaction detail routes do **not** use a blocking route `pendingComponent`; they paint in-page skeletons immediately (FEAT-ACCOUNT-013, FEAT-TXN-014). |
 
 ### FEAT-CHROME-004 — Go Back Button
 
@@ -255,8 +255,17 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Behavior** | `/txn/$hash` → `/txn/$hash/userTxnOverview`; client-side correction for non-user transactions. |
+| **Behavior** | `/txn/$txnHashOrVersion` (no tab) redirects to `/txn/$txnHashOrVersion/userTxnOverview`; client-side correction for non-user transactions. |
 | **Invalid tab** | Redirects to the first tab for the transaction type. |
+
+### FEAT-TXN-014 — Progressive Transaction Page Load
+
+| Aspect | Detail |
+|--------|--------|
+| **Route loader** | Prefetches the transaction (`transactionQueryOptions`) and returns immediately — it does not `await` the fetch, so navigation is not blocked on the fullnode. |
+| **First paint** | Page chrome (header), a "Transaction" title, the URL hash/version, tab-strip skeletons, and overview skeletons render while the transaction is in flight. The previous full-page `null` loading state is gone. |
+| **Organize then fill** | Tab set, type chip, and overview body wait on the transaction object (needed to choose tabs). Secondary rows such as the parent block populate with their own skeletons after the overview is visible. |
+| **Errors** | Fullnode failures still render `TransactionError` (including typed `NOT_FOUND`). |
 
 ### FEAT-TXN-009 — Transaction Actions Parsing
 
@@ -346,7 +355,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **APT balance** | Formatted APT balance via `useGetAccountAPTBalance`. |
+| **APT balance** | Formatted APT balance via `useGetAccountAPTBalance`. While the query is in flight the card shows a skeleton instead of hiding. |
 | **USD estimate** | On mainnet, fetches CoinGecko price (see FEAT-DATA-001) and shows fiat estimate with tooltip showing rate. |
 | **DeFi links** | Dropdown: Lightscan (`aptos.lightscan.one/portfolio/$address`), Yield AI (`yieldai.app/portfolio/$address`). Default: Yield AI. External links with `rel="noopener noreferrer"`. |
 
@@ -363,7 +372,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Behavior** | If address at `/account/...` is a pure object (has `ObjectCore` but no `0x1::account::Account` resource) → redirect to `/object/...`. |
+| **Behavior** | If address at `/account/...` is a pure object (has `ObjectCore` but no `0x1::account::Account` resource) → redirect to `/object/...`. The redirect waits until the four layout resource probes have settled (not the full resource list) so the page can paint first. |
 | **Path preservation** | Uses `pathname.replace(/^\/account\//, "/object/")` so the full path (including `/modules/code/...` suffixes) and query string are preserved. |
 
 ### FEAT-ACCOUNT-005 — Tab Set (Account)
@@ -383,6 +392,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **Mode selection** | Implicit — GraphQL available → `AccountAllTransactions` (all involvement); otherwise → `AccountTransactions` (sender-only via REST). No user-facing toggle. |
 | **Function filter** | `?fn_addr=`, `?fn_module=`, `?fn_name=` filter support (queries `user_transactions` by sender, not full account history). Changing the filter resets `?page=` to 1. |
 | **Pagination** | URL-driven via `?page=` for both the GraphQL path (filtered and unfiltered) and the REST fallback. Other search params (`type`, `network`, `fn_*`) are preserved across pagination clicks. The shared `PageNumberPagination` component (`app/components/PageNumberPagination.tsx`) drops the redundant `?page=1` so canonical URLs stay short. The REST fallback clamps an out-of-range `?page=` to the available pages (so a shared deep link still renders the closest valid page). |
+| **Loading** | Version list, per-row transaction fetches, and the REST fallback show table/card skeletons instead of an empty table or a centered spinner. The "Transaction History Limited" banner is not shown while the count query is still in flight. |
 | **Rate limit handling** | GraphQL path has retry + exponential backoff + user message on 429. |
 
 ### FEAT-ACCOUNT-007 — Assets (Coins) Tab
@@ -430,6 +440,15 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 |--------|--------|
 | **Behavior** | `/account/$address` → `/account/$address/transactions`. Same for `/object/$address`. |
 | **Legacy params** | `?tab=` → `/$tab`; `?modulesTab=` on exact 2-segment path → modules route. Network param preserved. |
+
+### FEAT-ACCOUNT-013 — Progressive Account Page Load
+
+| Aspect | Detail |
+|--------|--------|
+| **Route loader** | Does not `await` data. Prefetches four layout resources first (`0x1::account::Account`, `ObjectCore`, `0x4::token::Token`, `MultisigAccount`), plus APT balance and the default-tab transaction list in the same tick. The full `getAccountResources` list starts only after those layout probes settle. |
+| **First paint** | Header, title (address hash when known), a balance-card skeleton, and default tabs render immediately. The blocking `LoadingModal` overlay is gone. |
+| **Organize then fill** | Title flags (object / token / multisig / deleted) and the object-page redirect wait on the four layout probes, not the full resource list. GraphQL transaction history starts as soon as the address is known. Resources / Info / Multisig tab bodies skeleton until layout (and, for Resources, the full list) arrives. |
+| **404s** | Missing layout resources are treated as absent, not page failures. "Account Not Found" still appears (with coins/tokens tabs) after layout and the full resource list confirm there is no Account or ObjectCore. |
 
 ---
 
@@ -1311,7 +1330,7 @@ top of the HTML site.
 | `app/api/hooks/useGetNetworkStatus.test.ts` | FEAT-RELEASES-001 (`fetchNetworkStatus`) |
 | `app/utils/mapWithConcurrencyLimit.test.ts` | FEAT-BLOCKS-001 (bounded concurrency for batched REST fetches) |
 | `app/utils/sentioCallTrace.test.ts` | FEAT-TXN-010 (Sentio helpers: network ID, paths, address normalization, node validation) |
-| `app/api/client.test.ts` | FEAT-RATELIMIT-003 (API error classification, 429 → `emitRateLimit`) |
+| `app/api/client.test.ts` | FEAT-RATELIMIT-003 (API error classification, 429 → `emitRateLimit`), 404-shaped `isNotFoundError` / `toResponseError` |
 | `app/api/hooks/useGetObjectRefs.test.ts` | FEAT-ACCOUNT-010 (object ref detection in transactions) |
 | `app/pages/Account/utils/accountKeyType.test.ts` | FEAT-ACCOUNT-010 (key type extraction from latest transaction signature: Ed25519, Multi-Ed25519, Single Key, MultiKey, multi-agent / fee-payer unwrap) |
 | `app/api/hooks/useGetAccountResource.test.ts` | FEAT-MODULES-008 (`mapRegistryQueryToAccountPackages`: 404 → empty packages, not error) |
@@ -1353,6 +1372,8 @@ top of the HTML site.
 | `app/pages/Transaction/cctp/parseCctpEvents.test.ts` | FEAT-TXN-009 (CCTP DepositForBurn / MintAndWithdraw event parsing) |
 | `app/pages/Transaction/cctp/cctpScan.test.ts` | FEAT-TXN-009 (WormholeScan transfer link helper) |
 | `app/pages/Account/hooks/useAccountTabValues.test.ts` | FEAT-ACCOUNT-005 (tab set computation: all GraphQL/object/multisig combos, invariants) |
+| `app/pages/Account/hooks/useAccountPageLayout.test.ts` | FEAT-ACCOUNT-013 (layout 404s vs hard errors, derived flags), FEAT-ACCOUNT-004 (object redirect gating) |
+| `app/api/prefetchEntityPages.test.ts` | FEAT-ACCOUNT-013 (layout resources before full resource list), FEAT-TXN-014 (non-blocking transaction prefetch) |
 | `app/pages/Account/Tabs/ModulesTab/Contract.test.ts` | FEAT-MODULES-001 (contract result utilities, copy serialization) |
 | `app/pages/Account/Error.test.tsx` | FEAT-MODULES-008 (`AccountError` optional NOT_FOUND title/message) |
 | `app/pages/layout/Search/searchConstants.test.ts` | FEAT-SEARCH-001 (shared input tokens: placeholder, helper text, debounce, font, icon color), FEAT-SEARCH-003 (result-row type chip colors and labels) |
@@ -1390,7 +1411,6 @@ Features that require React component rendering, async I/O mocking, or extractio
 |------------|---------|---------|
 | FEAT-TXLIST-001 | User vs All toggle | Needs component render to test `?type=` → correct child component |
 | FEAT-NETWORK-002 | Network preserved on nav | Custom `Link` / `useNavigate` wrapper requires router context |
-| FEAT-ACCOUNT-004 | Object detection redirect | Needs `Account/Index.tsx` component render with mocked resources |
 | FEAT-CHROME-002 | Footer cache clear | Integration test with localStorage |
 | FEAT-VALIDATORS-004 | Map geo data grouping | Needs component render or extraction of `useGetValidatorSetGeoData` logic |
 

@@ -1,10 +1,23 @@
+import {Skeleton} from "@mui/material";
 import {useGetBlockByVersion} from "../../../../api/hooks/useGetBlock";
 import ContentRow from "../../../../components/IndividualPageContent/ContentRow";
 import {Link} from "../../../../routing";
 import {getLearnMoreTooltip} from "../../helpers";
 
 export default function TransactionBlockRow({version}: {version: string}) {
-  const {data} = useGetBlockByVersion({version: parseInt(version, 10)});
+  const {data, isPending} = useGetBlockByVersion({
+    version: parseInt(version, 10),
+  });
+
+  if (isPending) {
+    return (
+      <ContentRow
+        title="Block:"
+        value={<Skeleton width={96} />}
+        tooltip={getLearnMoreTooltip("block_height")}
+      />
+    );
+  }
 
   if (!data) {
     return null;

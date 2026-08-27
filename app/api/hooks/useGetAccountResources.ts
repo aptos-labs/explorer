@@ -1,8 +1,8 @@
 import {type UseQueryResult, useQuery} from "@tanstack/react-query";
 import type {Types} from "~/types/aptos";
-import {useAptosClient, useNetworkValue} from "../../global-config";
+import {useAptosClientV2, useNetworkValue} from "../../global-config";
 import type {ResponseError} from "../client";
-import {getAccountResources} from "../index";
+import {accountResourcesQueryOptions} from "../queries";
 
 export function useGetAccountResources(
   address: string,
@@ -12,14 +12,11 @@ export function useGetAccountResources(
   },
 ): UseQueryResult<Types.MoveResource[], ResponseError> {
   const networkValue = useNetworkValue();
-  const aptosClient = useAptosClient();
+  const aptosClient = useAptosClientV2();
 
-  return useQuery<Array<Types.MoveResource>, ResponseError>({
-    queryKey: ["accountResources", {address}, networkValue],
-    queryFn: () => getAccountResources({address}, aptosClient),
+  return useQuery({
+    ...accountResourcesQueryOptions(address, aptosClient, networkValue),
     retry: options?.retry ?? false,
-    enabled: options?.enabled,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 60 * 60 * 1000,
+    enabled: (options?.enabled ?? true) && !!address,
   });
 }

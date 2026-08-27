@@ -1,14 +1,22 @@
 import {AccountAddress, Network} from "@aptos-labs/ts-sdk";
-import {Grid} from "@mui/material";
+import {Grid, Stack, Typography} from "@mui/material";
 import {useLocation, useParams} from "@tanstack/react-router";
 import type React from "react";
 import {useEffect} from "react";
 import type {Types} from "~/types/aptos";
-import {type ResponseError, ResponseErrorType} from "../../api/client";
+import {
+  isNotFoundError,
+  type ResponseError,
+  ResponseErrorType,
+} from "../../api/client";
 import {useGetAccountResources} from "../../api/hooks/useGetAccountResources";
 import {useGetAddressFromName} from "../../api/hooks/useGetANS";
-import LoadingModal from "../../components/LoadingModal";
-import {objectCoreResource} from "../../constants";
+import {ACCOUNT_RESOURCE_TYPE} from "../../api/queries";
+import {
+  BalanceCardSkeleton,
+  TitleHashSkeleton,
+} from "../../components/PageLoadSkeletons";
+import {objectCoreResource, tokenV2Address} from "../../constants";
 import {useNetworkName} from "../../global-config";
 import {useNavigate} from "../../routing";
 import PageHeader from "../layout/PageHeader";
@@ -18,6 +26,10 @@ import {DefunctProtocolBanner} from "./Components/DefunctProtocolBanner";
 import {KnownAddressBrandingBanner} from "./Components/KnownAddressBrandingBanner";
 import {PetraVaultBanner} from "./Components/PetraVaultBanner";
 import AccountError from "./Error";
+import {
+  useAccountPageLayout,
+  shouldRedirectAccountToObject,
+} from "./hooks/useAccountPageLayout";
 import {useAccountTabValues} from "./hooks/useAccountTabValues";
 import AccountTabs from "./Tabs";
 import AccountTitle from "./Title";
@@ -33,6 +45,19 @@ export function accountPagePath(isObject: boolean) {
     return "object";
   }
   return "account";
+}
+
+function mergeLayoutResources(
+  resourceData: Types.MoveResource[] | undefined,
+  layoutResources: Types.MoveResource[],
+): Types.MoveResource[] | undefined {
+  if (resourceData && resourceData.length > 0) {
+    return resourceData;
+  }
+  if (layoutResources.length > 0) {
+    return layoutResources;
+  }
+  return resourceData;
 }
 
 export default function AccountPage({
@@ -58,20 +83,16 @@ export default function AccountPage({
     if (isAptName) {
       // Handle ANS name resolution
       if (ansQuery.isLoading) {
-        // Still loading ANS resolution, keep address empty for now
         address = "";
       } else if (ansQuery.data) {
-        // Successfully resolved ANS name
         address = ansQuery.data;
       } else if (ansQuery.isError || (!ansQuery.isLoading && !ansQuery.data)) {
-        // ANS resolution failed
         addressError = {
           type: ResponseErrorType.NOT_FOUND,
           message: `ANS name '${maybeAddress}' not found`,
         };
       }
     } else {
-      // Handle regular address
       try {
         address = AccountAddress.from(maybeAddress, {
           maxMissingChars: 63,
@@ -85,72 +106,89 @@ export default function AccountPage({
     }
   }
 
+  const layout = useAccountPageLayout(address);
   const {
     data: resourceData,
     error: resourceError,
     isLoading: resourcesIsLoading,
-  } = useGetAccountResources(address, {retry: false});
+    isFetched: resourcesIsFetched,
+  } = useGetAccountResources(address, {
+    retry: false,
+    enabled: !!address && layout.isFetched,
+  });
 
-  const accountData = resourceData?.find(
-    (r) => r.type === "0x1::account::Account",
-  )?.data as Types.AccountData | undefined;
-  const objectData = resourceData?.find((r) => r.type === objectCoreResource);
-  const tokenData = resourceData?.find((r) => r.type === "0x4::token::Token");
-  const multisigData = resourceData?.find(
-    (r) => r.type === "0x1::multisig_account::MultisigAccount",
-  );
-  const isAccount = !!accountData;
-  const isObject = !!objectData;
-  const isDeleted = !isObject;
-  const isToken = !!tokenData;
-  const isMultisig = !!multisigData;
+  const layoutResources = [
+    layout.accountResource,
+    layout.objectData,
+    layout.tokenData,
+    layout.multisigData,
+  ].filter((resource): resource is Types.MoveResource => Boolean(resource));
 
-  const isLoading = resourcesIsLoading || (!!isAptName && ansQuery.isLoading);
+  const accountData =
+    layout.accountData ??
+    (resourceData?.find((r) => r.type === ACCOUNT_RESOURCE_TYPE)?.data as
+      | Types.AccountData
+      | undefined);
+  const objectData =
+    layout.objectData ??
+    resourceData?.find((r) => r.type === objectCoreResource);
+  const tokenData =
+    layout.tokenData ?? resourceData?.find((r) => r.type === tokenV2Address);
+  const isObject =
+    alreadyIsObject || (layout.isFetched ? layout.isObject : !!objectData);
+  const isDeleted = layout.isFetched && !layout.isObject;
+  const isToken = layout.isFetched ? layout.isToken : !!tokenData;
+  const isMultisig = layout.isFetched ? layout.isMultisig : false;
+
+  const resolvingAddress = !!isAptName && ansQuery.isLoading;
   let error: ResponseError | null = null;
   if (addressError) {
-    // If the address is not found, we can still show the account page, without an error
-    if (addressError.type === ResponseErrorType.NOT_FOUND) {
-      error = resourceError;
-    } else {
-      error = addressError;
-    }
-  } else if (resourceError) {
+    error = addressError;
+  } else if (layout.error) {
+    error = layout.error;
+  } else if (resourceError && !isNotFoundError(resourceError)) {
     error = resourceError;
+  } else if (
+    layout.isFetched &&
+    !layout.isAccount &&
+    !layout.isObject &&
+    !layout.error &&
+    resourcesIsFetched &&
+    (!resourceData ||
+      resourceData.length === 0 ||
+      isNotFoundError(resourceError))
+  ) {
+    error = {
+      type: ResponseErrorType.NOT_FOUND,
+      message:
+        resourceError && isNotFoundError(resourceError)
+          ? resourceError.message
+          : undefined,
+    };
   }
 
   useEffect(() => {
-    // If we are on the account page, we might be loading an object. This
-    // handler will redirect to the object page if no account exists but an
-    // object does.
-    if (!isLoading) {
-      // TODO: Handle where it's both an object and an account
-      if (!alreadyIsObject && isObject && !isAccount) {
-        const objectPath = location.pathname.replace(
-          /^\/account\//,
-          "/object/",
-        );
-        navigate({
-          to: objectPath,
-          search: location.search,
-          replace: true,
-        });
-      }
+    if (
+      shouldRedirectAccountToObject(
+        !!alreadyIsObject,
+        layout.isObject,
+        layout.isAccount,
+        layout.isFetched,
+      )
+    ) {
+      const objectPath = location.pathname.replace(/^\/account\//, "/object/");
+      navigate({
+        to: objectPath,
+        search: location.search,
+        replace: true,
+      });
     }
-
-    // If we successfully resolved an ANS name and have an address,
-    // optionally redirect to the address URL for clean URLs
-    // (This is optional - you may want to keep the ANS name in the URL)
-    // if (isAptName && address && !isLoading && maybeAddress !== address) {
-    //   const currentPath = window.location.pathname;
-    //   const newPath = currentPath.replace(`/account/${maybeAddress}`, `/account/${address}`);
-    //   navigate(newPath, { replace: true });
-    // }
   }, [
     alreadyIsObject,
-    isObject,
-    isLoading,
+    layout.isObject,
+    layout.isAccount,
+    layout.isFetched,
     navigate,
-    isAccount,
     location.pathname,
     location.search,
   ]);
@@ -171,18 +209,24 @@ export default function AccountPage({
       address={address}
       accountData={accountData}
       objectData={objectData}
-      resourceData={resourceData}
+      resourceData={mergeLayoutResources(resourceData, layoutResources)}
+      resourcesIsLoading={
+        !!address && (resourcesIsLoading || !resourcesIsFetched)
+      }
       tabValues={tabValues}
       isObject={isObject}
       currentTab={children ? "modules" : undefined}
+      tabsPending={resolvingAddress || (!!address && !layout.isFetched)}
     >
       {children}
     </AccountTabs>
   );
 
+  const showError =
+    error && !(isModulesRoute && error.type === ResponseErrorType.NOT_FOUND);
+
   return (
     <Grid container spacing={1}>
-      <LoadingModal open={isLoading} />
       <Grid size={{xs: 12, md: 12, lg: 12}}>
         <PageHeader />
       </Grid>
@@ -192,15 +236,24 @@ export default function AccountPage({
           alignSelf: "center",
         }}
       >
-        <AccountTitle
-          address={address}
-          isMultisig={isMultisig}
-          isObject={isObject}
-          objectRoute={alreadyIsObject}
-          pathTab={pathTab}
-          isDeleted={isDeleted}
-          isToken={isToken}
-        />
+        {address || !resolvingAddress ? (
+          <AccountTitle
+            address={address || maybeAddress || ""}
+            isMultisig={isMultisig}
+            isObject={isObject}
+            objectRoute={alreadyIsObject}
+            pathTab={pathTab}
+            isDeleted={isDeleted}
+            isToken={isToken}
+          />
+        ) : (
+          <Stack direction="column" spacing={2} sx={{marginX: 1}}>
+            <Typography variant="h3" component="h1">
+              Account
+            </Typography>
+            <TitleHashSkeleton />
+          </Stack>
+        )}
       </Grid>
       <Grid
         size={{xs: 12, md: 4, lg: 3}}
@@ -208,7 +261,7 @@ export default function AccountPage({
           marginTop: {md: 0, xs: 2},
         }}
       >
-        <BalanceCard address={address} />
+        {address ? <BalanceCard address={address} /> : <BalanceCardSkeleton />}
       </Grid>
       <Grid
         size={{xs: 12, md: 8, lg: 12}}
@@ -219,7 +272,7 @@ export default function AccountPage({
       >
         {address ? <KnownAddressBrandingBanner address={address} /> : null}
         {networkName === Network.MAINNET && <AptosNamesBanner />}
-        {networkName === Network.MAINNET && (
+        {networkName === Network.MAINNET && address && (
           <DefunctProtocolBanner address={address} />
         )}
         {isMultisig && <PetraVaultBanner address={address} />}
@@ -230,8 +283,7 @@ export default function AccountPage({
           marginTop: 4,
         }}
       >
-        {error &&
-        !(isModulesRoute && error.type === ResponseErrorType.NOT_FOUND) ? (
+        {showError && error ? (
           <>
             {accountTabs}
             <AccountError address={address} error={error} />

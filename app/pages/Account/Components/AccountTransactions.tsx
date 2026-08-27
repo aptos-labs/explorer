@@ -1,7 +1,8 @@
-import {Box, CircularProgress} from "@mui/material";
+import {Box} from "@mui/material";
 import type {Types} from "~/types/aptos";
 import {useGetAccountTransactions} from "../../../api/hooks/useGetAccountTransactions";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import {TransactionsTableSkeleton} from "../../../components/PageLoadSkeletons";
 import PageNumberPagination, {
   useCurrentPage,
 } from "../../../components/PageNumberPagination";
@@ -63,7 +64,7 @@ function TransactionsPaginationTable({
   if (isLoading) {
     return (
       <Box sx={{display: "flex", justifyContent: "center", py: 4}}>
-        <CircularProgress />
+        <TransactionsTableSkeleton />
       </Box>
     );
   }

@@ -1,18 +1,16 @@
-import {useQuery} from "@tanstack/react-query";
+import {type UseQueryResult, useQuery} from "@tanstack/react-query";
 import type {Types} from "~/types/aptos";
-import {useAptosClient, useNetworkValue} from "../../global-config";
+import {useAptosClientV2, useNetworkValue} from "../../global-config";
 import type {ResponseError} from "../client";
-import {getTransaction} from "../index";
+import {transactionQueryOptions} from "../queries";
 
-export function useGetTransaction(txnHashOrVersion: string) {
+export function useGetTransaction(
+  txnHashOrVersion: string,
+): UseQueryResult<Types.Transaction, ResponseError> {
   const networkValue = useNetworkValue();
-  const aptosClient = useAptosClient();
+  const aptosClient = useAptosClientV2();
 
-  return useQuery<Types.Transaction, ResponseError>({
-    queryKey: ["transaction", {txnHashOrVersion}, networkValue],
-    queryFn: () => getTransaction({txnHashOrVersion}, aptosClient),
-    // Transaction data is static once confirmed - cache for 1 hour
-    staleTime: 60 * 60 * 1000,
-    gcTime: 24 * 60 * 60 * 1000, // Keep in cache for 24 hours
-  });
+  return useQuery(
+    transactionQueryOptions(txnHashOrVersion, aptosClient, networkValue),
+  );
 }

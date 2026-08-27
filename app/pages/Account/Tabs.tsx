@@ -11,6 +11,11 @@ import type * as React from "react";
 import type {Types} from "~/types/aptos";
 import StyledTab from "../../components/StyledTab";
 import StyledTabs from "../../components/StyledTabs";
+import {
+  ContentRowsSkeleton,
+  ResourcesListSkeleton,
+  TabStripSkeleton,
+} from "../../components/PageLoadSkeletons";
 import {useNavigate} from "../../routing";
 import {assertNever} from "../../utils";
 import {accountPagePath} from "./Index";
@@ -85,6 +90,7 @@ type TabPanelProps = {
   objectData: Types.MoveResource | undefined;
   resourceData: Types.MoveResource[] | undefined;
   isObject: boolean;
+  resourcesIsLoading: boolean;
 };
 
 function TabPanel({
@@ -94,7 +100,16 @@ function TabPanel({
   objectData,
   resourceData,
   isObject,
+  resourcesIsLoading,
 }: TabPanelProps): React.JSX.Element {
+  if (value === "resources") {
+    return (
+      <ResourcesTab
+        resourceData={resourceData}
+        isLoading={resourcesIsLoading}
+      />
+    );
+  }
   const TabComponent = TabComponents[value];
   return (
     <TabComponent
@@ -112,13 +127,20 @@ type AccountTabsProps = {
   accountData?: Types.AccountData | undefined;
   objectData?: Types.MoveResource | undefined;
   resourceData?: Types.MoveResource[] | undefined;
+  resourcesIsLoading?: boolean;
   tabValues?: TabValue[];
   isObject?: boolean;
   /** Override the current tab value */
   currentTab?: TabValue;
   /** Custom content to render instead of the default TabPanel */
   children?: React.ReactNode;
+  /** Layout flags (object/multisig) are still loading */
+  tabsPending?: boolean;
 };
+
+function isTabValue(tab: string | undefined): tab is TabValue {
+  return !!tab && tab in TabComponents;
+}
 
 // TODO: create reusable Tabs for all pages
 export default function AccountTabs({
@@ -126,25 +148,33 @@ export default function AccountTabs({
   accountData,
   objectData,
   resourceData,
+  resourcesIsLoading = false,
   isObject = false,
   tabValues = TAB_VALUES,
   currentTab,
   children,
+  tabsPending = false,
 }: AccountTabsProps) {
   // Use path params for tab selection in TanStack Router
   const params = useParams({strict: false}) as {tab?: string};
   const navigate = useNavigate();
+  const urlTab = params?.tab;
+
+  const visibleTabValues: TabValue[] = (() => {
+    if (currentTab !== undefined) return tabValues;
+    if (isTabValue(urlTab) && !tabValues.includes(urlTab)) {
+      return [tabValues[0], urlTab, ...tabValues.slice(1)];
+    }
+    return tabValues;
+  })();
 
   let effectiveTab: TabValue;
   if (currentTab !== undefined) {
     effectiveTab = currentTab;
-  } else if (
-    params?.tab !== undefined &&
-    tabValues.includes(params.tab as TabValue)
-  ) {
-    effectiveTab = params.tab as TabValue;
+  } else if (isTabValue(urlTab) && visibleTabValues.includes(urlTab)) {
+    effectiveTab = urlTab;
   } else {
-    effectiveTab = TAB_VALUES[0];
+    effectiveTab = visibleTabValues[0] ?? TAB_VALUES[0];
   }
 
   const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
@@ -164,33 +194,50 @@ export default function AccountTabs({
     }
   };
 
+  const layoutDependentTab =
+    effectiveTab === "info" ||
+    effectiveTab === "multisig" ||
+    effectiveTab === "resources";
+
   return (
     <Box sx={{width: "100%"}}>
       <Box>
-        <StyledTabs value={effectiveTab} onChange={handleChange}>
-          {tabValues.map((value, i) => (
-            <StyledTab
-              key={value}
-              value={value}
-              icon={getTabIcon(value)}
-              label={getTabLabel(value)}
-              isFirst={i === 0}
-              isLast={i === tabValues.length - 1}
-            />
-          ))}
-        </StyledTabs>
+        {tabsPending && visibleTabValues.length === 0 ? (
+          <TabStripSkeleton />
+        ) : (
+          <StyledTabs value={effectiveTab} onChange={handleChange}>
+            {visibleTabValues.map((value, i) => (
+              <StyledTab
+                key={value}
+                value={value}
+                icon={getTabIcon(value)}
+                label={getTabLabel(value)}
+                isFirst={i === 0}
+                isLast={i === visibleTabValues.length - 1}
+              />
+            ))}
+          </StyledTabs>
+        )}
       </Box>
       <Box>
-        {children ?? (
-          <TabPanel
-            value={effectiveTab}
-            address={address}
-            accountData={accountData}
-            objectData={objectData}
-            resourceData={resourceData}
-            isObject={isObject}
-          />
-        )}
+        {children ??
+          (tabsPending && layoutDependentTab ? (
+            effectiveTab === "resources" ? (
+              <ResourcesListSkeleton />
+            ) : (
+              <ContentRowsSkeleton />
+            )
+          ) : (
+            <TabPanel
+              value={effectiveTab}
+              address={address}
+              accountData={accountData}
+              objectData={objectData}
+              resourceData={resourceData}
+              isObject={isObject}
+              resourcesIsLoading={resourcesIsLoading}
+            />
+          ))}
       </Box>
     </Box>
   );

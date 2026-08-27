@@ -44,6 +44,10 @@ import TokenTransferDisplay, {
   TokenTransferModalProvider,
 } from "./Components/TokenTransferDisplay";
 import TransactionTypeTooltip from "./Components/TransactionTypeTooltip";
+import {
+  TransactionCardSkeleton,
+  TransactionRowSkeleton,
+} from "../../components/PageLoadSkeletons";
 
 type TransactionCellProps = {
   transaction: Types.Transaction;
@@ -731,10 +735,18 @@ const UserTransactionRow = React.memo(function UserTransactionRow({
   columns,
   address,
 }: UserTransactionRowProps) {
-  const {data: transaction, isError} = useGetTransaction(version.toString());
+  const {
+    data: transaction,
+    isError,
+    isPending,
+  } = useGetTransaction(version.toString());
 
-  if (!transaction || isError) {
+  if (isError) {
     return null;
+  }
+
+  if (isPending || !transaction) {
+    return <TransactionRowSkeleton columnCount={columns.length} />;
   }
 
   return (
@@ -859,10 +871,18 @@ const UserTransactionCard = React.memo(function UserTransactionCard({
   version,
   address,
 }: UserTransactionCardProps) {
-  const {data: transaction, isError} = useGetTransaction(version.toString());
+  const {
+    data: transaction,
+    isError,
+    isPending,
+  } = useGetTransaction(version.toString());
 
-  if (!transaction || isError) {
+  if (isError) {
     return null;
+  }
+
+  if (isPending || !transaction) {
+    return <TransactionCardSkeleton />;
   }
 
   return <TransactionCard transaction={transaction} address={address} />;
@@ -872,15 +892,49 @@ type UserTransactionsTableProps = {
   versions: number[];
   columns?: TransactionColumn[];
   address?: string;
+  isLoading?: boolean;
 };
 
 export function UserTransactionsTable({
   versions,
   columns = DEFAULT_COLUMNS,
   address,
+  isLoading = false,
 }: UserTransactionsTableProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  if (isLoading && versions.length === 0) {
+    if (isMobile) {
+      return (
+        <Box aria-busy="true" aria-label="Loading transactions">
+          {Array.from({length: 8}, (_, i) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholders
+            <TransactionCardSkeleton key={i} />
+          ))}
+        </Box>
+      );
+    }
+    return (
+      <TokenTransferModalProvider>
+        <Table aria-label="Loading transactions" data-entity-type="transaction">
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TransactionHeaderCell key={column} column={column} />
+              ))}
+            </TableRow>
+          </TableHead>
+          <GeneralTableBody>
+            {Array.from({length: 8}, (_, i) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholders
+              <TransactionRowSkeleton key={i} columnCount={columns.length} />
+            ))}
+          </GeneralTableBody>
+        </Table>
+      </TokenTransferModalProvider>
+    );
+  }
 
   // Mobile card view
   if (isMobile) {
