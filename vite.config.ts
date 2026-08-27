@@ -8,6 +8,7 @@ import {perEnvironmentPlugin} from "vite";
 import compression from "vite-plugin-compression";
 import viteSvgr from "vite-plugin-svgr";
 import {configDefaults, defineConfig} from "vitest/config";
+import {assertVercelProductionClientApiKeys} from "./app/lib/vercelProductionApiKeys";
 
 // Vercel sets VERCEL_ENV at build time (production | preview | development).
 // Vite only exposes VITE_* to the client, so copy it unless already set.
@@ -17,6 +18,13 @@ if (!process.env.VITE_VERCEL_ENV && process.env.VERCEL_ENV) {
 
 export default defineConfig({
   plugins: [
+    {
+      name: "assert-vercel-production-client-api-keys",
+      apply: "build",
+      buildStart() {
+        assertVercelProductionClientApiKeys();
+      },
+    },
     tanstackStart({
       srcDirectory: "app",
       router: {

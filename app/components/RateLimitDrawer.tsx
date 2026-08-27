@@ -83,8 +83,11 @@ export default function RateLimitDrawer() {
             color: "text.secondary",
           }}
         >
-          The API returned a rate-limit response (HTTP 429). Data on this page
-          may be incomplete or stale until the limit resets.
+          The API returned HTTP 429. That can mean requests used the shared
+          anonymous bucket (no API key attached) or that a configured key hit
+          its own limit. Geomi&apos;s 429 body distinguishes those cases:{" "}
+          <em>Per anonymous IP rate limit exceeded</em> vs{" "}
+          <em>Per application per IP rate limit exceeded</em>.
         </Typography>
 
         <Stack

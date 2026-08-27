@@ -4,6 +4,10 @@ import Cookies from "js-cookie";
 import React, {createContext, type ReactNode, useContext, useMemo} from "react";
 import {AptosClient} from "../api/legacyClient";
 import {
+  aptosGatewayApiKeyHeaders,
+  aptosSdkClientConfig,
+} from "../lib/aptosGatewayAuth";
+import {
   defaultFeatureName,
   defaultNetworkName,
   type FeatureName,
@@ -169,11 +173,9 @@ function createAptosClient(
 ): AptosClient {
   const nodeUrl = networks[networkName];
   const apiKey = getApiKey(networkName, apiKeyOverride);
-  const headers: Record<string, string> = {};
-  if (apiKey) {
-    headers.Authorization = `Bearer ${apiKey}`;
-  }
-  return new AptosClient(nodeUrl, {HEADERS: headers});
+  return new AptosClient(nodeUrl, {
+    HEADERS: aptosGatewayApiKeyHeaders(apiKey),
+  });
 }
 
 function createAptosV2Client(
@@ -204,13 +206,7 @@ function createAptosV2Client(
     network,
     fullnode: nodeUrl,
     indexer: indexerUrl,
-    clientConfig: apiKey
-      ? {
-          HEADERS: {
-            Authorization: `Bearer ${apiKey}`,
-          },
-        }
-      : undefined,
+    clientConfig: aptosSdkClientConfig(apiKey),
   });
 
   return new Aptos(config);

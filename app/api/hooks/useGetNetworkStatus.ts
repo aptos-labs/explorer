@@ -1,4 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
+import {aptosGatewayApiKeyHeaders} from "../../lib/aptosGatewayAuth";
 import {getApiKey, type NetworkName, networks} from "../../lib/constants";
 import {
   frameworkReleaseFromGasFeatureVersion,
@@ -38,9 +39,7 @@ export async function fetchNetworkStatus(
 ): Promise<NetworkStatus> {
   const baseUrl = networks[networkName];
   const apiKey = getApiKey(networkName);
-  const headers: Record<string, string> = apiKey
-    ? {Authorization: `Bearer ${apiKey}`}
-    : {};
+  const headers = aptosGatewayApiKeyHeaders(apiKey);
 
   const res = await fetch(`${baseUrl}/`, {headers});
   if (!res.ok) throw new Error(`Fullnode returned ${res.status}`);

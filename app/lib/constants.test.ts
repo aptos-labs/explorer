@@ -9,6 +9,9 @@
 //   3. `warnIfClientMissingApiKey` emits a one-time `console.error` on the
 //      client when the env var is unset for a network that normally has
 //      one, naming the env var so the misconfiguration is actionable.
+import {readFileSync} from "node:fs";
+import {dirname, join} from "node:path";
+import {fileURLToPath} from "node:url";
 import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
 import {
   getApiKey,
@@ -254,5 +257,16 @@ describe("getServerApiKey", () => {
     process.env.APTOS_MAINNET_API_KEY = "AG-SHOULD-BE-IGNORED";
     expect(getServerApiKey("mainnet")).toBeUndefined();
     expect(console.error).toHaveBeenCalledTimes(1);
+  });
+
+  it("reads server env through readProcessEnv rather than process.env.FOO", () => {
+    const src = readFileSync(
+      join(dirname(fileURLToPath(import.meta.url)), "constants.ts"),
+      "utf8",
+    );
+    expect(src).toMatch(/readProcessEnv\("VERCEL_ENV"\)/);
+    expect(src).toMatch(/readProcessEnv\(\s*`APTOS_\$\{network_name/);
+    expect(src).not.toMatch(/process\.env\.VERCEL_ENV/);
+    expect(src).not.toMatch(/process\.env\[envKey\]/);
   });
 });
