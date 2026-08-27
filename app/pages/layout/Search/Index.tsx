@@ -21,7 +21,6 @@ import SearchInput from "./SearchInput";
 import {SearchResultGroupHeader, SearchResultRow} from "./SearchResultRow";
 import {SEARCH_DEBOUNCE_MS} from "./searchConstants";
 import {
-  anyOwnedObjects,
   createFallbackAddressResult,
   detectInputType,
   filterSearchResults,
@@ -347,21 +346,6 @@ export default function HeaderSearch({initialSearch}: HeaderSearchProps) {
 
         // Filter and deduplicate results
         let filteredResults = filterSearchResults(resultsList);
-
-        // Fallback: slow query only if no results found
-        if (filteredResults.length === 0) {
-          if (inputType.is32Hex || inputType.isValidAccountAddr) {
-            const fallbackResult = await anyOwnedObjects(
-              normalizedSearchText,
-              sdkV2Client,
-              signal,
-            );
-            if (signal.aborted) return;
-            if (fallbackResult) {
-              filteredResults = [...filteredResults, fallbackResult];
-            }
-          }
-        }
 
         // If we still have no results but the input is a valid address,
         // allow navigating to the account page even if the account has no data yet.

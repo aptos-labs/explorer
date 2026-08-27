@@ -350,6 +350,44 @@ export type IndexerQueryable = {
   queryIndexer: Aptos["queryIndexer"];
 };
 
+export const INDEXER_BLOCK_HEIGHT_FOR_VERSION_QUERY = `
+  query BlockHeightForVersion($version: bigint!) {
+    user_transactions(where: {version: {_eq: $version}}, limit: 1) {
+      block_height
+    }
+    block_metadata_transactions(where: {version: {_eq: $version}}, limit: 1) {
+      block_height
+    }
+  }
+`;
+
+export async function getBlockHeightForVersion(
+  client: IndexerQueryable,
+  version: string,
+): Promise<string | null> {
+  if (!/^\d+$/.test(version)) return null;
+
+  const data = await client.queryIndexer<{
+    user_transactions?: Array<{block_height?: number | string | null}> | null;
+    block_metadata_transactions?: Array<{
+      block_height?: number | string | null;
+    }> | null;
+  }>({
+    query: {
+      query: INDEXER_BLOCK_HEIGHT_FOR_VERSION_QUERY,
+      variables: {version},
+    },
+  });
+
+  const height =
+    data?.user_transactions?.[0]?.block_height ??
+    data?.block_metadata_transactions?.[0]?.block_height;
+  if (height === null || height === undefined || height === "") {
+    return null;
+  }
+  return String(height);
+}
+
 export async function getTransactionFromIndexer(
   client: IndexerQueryable,
   txnHashOrVersion: string,

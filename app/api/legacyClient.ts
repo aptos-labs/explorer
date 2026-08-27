@@ -23,14 +23,10 @@ const CREDENTIAL_HEADER_NAMES = new Set([
   "x-api-key",
 ]);
 
-function siteOf(hostname: string): string {
-  return hostname.toLowerCase().split(".").slice(-2).join(".");
-}
-
 function archivalRetryTarget(
   originUrl: string,
   body: unknown,
-): {url: string; forwardCredentials: boolean} | undefined {
+): {url: string} | undefined {
   if (
     !body ||
     typeof body !== "object" ||
@@ -51,8 +47,6 @@ function archivalRetryTarget(
     }
     return {
       url: advertised.replace(/\/+$/, ""),
-      forwardCredentials:
-        siteOf(archivalUrl.hostname) === siteOf(origin.hostname),
     };
   } catch {
     return undefined;
@@ -111,13 +105,14 @@ export class AptosClient {
       }
       const target = archivalRetryTarget(url, parsed);
       if (target) {
-        const headers = target.forwardCredentials
-          ? this.headers
-          : Object.fromEntries(
-              Object.entries(this.headers).filter(
-                ([name]) => !CREDENTIAL_HEADER_NAMES.has(name.toLowerCase()),
-              ),
-            );
+        // Never forward the explorer API key: archive hosts are same-site
+        // with `api.*.aptoslabs.com`, so the SDK would send it, but they
+        // 401 (`Unauthorized: API key not found`).
+        const headers = Object.fromEntries(
+          Object.entries(this.headers).filter(
+            ([name]) => !CREDENTIAL_HEADER_NAMES.has(name.toLowerCase()),
+          ),
+        );
         const archivalClient = new AptosClient(target.url, {HEADERS: headers});
         return archivalClient.request<T>(path, options, true);
       }

@@ -20,24 +20,27 @@ describe("AptosClient archival 410 retry", () => {
 
   it("retries pruned reads against the advertised archival endpoint", async () => {
     const txn = {type: "user_transaction", version: "1", hash: "0x1"};
-    const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
-      const url = String(input);
-      if (host(url) === "archive.mainnet.aptoslabs.com") {
+    const fetchMock = vi.fn(
+      async (input: RequestInfo | URL, init?: RequestInit) => {
+        const url = String(input);
+        if (host(url) === "archive.mainnet.aptoslabs.com") {
+          expect(new Headers(init?.headers).get("Authorization")).toBeNull();
+          return {
+            ok: true,
+            json: async () => txn,
+          };
+        }
         return {
-          ok: true,
-          json: async () => txn,
+          ok: false,
+          status: 410,
+          text: async () =>
+            JSON.stringify({
+              error_code: "version_pruned",
+              archival_endpoint: "https://archive.mainnet.aptoslabs.com/v1",
+            }),
         };
-      }
-      return {
-        ok: false,
-        status: 410,
-        text: async () =>
-          JSON.stringify({
-            error_code: "version_pruned",
-            archival_endpoint: "https://archive.mainnet.aptoslabs.com/v1",
-          }),
-      };
-    });
+      },
+    );
     vi.stubGlobal("fetch", fetchMock);
 
     const client = new AptosClient("https://api.mainnet.aptoslabs.com/v1", {
