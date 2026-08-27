@@ -11,6 +11,7 @@ import {
 import {useGetAccountResource} from "../../api/hooks/useGetAccountResource";
 import {useGetValidatorPageSkeletonLoading} from "../../api/hooks/useGetValidatorPageSkeletonLoading";
 import {useGetValidators} from "../../api/hooks/useGetValidators";
+import {moveResourceData, toMoveResource} from "../../api/moveResource";
 import {Banner} from "../../components/Banner";
 import {tryStandardizeAddress} from "../../utils";
 import AccountError from "../Account/Error";
@@ -51,9 +52,7 @@ export default function ValidatorPage() {
             addressHex,
             validators,
             delegatedStakingPools,
-            stakePool: accountResource?.data as
-              | StakePoolResourceData
-              | undefined,
+            stakePool: moveResourceData<StakePoolResourceData>(accountResource),
           })
         : undefined,
     [addressHex, validators, delegatedStakingPools, accountResource],
@@ -114,7 +113,10 @@ export default function ValidatorPage() {
   return (
     <DelegationStateContext.Provider
       value={{
-        accountResource,
+        accountResource: toMoveResource(
+          "0x1::stake::StakePool",
+          accountResource,
+        ),
         validator,
       }}
     >

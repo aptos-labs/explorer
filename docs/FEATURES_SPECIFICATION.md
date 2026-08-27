@@ -554,9 +554,10 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Data** | GCS `validator_stats_v2.json` (mainnet/testnet) merged with on-chain `0x1::stake::ValidatorSet` for voting power. If the JSON is missing or empty, the table falls back to one row per active validator from the on-chain set (voting power; operator from each pool’s `0x1::stake::StakePool` when available; rewards / epoch perf / geo columns stay sparse until stats return). If the JSON is present but a row's `operator_address` is missing / unstandardizable / zero (`isOperatorAddressMissing`), the row's operator is patched from `0x1::stake::StakePool::operator_address` for just that pool so the operator column and avatar match on-chain state. Rows with a valid operator address are never overwritten. |
+| **Data** | GCS `validator_stats_v2.json` (mainnet/testnet) merged with on-chain `0x1::stake::ValidatorSet` for voting power. `useGetAccountResource` re-wraps the SDK `getAccountResource` inner payload into the REST `{ type, data }` envelope (`toMoveResource`); `readValidatorSet` also accepts the unwrapped payload so a missed wrap cannot empty the table. If the JSON is missing or empty, the table falls back to one row per active validator from the on-chain set (voting power; operator from each pool’s `0x1::stake::StakePool` when available; rewards / epoch perf / geo columns stay sparse until stats return). If the JSON is present but a row's `operator_address` is missing / unstandardizable / zero (`isOperatorAddressMissing`), the row's operator is patched from `0x1::stake::StakePool::operator_address` for just that pool so the operator column and avatar match on-chain state. Rows with a valid operator address are never overwritten. |
 | **Columns** | Staking pool address, operator address, voting power (sortable), rewards performance %, last epoch performance, location (city, country). |
 | **Sorting** | Filters zero voting power by default. |
+| **Loading** | While `0x1::stake::ValidatorSet` is still in flight, All Nodes (and the devnet table) show a progress spinner with "Loading validators..." instead of an empty table. |
 | **Mobile** | Card layout. |
 
 ### FEAT-VALIDATORS-003 — Delegation Table
@@ -566,7 +567,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **Columns** | Status, commission, delegator count, rewards earned, delegated amount. |
 | **Wallet-aware** | "My deposit" column when wallet connected (`DEFAULT_COLUMNS` vs `COLUMNS_WITHOUT_WALLET_CONNECTION`). |
 | **Virtualization** | Uses `VirtualizedTableBody`. |
-| **Loading independence** | Table render is **not** gated on per-wallet deposit data: connecting a wallet must not delay or block the validator list. `getBatchUserStakes` first asks the indexer (`delegator_distinct_pool`) which pools the wallet has any position in, then issues `0x1::delegation_pool::get_stake` view calls only for that small subset in parallel, defaulting all other rows to `0`. If the indexer call fails, every row defaults to `0` so the list still renders. |
+| **Loading independence** | Table render is **not** gated on per-wallet deposit data: connecting a wallet must not delay or block the validator list. `getBatchUserStakes` first asks the indexer (`delegator_distinct_pool`) which pools the wallet has any position in, then issues `0x1::delegation_pool::get_stake` view calls only for that small subset in parallel, defaulting all other rows to `0`. If the indexer call fails, every row defaults to `0` so the list still renders. Initial list loading **is** gated on ValidatorSet (and the existing commission / delegator-count batch queries) and shows the "Loading validators..." spinner until those finish. |
 
 ### FEAT-VALIDATORS-004 — Validators Map
 
@@ -594,7 +595,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Data** | `useGetEpochTime` — reads `0x1` reconfiguration resources for epoch number, interval, and time. |
+| **Data** | `useGetEpochTime` — reads `0x1` reconfiguration / block resources for epoch number, interval, and time. Same SDK `{ type, data }` wrap / `moveResourceData` path as ValidatorSet so a missing `.data` envelope cannot leave the epoch bar stuck on skeleton. |
 | **Display** | `IntervalBar` component with `EPOCH` mode showing hours/minutes/seconds countdown. Tooltip on completion: "Please refresh the page." |
 
 ---
@@ -607,7 +608,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Data** | `0x1::stake::StakePool` is required to show the page. `useGetValidators` and the indexer delegation-pool list enrich performance stats when they have a matching row. If those lists are empty (ValidatorSet still loading, stats merge returns no rows, indexer 429), the page still renders from the StakePool resource (operator, active stake) instead of a blank main area. Pool addresses are compared after `tryStandardizeAddress` so short/long forms match. |
+| **Data** | `0x1::stake::StakePool` is required to show the page. `useGetValidators` and the indexer delegation-pool list enrich performance stats when they have a matching row. If those lists are empty (ValidatorSet still loading, stats merge returns no rows, indexer 429), the page still renders from the StakePool resource (operator, active stake) instead of a blank main area. Pool addresses are compared after `tryStandardizeAddress` so short/long forms match. StakePool fields are read via `moveResourceData` so both the REST `{ type, data }` envelope and the SDK-unwrapped payload work. `getLockedUtilSecs` must not throw when `resource.data` is missing; Next Unlock uses `locked_until_secs` from either shape. |
 | **Display** | `ValidatorTitle`, `ValidatorDetailCard` (operator, performance, delegation state, time bars via `IntervalBar` with `UNLOCK_COUNTDOWN` mode). |
 | **Loading** | While the StakePool resource is in flight, the page shows title + placeholder skeletons (not an empty main area). |
 | **Errors** | Invalid address → Invalid Input. Missing StakePool (404) → Validator Not Found. Other resource errors use the existing `AccountError` states. |
@@ -1364,13 +1365,16 @@ top of the HTML site.
 | `app/api/hooks/useGetObjectRefs.test.ts` | FEAT-ACCOUNT-010 (object ref detection in transactions) |
 | `app/pages/Account/utils/accountKeyType.test.ts` | FEAT-ACCOUNT-010 (key type extraction from latest transaction signature: Ed25519, Multi-Ed25519, Single Key, MultiKey, multi-agent / fee-payer unwrap) |
 | `app/api/hooks/useGetAccountResource.test.ts` | FEAT-MODULES-008 (`mapRegistryQueryToAccountPackages`: 404 → empty packages, not error) |
+| `app/api/moveResource.test.ts` | FEAT-VALIDATORS-002 / FEAT-VALDEL-001 (`toMoveResource` wraps SDK inner payloads into REST `{type, data}` and does not double-wrap; `moveResourceData` reads either shape) |
+| `app/api/hooks/useGetValidatorSet.test.ts` | FEAT-VALIDATORS-002 (`readValidatorSet`: REST-wrapped and SDK-unwrapped ValidatorSet payloads produce active validators; missing resource → empty) |
+| `app/pages/Validators/ValidatorsLoading.test.tsx` | FEAT-VALIDATORS-002 (All Nodes loading spinner + "Loading validators..." copy) |
 | `app/api/hooks/useGetValidators.test.ts` | FEAT-VALIDATORS-002 (`buildValidatorsFromSources`: empty stats JSON → chain-only rows + optional operator map; merge when JSON present; patch missing/zero operator_address rows from `0x1::stake::StakePool`; `isOperatorAddressMissing` heuristic) |
 | `app/pages/Validators/Delegation/hooks/validatorDataService.test.ts` | FEAT-VALIDATORS-003 (`getBatchUserStakes`: indexer-first lookup of pools the wallet delegates to; per-row view calls only for that subset in parallel; zero-fallback when indexer fails or individual view calls error; empty-input guard) |
 | `app/pages/DelegatoryValidator/resolveValidatorData.test.ts` | FEAT-VALDEL-001 (`resolveValidatorData`: StakePool-only fallback when validator lists are empty; prefer list stats; never-active indexer pool row; unpadded vs padded address match; missing list operator filled from StakePool) |
-| `app/pages/DelegatoryValidator/index.test.tsx` | FEAT-VALDEL-001 (`/validator/$address` renders title + staking bar + detail card when `useGetValidators` and the indexer pool list are empty but `0x1::stake::StakePool` exists; invalid address, StakePool query error, loading skeletons, missing StakePool not-found, commission-change banner, connected-wallet My Deposits) |
+| `app/pages/DelegatoryValidator/index.test.tsx` | FEAT-VALDEL-001 (`/validator/$address` renders title + staking bar + detail card when `useGetValidators` and the indexer pool list are empty but `0x1::stake::StakePool` exists, including when the resource is the SDK-unwrapped inner payload; invalid address, StakePool query error, loading skeletons, missing StakePool not-found, commission-change banner, connected-wallet My Deposits) |
 | `app/api/hooks/delegations/useGetDelegationNodeCommissionChange.test.ts` | FEAT-VALDEL-002 (commission-change view query is disabled when the validator address is empty and enabled when present) |
 | `app/pages/DelegatoryValidator/MyDepositsSection.test.tsx` | FEAT-VALDEL-004 (My Deposits action buttons exist in both layouts: mobile card list — no table — and desktop table, with `UNSTAKE` / `RESTAKE` labels derived from the stake status) |
-| `app/pages/DelegatoryValidator/utils.test.ts` | FEAT-VALDEL-004 (My Deposits reward replay across legacy/current delegation event names, pending-inactive withdrawal replay, same-version `event_index` ordering, zero-reward display helper, `getStakeOperationLabel` action labels shared by the desktop table and mobile deposit cards) |
+| `app/pages/DelegatoryValidator/utils.test.ts` | FEAT-VALDEL-001 (`getLockedUtilSecs` reads `locked_until_secs` from REST-wrapped and SDK-unwrapped StakePool payloads and returns null instead of throwing when the field is missing), FEAT-VALDEL-004 (My Deposits reward replay across legacy/current delegation event names, pending-inactive withdrawal replay, same-version `event_index` ordering, zero-reward display helper, `getStakeOperationLabel` action labels shared by the desktop table and the mobile deposit cards) |
 | `app/api/hooks/useGetFaIsDispatchable.test.ts` | FEAT-FA-002 (FA dispatch detection: `0x1::fungible_asset::DispatchFunctionStore` presence + parsing of withdraw/deposit/derived_balance `FunctionInfo`, plus `derived_supply` from `0x1::fungible_asset::DeriveSupply`, with malformed-entry rejection; React hook wrapper loading/loaded states via mocked `useGetAccountResources`) |
 | `app/pages/FungibleAsset/Tabs/DispatchablePropertiesValue.test.tsx` | FEAT-FA-002 (Dispatchable chip rendering + per-hook source links pointing at `/account/{module_address}/modules/code/{module_name}`) |
 | `app/api/hooks/confidentialAssetViews.test.ts` | FEAT-FA-002 / FEAT-COIN-002 / FEAT-ACCOUNT-007 (confidential-asset view response parsing) |

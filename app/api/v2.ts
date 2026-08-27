@@ -11,6 +11,7 @@ import {
   recoverHistoricalData,
   withResponseError,
 } from "./client";
+import {toMoveResource} from "./moveResource";
 
 /** Avoid bursting dozens of parallel `getBlockByHeight` calls (edge/CDN rate limits). */
 const DEFAULT_BLOCKS_REST_CONCURRENCY = 8;
@@ -169,8 +170,8 @@ export async function getAccountResourceV2(
       },
     }),
   );
-  // Convert to old format for compatibility
-  return resource as unknown as Types.MoveResource;
+  // SDK returns the inner payload; restore the REST {type, data} envelope.
+  return toMoveResource(resourceType, resource);
 }
 
 /**

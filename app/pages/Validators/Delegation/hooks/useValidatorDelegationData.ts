@@ -34,7 +34,7 @@ export interface ValidatorWithExtendedData extends ValidatorData {
 export function useValidatorDelegationData() {
   const aptosClient = useAptosClient();
   const networkName = useNetworkName();
-  const {validators} = useGetValidators();
+  const {validators, isLoading: validatorsLoading} = useGetValidators();
   const {connected, account} = useWallet();
   const {delegatedStakingPools, loading: poolsLoading} =
     useGetDelegatedStakingPoolList() ?? [];
@@ -183,7 +183,11 @@ export function useValidatorDelegationData() {
   // `get_stake` view calls caused the validator list to take up to a minute
   // to appear whenever a wallet was connected. The "My Deposit" column will
   // simply show its default placeholder until the per-user data arrives.
-  const isLoading = poolsLoading || commissionLoading || delegatorCountsLoading;
+  const isLoading =
+    validatorsLoading ||
+    poolsLoading ||
+    commissionLoading ||
+    delegatorCountsLoading;
 
   // Combine errors. We still surface user-stake errors when connected, but
   // they do not block initial render of the validator list.

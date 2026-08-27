@@ -10,6 +10,7 @@ import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import {assertNever} from "../../utils";
+import {ValidatorsLoading} from "./ValidatorsLoading";
 
 type ValidatorCellProps = {
   validator: Validator;
@@ -139,7 +140,11 @@ function ValidatorHeaderCell({column}: ValidatorHeaderCellProps) {
 }
 
 export function ValidatorsTable() {
-  const {activeValidators} = useGetValidatorSet();
+  const {activeValidators, isLoading} = useGetValidatorSet();
+
+  if (isLoading) {
+    return <ValidatorsLoading />;
+  }
 
   const validatorsCopy: Validator[] = JSON.parse(
     JSON.stringify(activeValidators),
