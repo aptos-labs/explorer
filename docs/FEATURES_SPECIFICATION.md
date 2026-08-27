@@ -1161,7 +1161,7 @@ top of the HTML site.
 | **Manifest** | `public/manifest.json` — standalone display, Aptos theme colors (`#0F0E0B`), icons, screenshots, categories. |
 | **Service worker** | `public/sw.js` — manual registration (not Vite plugin, for SSR compatibility). Caches static assets (favicons, manifest), fetch handler with Aptos Labs domain checks, install/activate lifecycle. |
 | **Deployment freshness** | JS and CSS requests use network-first with a versioned cache, so a deployed chunk update is picked up instead of being hidden behind a stale cache and reported as an "Update Available" error. |
-| **Registration** | `app/client.tsx` calls `scheduleExplorerServiceWorkerRegistration` (`app/utils/registerServiceWorker.ts`) only in production, registering `/sw.js` at scope `/` on `window` `load` (immediately if the document already loaded). Development builds unregister any older Explorer worker so local Vite sessions cannot be controlled by production caches. Registration must live in the client bundle: production HTML is SSR, so an inline script in a static HTML shell never reaches the browser. |
+| **Registration** | `app/client.tsx` calls `scheduleExplorerServiceWorkerRegistration` (`app/utils/registerServiceWorker.ts`) only in production, registering `/sw.js` at scope `/` on `window` `load` (immediately if the document already loaded). Development builds unregister any older Explorer worker and reload before React hydration when that worker controlled the page, so local Vite sessions cannot combine stale optimized React dependencies with the current client. Registration must live in the client bundle: production HTML is SSR, so an inline script in a static HTML shell never reaches the browser. |
 
 ### FEAT-PWA-002 — PWA share button & header layout
 
