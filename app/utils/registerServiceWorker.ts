@@ -13,6 +13,7 @@ export type ServiceWorkerContainerLike = {
     scriptURL: string,
     options?: {scope?: string},
   ) => Promise<{scope: string}>;
+  controller?: ServiceWorkerVersionLike | null;
   getRegistrations?: () => Promise<
     ReadonlyArray<ServiceWorkerRegistrationLike>
   >;
@@ -21,6 +22,14 @@ export type ServiceWorkerContainerLike = {
 export type ServiceWorkerLogger = Pick<Console, "log">;
 
 type ServiceWorkerVersionLike = {scriptURL: string};
+
+export function isExplorerServiceWorker(
+  serviceWorker: ServiceWorkerVersionLike | null | undefined,
+): boolean {
+  return (
+    serviceWorker?.scriptURL.endsWith(EXPLORER_SERVICE_WORKER_URL) ?? false
+  );
+}
 
 export type ServiceWorkerRegistrationLike = {
   scope: string;
@@ -69,7 +78,7 @@ export async function unregisterExplorerServiceWorkers(
             registration.active ??
             registration.waiting ??
             registration.installing;
-          return version?.scriptURL.endsWith(EXPLORER_SERVICE_WORKER_URL);
+          return isExplorerServiceWorker(version);
         })
         .map(async (registration) => {
           if (await registration.unregister()) {

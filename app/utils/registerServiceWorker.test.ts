@@ -5,6 +5,7 @@ import {describe, expect, it, vi} from "vitest";
 import {
   EXPLORER_SERVICE_WORKER_SCOPE,
   EXPLORER_SERVICE_WORKER_URL,
+  isExplorerServiceWorker,
   registerExplorerServiceWorker,
   scheduleExplorerServiceWorkerRegistration,
   unregisterExplorerServiceWorkers,
@@ -131,11 +132,25 @@ describe("unregisterExplorerServiceWorkers", () => {
   });
 });
 
+describe("isExplorerServiceWorker", () => {
+  // Covers FEAT-PWA-001
+  it("recognizes only the Explorer worker", () => {
+    expect(
+      isExplorerServiceWorker({scriptURL: "http://localhost:3030/sw.js"}),
+    ).toBe(true);
+    expect(
+      isExplorerServiceWorker({scriptURL: "http://localhost:3030/other-sw.js"}),
+    ).toBe(false);
+  });
+});
+
 describe("FEAT-PWA-001 — registration site", () => {
   it("registers from the hydrated client entry", () => {
     const clientEntry = readFileSync(join(repoRoot, "app/client.tsx"), "utf8");
     expect(clientEntry).toContain(
       "scheduleExplorerServiceWorkerRegistration(window)",
     );
+    expect(clientEntry).toContain("await unregisterExplorerServiceWorkers");
+    expect(clientEntry).toContain("hydrateApp();");
   });
 });
