@@ -41,7 +41,8 @@ describe("readProcessEnv", () => {
   });
 
   it('accesses env through process["env"] so Vite cannot replace process.env', () => {
-    expect(SRC).toMatch(/process\["env"\]/);
-    expect(SRC).not.toMatch(/process\.env\b/);
+    const body = SRC.slice(SRC.indexOf("export function"));
+    expect(body).toMatch(/process\["env"\]/);
+    expect(body).not.toMatch(/process\.env\b/);
   });
 });

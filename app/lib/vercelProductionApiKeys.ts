@@ -5,6 +5,9 @@
  * "the key is rate limited" when no key was sent at all.
  *
  * Preview deploys (`VERCEL_ENV=preview`) intentionally omit keys.
+ *
+ * `vite.config.ts` inlines the same check (it must not import `app/`, which
+ * leaves Vitest's Vite server hanging). Keep the env-var list in sync.
  */
 
 export const VERCEL_PRODUCTION_CLIENT_API_KEY_VARS = [

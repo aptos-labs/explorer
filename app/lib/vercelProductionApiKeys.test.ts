@@ -65,12 +65,16 @@ describe("assertVercelProductionClientApiKeys", () => {
 });
 
 describe("vite production build hook", () => {
-  it("registers assertVercelProductionClientApiKeys on buildStart", () => {
+  it("registers an inlined production-key assertion on buildStart", () => {
     const src = readFileSync(
       new URL("../../vite.config.ts", import.meta.url),
       "utf8",
     );
-    expect(src).toMatch(/assertVercelProductionClientApiKeys/);
+    expect(src).toMatch(/assert-vercel-production-client-api-keys/);
     expect(src).toMatch(/apply: "build"/);
+    expect(src).toMatch(/VITE_APTOS_MAINNET_API_KEY/);
+    expect(src).toMatch(/VITE_APTOS_TESTNET_API_KEY/);
+    expect(src).toMatch(/VITE_APTOS_DEVNET_API_KEY/);
+    expect(src).not.toMatch(/from "\.\/app\/lib\/vercelProductionApiKeys/);
   });
 });

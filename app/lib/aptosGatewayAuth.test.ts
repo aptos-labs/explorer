@@ -51,7 +51,7 @@ describe("aptosSdkClientConfig", () => {
 
 describe("FEAT-RATELIMIT-004 source contract", () => {
   it("documents that api-key is ignored by the gateway", () => {
-    expect(AUTH_SRC).toMatch(/api-key header is \*\*ignored\*\*/);
+    expect(AUTH_SRC).toMatch(/custom `api-key` header is \*\*ignored\*\*/);
     expect(AUTH_SRC).toMatch(/Authorization: Bearer/);
   });
 
