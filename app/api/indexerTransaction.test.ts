@@ -1,5 +1,6 @@
 import {describe, expect, it, vi} from "vitest";
 import {
+  getBlockHeightForVersion,
   getTransactionFromIndexer,
   indexerTimestampToMicros,
   indexerTimestampToUnixSeconds,
@@ -216,5 +217,35 @@ describe("getTransactionFromIndexer", () => {
     });
     expect(txn?.type).toBe("user_transaction");
     expect(txn && "gas_used" in txn ? txn.gas_used : undefined).toBe("2");
+  });
+});
+
+describe("getBlockHeightForVersion", () => {
+  it("returns the user-transaction block height when present", async () => {
+    const queryIndexer = vi.fn().mockResolvedValue({
+      user_transactions: [{block_height: 12}],
+      block_metadata_transactions: [],
+    });
+    await expect(getBlockHeightForVersion({queryIndexer}, "685")).resolves.toBe(
+      "12",
+    );
+  });
+
+  it("falls back to block metadata when the version is not a user txn", async () => {
+    const queryIndexer = vi.fn().mockResolvedValue({
+      user_transactions: [],
+      block_metadata_transactions: [{block_height: 0}],
+    });
+    await expect(getBlockHeightForVersion({queryIndexer}, "1")).resolves.toBe(
+      "0",
+    );
+  });
+
+  it("returns null for hash lookups", async () => {
+    const queryIndexer = vi.fn();
+    await expect(
+      getBlockHeightForVersion({queryIndexer}, "0xabc"),
+    ).resolves.toBeNull();
+    expect(queryIndexer).not.toHaveBeenCalled();
   });
 });

@@ -1,4 +1,5 @@
 import {afterEach, describe, expect, it, vi} from "vitest";
+import {resetArchivalEndpointCache} from "./archivalNode";
 import {getTransaction} from "./client";
 import {isIndexerSourced} from "./indexerTransaction";
 
@@ -17,6 +18,8 @@ const indexerUserTxn = {
 
 describe("getTransaction indexer fallback", () => {
   afterEach(() => {
+    resetArchivalEndpointCache();
+    vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
 
@@ -80,6 +83,131 @@ describe("getTransaction indexer fallback", () => {
     ).rejects.toMatchObject({
       type: "Not Found",
     });
+    expect(client.queryIndexer).not.toHaveBeenCalled();
+  });
+
+  it("loads a pruned hash from archival REST without forwarding credentials", async () => {
+    const txn = {type: "user_transaction", version: "1", hash: "0xdead"};
+    const fetchMock = vi.fn(
+      async (input: RequestInfo | URL, init?: RequestInit) => {
+        const url = new URL(String(input));
+        if (url.hostname === "archive.mainnet.aptoslabs.com") {
+          expect(new Headers(init?.headers).get("Authorization")).toBeNull();
+          expect(url.pathname).toBe("/v1/transactions/by_hash/0xdead");
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers(),
+            json: async () => txn,
+          };
+        }
+        return {
+          ok: false,
+          status: 410,
+          headers: new Headers(),
+          json: async () => ({
+            archival_endpoint: "https://archive.mainnet.aptoslabs.com/v1",
+          }),
+        };
+      },
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = {
+      getTransactionByHash: vi.fn().mockRejectedValue({status: 404}),
+      queryIndexer: vi.fn(),
+      config: {
+        fullnode: "https://api.mainnet.aptoslabs.com/v1",
+        clientConfig: {HEADERS: {Authorization: "Bearer secret"}},
+      },
+    };
+
+    const result = await getTransaction("0xdead", client as never);
+    expect(result).toEqual(txn);
+    expect(client.queryIndexer).not.toHaveBeenCalled();
+  });
+
+  it("loads a pruned version from archival REST before the indexer", async () => {
+    const txn = {type: "block_metadata_transaction", version: "1"};
+    const fetchMock = vi.fn(
+      async (input: RequestInfo | URL, init?: RequestInit) => {
+        const url = new URL(String(input));
+        if (url.hostname === "archive.mainnet.aptoslabs.com") {
+          expect(new Headers(init?.headers).get("Authorization")).toBeNull();
+          expect(url.pathname).toBe("/v1/transactions/by_version/1");
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers(),
+            json: async () => txn,
+          };
+        }
+        return {
+          ok: false,
+          status: 410,
+          headers: new Headers(),
+          json: async () => ({
+            archival_endpoint: "https://archive.mainnet.aptoslabs.com/v1",
+          }),
+        };
+      },
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = {
+      getTransactionByVersion: vi.fn().mockRejectedValue({
+        status: 410,
+        data: {error_code: "version_pruned"},
+      }),
+      queryIndexer: vi.fn(),
+      config: {fullnode: "https://api.mainnet.aptoslabs.com/v1"},
+    };
+
+    const result = await getTransaction("1", client as never);
+    expect(result).toEqual(txn);
+    expect(client.queryIndexer).not.toHaveBeenCalled();
+  });
+
+  it("retries archival without credentials when the SDK archive retry 401s", async () => {
+    const txn = {type: "user_transaction", version: "1", hash: "0xdead"};
+    const fetchMock = vi.fn(
+      async (input: RequestInfo | URL, init?: RequestInit) => {
+        const url = new URL(String(input));
+        if (url.hostname === "archive.mainnet.aptoslabs.com") {
+          expect(new Headers(init?.headers).get("Authorization")).toBeNull();
+          return {
+            ok: true,
+            status: 200,
+            headers: new Headers(),
+            json: async () => txn,
+          };
+        }
+        return {
+          ok: false,
+          status: 410,
+          headers: new Headers(),
+          json: async () => ({
+            archival_endpoint: "https://archive.mainnet.aptoslabs.com/v1",
+          }),
+        };
+      },
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = {
+      getTransactionByHash: vi.fn().mockRejectedValue({
+        status: 401,
+        message: "Unauthorized: API key not found",
+      }),
+      queryIndexer: vi.fn(),
+      config: {
+        fullnode: "https://api.mainnet.aptoslabs.com/v1",
+        clientConfig: {HEADERS: {Authorization: "Bearer secret"}},
+      },
+    };
+
+    const result = await getTransaction("0xdead", client as never);
+    expect(result).toEqual(txn);
     expect(client.queryIndexer).not.toHaveBeenCalled();
   });
 });

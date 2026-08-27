@@ -1,15 +1,13 @@
 import type {Aptos} from "@aptos-labs/ts-sdk";
 import type {QueryClient} from "@tanstack/react-query";
 import type {Types} from "~/types/aptos";
-import type {CoinDescription} from "../../../api/hooks/useGetCoinList";
 import {
-  getAccountResourcesV2,
-  getAccountResourceV2,
-  getAccountV2,
-  getBlockByHeight,
-  getBlockByVersion,
-  getTransactionV2,
-} from "../../../api/v2";
+  headersFromAptosClient,
+  transactionHashExists,
+} from "../../../api/archivalNode";
+import type {CoinDescription} from "../../../api/hooks/useGetCoinList";
+import {getBlockHeightForVersion} from "../../../api/indexerTransaction";
+import {getAccountResourceV2, getAccountV2} from "../../../api/v2";
 import {getEmojicoinMarketAddressAndTypeTags} from "../../../components/Table/VerifiedCell";
 import {faMetadataResource, objectCoreResource} from "../../../constants";
 import {getKnownAddresses} from "../../../data";
@@ -188,8 +186,112 @@ export async function handleCoin(
   }
 }
 
+export type SearchLedgerBounds = {
+  ledger_version: string;
+  block_height: string;
+  oldest_ledger_version?: string;
+  oldest_block_height?: string;
+};
+
 /**
- * Handle block height or version lookup
+ * Parse a search box integer (block height or txn version). Rejects
+ * negatives; strips leading zeros so `BigInt` does not throw.
+ */
+export function parseNumericSearch(text: string): bigint | null {
+  if (!/^\d+$/.test(text)) return null;
+  const stripped = text.replace(/^0+(?=\d)/, "");
+  return BigInt(stripped);
+}
+
+/**
+ * Build Block / Transaction search hits from ledger bounds.
+ *
+ * Aptos versions and block heights are contiguous from 0. Anything at or
+ * below the current ledger/height exists even when the serving fullnode has
+ * pruned it, so search must not wait on a full REST body (or a slow archival
+ * retry) just to decide whether to show a result.
+ */
+export function buildNumericSearchResults(
+  searchText: string,
+  ledger: SearchLedgerBounds,
+): SearchResult[] {
+  const version = parseNumericSearch(searchText);
+  if (version === null) return [];
+
+  const results: SearchResult[] = [];
+  const labelNumber = version.toString();
+
+  if (version <= BigInt(ledger.block_height)) {
+    results.push({
+      label: `Block ${labelNumber}`,
+      to: `/block/${labelNumber}`,
+      type: "block",
+    });
+  }
+  if (version <= BigInt(ledger.ledger_version)) {
+    results.push({
+      label: `Transaction Version ${labelNumber}`,
+      to: `/txn/${labelNumber}`,
+      type: "transaction",
+    });
+  }
+  return results;
+}
+
+export function buildContainingBlockSearchResult(
+  searchText: string,
+  blockHeight: bigint,
+): SearchResult {
+  const version = parseNumericSearch(searchText);
+  const labelNumber = version !== null ? version.toString() : searchText;
+  return {
+    label: `Block with Txn Version ${labelNumber}`,
+    to: `/block/${blockHeight.toString()}`,
+    type: "block",
+  };
+}
+
+async function lookupContainingBlockHeight(
+  version: bigint,
+  ledger: SearchLedgerBounds,
+  sdkV2Client: Aptos,
+  signal?: AbortSignal,
+): Promise<bigint | null> {
+  if (signal?.aborted) return null;
+
+  const oldest = ledger.oldest_ledger_version
+    ? BigInt(ledger.oldest_ledger_version)
+    : 0n;
+  const inNodeWindow = version >= oldest;
+
+  if (inNodeWindow) {
+    try {
+      const block = await sdkV2Client.getBlockByVersion({
+        ledgerVersion: version,
+        options: {withTransactions: false},
+      });
+      return BigInt(block.block_height);
+    } catch {
+      // Fall through to the indexer for pruned or failed REST.
+    }
+  }
+
+  try {
+    const height = await getBlockHeightForVersion(
+      sdkV2Client,
+      version.toString(),
+    );
+    return height !== null ? BigInt(height) : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Handle block height or version lookup.
+ *
+ * Uses ledger info (tiny JSON) instead of fetching full transaction/block
+ * payloads, so pruned versions still appear and search stays fast.
  */
 export async function handleBlockHeightOrVersion(
   searchText: string,
@@ -198,48 +300,41 @@ export async function handleBlockHeightOrVersion(
 ): Promise<SearchResult[]> {
   if (signal?.aborted) return [];
 
-  const num = parseInt(searchText, 10);
-  const results: SearchResult[] = [];
+  const version = parseNumericSearch(searchText);
+  if (version === null) return [];
 
-  // Try block by height, transaction by version, and block by version in parallel
-  const promises = [
-    getBlockByHeight({height: num, withTransactions: false}, sdkV2Client)
-      .then(
-        (): SearchResult => ({
-          label: `Block ${num}`,
-          to: `/block/${num}`,
-          type: "block",
-        }),
-      )
-      .catch(() => null),
-    getTransactionV2({txnHashOrVersion: num}, sdkV2Client)
-      .then(
-        (): SearchResult => ({
-          label: `Transaction Version ${num}`,
-          to: `/txn/${num}`,
-          type: "transaction",
-        }),
-      )
-      .catch(() => null),
-    getBlockByVersion({version: num, withTransactions: false}, sdkV2Client)
-      .then(
-        (block): SearchResult => ({
-          label: `Block with Txn Version ${num}`,
-          to: `/block/${block.block_height}`,
-          type: "block",
-        }),
-      )
-      .catch(() => null),
-  ];
+  let ledger: SearchLedgerBounds;
+  try {
+    ledger = await sdkV2Client.getLedgerInfo();
+  } catch {
+    return [];
+  }
+  if (signal?.aborted) return [];
 
-  const resolved = await Promise.all(promises);
-  results.push(...resolved.filter((r): r is SearchResult => r !== null));
+  const results = buildNumericSearchResults(searchText, ledger);
+
+  if (version <= BigInt(ledger.ledger_version)) {
+    const blockHeight = await lookupContainingBlockHeight(
+      version,
+      ledger,
+      sdkV2Client,
+      signal,
+    );
+    if (signal?.aborted) return results;
+    if (blockHeight !== null) {
+      results.push(buildContainingBlockSearchResult(searchText, blockHeight));
+    }
+  }
 
   return results;
 }
 
 /**
- * Handle transaction lookup
+ * Handle transaction lookup by hash.
+ *
+ * Confirms existence with a status check (body cancelled) against the
+ * fullnode, then the advertised archival endpoint without API credentials so
+ * pruned hashes still match. Avoids downloading the full REST payload.
  */
 export async function handleTransaction(
   searchText: string,
@@ -248,16 +343,22 @@ export async function handleTransaction(
 ): Promise<SearchResult | null> {
   if (signal?.aborted) return null;
 
-  try {
-    await getTransactionV2({txnHashOrVersion: searchText}, sdkV2Client);
-    return {
-      label: `Transaction ${searchText}`,
-      to: `/txn/${searchText}`,
-      type: "transaction",
-    };
-  } catch {
-    return null;
-  }
+  const fullnode = sdkV2Client.config.fullnode;
+  if (!fullnode) return null;
+
+  const exists = await transactionHashExists(
+    fullnode,
+    searchText,
+    headersFromAptosClient(sdkV2Client),
+    signal,
+  );
+  if (!exists || signal?.aborted) return null;
+
+  return {
+    label: `Transaction ${searchText}`,
+    to: `/txn/${searchText}`,
+    type: "transaction",
+  };
 }
 
 /**
@@ -301,7 +402,9 @@ export async function handleAddress(
     // Account doesn't exist, continue checking other types
   }
 
-  // Check resources in parallel
+  // Check FA metadata and ObjectCore in parallel. Do not fetch the full
+  // resource list: `/accounts/{addr}/resources` can be megabytes (e.g. 0x1)
+  // and the Address fallback already covers "no typed hit".
   const resourcePromises: Promise<SearchResult | null>[] = [
     getAccountResourceV2(
       {address, resourceType: faMetadataResource},
@@ -329,55 +432,12 @@ export async function handleAddress(
         }),
       )
       .catch(() => null),
-    getAccountResourcesV2({address}, sdkV2Client)
-      .then(
-        (): SearchResult => ({
-          label: `Address ${address}`,
-          to: `/account/${address}`,
-          identiconKey: address,
-          type: "address",
-        }),
-      )
-      .catch(() => null),
   ];
 
   const resourceResults = await Promise.all(resourcePromises);
   results.push(...resourceResults.filter((r): r is SearchResult => r !== null));
 
   return results;
-}
-
-/**
- * Handle slow owned objects query (only used as fallback)
- */
-export async function anyOwnedObjects(
-  searchText: string,
-  sdkV2Client: Aptos,
-  signal?: AbortSignal,
-): Promise<SearchResult | null> {
-  if (signal?.aborted) return null;
-
-  const address = tryStandardizeAddress(searchText);
-  if (!address) {
-    return null;
-  }
-
-  try {
-    const output = await sdkV2Client.getAccountOwnedObjects({
-      accountAddress: address,
-    });
-    if (output.length > 0) {
-      return {
-        label: `Address ${address}`,
-        to: `/account/${address}`,
-        identiconKey: address,
-        type: "address",
-      };
-    }
-    return null;
-  } catch {
-    return null;
-  }
 }
 
 /**
