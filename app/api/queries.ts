@@ -18,6 +18,7 @@ import {
 } from "../context/rate-limit/rateLimitEvents";
 import {objectCoreResource, tokenV2Address} from "../lib/constants";
 import {getTransaction, type ResponseError, withResponseError} from "./client";
+import {toMoveResource} from "./moveResource";
 import {getBlockByHeight} from "./v2";
 
 export const ACCOUNT_RESOURCE_TYPE = "0x1::account::Account";
@@ -165,7 +166,8 @@ export function accountResourceQueryOptions(
           },
         }),
       );
-      return result as unknown as Types.MoveResource;
+      // SDK returns the inner payload; restore the REST {type, data} envelope.
+      return toMoveResource(resource, result);
     },
     staleTime: 5 * 60 * 1000,
     gcTime: 60 * 60 * 1000,

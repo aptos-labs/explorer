@@ -150,6 +150,19 @@ describe("FEAT-VALDEL-001 — Validator page", () => {
     expect(screen.getByText("DetailCard")).toBeTruthy();
   });
 
+  it("renders when getAccountResource returns the SDK-unwrapped StakePool payload", () => {
+    // Production useGetAccountResource returns StakePool fields directly
+    // (no {type, data} envelope). The page used to treat that as missing
+    // and then crash in getLockedUtilSecs on locked_until_secs.
+    resourceState.data = STAKE_POOL_RESOURCE.data;
+    renderPage();
+
+    expect(screen.getByRole("heading", {name: "Validator"})).toBeTruthy();
+    expect(screen.getByText("StakingBar")).toBeTruthy();
+    expect(screen.getByText("DetailCard")).toBeTruthy();
+    expect(screen.queryByText("Validator Not Found")).toBeNull();
+  });
+
   it("shows an invalid-input error for a malformed address", () => {
     routeParams.address = "not-an-address";
     renderPage();

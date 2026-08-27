@@ -1,3 +1,4 @@
+import {moveResourceData} from "../moveResource";
 import {useGetAccountResource} from "./useGetAccountResource";
 
 interface ConfigurationData {
@@ -25,15 +26,15 @@ export function useGetEpochTime() {
   let lastEpochTime: string | undefined;
   let epochInterval: string | undefined;
 
-  if (configuration?.data !== undefined) {
-    const data = configuration.data as ConfigurationData;
-    curEpoch = data.epoch;
-    lastEpochTime = data.last_reconfiguration_time;
+  const configurationData = moveResourceData<ConfigurationData>(configuration);
+  if (configurationData) {
+    curEpoch = configurationData.epoch;
+    lastEpochTime = configurationData.last_reconfiguration_time;
   }
 
-  if (blockResource?.data !== undefined) {
-    const data = blockResource.data as BlockResourceData;
-    epochInterval = data.epoch_interval;
+  const blockData = moveResourceData<BlockResourceData>(blockResource);
+  if (blockData) {
+    epochInterval = blockData.epoch_interval;
   }
 
   return {curEpoch, lastEpochTime, epochInterval};
