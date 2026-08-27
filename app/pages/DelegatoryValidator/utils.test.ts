@@ -3,6 +3,7 @@ import {describe, expect, it} from "vitest";
 import type {DelegatedStakingActivity} from "../../api/hooks/delegations";
 import {StakeOperation} from "../../api/hooks/delegations";
 import {
+  getLockedUtilSecs,
   getStakeOperationLabel,
   getStakeOperationPrincipals,
   getStakeRewardsEarned,
@@ -355,6 +356,45 @@ describe("FEAT-VALDEL-004 — getStakeRewardsEarned", () => {
 
   it("returns undefined until principals are available", () => {
     expect(getStakeRewardsEarned(17000000000n, undefined)).toBeUndefined();
+  });
+});
+
+// Covers FEAT-VALDEL-001 — Next Unlock reads StakePool.locked_until_secs
+describe("FEAT-VALDEL-001 — getLockedUtilSecs", () => {
+  it("reads locked_until_secs from a REST {type, data} resource", () => {
+    expect(
+      getLockedUtilSecs({
+        type: "0x1::stake::StakePool",
+        data: {locked_until_secs: "1788801567"},
+      }),
+    ).toBe(1788801567n);
+  });
+
+  it("reads locked_until_secs from the SDK-unwrapped StakePool payload", () => {
+    // @aptos-labs/ts-sdk getAccountResource returns data.data, not {type, data}.
+    // Production /validator/$address crashed with:
+    // Cannot read properties of undefined (reading 'locked_until_secs')
+    expect(() =>
+      getLockedUtilSecs({
+        locked_until_secs: "42",
+      } as never),
+    ).not.toThrow();
+    expect(
+      getLockedUtilSecs({
+        locked_until_secs: "42",
+      } as never),
+    ).toBe(42n);
+  });
+
+  it("returns null when locked_until_secs is missing instead of throwing", () => {
+    expect(getLockedUtilSecs(undefined)).toBeNull();
+    expect(
+      getLockedUtilSecs({
+        type: "0x1::stake::StakePool",
+        data: undefined,
+      } as never),
+    ).toBeNull();
+    expect(getLockedUtilSecs({} as never)).toBeNull();
   });
 });
 

@@ -24,6 +24,7 @@ import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import {assertNever} from "../../utils";
 import LastEpochPerformanceTooltip from "./Components/LastEpochPerformanceTooltip";
 import RewardsPerformanceTooltip from "./Components/RewardsPerformanceTooltip";
+import {ValidatorsLoading} from "./ValidatorsLoading";
 
 function getSortedValidators(
   validators: ValidatorData[],
@@ -389,10 +390,14 @@ function ValidatorRow({validator, columns}: ValidatorRowProps) {
 export function ValidatorsTable() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const {validators} = useGetValidators();
+  const {validators, isLoading} = useGetValidators();
 
   const [sortColumn, setSortColumn] = useState<Column>("votingPower");
   const [sortDirection, setSortDirection] = useState<"desc" | "asc">("desc");
+
+  if (isLoading) {
+    return <ValidatorsLoading />;
+  }
   const sortedValidators = getSortedValidators(
     validators,
     sortColumn,

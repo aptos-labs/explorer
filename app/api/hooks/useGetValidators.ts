@@ -228,7 +228,8 @@ export async function fetchStakePoolOperators(
 export function useGetValidators() {
   const networkName = useNetworkName();
   const aptosClient = useAptosClient();
-  const {activeValidators} = useGetValidatorSet();
+  const {activeValidators, isLoading: isValidatorSetLoading} =
+    useGetValidatorSet();
   const {validatorsRawData, isValidatorStatsFetched} =
     useGetValidatorsRawData();
 
@@ -291,5 +292,5 @@ export function useGetValidators() {
     [activeValidators, validatorsRawData, operatorByPool],
   );
 
-  return {validators};
+  return {validators, isLoading: isValidatorSetLoading};
 }

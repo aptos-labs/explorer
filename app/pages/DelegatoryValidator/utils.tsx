@@ -3,6 +3,7 @@ import {
   type DelegatedStakingActivity,
   StakeOperation,
 } from "../../api/hooks/delegations";
+import {moveResourceData} from "../../api/moveResource";
 import {OCTA} from "../../constants";
 import {
   MINIMUM_APT_IN_POOL,
@@ -12,16 +13,18 @@ import {
 // CombinedGraphQLErrors replaced with Error after Apollo removal
 
 interface AccountResourceData {
-  locked_until_secs: bigint;
+  locked_until_secs?: bigint | string | number | null;
 }
 
 // returns seconds till locked staking funds getting unlocked
 export function getLockedUtilSecs(
   accountResource?: Types.MoveResource | undefined,
 ): bigint | null {
-  return accountResource
-    ? BigInt((accountResource.data as AccountResourceData).locked_until_secs)
-    : null;
+  const fields = moveResourceData<AccountResourceData>(accountResource);
+  if (fields?.locked_until_secs == null) {
+    return null;
+  }
+  return BigInt(fields.locked_until_secs);
 }
 
 export type StakePrincipals = {
