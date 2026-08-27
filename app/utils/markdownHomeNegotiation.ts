@@ -44,7 +44,7 @@ function describeExplorerPath(pathname: string): string {
     return "Individual validator page. Identifier is the validator operator or pool address.";
   }
   if (pathname.startsWith("/validators")) {
-    return "Validator list. Tabs: `/validators/all`, `/validators/delegation`, `/validators/enhanced_delegation`.";
+    return "Validator list. Tabs: `/validators/all`, `/validators/delegation`.";
   }
   if (pathname.startsWith("/coin/")) {
     return "Coin detail. Identifier is a fully-qualified Move type (`0x1::aptos_coin::AptosCoin`); tabs include `info`, `transactions`, and `holders`.";

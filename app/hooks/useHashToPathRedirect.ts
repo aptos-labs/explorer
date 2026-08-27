@@ -9,7 +9,7 @@
 import {useLocation} from "@tanstack/react-router";
 import {useEffect} from "react";
 import {useNavigate} from "../routing";
-import {rewriteTxnTab} from "../utils/routeRedirects";
+import {rewriteTxnTab, rewriteValidatorsTab} from "../utils/routeRedirects";
 
 // Valid tabs for each route pattern
 const ROUTE_TABS: Record<string, Set<string>> = {
@@ -56,6 +56,7 @@ const ROUTE_TABS: Record<string, Set<string>> = {
   // /fungible_asset/:address
   "/fungible_asset/": new Set(["info", "holders", "transactions"]),
   // /validators
+  // /validators — enhanced_delegation is kept so #enhanced_delegation still redirects
   "/validators": new Set(["all", "delegation", "enhanced_delegation"]),
 };
 
@@ -121,9 +122,14 @@ export function useHashToPathRedirect(): void {
 
     // Build the new path with tab. Legacy txn overview hashes rewrite to
     // `/overview` so `#userTxnOverview` becomes `/txn/{id}/overview`.
-    const tabSegment = routePrefix === "/txn/" ? rewriteTxnTab(hash) : hash;
+    const tabSegment =
+      routePrefix === "/txn/"
+        ? rewriteTxnTab(hash)
+        : isValidatorsRoute
+          ? rewriteValidatorsTab(hash)
+          : hash;
     const newPath = isValidatorsRoute
-      ? `/validators/${hash}`
+      ? `/validators/${tabSegment}`
       : `${pathname}/${tabSegment}`;
 
     // Parse existing search params into an object

@@ -548,7 +548,6 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 |-----|-----|---------|
 | All Nodes | `/validators/all` | `ValidatorsTable` with all active validators. |
 | Delegation Nodes | `/validators/delegation` | `EnhancedDelegationValidatorsTable`. |
-| Delegation (Beta) | `/validators/enhanced_delegation` | Same enhanced delegation table. |
 
 ### FEAT-VALIDATORS-002 — All Nodes Table
 
@@ -589,7 +588,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Behavior** | `/validators` → `/validators/all`. `/validators-enhanced` → `/validators/all`. `/validators-enhanced/$tab` → `/validators/$tab`. |
+| **Behavior** | `/validators` → `/validators/all`. `/validators-enhanced` → `/validators/all`. `/validators-enhanced/$tab` → `/validators/$tab` (`enhanced_delegation` rewritten to `delegation`). `/validators/enhanced_delegation` → `/validators/delegation`. |
 
 ### FEAT-VALIDATORS-007 — Epoch Display
 
@@ -949,7 +948,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **Hash-based tabs** | `useHashToPathRedirect` in root layout. |
 | **Old hostnames** | `useOldUrlRedirect` in root layout. |
 | **Query param tabs** | `?tab=` → `/$tab` in account/object/coin/FA/block/txn routes. |
-| **Validators-enhanced** | `/validators-enhanced` → `/validators/all`; `/validators-enhanced/$tab` → `/validators/$tab`. |
+| **Validators-enhanced** | `/validators-enhanced` → `/validators/all`; `/validators-enhanced/$tab` → `/validators/$tab` (`enhanced_delegation` rewritten to `delegation`). `/validators/enhanced_delegation` → `/validators/delegation`. |
 
 ### FEAT-ROUTING-003 — Entity Path Helpers
 
@@ -1431,13 +1430,13 @@ top of the HTML site.
 | `app/lib/networks.test.ts` | FEAT-NETWORK-001 (network config, hidden networks, localnet), FEAT-FLAGS-003 (feature labels) |
 | `app/lib/graphqlSupport.test.ts` | FEAT-FLAGS-001 (GraphQL URI per network), FEAT-COIN-001/FEAT-FA-001 (tab gating logic) |
 | `app/lib/validators.test.ts` | FEAT-NETWORK-001 (network name validation), FEAT-FLAGS-003 (feature name validation), well-known constants |
-| `app/utils/routeRedirects.test.ts` | FEAT-ACCOUNT-012 (entity default tab redirects for all route types), FEAT-TXN-008 (legacy overview tab rewrite to `overview`), FEAT-TOKEN-004 (legacy numeric redirect), FEAT-VALIDATORS-006 (validators/validators-enhanced redirects), FEAT-SEARCH-001 (header search navigation), FEAT-WALLET-002 (wallet network mismatch), FEAT-ACCOUNT-002 (DeFi portfolio URLs) |
+| `app/utils/routeRedirects.test.ts` | FEAT-ACCOUNT-012 (entity default tab redirects for all route types), FEAT-TXN-008 (legacy overview tab rewrite to `overview`), FEAT-TOKEN-004 (legacy numeric redirect), FEAT-VALIDATORS-006 (validators/validators-enhanced redirects, `enhanced_delegation` → `delegation`), FEAT-SEARCH-001 (header search navigation), FEAT-WALLET-002 (wallet network mismatch), FEAT-ACCOUNT-002 (DeFi portfolio URLs) |
 | `app/utils/walletNetwork.test.ts` | FEAT-WALLET-002 (loopback RPC + `custom` vs explorer `local` for non-Petra) |
 | `app/utils/rateLimiter.test.ts` | FEAT-RATELIMIT-002 (rate limit error detection, URL endpoint extraction) |
 | `app/utils/utilsCoverage.test.ts` | FEAT-ROUTING-003 (isValidStruct), FEAT-TXN-002 (sortTransactions), FEAT-WALLET-001 (sortPetraFirst), FEAT-MODULES-004 (bytecode size), FEAT-MODULES-001 (param names, function line numbers, gzip `transformCode`), isValidUrl, assertNever |
 | `app/data/bannedCollections.test.ts` | FEAT-ACCOUNT-008 (scam collection detection: registry shape, hex keys, reason strings) |
 | `app/data/knownAddresses.test.ts` | FEAT-DATA-002 (known address system: labels, branding, fallback), FEAT-DATA-005 (emojicoin registry address) |
-| `app/pages/Validators/validatorTabs.test.ts` | FEAT-VALIDATORS-001 (tab enum values, uniqueness) |
+| `app/pages/Validators/validatorTabs.test.ts` | FEAT-VALIDATORS-001 (tab enum values, uniqueness, retired enhanced_delegation title) |
 | `app/pages/Analytics/analyticsGate.test.ts` | FEAT-ANALYTICS-001 (mainnet gate), FEAT-ANALYTICS-005 (GCS data URL) |
 | `app/hooks/localnetDetection.test.ts` | FEAT-CHROME-005 (localnet URL shape: localhost, port, path) |
 | `app/hooks/useIsStandalonePWA.test.ts` | FEAT-PWA-002 (PWA standalone detection: display-mode, window-controls-overlay, iOS `navigator.standalone`, runtime change events) |

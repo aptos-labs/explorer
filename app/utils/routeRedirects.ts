@@ -34,6 +34,15 @@ export function rewriteTxnTab(tab: string): string {
   return LEGACY_TXN_OVERVIEW_TABS.has(tab) ? "overview" : tab;
 }
 
+/** Retired duplicate of `/validators/delegation` (former "New Beta UI" tab). */
+export const LEGACY_VALIDATORS_ENHANCED_DELEGATION_TAB =
+  "enhanced_delegation" as const;
+
+/** Rewrite a validators `$tab` segment to the canonical path name. */
+export function rewriteValidatorsTab(tab: string): string {
+  return tab === LEGACY_VALIDATORS_ENHANCED_DELEGATION_TAB ? "delegation" : tab;
+}
+
 export function resolveEntityRedirect(
   pathname: string,
   search: {tab?: string; modulesTab?: string; network?: string},
@@ -100,7 +109,11 @@ export function resolveValidatorsRedirect(
   const isExactMatch = pathSegments.length === 1;
 
   if (search.tab) {
-    return {kind: "redirect", tab: search.tab, network: search.network};
+    return {
+      kind: "redirect",
+      tab: rewriteValidatorsTab(search.tab),
+      network: search.network,
+    };
   }
 
   if (isExactMatch) {
@@ -114,7 +127,7 @@ export function resolveValidatorsEnhancedRedirect(
   tab?: string,
   network?: string,
 ): {tab: string; network?: string} {
-  return {tab: tab ?? "all", network};
+  return {tab: rewriteValidatorsTab(tab ?? "all"), network};
 }
 
 export function resolveHeaderSearchNavigation(trimmedInput: string): {

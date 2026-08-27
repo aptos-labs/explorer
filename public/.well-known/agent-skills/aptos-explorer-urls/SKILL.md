@@ -17,7 +17,7 @@ Canonical URL templates for [Aptos Explorer](https://explorer.aptoslabs.com). Al
   - Tabs: `/transactions`, `/coins`, `/tokens`, `/resources`, `/modules`, `/multisig`, `/info`
   - Modules: `/modules/packages`, `/modules/code/{moduleName}`, `/modules/run/{moduleName}/{functionName}`, `/modules/view/{moduleName}/{functionName}`
 - **Block**: `/block/{height}`; tabs `/overview`, `/transactions`
-- **Validators list**: `/validators/all` | `/validators/delegation` | `/validators/enhanced_delegation`
+- **Validators list**: `/validators/all` | `/validators/delegation`
 - **Individual validator**: `/validator/{address}`
 - **Coin**: `/coin/{type}` (e.g. `/coin/0x1::aptos_coin::AptosCoin`); tabs `/info`, `/transactions`, `/holders`
 - **Fungible asset**: `/fungible_asset/{address}`; tabs `/info`, `/transactions`, `/holders`

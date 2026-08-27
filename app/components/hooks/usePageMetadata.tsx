@@ -169,9 +169,8 @@ function entityIdFromTokenPath(pathname: string): string | undefined {
 function validatorsHubCollectionName(tab: string): string {
   switch (tab) {
     case "delegation":
-      return "Delegation Nodes";
     case "enhanced_delegation":
-      return "Enhanced Delegation";
+      return "Delegation Nodes";
     case "all":
       return "Validators";
     default:

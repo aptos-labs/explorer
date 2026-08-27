@@ -37,11 +37,6 @@
     <changefreq>hourly</changefreq>
     <priority>0.8</priority>
   </url>
-  <url>
-    <loc>https://explorer.aptoslabs.com/validators/enhanced_delegation</loc>
-    <changefreq>hourly</changefreq>
-    <priority>0.8</priority>
-  </url>
 
   <!-- Analytics -->
   <url>

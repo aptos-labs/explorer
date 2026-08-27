@@ -1,4 +1,5 @@
 import {createFileRoute, Outlet, redirect} from "@tanstack/react-router";
+import {rewriteValidatorsTab} from "../utils/routeRedirects";
 
 // Layout route for /validators/*
 // Handles backward compatibility redirects from query params to path-based tabs
@@ -14,7 +15,7 @@ export const Route = createFileRoute("/validators")({
     if (searchParams?.tab) {
       throw redirect({
         to: "/validators/$tab",
-        params: {tab: searchParams.tab},
+        params: {tab: rewriteValidatorsTab(searchParams.tab)},
         search: searchParams.network
           ? {network: searchParams.network}
           : undefined,
