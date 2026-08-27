@@ -5,10 +5,10 @@ import type {Types} from "~/types/aptos";
  * Reconstruct a REST-shaped `Types.Transaction` from indexer GraphQL tables.
  *
  * The public indexer does not expose `transactions` / `events` / write-set
- * resources, so this is a best-effort fallback for fullnode-pruned history:
- * sender, version, function, gas, signature, success (from FA gas fee), and
- * table-item changes. Hash, events, payload arguments, and resource changes
- * are omitted when the indexer does not have them.
+ * resources, so this is a last-resort fallback after the serving fullnode and
+ * archive node miss: sender, version, function, gas, signature, success (from
+ * FA gas fee), and table-item changes. Hash, events, payload arguments, and
+ * resource changes are omitted when the indexer does not have them.
  */
 
 const INDEXER_SOURCE = Symbol.for("aptos-explorer.indexerTransaction");

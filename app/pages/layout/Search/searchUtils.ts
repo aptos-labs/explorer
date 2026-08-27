@@ -274,7 +274,32 @@ async function lookupContainingBlockHeight(
       });
       return BigInt(block.block_height);
     } catch {
-      // Fall through to the indexer for pruned or failed REST.
+      // Fall through to the archive node for pruned or failed REST.
+    }
+  }
+
+  const fullnode = sdkV2Client.config?.fullnode;
+  if (fullnode) {
+    try {
+      const archived = await fetchBlockFromArchival(
+        fullnode,
+        {version, withTransactions: false},
+        headersFromAptosClient(sdkV2Client),
+        signal,
+        networkNameFromAptosClient(sdkV2Client),
+      );
+      if (
+        archived &&
+        typeof archived === "object" &&
+        "block_height" in archived &&
+        (archived as {block_height?: unknown}).block_height != null
+      ) {
+        return BigInt(
+          String((archived as {block_height: string | number}).block_height),
+        );
+      }
+    } catch {
+      // Archive miss: try the indexer.
     }
   }
 
@@ -284,30 +309,6 @@ async function lookupContainingBlockHeight(
       version.toString(),
     );
     if (height !== null) return BigInt(height);
-  } catch {
-    // Indexer miss: try the archive node.
-  }
-
-  const fullnode = sdkV2Client.config?.fullnode;
-  if (!fullnode) return null;
-  try {
-    const archived = await fetchBlockFromArchival(
-      fullnode,
-      {version, withTransactions: false},
-      headersFromAptosClient(sdkV2Client),
-      signal,
-      networkNameFromAptosClient(sdkV2Client),
-    );
-    if (
-      archived &&
-      typeof archived === "object" &&
-      "block_height" in archived &&
-      (archived as {block_height?: unknown}).block_height != null
-    ) {
-      return BigInt(
-        String((archived as {block_height: string | number}).block_height),
-      );
-    }
   } catch {
     return null;
   }

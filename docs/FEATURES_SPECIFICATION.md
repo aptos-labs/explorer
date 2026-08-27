@@ -114,7 +114,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 |---------------|-----------------|
 | `.apt` / `.petra` suffix | ANS name lookup via ts-sdk (`getPrimaryName`, `getName`) → account link |
 | Valid Move struct | Coin lookup via `CoinInfo` resource + Panora coin list prefix match |
-| Numeric | Ledger bounds (current `ledger_version` / `block_height`): every integer in range is a valid version/height, including history the serving fullnode has pruned. Does **not** fetch a full transaction body. The containing-block row uses REST `getBlockByVersion` inside the node's window, indexer `block_height` for pruned versions, then the archive node if both miss. |
+| Numeric | Ledger bounds (current `ledger_version` / `block_height`): every integer in range is a valid version/height, including history the serving fullnode has pruned. Does **not** fetch a full transaction body. The containing-block row uses REST `getBlockByVersion` inside the node's window, the archive node for pruned versions, then indexer `block_height` if archive misses. |
 | 32-byte hex | Parallel: transaction hash existence (fullnode, then archive node **without** API credentials so pruned hashes still match; the body is cancelled on 200; indexer has no hash column), account address, coin list |
 | Valid account address | Account, FA metadata, object core, coin list. Does **not** download the full `/accounts/{addr}/resources` list. |
 | Emoji-only (`/^\p{Emoji}+$/gu`) | Emojicoin market lookup: derives market address from `EMOJICOIN_REGISTRY_ADDRESS` via `createNamedObjectAddress`, verifies on-chain, returns coin + LP results |
@@ -295,13 +295,13 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **Metadata** | Page `<title>`, description, and keywords (`multisig`, `multi-signature`) reflect multisig transactions. |
 | **Function label** | `TransactionFunction.tsx` renders a styled **"Multisig Transaction"** `CodeLineBox` (groups icon) for multisig executions without an inner entry-function payload. |
 
-### FEAT-TXN-014 — Pruned History Fallback (Indexer then Archive)
+### FEAT-TXN-014 — Pruned History Fallback (Archive then Indexer)
 
 | Aspect | Detail |
 |--------|--------|
-| **Order** | Serving fullnode REST first. If that misses (HTTP 404/410/`version_pruned`, or HTTP 401 after the SDK retries `410 Gone` against a same-site archive while forwarding the explorer API key), reconstruct from **indexer GraphQL** (numeric versions only). If the indexer also misses or cannot answer (no hash column, empty result, or GraphQL error), retry the **archive node** REST API **without** credentials. |
+| **Order** | Serving public fullnode REST first. If that misses (HTTP 404/410/`version_pruned`, or HTTP 401 after the SDK retries `410 Gone` against a same-site archive while forwarding the explorer API key), retry the **archive node** REST API **without** credentials. If the archive also misses or cannot answer, reconstruct from **indexer GraphQL** (numeric versions only). Hash lookup cannot use the indexer (no hash column); those URLs skip GraphQL. |
 | **Archive URL** | Prefer the node's advertised `archival_endpoint` / `x-aptos-archival-endpoint` (cached version-0 probe). If a 410 has no hint, or the probe fails, derive `archive.{rest}` from Aptos Labs `api.*` hosts, else use the network default (`archive.mainnet.aptoslabs.com` / `archive.testnet.aptoslabs.com`). Archive hosts 401 when the explorer API key is forwarded. |
-| **Indexer reconstruction** | `getTransaction` queries indexer GraphQL (`user_transactions`, `block_metadata_transactions`, `signatures`, `fungible_asset_activities`, `table_items`) and maps a `Types.Transaction` for `/txn/$txnHashOrVersion` pages, per-row user-transaction tables, CSV export, and object-creation scans. Hash lookup cannot use the indexer (no hash column); those URLs skip GraphQL and go to archival REST. |
+| **Indexer reconstruction** | `getTransaction` queries indexer GraphQL (`user_transactions`, `block_metadata_transactions`, `signatures`, `fungible_asset_activities`, `table_items`) and maps a `Types.Transaction` for `/txn/$txnHashOrVersion` pages, per-row user-transaction tables, CSV export, and object-creation scans only after archive REST misses. |
 | **Mapped fields** | Version, sender, sequence number, timestamps, max gas, gas unit price, entry function id, signature, success + `gas_used` from the FA gas-fee activity, table-item write-set rows. Events, payload arguments, resource changes, and hashes are omitted when the indexer does not store them. Archive-sourced pages keep the full REST body. |
 | **UI** | Indexer-sourced pages show an info alert that some fields may be missing. Empty transaction hashes and state/event/accumulator hashes are hidden rather than shown blank. Balance Change still loads from `fungible_asset_activities` (FEAT-TXN-003). |
 
@@ -309,10 +309,10 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Route loader** | Prefetches the transaction (`transactionQueryOptions`) and returns immediately — it does not `await` the fetch, so navigation is not blocked on the fullnode. Prefetch uses the same `getTransaction` path as the page (fullnode → indexer → archive — FEAT-TXN-014). |
+| **Route loader** | Prefetches the transaction (`transactionQueryOptions`) and returns immediately — it does not `await` the fetch, so navigation is not blocked on the fullnode. Prefetch uses the same `getTransaction` path as the page (fullnode → archive → indexer — FEAT-TXN-014). |
 | **First paint** | Page chrome (header), a "Transaction" title, the URL hash/version, tab-strip skeletons, and overview skeletons render while the transaction is in flight. The previous full-page `null` loading state is gone. |
 | **Organize then fill** | Tab set, type chip, and overview body wait on the transaction object (needed to choose tabs). Secondary rows such as the parent block populate with their own skeletons after the overview is visible. Indexer-sourced reconstructed txns still show the FEAT-TXN-014 info alert once data arrives. |
-| **Errors** | After indexer + archival fallbacks fail, render `TransactionError` (including typed `NOT_FOUND`). An empty success response shows an in-page error alert. |
+| **Errors** | After archival + indexer fallbacks fail, render `TransactionError` (including typed `NOT_FOUND`). An empty success response shows an in-page error alert. |
 
 ---
 
@@ -1395,12 +1395,12 @@ top of the HTML site.
 | `app/components/IndividualPageContent/ContentValue/CurrencyValue.test.tsx` | Currency formatting (octa → APT) |
 | `app/components/Table/verifiedLevel.test.ts` | FEAT-COIN-003 / FEAT-UI-002 (verification level determination: native, verified, banned, recognized, unverified, disabled) |
 | `app/pages/Transaction/utils.test.ts` | FEAT-TXN-002/003 (tx amounts, counterparty including decrypted encrypted payloads, balance changes), FEAT-TXN-013 (multisig transaction detection) |
-| `app/pages/layout/Search/searchNumeric.test.ts` | FEAT-SEARCH-002 (ledger-bounded numeric search; pruned versions still produce a transaction result; containing-block REST vs indexer vs archive last resort) |
+| `app/pages/layout/Search/searchNumeric.test.ts` | FEAT-SEARCH-002 (ledger-bounded numeric search; pruned versions still produce a transaction result; containing-block REST vs archive then indexer last resort) |
 | `app/api/archivalNode.test.ts` | FEAT-SEARCH-002 / FEAT-TXN-014 (parse `archival_endpoint` / `x-aptos-archival-endpoint`; `api.*` → `archive.*` host derivation; hash existence retries archival without credentials; version/block archival fetch) |
 | `app/api/v2.block.test.ts` | FEAT-BLOCK-001 (pruned `getBlockByHeight` / `getBlockByVersion` load from archive after fullnode miss) |
 | `app/api/prunedTransaction.test.ts` | FEAT-TXN-014 (detect 404/410 / `version_pruned` REST errors) |
 | `app/api/indexerTransaction.test.ts` | FEAT-TXN-014 (indexer timestamp conversion; map user / block-metadata rows; hash lookups skipped; gas_used from FA gas fee; `getBlockHeightForVersion`) |
-| `app/api/client.transaction.test.ts` | FEAT-TXN-014 (`getTransaction` REST success skips indexer/archive; prune uses indexer first and skips archive on hit; indexer miss/error then archive without credentials; pruned hash loads from archive; SDK archive 401 still retries unauthenticated; non-prune errors do not) |
+| `app/api/client.transaction.test.ts` | FEAT-TXN-014 (`getTransaction` REST success skips archive/indexer; prune uses archive first and skips indexer on hit; archive miss/error then indexer reconstruction; pruned hash loads from archive; SDK archive 401 still retries unauthenticated; non-prune errors do not) |
 | `app/api/legacyClient.test.ts` | FEAT-TXN-014 (legacy REST client retries 410 against `archival_endpoint`) |
 | `app/pages/Transaction/Tabs/Components/MultisigEventView.test.tsx` | FEAT-TXN-004 (multisig event detection, formatted summary/rows, v1/v2 name normalization, raw-JSON fallback, extra-field surfacing, payload decoding in execution and CreateTransaction events) |
 | `app/pages/Transaction/Tabs/Components/decodeMultisigPayload.test.ts` | FEAT-TXN-004 (BCS decoding of multisig payload bytes into an entry function; empty/invalid fallbacks) |
