@@ -1,4 +1,5 @@
-import {describe, expect, it, vi} from "vitest";
+import {afterEach, describe, expect, it, vi} from "vitest";
+import {resetArchivalEndpointCache} from "../../../api/archivalNode";
 import {
   buildContainingBlockSearchResult,
   buildNumericSearchResults,
@@ -89,6 +90,11 @@ describe("FEAT-SEARCH-002 — buildContainingBlockSearchResult", () => {
 });
 
 describe("FEAT-SEARCH-002 — handleBlockHeightOrVersion", () => {
+  afterEach(() => {
+    resetArchivalEndpointCache();
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
   it("shows pruned versions from ledger bounds without fetching a txn body", async () => {
     const client = {
       getLedgerInfo: vi.fn().mockResolvedValue(prunedMainnetLedger),
@@ -139,5 +145,47 @@ describe("FEAT-SEARCH-002 — handleBlockHeightOrVersion", () => {
       to: "/txn/6900000000",
       type: "transaction",
     });
+  });
+
+  it("uses the archive node for containing-block height after indexer miss", async () => {
+    const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
+      const url = new URL(String(input));
+      if (url.hostname === "archive.mainnet.aptoslabs.com") {
+        expect(url.pathname).toBe("/v1/blocks/by_version/1");
+        return {
+          ok: true,
+          status: 200,
+          headers: new Headers(),
+          json: async () => ({block_height: "0"}),
+          body: {cancel: vi.fn()} as unknown as ReadableStream,
+        };
+      }
+      return {
+        ok: false,
+        status: 410,
+        headers: new Headers(),
+        json: async () => ({
+          archival_endpoint: "https://archive.mainnet.aptoslabs.com/v1",
+        }),
+        body: {cancel: vi.fn()} as unknown as ReadableStream,
+      };
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = {
+      getLedgerInfo: vi.fn().mockResolvedValue(prunedMainnetLedger),
+      getBlockByVersion: vi.fn(),
+      queryIndexer: vi.fn().mockResolvedValue({
+        user_transactions: [],
+        block_metadata_transactions: [],
+      }),
+      config: {fullnode: "https://api.mainnet.aptoslabs.com/v1"},
+    };
+
+    const results = await handleBlockHeightOrVersion("1", client as never);
+    expect(client.queryIndexer).toHaveBeenCalledTimes(1);
+    expect(results.find((r) => r.label.startsWith("Block with"))?.to).toBe(
+      "/block/0",
+    );
   });
 });

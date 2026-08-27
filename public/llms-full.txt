@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-08-24 (rev 27)
+> Last updated: 2026-08-27 (rev 28)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -331,6 +331,11 @@ The explorer fetches data from these Aptos APIs (for reference — these are not
 - `GET /blocks/by_height/{height}` — Block by height
 - `POST /view` — Call a Move view function (read-only on-chain query)
 
+### Archive REST API (pruned history last resort)
+- Mainnet: `https://archive.mainnet.aptoslabs.com/v1`
+- Testnet: `https://archive.testnet.aptoslabs.com/v1` (staging fullnodes advertise `https://archive.testnet.staging.aptoslabs.com/v1`)
+- Same REST paths as the fullnode (`/transactions/by_hash|version`, `/blocks/by_height|version`). Used only after the serving fullnode **and** the indexer miss (or cannot answer). Requests are unauthenticated — archive hosts reject the explorer API gateway key.
+
 ### Indexer GraphQL API
 - Endpoint: configured via environment (varies by network)
 - Queries: account transaction history, token ownership (`current_token_ownerships_v2`), fungible asset balances (`current_fungible_asset_balances`), event history, aggregate analytics
@@ -387,7 +392,8 @@ canonical user experience.
 
 - **`/.well-known/api-catalog`** — RFC 9727 API catalog, served as
   `application/linkset+json` (RFC 9264). Advertises the upstream Aptos
-  fullnode REST APIs (mainnet, testnet, devnet), the Aptos indexer GraphQL
+  fullnode REST APIs (mainnet, testnet, devnet), archive REST APIs
+  (mainnet, testnet), the Aptos indexer GraphQL
   API, and this explorer itself. Each entry carries `service-desc` (OpenAPI
   spec), `service-doc` (human docs), and `status` (health endpoint) links.
 - **`/.well-known/agent-skills/index.json`** — Agent Skills Discovery RFC

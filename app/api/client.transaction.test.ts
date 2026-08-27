@@ -3,7 +3,7 @@ import {resetArchivalEndpointCache} from "./archivalNode";
 import {getTransaction} from "./client";
 import {isIndexerSourced} from "./indexerTransaction";
 
-// Covers FEAT-TXN-014 — REST prune → indexer reconstruction
+// Covers FEAT-TXN-014 — REST prune → indexer first → archive last resort
 
 const indexerUserTxn = {
   version: "685",
@@ -36,6 +36,9 @@ describe("getTransaction indexer fallback", () => {
   });
 
   it("reconstructs from the indexer when REST reports the version as pruned", async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+
     const client = {
       getTransactionByVersion: vi.fn().mockRejectedValue({
         status: 410,
@@ -48,6 +51,7 @@ describe("getTransaction indexer fallback", () => {
           {amount: 200, is_gas_fee: true, is_transaction_success: true},
         ],
       }),
+      config: {fullnode: "https://api.mainnet.aptoslabs.com/v1"},
     };
 
     const result = await getTransaction("685", client as never);
@@ -55,6 +59,7 @@ describe("getTransaction indexer fallback", () => {
     expect(isIndexerSourced(result)).toBe(true);
     expect("gas_used" in result && result.gas_used).toBe("2");
     expect(client.queryIndexer).toHaveBeenCalledTimes(1);
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it("does not query the indexer for non-prune errors", async () => {
@@ -127,7 +132,7 @@ describe("getTransaction indexer fallback", () => {
     expect(client.queryIndexer).not.toHaveBeenCalled();
   });
 
-  it("loads a pruned version from archival REST before the indexer", async () => {
+  it("loads a pruned version from archival REST after the indexer misses", async () => {
     const txn = {type: "block_metadata_transaction", version: "1"};
     const fetchMock = vi.fn(
       async (input: RequestInfo | URL, init?: RequestInit) => {
@@ -159,13 +164,16 @@ describe("getTransaction indexer fallback", () => {
         status: 410,
         data: {error_code: "version_pruned"},
       }),
-      queryIndexer: vi.fn(),
+      queryIndexer: vi.fn().mockResolvedValue({
+        user_transactions: [],
+        block_metadata_transactions: [],
+      }),
       config: {fullnode: "https://api.mainnet.aptoslabs.com/v1"},
     };
 
     const result = await getTransaction("1", client as never);
     expect(result).toEqual(txn);
-    expect(client.queryIndexer).not.toHaveBeenCalled();
+    expect(client.queryIndexer).toHaveBeenCalledTimes(1);
   });
 
   it("retries archival without credentials when the SDK archive retry 401s", async () => {
@@ -209,5 +217,38 @@ describe("getTransaction indexer fallback", () => {
     const result = await getTransaction("0xdead", client as never);
     expect(result).toEqual(txn);
     expect(client.queryIndexer).not.toHaveBeenCalled();
+  });
+
+  it("uses the archive node when the indexer throws for a pruned version", async () => {
+    const txn = {type: "user_transaction", version: "1", hash: "0xabc"};
+    const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
+      const url = new URL(String(input));
+      if (url.hostname === "archive.mainnet.aptoslabs.com") {
+        return {
+          ok: true,
+          status: 200,
+          headers: new Headers(),
+          json: async () => txn,
+        };
+      }
+      return {
+        ok: false,
+        status: 410,
+        headers: new Headers(),
+        json: async () => ({
+          archival_endpoint: "https://archive.mainnet.aptoslabs.com/v1",
+        }),
+      };
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const client = {
+      getTransactionByVersion: vi.fn().mockRejectedValue({status: 410}),
+      queryIndexer: vi.fn().mockRejectedValue(new Error("indexer down")),
+      config: {fullnode: "https://api.mainnet.aptoslabs.com/v1"},
+    };
+
+    await expect(getTransaction("1", client as never)).resolves.toEqual(txn);
+    expect(client.queryIndexer).toHaveBeenCalledTimes(1);
   });
 });

@@ -85,6 +85,60 @@
       ]
     },
     {
+      "anchor": "https://archive.mainnet.aptoslabs.com/v1",
+      "service-desc": [
+        {
+          "href": "https://archive.mainnet.aptoslabs.com/v1/spec.yaml",
+          "type": "application/yaml",
+          "title": "Aptos Archive REST API — OpenAPI 3 spec (mainnet)"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://aptos.dev/en/build/apis/fullnode-rest-api",
+          "type": "text/html",
+          "title": "Aptos Fullnode REST API documentation (archive nodes use the same API)"
+        }
+      ],
+      "status": [
+        {
+          "href": "https://archive.mainnet.aptoslabs.com/v1/-/healthy",
+          "type": "application/json",
+          "title": "Aptos mainnet archive node health"
+        }
+      ],
+      "service-meta": [
+        {
+          "href": "https://archive.mainnet.aptoslabs.com/v1",
+          "title": "Aptos mainnet archive REST API base URL (unauthenticated; last-resort historical reads)"
+        }
+      ]
+    },
+    {
+      "anchor": "https://archive.testnet.aptoslabs.com/v1",
+      "service-desc": [
+        {
+          "href": "https://archive.testnet.aptoslabs.com/v1/spec.yaml",
+          "type": "application/yaml",
+          "title": "Aptos Archive REST API — OpenAPI 3 spec (testnet)"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://aptos.dev/en/build/apis/fullnode-rest-api",
+          "type": "text/html",
+          "title": "Aptos Fullnode REST API documentation (archive nodes use the same API)"
+        }
+      ],
+      "status": [
+        {
+          "href": "https://archive.testnet.aptoslabs.com/v1/-/healthy",
+          "type": "application/json",
+          "title": "Aptos testnet archive node health"
+        }
+      ]
+    },
+    {
       "anchor": "https://api.mainnet.aptoslabs.com/v1/graphql",
       "service-desc": [
         {

@@ -18,6 +18,7 @@ import {
 } from "../context/rate-limit/rateLimitEvents";
 import {objectCoreResource, tokenV2Address} from "../lib/constants";
 import {getTransaction, type ResponseError, withResponseError} from "./client";
+import {getBlockByHeight} from "./v2";
 
 export const ACCOUNT_RESOURCE_TYPE = "0x1::account::Account";
 export const MULTISIG_ACCOUNT_RESOURCE_TYPE =
@@ -108,10 +109,10 @@ export function blockQueryOptions(
   return queryOptions({
     queryKey: ["block", Number(height), true, networkKey],
     queryFn: () =>
-      client.getBlockByHeight({
-        blockHeight: Number(height),
-        options: {withTransactions: true},
-      }),
+      getBlockByHeight(
+        {height: Number(height), withTransactions: true},
+        client,
+      ),
     staleTime: 60 * 60 * 1000, // 1 hour - blocks are immutable
   });
 }

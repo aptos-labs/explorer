@@ -4,6 +4,7 @@ import {emitRateLimit} from "../context/rate-limit/rateLimitEvents";
 import {
   fetchTransactionFromArchival,
   headersFromAptosClient,
+  networkNameFromAptosClient,
 } from "./archivalNode";
 import {getTransactionFromIndexer} from "./indexerTransaction";
 import {isPrunedOrNotFoundError} from "./prunedTransaction";
@@ -180,22 +181,70 @@ function isUnauthorizedApiError(error: unknown): boolean {
   );
 }
 
-function shouldTryHistoricalFallback(error: unknown): boolean {
-  // 401 happens when the SDK retries 410 against a same-site archive and
-  // forwards the explorer API key; archive hosts reject that key.
+/**
+ * True when the serving fullnode (including the SDK's credentialed archival
+ * retry) could not return history: prune/404, or 401 from a same-site archive
+ * that rejects the explorer API key.
+ */
+export function shouldTryHistoricalFallback(error: unknown): boolean {
   return isPrunedOrNotFoundError(error) || isUnauthorizedApiError(error);
+}
+
+/**
+ * After the serving fullnode misses, try the indexer first (when it can
+ * answer), then the archive node without credentials.
+ */
+export async function recoverHistoricalData<T>(
+  error: unknown,
+  tryIndexer?: () => Promise<T | null>,
+  tryArchival?: () => Promise<T | null>,
+): Promise<T | undefined> {
+  if (!shouldTryHistoricalFallback(error)) return undefined;
+
+  if (tryIndexer) {
+    try {
+      const indexed = await tryIndexer();
+      if (indexed) return indexed;
+    } catch {
+      // Indexer failures should not hide the original REST error.
+    }
+  }
+
+  if (tryArchival) {
+    try {
+      const archived = await tryArchival();
+      if (archived) return archived;
+    } catch {
+      // Archival misses should fall through to the original REST error.
+    }
+  }
+
+  return undefined;
+}
+
+function fetchTransactionFromArchiveNode(
+  txnHashOrVersion: string,
+  client: Aptos,
+): Promise<Types.Transaction | null> {
+  const fullnode = client.config?.fullnode;
+  if (!fullnode) return Promise.resolve(null);
+  return fetchTransactionFromArchival(
+    fullnode,
+    txnHashOrVersion,
+    headersFromAptosClient(client),
+    undefined,
+    networkNameFromAptosClient(client),
+  ).then((archived) => (archived ? (archived as Types.Transaction) : null));
 }
 
 /**
  * Fetch transaction by hash or version.
  *
- * Confirmed txns come from the fullnode REST API (the SDK retries `410 Gone`
- * against the node's advertised archival endpoint, forwarding credentials when
- * the archive is same-site). Hash lookups that 404 (pruned hashes are
- * indistinguishable from unknown ones) never get that retry. In both cases we
- * then fetch `{archival_endpoint}/transactions/by_{hash|version}/…`
- * **without** API credentials. When REST still fails, reconstruct from indexer
- * GraphQL (version only — the indexer has no hash column).
+ * 1. Serving fullnode REST (the SDK retries `410 Gone` against the advertised
+ *    archival endpoint, forwarding credentials when the archive is same-site).
+ * 2. Indexer GraphQL reconstruction for numeric versions (no hash column).
+ * 3. Archive node REST **without** credentials when both of the above miss
+ *    (pruned hashes, indexer gaps, or a 401 from the SDK archive retry).
  */
 export async function getTransaction(
   txnHashOrVersion: string,
@@ -204,32 +253,12 @@ export async function getTransaction(
   try {
     return await fetchTransactionFromFullnode(txnHashOrVersion, client);
   } catch (error) {
-    if (shouldTryHistoricalFallback(error)) {
-      const fullnode = client.config?.fullnode;
-      if (fullnode) {
-        try {
-          const archived = await fetchTransactionFromArchival(
-            fullnode,
-            txnHashOrVersion,
-            headersFromAptosClient(client),
-          );
-          if (archived) {
-            return archived as Types.Transaction;
-          }
-        } catch {
-          // Archival misses should fall through to indexer / NOT_FOUND.
-        }
-      }
-      try {
-        const indexed = await getTransactionFromIndexer(
-          client,
-          txnHashOrVersion,
-        );
-        if (indexed) return indexed;
-      } catch {
-        // Indexer failures should not hide the original REST error.
-      }
-    }
+    const recovered = await recoverHistoricalData(
+      error,
+      () => getTransactionFromIndexer(client, txnHashOrVersion),
+      () => fetchTransactionFromArchiveNode(txnHashOrVersion, client),
+    );
+    if (recovered) return recovered;
     return withResponseError(Promise.reject(error));
   }
 }
