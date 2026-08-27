@@ -1,5 +1,4 @@
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import AutoAwesomeOutlinedIcon from "@mui/icons-material/AutoAwesomeOutlined";
 import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
 import HubOutlinedIcon from "@mui/icons-material/HubOutlined";
 import {Box} from "@mui/material";
@@ -19,7 +18,6 @@ import {ValidatorsTable} from "./ValidatorsTable";
 export enum VALIDATORS_TAB_VALUE {
   ALL_NODES = "all",
   DELEGATION_NODES = "delegation",
-  ENHANCED_DELEGATION_NODES = "enhanced_delegation",
 }
 
 function getTabLabel(value: VALIDATORS_TAB_VALUE): string {
@@ -28,8 +26,6 @@ function getTabLabel(value: VALIDATORS_TAB_VALUE): string {
       return "All Nodes";
     case VALIDATORS_TAB_VALUE.DELEGATION_NODES:
       return "Delegation Nodes";
-    case VALIDATORS_TAB_VALUE.ENHANCED_DELEGATION_NODES:
-      return "Delegation (New Beta UI)";
     default:
       return assertNever(value);
   }
@@ -41,8 +37,6 @@ function getTabIcon(value: VALIDATORS_TAB_VALUE): React.JSX.Element {
       return <HubOutlinedIcon fontSize="small" />;
     case VALIDATORS_TAB_VALUE.DELEGATION_NODES:
       return <GroupsOutlinedIcon fontSize="small" />;
-    case VALIDATORS_TAB_VALUE.ENHANCED_DELEGATION_NODES:
-      return <AutoAwesomeOutlinedIcon fontSize="small" />;
     default:
       return assertNever(value);
   }
@@ -63,8 +57,6 @@ function TabPanel({
       if (value === VALIDATORS_TAB_VALUE.ALL_NODES) {
         return <ValidatorsTable />;
       } else if (value === VALIDATORS_TAB_VALUE.DELEGATION_NODES) {
-        return <EnhancedDelegationValidatorsTable />;
-      } else if (value === VALIDATORS_TAB_VALUE.ENHANCED_DELEGATION_NODES) {
         return <EnhancedDelegationValidatorsTable />;
       }
       return null;
@@ -88,11 +80,9 @@ export default function ValidatorsPageTabs(): React.JSX.Element {
       ? VALIDATORS_TAB_VALUE.ALL_NODES
       : (tab as VALIDATORS_TAB_VALUE);
 
-  // Define tab values based on URL parameter
   const tabValues = [
     VALIDATORS_TAB_VALUE.ALL_NODES,
     VALIDATORS_TAB_VALUE.DELEGATION_NODES,
-    VALIDATORS_TAB_VALUE.ENHANCED_DELEGATION_NODES,
   ];
 
   const handleChange = (

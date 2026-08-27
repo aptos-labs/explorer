@@ -38,8 +38,8 @@ const REQUIRED_PATH_SNIPPETS = [
   "/modules",
   /** Account multisig tab */
   "/multisig",
-  /** Validators enhanced delegation tab */
-  "enhanced_delegation",
+  /** Validators delegation tab */
+  "/validators/delegation",
   /** Settings page */
   "/settings",
   /** Run Script advanced tool */

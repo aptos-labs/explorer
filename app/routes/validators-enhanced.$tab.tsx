@@ -1,4 +1,5 @@
 import {createFileRoute, redirect} from "@tanstack/react-router";
+import {rewriteValidatorsTab} from "../utils/routeRedirects";
 
 // Backward compatibility: redirect /validators-enhanced/:tab to /validators/:tab
 export const Route = createFileRoute("/validators-enhanced/$tab")({
@@ -7,7 +8,7 @@ export const Route = createFileRoute("/validators-enhanced/$tab")({
 
     throw redirect({
       to: "/validators/$tab",
-      params: {tab: params.tab},
+      params: {tab: rewriteValidatorsTab(params.tab)},
       search: searchParams?.network
         ? {network: searchParams.network}
         : undefined,

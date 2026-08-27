@@ -11,6 +11,7 @@ import {
   resolveValidatorsEnhancedRedirect,
   resolveValidatorsRedirect,
   rewriteTxnTab,
+  rewriteValidatorsTab,
   shouldBlockWalletSubmission,
 } from "./routeRedirects";
 
@@ -177,6 +178,17 @@ describe("rewriteTxnTab", () => {
   });
 });
 
+describe("FEAT-VALIDATORS-006 — rewriteValidatorsTab", () => {
+  it("rewrites enhanced_delegation to delegation", () => {
+    expect(rewriteValidatorsTab("enhanced_delegation")).toBe("delegation");
+  });
+
+  it("leaves canonical tabs unchanged", () => {
+    expect(rewriteValidatorsTab("all")).toBe("all");
+    expect(rewriteValidatorsTab("delegation")).toBe("delegation");
+  });
+});
+
 describe("FEAT-TOKEN-004 — resolveTokenLegacyRedirect", () => {
   it("redirects numeric tab to overview with propertyVersion", () => {
     const result = resolveTokenLegacyRedirect("5", "mainnet");
@@ -234,6 +246,18 @@ describe("FEAT-VALIDATORS-006 — resolveValidatorsRedirect", () => {
     });
   });
 
+  it("rewrites ?tab=enhanced_delegation to delegation", () => {
+    const result = resolveValidatorsRedirect("/validators", {
+      tab: "enhanced_delegation",
+      network: "testnet",
+    });
+    expect(result).toEqual({
+      kind: "redirect",
+      tab: "delegation",
+      network: "testnet",
+    });
+  });
+
   it("returns none when already on a sub-route", () => {
     const result = resolveValidatorsRedirect("/validators/all", {});
     expect(result.kind).toBe("none");
@@ -250,6 +274,15 @@ describe("FEAT-VALIDATORS-006 — resolveValidatorsEnhancedRedirect", () => {
 
   it("preserves specified tab", () => {
     expect(resolveValidatorsEnhancedRedirect("delegation", "mainnet")).toEqual({
+      tab: "delegation",
+      network: "mainnet",
+    });
+  });
+
+  it("rewrites enhanced_delegation to delegation", () => {
+    expect(
+      resolveValidatorsEnhancedRedirect("enhanced_delegation", "mainnet"),
+    ).toEqual({
       tab: "delegation",
       network: "mainnet",
     });

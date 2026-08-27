@@ -4,9 +4,8 @@
 export function validatorsTabHeadTitle(tab: string | undefined): string {
   switch (tab ?? "all") {
     case "delegation":
-      return "Delegation Nodes";
     case "enhanced_delegation":
-      return "Enhanced Delegation";
+      return "Delegation Nodes";
     default:
       return "All Nodes";
   }

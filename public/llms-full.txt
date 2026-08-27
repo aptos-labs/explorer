@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-08-27 (rev 28)
+> Last updated: 2026-08-27 (rev 29)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -73,7 +73,7 @@ Each detail page has tabs accessible via path segments:
 - Tab paths:
   - `/validators/all` — full validator list with voting power, liveness, rewards
   - `/validators/delegation` — delegation/staking pool information
-  - `/validators/enhanced_delegation` — enhanced delegation view with additional pool metrics
+  - Legacy `/validators/enhanced_delegation` redirects to `/validators/delegation`
 - `/validator/{address}` — individual delegatory validator detail page
 
 #### Coins and Fungible Assets
