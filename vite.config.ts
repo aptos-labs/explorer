@@ -115,9 +115,35 @@ if (!process.env.VITE_VERCEL_ENV && process.env.VERCEL_ENV) {
   process.env.VITE_VERCEL_ENV = process.env.VERCEL_ENV;
 }
 
+// Keep this list in sync with `app/lib/vercelProductionApiKeys.ts`.
+// Implemented inline so `vite.config.ts` does not import `app/` (that hang
+// Vitest's Vite server on shutdown).
+function assertVercelProductionClientApiKeys(): void {
+  if (process.env.VERCEL_ENV !== "production") return;
+  const missing = [
+    "VITE_APTOS_MAINNET_API_KEY",
+    "VITE_APTOS_TESTNET_API_KEY",
+    "VITE_APTOS_DEVNET_API_KEY",
+  ].filter((name) => !process.env[name]?.trim());
+  if (missing.length === 0) return;
+  throw new Error(
+    `[aptos-explorer] Refusing to build a Vercel production client bundle without ${missing.join(", ")}. ` +
+      `Those variables are inlined at build time; marking them runtime-only in Vercel will not attach a key in the browser. ` +
+      `Without them, Geomi 429s are the anonymous IP bucket ("Per anonymous IP rate limit exceeded"), not a named key's quota. ` +
+      `Use a Geomi **client** key whose allowed origin includes https://explorer.aptoslabs.com, and enable the vars for Production **Build**.`,
+  );
+}
+
 export default defineConfig({
   plugins: [
     serverCompressionWorkaround,
+    {
+      name: "assert-vercel-production-client-api-keys",
+      apply: "build",
+      buildStart() {
+        assertVercelProductionClientApiKeys();
+      },
+    },
     tanstackStart({
       srcDirectory: "app",
       router: {

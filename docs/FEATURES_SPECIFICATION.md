@@ -879,7 +879,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 |--------|--------|
 | **Route** | `/settings` — dedicated full-page settings (replaced the former header popup dialog). |
 | **Navigation** | Header gear icon and mobile nav "Settings" item link to `/settings`. Rate Limit Drawer "Set API key override" button also links there. |
-| **API key overrides** | One optional masked geomi.dev API key field per network (mainnet, testnet, devnet, decibel, shelbynet, local); shared show/hide toggle for all fields. Empty network uses the build default key (if any). An info icon next to the section title opens a popover explaining that a personal key provides a dedicated rate limit (useful for heavy use or after HTTP 429) and links to geomi.dev. |
+| **API key overrides** | One optional masked geomi.dev API key field per network (mainnet, testnet, devnet, decibel, shelbynet, local); shared show/hide toggle for all fields. Empty network uses the build default key (if any). Keys are sent as `Authorization: Bearer <key>` (Geomi + TS SDK `API_KEY`). A custom `api-key` header is ignored by the gateway. Geomi `AG-*` client keys also require a matching browser Origin. An info icon next to the section title opens a popover explaining that a personal key provides a dedicated rate limit (useful for heavy use or after HTTP 429) and links to geomi.dev. |
 | **Migration** | Previously saved single-key settings load as the same key applied to every network until the user saves again. |
 | **Persistence** | "Remember on this device" → localStorage, cross-tab sync via `storage` events. Non-API-key preferences (e.g. decompilation) persist to localStorage. |
 | **On save** | Clears cached SDK clients (`clearCachedV2Clients`, `clearCachedSearchClients`), invalidates all React Query queries, invalidates router. If non-empty API key saved, fires `emitApiKeySaved()` to dismiss rate-limit drawer (see FEAT-RATELIMIT-001). |
@@ -1021,6 +1021,17 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 |--------|--------|
 | **Hook** | `withResponseError` in `app/api/client.ts`. |
 | **Mappings** | 429 → `TOO_MANY_REQUESTS` + `emitRateLimit()`; 404 → `NOT_FOUND`; 400 → `INVALID_INPUT`; Error with "too many requests" → rate limit; other → `UNHANDLED`. |
+
+### FEAT-RATELIMIT-004 — Aptos API Gateway key attachment
+
+| Aspect | Detail |
+|--------|--------|
+| **Header** | Requests to Aptos Labs API Gateway send `Authorization: Bearer <key>` (Geomi docs and `@aptos-labs/ts-sdk` `clientConfig.API_KEY`). A custom `api-key` header is ignored: the call still 200s as anonymous, Geomi attributes no CUs to the key, and 429s are the shared IP bucket. |
+| **Client keys** | `VITE_APTOS_<NETWORK>_API_KEY` is inlined at **build** time. Geomi `AG-*` client keys require a browser `Origin` that matches the origin registered on the key. Missing Origin (Node SSR) → 401 "Origin header is required". Wrong Origin → 401 "Origin header does not match expected value". |
+| **Server keys** | `APTOS_<NETWORK>_API_KEY` is read at SSR **runtime** via `readProcessEnv` (`process["env"]`) so Vite cannot replace `process.env` with a build-time empty object. Prefer Geomi server keys (`aptoslabs_…`) that do not require Origin. |
+| **429 diagnosis** | Body `Per anonymous IP rate limit exceeded` → no key accepted. Body `Per application per IP rate limit exceeded` → a client key was used and that key's per-IP quota was hit. |
+| **Vercel production** | `pnpm build` with `VERCEL_ENV=production` throws if `VITE_APTOS_{MAINNET,TESTNET,DEVNET}_API_KEY` are unset, so a production client bundle cannot ship into the anonymous bucket. Preview (`VERCEL_ENV=preview`) still suppresses keys (FEAT-FLAGS-004). |
+| **Drawer copy** | The rate-limit drawer (FEAT-RATELIMIT-001) names both Geomi 429 phrasings so operators can tell anonymous vs per-key limits. |
 
 ---
 
@@ -1370,6 +1381,9 @@ top of the HTML site.
 | `app/context/rate-limit/RateLimitContext.test.tsx` | FEAT-RATELIMIT-001 (rate limit context state management) |
 | `app/context/rate-limit/rateLimitEvents.test.ts` | FEAT-RATELIMIT-001 (rate limit event detection) |
 | `app/context/rate-limit/settingsEvents.test.ts` | FEAT-SETTINGS-001 / FEAT-RATELIMIT-001 (settings ↔ rate-limit event bridge) |
+| `app/lib/aptosGatewayAuth.test.ts` | FEAT-RATELIMIT-004 (`Authorization: Bearer` mapping; SDK `API_KEY`; no ignored `api-key` header) |
+| `app/lib/readProcessEnv.test.ts` | FEAT-RATELIMIT-004 (SSR env read stays dynamic; `process["env"]` source contract) |
+| `app/lib/vercelProductionApiKeys.test.ts` | FEAT-RATELIMIT-004 (Vercel production build refuses missing `VITE_APTOS_*` client keys) |
 | `app/global-config/useFeatureName.test.ts` | FEAT-FLAGS-003 (cookie → env → default resolution) |
 | `app/data/knownAddressBranding.test.ts` | FEAT-DATA-002 (known address branding lookups per network) |
 | `app/data/knownAddresses.test.ts` | FEAT-DATA-002 (known address system: labels, branding, fallback), FEAT-DATA-005 (emojicoin registry address) |

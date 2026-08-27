@@ -1,3 +1,5 @@
+import {readProcessEnv} from "./readProcessEnv";
+
 /**
  * Network Configuration
  */
@@ -47,7 +49,9 @@ type ApiKeys = {
  * Settings override) for the network to be rate-limited under a dedicated
  * client ID. When unset, `getApiKey` emits a one-time `console.error` so
  * the misconfiguration is loud instead of silent (see
- * `warnIfClientMissingApiKey` below).
+ * `warnIfClientMissingApiKey` below). Geomi `AG-*` client keys also require
+ * a matching browser `Origin`; a key registered only for localhost will
+ * 401 on https://explorer.aptoslabs.com ("Origin header does not match").
  *
  * Do NOT rename or remove these env vars — see the
  * "Never rename or remove an environment variable" section in AGENTS.md.
@@ -198,10 +202,10 @@ export function getApiKey(
 export function getServerApiKey(network_name: NetworkName): string | undefined {
   // Vercel sets VERCEL_ENV at SSR runtime. CONTEXT is the Netlify alias
   // kept so leftover preview env still suppresses keys during cutover.
-  const vercelEnv =
-    typeof process !== "undefined" ? process.env.VERCEL_ENV : undefined;
-  const netlifyContext =
-    typeof process !== "undefined" ? process.env.CONTEXT : undefined;
+  // Read through `readProcessEnv` — `process.env.FOO` is replaced with `{}`
+  // in the Vite client isomorphic bundle, so SSR would never see runtime keys.
+  const vercelEnv = readProcessEnv("VERCEL_ENV");
+  const netlifyContext = readProcessEnv("CONTEXT");
   if (
     vercelEnv === "preview" ||
     netlifyContext === "deploy-preview" ||
@@ -211,11 +215,10 @@ export function getServerApiKey(network_name: NetworkName): string | undefined {
     return undefined;
   }
 
-  if (typeof process !== "undefined" && process.env) {
-    const envKey = `APTOS_${network_name.toUpperCase()}_API_KEY`;
-    const serverKey = process.env[envKey];
-    if (serverKey) return serverKey;
-  }
+  const serverKey = readProcessEnv(
+    `APTOS_${network_name.toUpperCase()}_API_KEY`,
+  );
+  if (serverKey) return serverKey;
   const fallback = clientApiKeys[network_name];
   if (!fallback) {
     warnIfServerMissingApiKey(network_name);

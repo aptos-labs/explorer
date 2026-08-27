@@ -446,15 +446,18 @@ chore(deps): update tanstack-query to v5
 Copy `.env.example` to `.env.local` and uncomment the variables you need. Common overrides:
 
 ```bash
-# Per-network Aptos API Gateway keys (client bundle).
+# Per-network Aptos API Gateway **client** keys (browser bundle, AG-…).
+# Baked in at **build** time. Geomi client keys must allow the site Origin
+# (https://explorer.aptoslabs.com in production; http://localhost:3030 for pnpm dev).
 # VITE_APTOS_MAINNET_API_KEY=AG-...
 # VITE_APTOS_TESTNET_API_KEY=AG-...
 # VITE_APTOS_DEVNET_API_KEY=AG-...
 
-# Per-network Aptos API Gateway keys (SSR / server). Set the same value as the
-# matching VITE_* variable so the browser and server share one identity.
-# APTOS_MAINNET_API_KEY=AG-...
-# APTOS_TESTNET_API_KEY=AG-...
+# Per-network Aptos API Gateway **server** keys (SSR). Read at runtime.
+# Prefer a Geomi server key (`aptoslabs_…`) that does not require Origin —
+# do not reuse a localhost-bound AG- client key here or SSR will 401.
+# APTOS_MAINNET_API_KEY=aptoslabs_...
+# APTOS_TESTNET_API_KEY=aptoslabs_...
 
 # Per-network fullnode REST URL overrides (client bundle). Must be VITE_-prefixed.
 # API keys remain keyed by network name even when the URL is overridden.
@@ -474,6 +477,10 @@ Copy `.env.example` to `.env.local` and uncomment the variables you need. Common
 ```
 
 Vite exposes variables prefixed with `VITE_` (and `REACT_APP_` for compatibility) to the client bundle; everything else is server-only. Users can also set per-network API keys at runtime via **Settings** (`/settings`). **Never commit secrets** — use runtime environment variables.
+
+Gateway requests send `Authorization: Bearer <key>` (Geomi + TS SDK). A custom `api-key` header is ignored (anonymous 200s, no Geomi usage). Client `AG-*` keys require a matching `Origin`; server keys do not. Vercel production builds **fail** if `VITE_APTOS_{MAINNET,TESTNET,DEVNET}_API_KEY` are unset (`VERCEL_ENV=production`) so the browser cannot silently fall into the anonymous 429 bucket. Those `VITE_` vars must be enabled for Production **Build**, not runtime-only.
+
+A Geomi 429 body of `Per anonymous IP rate limit exceeded` means **no key was accepted**. `Per application per IP rate limit exceeded` means a client key was used and that key's per-IP quota was hit.
 
 ### Never rename or remove an environment variable
 
