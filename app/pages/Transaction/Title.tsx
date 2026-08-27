@@ -72,7 +72,13 @@ export default function TransactionTitle({
           />
         )}
       </Stack>
-      <TitleHashButton hash={transaction.hash} type={HashType.TRANSACTION} />
+      {transaction.hash ? (
+        <TitleHashButton hash={transaction.hash} type={HashType.TRANSACTION} />
+      ) : (
+        <Typography variant="body2" sx={{color: "text.secondary"}}>
+          Transaction hash unavailable from indexer
+        </Typography>
+      )}
       <TransactionType type={transaction.type} />
     </Stack>
   );

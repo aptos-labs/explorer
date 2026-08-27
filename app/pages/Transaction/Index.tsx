@@ -1,31 +1,20 @@
 import {Alert, Grid, Stack} from "@mui/material";
-import {useQuery} from "@tanstack/react-query";
 import {useParams} from "@tanstack/react-router";
-import type {Types} from "~/types/aptos";
-import {getTransaction} from "../../api";
-import type {ResponseError} from "../../api/client";
-import {
-  useAptosClient,
-  useNetworkValue,
-} from "../../global-config/GlobalConfig";
+import {useGetTransaction} from "../../api/hooks/useGetTransaction";
+import {isIndexerSourced} from "../../api/indexerTransaction";
 import PageHeader from "../layout/PageHeader";
 import TransactionError from "./Error";
 import TransactionTabs from "./Tabs";
 import TransactionTitle from "./Title";
 
 export default function TransactionPage() {
-  const networkValue = useNetworkValue();
-  const aptosClient = useAptosClient();
   const params = useParams({strict: false}) as {
     txnHashOrVersion?: string;
     tab?: string;
   };
   const txnHashOrVersion = params?.txnHashOrVersion ?? "";
 
-  const {isLoading, data, error} = useQuery<Types.Transaction, ResponseError>({
-    queryKey: ["transaction", {txnHashOrVersion}, networkValue],
-    queryFn: () => getTransaction({txnHashOrVersion}, aptosClient),
-  });
+  const {isLoading, data, error} = useGetTransaction(txnHashOrVersion);
 
   if (isLoading) {
     return null;
@@ -59,6 +48,14 @@ export default function TransactionPage() {
             marginTop: 2,
           }}
         >
+          {isIndexerSourced(data) && (
+            <Alert severity="info">
+              This transaction was reconstructed from indexer data because the
+              fullnode has pruned it. Payload arguments, events, hashes, and
+              some write-set changes may be missing. Balance changes still load
+              from the indexer when available.
+            </Alert>
+          )}
           <TransactionTitle
             transaction={data}
             urlTxnHashOrVersion={txnHashOrVersion}

@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Pruned transaction pages load from the indexer**: `/txn/{version}` (and per-row transaction tables / CSV export) no longer die with "not found" when the fullnode has pruned that ledger version. After REST 410/404 (the SDK still retries against the node's advertised archival endpoint first), the explorer reconstructs the transaction from indexer GraphQL (`user_transactions`, signatures, FA gas-fee activity, table items). Indexer-sourced pages show an info alert because payload arguments, events, and hashes may be missing; Balance Change still uses the existing indexer query.
+
 - **Vercel Web Analytics**: The explorer now loads `@vercel/analytics` from the root layout so production Vercel deployments report page views. Entity URLs are redacted to route templates (addresses, transaction hashes, and search text are not sent). Enable **Web Analytics** on the Vercel project (Analytics tab) after deploy — the package logs a console hint if the insights script 404s because the feature is still off. The PWA service worker does not cache `/_vercel/insights` or the debug script host.
 - **Vercel Speed Insights**: `@vercel/speed-insights` is mounted next to Web Analytics. Real-user vitals are grouped by redacted route templates (not raw account/txn IDs). Enable **Speed Insights** on the Vercel project so `/_vercel/speed-insights` is served after the next deploy.
 

@@ -1,5 +1,8 @@
 import type {Aptos} from "@aptos-labs/ts-sdk";
 import {emitRateLimit} from "../context/rate-limit/rateLimitEvents";
+import {getTransactionFromIndexer} from "./indexerTransaction";
+import {isPrunedOrNotFoundError} from "./prunedTransaction";
+import type {Types} from "~/types/aptos";
 
 export enum ResponseErrorType {
   NOT_FOUND = "Not Found",
@@ -26,8 +29,14 @@ export async function withResponseError<T>(promise: Promise<T>): Promise<T> {
     // Handle Response objects (fetch API errors)
     if (typeof error === "object" && error !== null && "status" in error) {
       const response = error as Response;
-      if (response.status === 404) {
-        throw {type: ResponseErrorType.NOT_FOUND};
+      if (response.status === 404 || response.status === 410) {
+        throw {
+          type: ResponseErrorType.NOT_FOUND,
+          message:
+            response.status === 410
+              ? "Transaction has been pruned from the fullnode."
+              : undefined,
+        };
       }
       if (response.status === 429) {
         emitRateLimit();
@@ -81,19 +90,49 @@ export function isRateLimitError(error: unknown): boolean {
   return false;
 }
 
-/**
- * Fetch transaction by hash or version
- */
-export async function getTransaction(txnHashOrVersion: string, client: Aptos) {
-  // Check if it's a version (all digits) or hash
+async function fetchTransactionFromFullnode(
+  txnHashOrVersion: string,
+  client: Aptos,
+): Promise<Types.Transaction> {
   if (/^\d+$/.test(txnHashOrVersion)) {
-    return withResponseError(
-      client.getTransactionByVersion({ledgerVersion: BigInt(txnHashOrVersion)}),
-    );
+    const txn = await client.getTransactionByVersion({
+      ledgerVersion: BigInt(txnHashOrVersion),
+    });
+    return txn as unknown as Types.Transaction;
   }
-  return withResponseError(
-    client.getTransactionByHash({transactionHash: txnHashOrVersion}),
-  );
+  const txn = await client.getTransactionByHash({
+    transactionHash: txnHashOrVersion,
+  });
+  return txn as unknown as Types.Transaction;
+}
+
+/**
+ * Fetch transaction by hash or version.
+ *
+ * Confirmed txns come from the fullnode REST API (the SDK retries `410 Gone`
+ * against the node's advertised archival endpoint). When that still fails
+ * because the ledger was pruned, reconstruct from indexer GraphQL.
+ */
+export async function getTransaction(
+  txnHashOrVersion: string,
+  client: Aptos,
+): Promise<Types.Transaction> {
+  try {
+    return await fetchTransactionFromFullnode(txnHashOrVersion, client);
+  } catch (error) {
+    if (isPrunedOrNotFoundError(error)) {
+      try {
+        const indexed = await getTransactionFromIndexer(
+          client,
+          txnHashOrVersion,
+        );
+        if (indexed) return indexed;
+      } catch {
+        // Indexer failures should not hide the original REST error.
+      }
+    }
+    return withResponseError(Promise.reject(error));
+  }
 }
 
 /**

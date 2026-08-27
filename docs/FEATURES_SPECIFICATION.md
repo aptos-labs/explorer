@@ -6,7 +6,7 @@
 > code. Tests (unit, integration, E2E) should reference the feature IDs defined
 > here (e.g. `// Covers FEAT-SEARCH-001`).
 >
-> **Last updated**: 2026-08-25
+> **Last updated**: 2026-08-27
 
 ---
 
@@ -293,6 +293,15 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **Title** | `Transaction/Title.tsx` renders the heading as **"Multisig Transaction"** with a primary outlined **"Multisig"** chip (groups icon) next to the `<h1>` when detected. |
 | **Metadata** | Page `<title>`, description, and keywords (`multisig`, `multi-signature`) reflect multisig transactions. |
 | **Function label** | `TransactionFunction.tsx` renders a styled **"Multisig Transaction"** `CodeLineBox` (groups icon) for multisig executions without an inner entry-function payload. |
+
+### FEAT-TXN-014 — Pruned Transaction Indexer Fallback
+
+| Aspect | Detail |
+|--------|--------|
+| **Trigger** | Fullnode REST `getTransactionByVersion` / `getTransactionByHash` fails with HTTP 404/410 or `version_pruned` (ledger pruning). The SDK still retries `410 Gone` against the node's advertised archival endpoint first, so complete REST-shaped data is used when archive history is available. |
+| **Indexer reconstruction** | If REST (including archival retry) still fails, `getTransaction` queries indexer GraphQL (`user_transactions`, `block_metadata_transactions`, `signatures`, `fungible_asset_activities`, `table_items`) and maps a `Types.Transaction` for `/txn/$txnHashOrVersion` pages, per-row user-transaction tables, CSV export, and object-creation scans. Hash lookup cannot use the indexer (no hash column); those URLs rely on archival REST. |
+| **Mapped fields** | Version, sender, sequence number, timestamps, max gas, gas unit price, entry function id, signature, success + `gas_used` from the FA gas-fee activity, table-item write-set rows. Events, payload arguments, resource changes, and hashes are omitted when the indexer does not store them. |
+| **UI** | Indexer-sourced pages show an info alert that some fields may be missing. Empty transaction hashes and state/event/accumulator hashes are hidden rather than shown blank. Balance Change still loads from `fungible_asset_activities` (FEAT-TXN-003). |
 
 ---
 
@@ -1337,6 +1346,10 @@ top of the HTML site.
 | `app/components/IndividualPageContent/ContentValue/CurrencyValue.test.tsx` | Currency formatting (octa → APT) |
 | `app/components/Table/verifiedLevel.test.ts` | FEAT-COIN-003 / FEAT-UI-002 (verification level determination: native, verified, banned, recognized, unverified, disabled) |
 | `app/pages/Transaction/utils.test.ts` | FEAT-TXN-002/003 (tx amounts, counterparty including decrypted encrypted payloads, balance changes), FEAT-TXN-013 (multisig transaction detection) |
+| `app/api/prunedTransaction.test.ts` | FEAT-TXN-014 (detect 404/410 / `version_pruned` REST errors) |
+| `app/api/indexerTransaction.test.ts` | FEAT-TXN-014 (indexer timestamp conversion; map user / block-metadata rows; hash lookups skipped; gas_used from FA gas fee) |
+| `app/api/client.transaction.test.ts` | FEAT-TXN-014 (`getTransaction` REST success skips indexer; prune falls back to indexer; non-prune errors do not) |
+| `app/api/legacyClient.test.ts` | FEAT-TXN-014 (legacy REST client retries 410 against `archival_endpoint`) |
 | `app/pages/Transaction/Tabs/Components/MultisigEventView.test.tsx` | FEAT-TXN-004 (multisig event detection, formatted summary/rows, v1/v2 name normalization, raw-JSON fallback, extra-field surfacing, payload decoding in execution and CreateTransaction events) |
 | `app/pages/Transaction/Tabs/Components/decodeMultisigPayload.test.ts` | FEAT-TXN-004 (BCS decoding of multisig payload bytes into an entry function; empty/invalid fallbacks) |
 | `app/pages/Transaction/Tabs/Components/decodeMoveArgument.test.ts` | FEAT-TXN-011 / FEAT-TXN-004 (ABI-typed BCS argument decoding: address, ints, bool, String, vector, Object, Option; positional alignment and invalid/leftover fallbacks) |
