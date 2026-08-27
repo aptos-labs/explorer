@@ -2,7 +2,9 @@ import type {Aptos} from "@aptos-labs/ts-sdk";
 import type {QueryClient} from "@tanstack/react-query";
 import type {Types} from "~/types/aptos";
 import {
+  fetchBlockFromArchival,
   headersFromAptosClient,
+  networkNameFromAptosClient,
   transactionHashExists,
 } from "../../../api/archivalNode";
 import type {CoinDescription} from "../../../api/hooks/useGetCoinList";
@@ -281,10 +283,35 @@ async function lookupContainingBlockHeight(
       sdkV2Client,
       version.toString(),
     );
-    return height !== null ? BigInt(height) : null;
+    if (height !== null) return BigInt(height);
+  } catch {
+    // Indexer miss: try the archive node.
+  }
+
+  const fullnode = sdkV2Client.config?.fullnode;
+  if (!fullnode) return null;
+  try {
+    const archived = await fetchBlockFromArchival(
+      fullnode,
+      {version, withTransactions: false},
+      headersFromAptosClient(sdkV2Client),
+      signal,
+      networkNameFromAptosClient(sdkV2Client),
+    );
+    if (
+      archived &&
+      typeof archived === "object" &&
+      "block_height" in archived &&
+      (archived as {block_height?: unknown}).block_height != null
+    ) {
+      return BigInt(
+        String((archived as {block_height: string | number}).block_height),
+      );
+    }
   } catch {
     return null;
   }
+  return null;
 }
 
 /**
@@ -333,8 +360,9 @@ export async function handleBlockHeightOrVersion(
  * Handle transaction lookup by hash.
  *
  * Confirms existence with a status check (body cancelled) against the
- * fullnode, then the advertised archival endpoint without API credentials so
- * pruned hashes still match. Avoids downloading the full REST payload.
+ * fullnode, then the archive node without API credentials so pruned hashes
+ * still match. Avoids downloading the full REST payload. The indexer has no
+ * hash column.
  */
 export async function handleTransaction(
   searchText: string,
@@ -351,6 +379,7 @@ export async function handleTransaction(
     searchText,
     headersFromAptosClient(sdkV2Client),
     signal,
+    networkNameFromAptosClient(sdkV2Client),
   );
   if (!exists || signal?.aborted) return null;
 

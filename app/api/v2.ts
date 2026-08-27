@@ -1,32 +1,75 @@
 import {AccountAddress, type Aptos, type Block} from "@aptos-labs/ts-sdk";
 import type {Types} from "~/types/aptos";
 import {mapWithConcurrencyLimit} from "../utils/mapWithConcurrencyLimit";
-import {getTransaction, withResponseError} from "./client";
+import {
+  fetchBlockFromArchival,
+  headersFromAptosClient,
+  networkNameFromAptosClient,
+} from "./archivalNode";
+import {
+  getTransaction,
+  recoverHistoricalData,
+  withResponseError,
+} from "./client";
 
 /** Avoid bursting dozens of parallel `getBlockByHeight` calls (edge/CDN rate limits). */
 const DEFAULT_BLOCKS_REST_CONCURRENCY = 8;
 
-export function getBlockByHeight(
+function fetchBlockFromArchiveNode(
+  aptos: Aptos,
+  request: {
+    height?: number;
+    version?: number;
+    withTransactions: boolean;
+  },
+): Promise<Block | null> {
+  const fullnode = aptos.config?.fullnode;
+  if (!fullnode) return Promise.resolve(null);
+  return fetchBlockFromArchival(
+    fullnode,
+    request,
+    headersFromAptosClient(aptos),
+    undefined,
+    networkNameFromAptosClient(aptos),
+  ).then((archived) => (archived ? (archived as Block) : null));
+}
+
+export async function getBlockByHeight(
   requestParameters: {height: number; withTransactions: boolean},
   aptos: Aptos,
 ): Promise<Block> {
   const {height, withTransactions} = requestParameters;
-  return withResponseError(
-    aptos.getBlockByHeight({blockHeight: height, options: {withTransactions}}),
-  );
+  try {
+    return await aptos.getBlockByHeight({
+      blockHeight: height,
+      options: {withTransactions},
+    });
+  } catch (error) {
+    const recovered = await recoverHistoricalData(error, undefined, () =>
+      fetchBlockFromArchiveNode(aptos, {height, withTransactions}),
+    );
+    if (recovered) return recovered;
+    return withResponseError(Promise.reject(error));
+  }
 }
 
-export function getBlockByVersion(
+export async function getBlockByVersion(
   requestParameters: {version: number; withTransactions: boolean},
   aptos: Aptos,
 ): Promise<Block> {
   const {version, withTransactions} = requestParameters;
-  return withResponseError(
-    aptos.getBlockByVersion({
+  try {
+    return await aptos.getBlockByVersion({
       ledgerVersion: version,
       options: {withTransactions},
-    }),
-  );
+    });
+  } catch (error) {
+    const recovered = await recoverHistoricalData(error, undefined, () =>
+      fetchBlockFromArchiveNode(aptos, {version, withTransactions}),
+    );
+    if (recovered) return recovered;
+    return withResponseError(Promise.reject(error));
+  }
 }
 
 export async function getRecentBlocks(

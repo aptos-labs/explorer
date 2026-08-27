@@ -5,10 +5,15 @@ import {
   resolveArchivalEndpoint,
   transactionHashExists,
   fetchTransactionFromArchival,
+  fetchBlockFromArchival,
+  defaultArchiveNodeUrl,
+  fallbackArchiveNodeUrl,
 } from "./archivalNode";
 
 // Covers FEAT-SEARCH-002 / FEAT-TXN-014 — pruned txn hashes are confirmed
-// against the node's advertised archival endpoint without API credentials.
+// against the archive node without API credentials; last-resort reads derive
+// `archive.*` from Aptos Labs `api.*` hosts when the node does not advertise
+// `archival_endpoint`.
 
 function host(url: string): string {
   return new URL(url).hostname;
@@ -24,6 +29,44 @@ function jsonResponse(status: number, body: unknown, headerInit?: HeadersInit) {
     body: {cancel: vi.fn()} as unknown as ReadableStream,
   };
 }
+
+describe("defaultArchiveNodeUrl", () => {
+  it("maps Aptos Labs api.* hosts to archive.*", () => {
+    expect(defaultArchiveNodeUrl("https://api.mainnet.aptoslabs.com/v1")).toBe(
+      "https://archive.mainnet.aptoslabs.com/v1",
+    );
+    expect(
+      defaultArchiveNodeUrl("https://api.testnet.staging.aptoslabs.com/v1/"),
+    ).toBe("https://archive.testnet.staging.aptoslabs.com/v1");
+  });
+
+  it("does not rewrite localhost or already-archive hosts", () => {
+    expect(defaultArchiveNodeUrl("http://127.0.0.1:8080/v1")).toBeUndefined();
+    expect(
+      defaultArchiveNodeUrl("https://archive.mainnet.aptoslabs.com/v1"),
+    ).toBeUndefined();
+  });
+});
+
+describe("fallbackArchiveNodeUrl", () => {
+  it("prefers the derived host over the network default", () => {
+    expect(
+      fallbackArchiveNodeUrl(
+        "https://api.testnet.staging.aptoslabs.com/v1",
+        "testnet",
+      ),
+    ).toBe("https://archive.testnet.staging.aptoslabs.com/v1");
+  });
+
+  it("uses the network default when the fullnode host cannot be rewritten", () => {
+    expect(fallbackArchiveNodeUrl("http://127.0.0.1:8080/v1", "mainnet")).toBe(
+      "https://archive.mainnet.aptoslabs.com/v1",
+    );
+    expect(fallbackArchiveNodeUrl(undefined, "testnet")).toBe(
+      "https://archive.testnet.aptoslabs.com/v1",
+    );
+  });
+});
 
 describe("parseArchivalEndpoint", () => {
   it("reads archival_endpoint from a 410 JSON body", () => {
@@ -106,6 +149,35 @@ describe("resolveArchivalEndpoint", () => {
       resolveArchivalEndpoint("https://api.mainnet.aptoslabs.com/v1"),
     ).resolves.toBeNull();
     expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("derives the Aptos Labs archive host when 410 has no archival_endpoint", async () => {
+    const fetchMock = vi.fn(async () =>
+      jsonResponse(410, {error_code: "version_pruned"}),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(
+      resolveArchivalEndpoint("https://api.mainnet.aptoslabs.com/v1"),
+    ).resolves.toBe("https://archive.mainnet.aptoslabs.com/v1");
+  });
+
+  it("uses the network archive default when the probe fails", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => {
+        throw new Error("network down");
+      }),
+    );
+
+    await expect(
+      resolveArchivalEndpoint(
+        "http://127.0.0.1:8080/v1",
+        undefined,
+        undefined,
+        "mainnet",
+      ),
+    ).resolves.toBe("https://archive.mainnet.aptoslabs.com/v1");
   });
 });
 
@@ -213,5 +285,42 @@ describe("fetchTransactionFromArchival", () => {
         {Authorization: "Bearer secret"},
       ),
     ).resolves.toEqual(txn);
+  });
+});
+
+describe("fetchBlockFromArchival", () => {
+  afterEach(() => {
+    resetArchivalEndpointCache();
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  it("loads a pruned block by height without credentials", async () => {
+    const block = {block_height: "1", first_version: "0", last_version: "1"};
+    const fetchMock = vi.fn(
+      async (input: RequestInfo | URL, init?: RequestInit) => {
+        const url = String(input);
+        if (host(url) === "archive.mainnet.aptoslabs.com") {
+          expect(new Headers(init?.headers).get("Authorization")).toBeNull();
+          expect(new URL(url).pathname).toBe("/v1/blocks/by_height/1");
+          expect(new URL(url).searchParams.get("with_transactions")).toBe(
+            "true",
+          );
+          return jsonResponse(200, block);
+        }
+        return jsonResponse(410, {
+          archival_endpoint: "https://archive.mainnet.aptoslabs.com/v1",
+        });
+      },
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(
+      fetchBlockFromArchival(
+        "https://api.mainnet.aptoslabs.com/v1",
+        {height: 1, withTransactions: true},
+        {Authorization: "Bearer secret"},
+      ),
+    ).resolves.toEqual(block);
   });
 });
