@@ -35,6 +35,15 @@ describe("withResponseError", () => {
     expect(emitRateLimit).not.toHaveBeenCalled();
   });
 
+  it("maps 410 Gone (pruned ledger) to NOT_FOUND", async () => {
+    const error = {status: 410, statusText: "Gone"};
+    await expect(withResponseError(Promise.reject(error))).rejects.toEqual({
+      type: ResponseErrorType.NOT_FOUND,
+      message: "Transaction has been pruned from the fullnode.",
+    });
+    expect(emitRateLimit).not.toHaveBeenCalled();
+  });
+
   it("does not emit on generic errors", async () => {
     const error = new Error("Network error");
     await expect(withResponseError(Promise.reject(error))).rejects.toEqual({

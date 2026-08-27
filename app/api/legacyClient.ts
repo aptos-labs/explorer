@@ -17,6 +17,57 @@ interface AptosClientConfig {
   HEADERS?: Record<string, string>;
 }
 
+const CREDENTIAL_HEADER_NAMES = new Set([
+  "authorization",
+  "cookie",
+  "x-api-key",
+]);
+
+function siteOf(hostname: string): string {
+  return hostname.toLowerCase().split(".").slice(-2).join(".");
+}
+
+function archivalRetryTarget(
+  originUrl: string,
+  body: unknown,
+): {url: string; forwardCredentials: boolean} | undefined {
+  if (
+    !body ||
+    typeof body !== "object" ||
+    typeof (body as {archival_endpoint?: unknown}).archival_endpoint !==
+      "string"
+  ) {
+    return undefined;
+  }
+  const advertised = (body as {archival_endpoint: string}).archival_endpoint;
+  try {
+    const archivalUrl = new URL(advertised);
+    const origin = new URL(originUrl);
+    if (archivalUrl.protocol !== "https:" && archivalUrl.protocol !== "http:") {
+      return undefined;
+    }
+    if (origin.protocol === "https:" && archivalUrl.protocol !== "https:") {
+      return undefined;
+    }
+    return {
+      url: advertised.replace(/\/+$/, ""),
+      forwardCredentials:
+        siteOf(archivalUrl.hostname) === siteOf(origin.hostname),
+    };
+  } catch {
+    return undefined;
+  }
+}
+
+class AptosApiRequestError extends Error {
+  status: number;
+  constructor(status: number, body: string) {
+    super(`Aptos API error ${status}: ${body}`);
+    this.name = "AptosApiRequestError";
+    this.status = status;
+  }
+}
+
 export class AptosClient {
   private readonly baseUrl: string;
   private readonly headers: Record<string, string>;
@@ -33,7 +84,11 @@ export class AptosClient {
   // ------------------------------------------------------------------
   // Helpers
   // ------------------------------------------------------------------
-  private async request<T>(path: string, options?: RequestInit): Promise<T> {
+  private async request<T>(
+    path: string,
+    options?: RequestInit,
+    archivalRetried = false,
+  ): Promise<T> {
     const url = `${this.baseUrl}${path}`;
     const resp = await fetch(url, {
       ...options,
@@ -42,11 +97,32 @@ export class AptosClient {
         ...((options?.headers as Record<string, string>) ?? {}),
       },
     });
-    if (!resp.ok) {
-      const body = await resp.text().catch(() => "");
-      throw new Error(`Aptos API error ${resp.status}: ${body}`);
+    if (resp.ok) {
+      return resp.json() as Promise<T>;
     }
-    return resp.json() as Promise<T>;
+
+    const body = await resp.text().catch(() => "");
+    if (resp.status === 410 && !archivalRetried) {
+      let parsed: unknown;
+      try {
+        parsed = body ? JSON.parse(body) : undefined;
+      } catch {
+        parsed = undefined;
+      }
+      const target = archivalRetryTarget(url, parsed);
+      if (target) {
+        const headers = target.forwardCredentials
+          ? this.headers
+          : Object.fromEntries(
+              Object.entries(this.headers).filter(
+                ([name]) => !CREDENTIAL_HEADER_NAMES.has(name.toLowerCase()),
+              ),
+            );
+        const archivalClient = new AptosClient(target.url, {HEADERS: headers});
+        return archivalClient.request<T>(path, options, true);
+      }
+    }
+    throw new AptosApiRequestError(resp.status, body);
   }
 
   private qs(

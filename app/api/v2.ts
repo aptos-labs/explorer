@@ -1,8 +1,7 @@
 import {AccountAddress, type Aptos, type Block} from "@aptos-labs/ts-sdk";
 import type {Types} from "~/types/aptos";
-import {isNumeric} from "../pages/utils";
 import {mapWithConcurrencyLimit} from "../utils/mapWithConcurrencyLimit";
-import {withResponseError} from "./client";
+import {getTransaction, withResponseError} from "./client";
 
 /** Avoid bursting dozens of parallel `getBlockByHeight` calls (edge/CDN rate limits). */
 const DEFAULT_BLOCKS_REST_CONCURRENCY = 8;
@@ -132,28 +131,12 @@ export async function getAccountResourceV2(
 }
 
 /**
- * Get transaction using SDK v2
+ * Get transaction using SDK v2, with indexer fallback for pruned history.
  */
 export async function getTransactionV2(
   requestParameters: {txnHashOrVersion: string | number},
   aptos: Aptos,
 ): Promise<Types.Transaction> {
   const {txnHashOrVersion} = requestParameters;
-  if (typeof txnHashOrVersion === "number" || isNumeric(txnHashOrVersion)) {
-    const version =
-      typeof txnHashOrVersion === "number"
-        ? txnHashOrVersion
-        : parseInt(txnHashOrVersion, 10);
-    const txn = await withResponseError(
-      aptos.getTransactionByVersion({ledgerVersion: version}),
-    );
-    // Convert to old format for compatibility
-    return txn as unknown as Types.Transaction;
-  } else {
-    const txn = await withResponseError(
-      aptos.getTransactionByHash({transactionHash: txnHashOrVersion}),
-    );
-    // Convert to old format for compatibility
-    return txn as unknown as Types.Transaction;
-  }
+  return getTransaction(String(txnHashOrVersion), aptos);
 }

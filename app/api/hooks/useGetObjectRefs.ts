@@ -1,12 +1,8 @@
 import {useQuery} from "@tanstack/react-query";
 import type {Types} from "~/types/aptos";
-import {
-  useAptosClient,
-  useNetworkValue,
-  useSdkV2Client,
-} from "../../global-config";
+import {useNetworkValue, useSdkV2Client} from "../../global-config";
 import {tryStandardizeAddress} from "../../utils";
-import {getTransaction} from "../index";
+import {getTransaction} from "../client";
 
 export interface ObjectRefs {
   hasTransferRef: boolean;
@@ -159,7 +155,6 @@ export function useGetObjectRefs(
   const enabled = options?.enabled ?? true;
   const normalizedAddress = tryStandardizeAddress(address);
   const sdkClient = useSdkV2Client();
-  const aptosClient = useAptosClient();
   const networkValue = useNetworkValue();
 
   const {
@@ -199,10 +194,7 @@ export function useGetObjectRefs(
         return NO_REFS;
       }
 
-      const tx = await getTransaction(
-        {txnHashOrVersion: creationVersion},
-        aptosClient,
-      );
+      const tx = await getTransaction(String(creationVersion), sdkClient);
       const refs = detectRefsInTransaction(tx, normalizedAddress);
 
       return {
