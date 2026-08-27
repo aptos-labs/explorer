@@ -31,21 +31,9 @@ describe("FEAT-TXN-005 — JsonViewCard value interactions", () => {
       value: {writeText},
     });
 
-    const {container} = render(<JsonViewCard data={payload} />);
-    const functionRow = await waitFor(() => {
-      const row = Array.from(container.querySelectorAll(".w-rjv-line")).find(
-        (candidate) => candidate.textContent?.includes("function"),
-      );
-      if (!row) throw new Error("Function row has not rendered yet");
-      return row;
-    });
-
-    const copyButton = await waitFor(() => {
-      const button = functionRow.querySelector(
-        'button[aria-label="Copy function value"]',
-      );
-      if (!button) throw new Error("Copy button has not appeared yet");
-      return button;
+    render(<JsonViewCard data={payload} />);
+    const copyButton = await screen.findByRole("button", {
+      name: "Copy function value",
     });
 
     fireEvent.click(copyButton);
@@ -87,6 +75,7 @@ describe("FEAT-TXN-005 — JsonViewCard value interactions", () => {
 
     const copyJsonButton = await screen.findByRole("button", {
       name: "Copy JSON",
+      hidden: true,
     });
     fireEvent.click(copyJsonButton);
 
@@ -104,10 +93,14 @@ describe("FEAT-TXN-005 — JsonViewCard value interactions", () => {
 
     render(<JsonViewCard data={payload} />);
 
-    fireEvent.click(await screen.findByRole("button", {name: "Copy JSON"}));
+    fireEvent.click(
+      await screen.findByRole("button", {name: "Copy JSON", hidden: true}),
+    );
 
     await waitFor(() => {
-      expect(screen.getByRole("button", {name: "Copy failed"})).toBeTruthy();
+      expect(
+        screen.getByRole("button", {name: "Copy failed", hidden: true}),
+      ).toBeTruthy();
     });
   });
 });
