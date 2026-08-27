@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-08-27 (rev 29)
+> Last updated: 2026-08-27 (rev 30)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -331,10 +331,10 @@ The explorer fetches data from these Aptos APIs (for reference — these are not
 - `GET /blocks/by_height/{height}` — Block by height
 - `POST /view` — Call a Move view function (read-only on-chain query)
 
-### Archive REST API (pruned history last resort)
+### Archive REST API (pruned history)
 - Mainnet: `https://archive.mainnet.aptoslabs.com/v1`
 - Testnet: `https://archive.testnet.aptoslabs.com/v1` (staging fullnodes advertise `https://archive.testnet.staging.aptoslabs.com/v1`)
-- Same REST paths as the fullnode (`/transactions/by_hash|version`, `/blocks/by_height|version`). Used only after the serving fullnode **and** the indexer miss (or cannot answer). Requests are unauthenticated — archive hosts reject the explorer API gateway key.
+- Same REST paths as the fullnode (`/transactions/by_hash|version`, `/blocks/by_height|version`). Used after the serving public fullnode misses and **before** indexer GraphQL reconstruction. Requests are unauthenticated — archive hosts reject the explorer API gateway key. The indexer is last because it cannot reconstruct full payloads (arguments, events, hashes, write-set resources).
 
 ### Indexer GraphQL API
 - Endpoint: configured via environment (varies by network)

@@ -46,7 +46,7 @@ export async function getBlockByHeight(
       options: {withTransactions},
     });
   } catch (error) {
-    const recovered = await recoverHistoricalData(error, undefined, () =>
+    const recovered = await recoverHistoricalData(error, () =>
       fetchBlockFromArchiveNode(aptos, {height, withTransactions}),
     );
     if (recovered) return recovered;
@@ -65,7 +65,7 @@ export async function getBlockByVersion(
       options: {withTransactions},
     });
   } catch (error) {
-    const recovered = await recoverHistoricalData(error, undefined, () =>
+    const recovered = await recoverHistoricalData(error, () =>
       fetchBlockFromArchiveNode(aptos, {version, withTransactions}),
     );
     if (recovered) return recovered;
@@ -175,7 +175,8 @@ export async function getAccountResourceV2(
 }
 
 /**
- * Get transaction using SDK v2, with indexer fallback for pruned history.
+ * Get transaction using SDK v2, with archive then indexer fallback for
+ * pruned history.
  */
 export async function getTransactionV2(
   requestParameters: {txnHashOrVersion: string | number},

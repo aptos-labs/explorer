@@ -191,15 +191,26 @@ export function shouldTryHistoricalFallback(error: unknown): boolean {
 }
 
 /**
- * After the serving fullnode misses, try the indexer first (when it can
- * answer), then the archive node without credentials.
+ * After the serving fullnode misses, try the archive node without credentials,
+ * then reconstruct from the indexer (when it can answer). Archive REST keeps
+ * the full transaction/block body; indexer GraphQL omits payload arguments,
+ * events, hashes, and write-set resources.
  */
 export async function recoverHistoricalData<T>(
   error: unknown,
-  tryIndexer?: () => Promise<T | null>,
   tryArchival?: () => Promise<T | null>,
+  tryIndexer?: () => Promise<T | null>,
 ): Promise<T | undefined> {
   if (!shouldTryHistoricalFallback(error)) return undefined;
+
+  if (tryArchival) {
+    try {
+      const archived = await tryArchival();
+      if (archived) return archived;
+    } catch {
+      // Archival misses should fall through to the indexer or original REST error.
+    }
+  }
 
   if (tryIndexer) {
     try {
@@ -207,15 +218,6 @@ export async function recoverHistoricalData<T>(
       if (indexed) return indexed;
     } catch {
       // Indexer failures should not hide the original REST error.
-    }
-  }
-
-  if (tryArchival) {
-    try {
-      const archived = await tryArchival();
-      if (archived) return archived;
-    } catch {
-      // Archival misses should fall through to the original REST error.
     }
   }
 
@@ -240,11 +242,14 @@ function fetchTransactionFromArchiveNode(
 /**
  * Fetch transaction by hash or version.
  *
- * 1. Serving fullnode REST (the SDK retries `410 Gone` against the advertised
- *    archival endpoint, forwarding credentials when the archive is same-site).
- * 2. Indexer GraphQL reconstruction for numeric versions (no hash column).
- * 3. Archive node REST **without** credentials when both of the above miss
- *    (pruned hashes, indexer gaps, or a 401 from the SDK archive retry).
+ * 1. Serving public fullnode REST (the SDK retries `410 Gone` against the
+ *    advertised archival endpoint, forwarding credentials when the archive is
+ *    same-site).
+ * 2. Archive node REST **without** credentials (pruned hashes/versions, or a
+ *    401 from the SDK archive retry).
+ * 3. Indexer GraphQL reconstruction for numeric versions only (no hash column)
+ *    when the archive also misses. The indexer omits payload arguments, events,
+ *    hashes, and write-set resources.
  */
 export async function getTransaction(
   txnHashOrVersion: string,
@@ -255,8 +260,8 @@ export async function getTransaction(
   } catch (error) {
     const recovered = await recoverHistoricalData(
       error,
-      () => getTransactionFromIndexer(client, txnHashOrVersion),
       () => fetchTransactionFromArchiveNode(txnHashOrVersion, client),
+      () => getTransactionFromIndexer(client, txnHashOrVersion),
     );
     if (recovered) return recovered;
     return withResponseError(Promise.reject(error));

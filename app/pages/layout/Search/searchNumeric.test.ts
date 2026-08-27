@@ -96,19 +96,40 @@ describe("FEAT-SEARCH-002 — handleBlockHeightOrVersion", () => {
     vi.restoreAllMocks();
   });
   it("shows pruned versions from ledger bounds without fetching a txn body", async () => {
+    const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
+      const url = new URL(String(input));
+      if (url.hostname === "archive.mainnet.aptoslabs.com") {
+        expect(url.pathname).toBe("/v1/blocks/by_version/1");
+        return {
+          ok: true,
+          status: 200,
+          headers: new Headers(),
+          json: async () => ({block_height: "0"}),
+          body: {cancel: vi.fn()} as unknown as ReadableStream,
+        };
+      }
+      return {
+        ok: false,
+        status: 410,
+        headers: new Headers(),
+        json: async () => ({
+          archival_endpoint: "https://archive.mainnet.aptoslabs.com/v1",
+        }),
+        body: {cancel: vi.fn()} as unknown as ReadableStream,
+      };
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
     const client = {
       getLedgerInfo: vi.fn().mockResolvedValue(prunedMainnetLedger),
       getBlockByVersion: vi.fn(),
-      queryIndexer: vi.fn().mockResolvedValue({
-        user_transactions: [{block_height: 0}],
-        block_metadata_transactions: [],
-      }),
+      queryIndexer: vi.fn(),
       config: {fullnode: "https://api.mainnet.aptoslabs.com/v1"},
     };
 
     const results = await handleBlockHeightOrVersion("1", client as never);
     expect(client.getBlockByVersion).not.toHaveBeenCalled();
-    expect(client.queryIndexer).toHaveBeenCalledTimes(1);
+    expect(client.queryIndexer).not.toHaveBeenCalled();
     expect(results).toContainEqual({
       label: "Transaction Version 1",
       to: "/txn/1",
@@ -147,16 +168,15 @@ describe("FEAT-SEARCH-002 — handleBlockHeightOrVersion", () => {
     });
   });
 
-  it("uses the archive node for containing-block height after indexer miss", async () => {
+  it("uses the indexer for containing-block height after archive miss", async () => {
     const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
       const url = new URL(String(input));
       if (url.hostname === "archive.mainnet.aptoslabs.com") {
-        expect(url.pathname).toBe("/v1/blocks/by_version/1");
         return {
-          ok: true,
-          status: 200,
+          ok: false,
+          status: 404,
           headers: new Headers(),
-          json: async () => ({block_height: "0"}),
+          json: async () => ({}),
           body: {cancel: vi.fn()} as unknown as ReadableStream,
         };
       }
@@ -176,7 +196,7 @@ describe("FEAT-SEARCH-002 — handleBlockHeightOrVersion", () => {
       getLedgerInfo: vi.fn().mockResolvedValue(prunedMainnetLedger),
       getBlockByVersion: vi.fn(),
       queryIndexer: vi.fn().mockResolvedValue({
-        user_transactions: [],
+        user_transactions: [{block_height: 0}],
         block_metadata_transactions: [],
       }),
       config: {fullnode: "https://api.mainnet.aptoslabs.com/v1"},

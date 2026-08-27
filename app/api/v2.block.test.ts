@@ -3,8 +3,7 @@ import {resetArchivalEndpointCache} from "./archivalNode";
 import {getBlockByHeight, getBlockByVersion} from "./v2";
 
 // Covers FEAT-BLOCK-001 / FEAT-TXN-014 — pruned blocks load from the archive
-// node after the serving fullnode (and indexer, which has no full block body)
-// miss.
+// node after the serving fullnode misses (indexer has no full block body).
 
 function jsonResponse(status: number, body: unknown) {
   return {

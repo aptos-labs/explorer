@@ -1,6 +1,7 @@
 /**
  * Lightweight fullnode / archival REST helpers for search, pruned history,
- * and last-resort reads after the indexer and serving fullnode miss.
+ * and historical reads after the serving public fullnode misses (before the
+ * indexer, which cannot reconstruct a full REST body).
  *
  * Public nodes answer `404` for pruned transaction hashes (they cannot tell
  * a pruned hash from one that never existed) and do not advertise an
