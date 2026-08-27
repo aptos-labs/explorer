@@ -1,9 +1,9 @@
 // Aptos Explorer Service Worker
 // Provides offline support, caching, and PWA functionality
 
-const _CACHE_NAME = "aptos-explorer-v1";
-const STATIC_CACHE_NAME = "aptos-explorer-static-v1";
-const DYNAMIC_CACHE_NAME = "aptos-explorer-dynamic-v1";
+const CACHE_VERSION = "v2";
+const STATIC_CACHE_NAME = `aptos-explorer-static-${CACHE_VERSION}`;
+const DYNAMIC_CACHE_NAME = `aptos-explorer-dynamic-${CACHE_VERSION}`;
 
 // Allowed API hostnames for caching (exact match or subdomain)
 const APTOS_API_DOMAIN = "aptoslabs.com";
@@ -111,13 +111,18 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Static assets (JS, CSS, images) - Cache First
-  if (
-    request.destination === "script" ||
-    request.destination === "style" ||
-    request.destination === "image" ||
-    request.destination === "font"
-  ) {
+  // Hashed JS and CSS must check the network first. Serving an old chunk from
+  // a cache-first strategy after a deploy causes dynamic imports to fail and
+  // leaves the app showing the "Update Available" screen.
+  if (request.destination === "script" || request.destination === "style") {
+    event.respondWith(
+      networkFirst(request, STATIC_CACHE_NAME, 30 * 24 * 60 * 60),
+    );
+    return;
+  }
+
+  // Images and fonts - Cache First
+  if (request.destination === "image" || request.destination === "font") {
     event.respondWith(
       cacheFirst(request, STATIC_CACHE_NAME, 30 * 24 * 60 * 60),
     );

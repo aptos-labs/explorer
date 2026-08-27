@@ -13,9 +13,31 @@ export type ServiceWorkerContainerLike = {
     scriptURL: string,
     options?: {scope?: string},
   ) => Promise<{scope: string}>;
+  controller?: ServiceWorkerVersionLike | null;
+  getRegistrations?: () => Promise<
+    ReadonlyArray<ServiceWorkerRegistrationLike>
+  >;
 };
 
 export type ServiceWorkerLogger = Pick<Console, "log">;
+
+type ServiceWorkerVersionLike = {scriptURL: string};
+
+export function isExplorerServiceWorker(
+  serviceWorker: ServiceWorkerVersionLike | null | undefined,
+): boolean {
+  return (
+    serviceWorker?.scriptURL.endsWith(EXPLORER_SERVICE_WORKER_URL) ?? false
+  );
+}
+
+export type ServiceWorkerRegistrationLike = {
+  scope: string;
+  active?: ServiceWorkerVersionLike | null;
+  installing?: ServiceWorkerVersionLike | null;
+  waiting?: ServiceWorkerVersionLike | null;
+  unregister: () => Promise<boolean>;
+};
 
 export async function registerExplorerServiceWorker(
   serviceWorker: ServiceWorkerContainerLike | null | undefined,
@@ -30,6 +52,45 @@ export async function registerExplorerServiceWorker(
     logger.log("SW registered:", registration.scope);
   } catch (error) {
     logger.log("SW registration failed:", error);
+  }
+}
+
+/**
+ * Development builds must not be controlled by the production service worker.
+ * Remove an older Explorer registration left behind by a previous local run.
+ */
+export async function unregisterExplorerServiceWorkers(
+  serviceWorker:
+    | Pick<ServiceWorkerContainerLike, "getRegistrations">
+    | null
+    | undefined,
+  logger: ServiceWorkerLogger = console,
+): Promise<boolean> {
+  if (!serviceWorker?.getRegistrations) return false;
+
+  try {
+    const registrations = await serviceWorker.getRegistrations();
+    let unregistered = false;
+    await Promise.all(
+      registrations
+        .filter((registration) => {
+          const version =
+            registration.active ??
+            registration.waiting ??
+            registration.installing;
+          return isExplorerServiceWorker(version);
+        })
+        .map(async (registration) => {
+          if (await registration.unregister()) {
+            unregistered = true;
+            logger.log("SW unregistered:", registration.scope);
+          }
+        }),
+    );
+    return unregistered;
+  } catch (error) {
+    logger.log("SW unregister failed:", error);
+    return false;
   }
 }
 

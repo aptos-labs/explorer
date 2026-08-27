@@ -235,7 +235,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Display** | Collapsible payload with JSON view. Encrypted payloads show encrypted / decrypted / decryption-failed state chips, encryption epoch, optional claimed entry function, separate decrypted-payload JSON when supplied by the fullnode, and the original encrypted payload JSON. |
+| **Display** | Collapsible payload with JSON view. Long strings expand/collapse on value click without copying; desktop row-level hover/focus copy buttons and touch-device persistent copy actions copy the complete raw value, while a touch-only full-JSON copy action is available and text remains selectable. Encrypted payloads show encrypted / decrypted / decryption-failed state chips, encryption epoch, optional claimed entry function, separate decrypted-payload JSON when supplied by the fullnode, and the original encrypted payload JSON. |
 | **Script decompile** | For `script_payload`, embeds `ScriptBytecodeDecompiler` — decompiles hex bytecode via WASM Move decompiler, shows decompiled Move or bytecode disassembly with copy/download/expand modal. |
 
 ### FEAT-TXN-006 — Changes Tab
@@ -1171,7 +1171,8 @@ top of the HTML site.
 |--------|--------|
 | **Manifest** | `public/manifest.json` — standalone display, Aptos theme colors (`#0F0E0B`), icons, screenshots, categories. |
 | **Service worker** | `public/sw.js` — manual registration (not Vite plugin, for SSR compatibility). Caches static assets (favicons, manifest), fetch handler with Aptos Labs domain checks, install/activate lifecycle. |
-| **Registration** | `app/client.tsx` calls `scheduleExplorerServiceWorkerRegistration` (`app/utils/registerServiceWorker.ts`), which registers `/sw.js` at scope `/` on `window` `load` (immediately if the document already loaded). Registration must live in the client bundle: production HTML is SSR, so an inline script in a static HTML shell never reaches the browser. |
+| **Deployment freshness** | JS and CSS requests use network-first with a versioned cache, so a deployed chunk update is picked up instead of being hidden behind a stale cache and reported as an "Update Available" error. |
+| **Registration** | `app/client.tsx` calls `scheduleExplorerServiceWorkerRegistration` (`app/utils/registerServiceWorker.ts`) only in production, registering `/sw.js` at scope `/` on `window` `load` (immediately if the document already loaded). Development builds unregister any older Explorer worker and reload before React hydration when that worker controlled the page, so local Vite sessions cannot combine stale optimized React dependencies with the current client. Registration must live in the client bundle: production HTML is SSR, so an inline script in a static HTML shell never reaches the browser. |
 
 ### FEAT-PWA-002 — PWA share button & header layout
 
@@ -1333,6 +1334,7 @@ top of the HTML site.
 | `app/utils/cliCommand.test.ts` | CLI command generation from payloads; FEAT-TXN-002/005 (extract decrypted encrypted entry functions) |
 | `app/utils/transactionPayload.test.ts` | FEAT-TXN-002 / FEAT-TXN-005 (encrypted payload helpers: displayable entry extraction, claimed entry formatting, state labels) |
 | `app/utils/transactionPayload.localnet.test.ts` | FEAT-TXN-002 / FEAT-TXN-005 (live localnet: submit encrypted transfer, assert pending ciphertext + decrypted entry parsing; gated by `APTOS_LOCALNET=1`) |
+| `app/components/IndividualPageContent/JsonViewCard.test.tsx` | FEAT-TXN-005 (long-string expansion is separate from copying; hover copy button copies the complete raw value) |
 | `app/utils/moveDecompiler.test.ts` | FEAT-MODULES-004 (decompiler helpers) |
 | `app/utils/moveCodeNavigation.test.ts` | FEAT-MODULES-005 (cross-module link path building and resolution) |
 | `app/pages/RunScript/scriptArguments.test.ts` | FEAT-SCRIPT-001 (script argument BCS encoding, bytecode normalization) |

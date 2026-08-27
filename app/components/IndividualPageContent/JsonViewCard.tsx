@@ -1,175 +1,194 @@
+import CheckIcon from "@mui/icons-material/Check";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import {
   alpha,
   Box,
+  Button,
   CircularProgress,
-  Paper,
-  Popper,
+  IconButton,
+  Tooltip,
   useTheme,
 } from "@mui/material";
-import type React from "react";
-import {lazy, Suspense, useCallback, useEffect, useRef, useState} from "react";
+import type {CSSProperties, MouseEvent as ReactMouseEvent} from "react";
+import {lazy, Suspense, useEffect, useRef, useState} from "react";
 import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
 import EmptyValue from "./ContentValue/EmptyValue";
 
 // Dynamically import @uiw/react-json-view only on client side (React 19 compatible)
 const JsonView = lazy(() => import("@uiw/react-json-view"));
+const JsonRow = lazy(() =>
+  import("@uiw/react-json-view").then(({Row}) => ({
+    default: Row,
+  })),
+);
 
 const MAX_CARD_HEIGHT = 500;
-const HOVER_DELAY_MS = 500;
-const COPIED_DISPLAY_MS = 1500;
+const COPY_FEEDBACK_MS = 1500;
 
 type JsonViewCardProps = {
   data: unknown;
   collapsedByDefault?: boolean;
 };
 
-/**
- * Finds the copyable element (key or value) from a click/hover target.
- * Returns the element and its text content.
- */
-function findCopyableElement(
-  target: HTMLElement,
-): {text: string; element: HTMLElement} | null {
-  // Look for key elements (w-rjv-object-key class from @uiw/react-json-view)
-  const keyEl = target.closest('[class*="object-key"]');
-  if (keyEl) {
-    return {text: keyEl.textContent || "", element: keyEl as HTMLElement};
-  }
+type CopyStatus = "idle" | "copied" | "error";
 
-  // Look for value elements
-  const valueEl = target.closest('[class*="value"]');
-  if (valueEl && !target.closest('[class*="copy"]')) {
-    // Remove quotes from string values
-    const text = (valueEl.textContent || "").replace(/^"|"$/g, "");
-    return {text, element: valueEl as HTMLElement};
-  }
+function stringifyCopyValue(value: unknown): string {
+  if (typeof value === "string") return value;
+  if (typeof value === "number" && value === Infinity) return "Infinity";
+  if (typeof value === "number" && Number.isNaN(value)) return "NaN";
+  if (typeof value === "bigint") return value.toString();
+  if (value instanceof Date) return value.toLocaleString();
 
-  return null;
+  const copyText = JSON.stringify(
+    value,
+    (_, nestedValue) =>
+      typeof nestedValue === "bigint" ? nestedValue.toString() : nestedValue,
+    2,
+  );
+
+  return copyText ?? String(value);
 }
 
-/**
- * Hook for click-to-copy tooltip state management.
- */
-function useCopyTooltip() {
-  const [open, setOpen] = useState(false);
-  const [status, setStatus] = useState<"idle" | "copied" | "error">("idle");
-  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
-  const hoverTimer = useRef<number | null>(null);
+async function copyTextToClipboard(copyText: string) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(copyText);
+    return;
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = copyText;
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  textarea.style.pointerEvents = "none";
+  document.body.appendChild(textarea);
+
+  try {
+    textarea.select();
+    if (!document.execCommand("copy")) {
+      throw new Error("Clipboard copy failed");
+    }
+  } finally {
+    textarea.remove();
+  }
+}
+
+function CopyValueButton({
+  value,
+  keyName,
+  className,
+  label,
+  showLabel = false,
+}: {
+  value: unknown;
+  keyName?: string | number;
+  className?: string;
+  label?: string;
+  showLabel?: boolean;
+}) {
+  const theme = useTheme();
+  const [status, setStatus] = useState<CopyStatus>("idle");
   const feedbackTimer = useRef<number | null>(null);
+  const idleLabel =
+    label ??
+    (keyName === undefined
+      ? "Copy JSON value"
+      : `Copy ${String(keyName)} value`);
+  const buttonLabel =
+    status === "copied"
+      ? "Copied"
+      : status === "error"
+        ? "Copy failed"
+        : idleLabel;
 
-  const clearHoverTimer = useCallback(() => {
-    if (hoverTimer.current) {
-      window.clearTimeout(hoverTimer.current);
-      hoverTimer.current = null;
-    }
-  }, []);
-
-  const clearFeedbackTimer = useCallback(() => {
-    if (feedbackTimer.current) {
-      window.clearTimeout(feedbackTimer.current);
-      feedbackTimer.current = null;
-    }
-  }, []);
-
-  // Cleanup timers on unmount
   useEffect(() => {
     return () => {
-      if (hoverTimer.current) window.clearTimeout(hoverTimer.current);
-      if (feedbackTimer.current) window.clearTimeout(feedbackTimer.current);
+      if (feedbackTimer.current !== null) {
+        window.clearTimeout(feedbackTimer.current);
+      }
     };
   }, []);
 
-  const handleClick = useCallback(
-    async (e: React.MouseEvent) => {
-      const copyable = findCopyableElement(e.target as HTMLElement);
-      if (!copyable) return;
+  const handleClick = async (event: ReactMouseEvent<HTMLElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
 
-      e.preventDefault();
-      e.stopPropagation();
-      clearHoverTimer();
-
-      setAnchor(copyable.element);
-      setOpen(true);
-
-      try {
-        await navigator.clipboard.writeText(copyable.text);
-        setStatus("copied");
-      } catch {
-        setStatus("error");
-      }
-
-      clearFeedbackTimer();
-      feedbackTimer.current = window.setTimeout(() => {
-        setOpen(false);
-        setStatus("idle");
-        setAnchor(null);
-      }, COPIED_DISPLAY_MS);
-    },
-    [clearHoverTimer, clearFeedbackTimer],
-  );
-
-  const handleMouseOver = useCallback(
-    (e: React.MouseEvent) => {
-      if (status !== "idle") return;
-
-      const target = e.target as HTMLElement;
-
-      // Skip if still hovering the same anchor element
-      if (anchor?.contains(target)) return;
-
-      const copyable = findCopyableElement(target);
-      if (!copyable) return;
-
-      // Moving to a different element, reset timer and anchor
-      clearHoverTimer();
-      setOpen(false);
-      setAnchor(copyable.element);
-
-      hoverTimer.current = window.setTimeout(() => {
-        setOpen(true);
-        hoverTimer.current = null;
-      }, HOVER_DELAY_MS);
-    },
-    [status, anchor, clearHoverTimer],
-  );
-
-  const handleMouseOut = useCallback(
-    (e: React.MouseEvent) => {
-      if (!findCopyableElement(e.target as HTMLElement)) return;
-      clearHoverTimer();
-      if (status === "idle") {
-        setOpen(false);
-        setAnchor(null);
-      }
-    },
-    [status, clearHoverTimer],
-  );
-
-  const handleMouseLeave = useCallback(() => {
-    clearHoverTimer();
-    if (status === "idle") {
-      setOpen(false);
-      setAnchor(null);
+    if (feedbackTimer.current !== null) {
+      window.clearTimeout(feedbackTimer.current);
     }
-  }, [status, clearHoverTimer]);
 
-  const tooltipText =
-    status === "copied"
-      ? "Copied!"
-      : status === "error"
-        ? "Failed to copy"
-        : "Click to copy";
+    try {
+      await copyTextToClipboard(stringifyCopyValue(value));
+      setStatus("copied");
+    } catch {
+      setStatus("error");
+    }
 
-  return {
-    tooltipOpen: open && anchor !== null,
-    tooltipText,
-    isError: status === "error",
-    anchor,
-    handleClick,
-    handleMouseOver,
-    handleMouseOut,
-    handleMouseLeave,
+    feedbackTimer.current = window.setTimeout(() => {
+      setStatus("idle");
+      feedbackTimer.current = null;
+    }, COPY_FEEDBACK_MS);
   };
+
+  const icon =
+    status === "copied" ? (
+      <CheckIcon sx={{fontSize: "0.9rem"}} />
+    ) : status === "error" ? (
+      <ErrorOutlineIcon sx={{fontSize: "0.9rem"}} />
+    ) : (
+      <ContentCopyIcon sx={{fontSize: "0.9rem"}} />
+    );
+
+  const buttonSx = {
+    ml: 0.5,
+    p: "2px",
+    verticalAlign: "middle",
+    color:
+      status === "copied"
+        ? theme.palette.success.main
+        : status === "error"
+          ? theme.palette.error.main
+          : theme.palette.text.secondary,
+    "&:hover": {
+      color:
+        status === "error"
+          ? theme.palette.error.dark
+          : theme.palette.primary.main,
+      backgroundColor: alpha(
+        status === "error"
+          ? theme.palette.error.main
+          : theme.palette.primary.main,
+        0.12,
+      ),
+    },
+  };
+
+  return (
+    <Tooltip title={buttonLabel} placement="top" arrow>
+      {showLabel ? (
+        <Button
+          aria-label={buttonLabel}
+          size="small"
+          variant="outlined"
+          startIcon={icon}
+          onClick={handleClick}
+          sx={{...buttonSx, p: "4px 10px"}}
+        >
+          {buttonLabel}
+        </Button>
+      ) : (
+        <IconButton
+          className={className}
+          aria-label={buttonLabel}
+          size="small"
+          onClick={handleClick}
+          sx={buttonSx}
+        >
+          {icon}
+        </IconButton>
+      )}
+    </Tooltip>
+  );
 }
 
 export default function JsonViewCard({
@@ -187,39 +206,14 @@ export default function JsonViewCard({
   // Solid muted tone — alpha(primary) was ~2.1:1 on light code panels (WCAG)
   const secondaryTextColor = semanticColors.codeBlock.textSecondary;
 
-  const {
-    tooltipOpen,
-    tooltipText,
-    isError,
-    anchor,
-    handleClick,
-    handleMouseOver,
-    handleMouseOut,
-    handleMouseLeave,
-  } = useCopyTooltip();
-
   if (!data) {
     return <EmptyValue />;
   }
 
-  // Common hover styles - base properties shared by all clickable elements
-  const baseHoverStyle = {
+  const longStringHoverStyle = {
     cursor: "pointer",
     borderRadius: "2px",
     transition: "background-color 0.15s ease",
-  };
-
-  // Key hover style (coral-based)
-  const keyHoverStyle = {
-    ...baseHoverStyle,
-    "&:hover": {
-      backgroundColor: alpha(keyColor, 0.15),
-    },
-  };
-
-  // Value hover style (blue-based)
-  const valueHoverStyle = {
-    ...baseHoverStyle,
     "&:hover": {
       backgroundColor: alpha(valueColor, 0.15),
     },
@@ -227,10 +221,6 @@ export default function JsonViewCard({
 
   return (
     <Box
-      onClick={handleClick}
-      onMouseOver={handleMouseOver}
-      onMouseOut={handleMouseOut}
-      onMouseLeave={handleMouseLeave}
       sx={{
         padding: 2,
         borderRadius: 1,
@@ -239,35 +229,42 @@ export default function JsonViewCard({
         maxWidth: "100%",
         maxHeight: MAX_CARD_HEIGHT,
         position: "relative",
-
-        // Keys: coral-based hover (matches JS selector [class*="object-key"])
-        '& [class*="object-key"]': keyHoverStyle,
-
-        // All value types: blue-based hover (matches JS selector [class*="value"])
-        // Covers: string, int, float, bool, null, undefined, bigint, nan, date, url, etc.
-        '& [class*="-value"]': valueHoverStyle,
+        // Only long strings are clickable because they expand/collapse on click.
+        ".w-rjv-value-short": longStringHoverStyle,
+        ".w-rjv-line .json-copy-action": {
+          opacity: 0,
+          pointerEvents: "none",
+          transition: "opacity 0.15s ease",
+          minWidth: 32,
+          minHeight: 32,
+        },
+        ".w-rjv-line:hover .json-copy-action, .w-rjv-line:focus-within .json-copy-action":
+          {
+            opacity: 1,
+            pointerEvents: "auto",
+          },
+        "@media (hover: none), (pointer: coarse)": {
+          ".w-rjv-line .json-copy-action": {
+            opacity: 1,
+            pointerEvents: "auto",
+            minWidth: 40,
+            minHeight: 40,
+          },
+        },
       }}
     >
-      <Popper
-        open={tooltipOpen}
-        anchorEl={anchor}
-        placement="top"
-        sx={{zIndex: theme.zIndex.tooltip}}
+      <Box
+        sx={{
+          display: "none",
+          justifyContent: "flex-end",
+          mb: 1,
+          "@media (hover: none), (pointer: coarse)": {
+            display: "flex",
+          },
+        }}
       >
-        <Paper
-          sx={{
-            px: 1,
-            py: 0.5,
-            fontSize: "0.75rem",
-            backgroundColor: isError
-              ? theme.palette.error.main
-              : theme.palette.grey[800],
-            color: theme.palette.common.white,
-          }}
-        >
-          {tooltipText}
-        </Paper>
-      </Popper>
+        <CopyValueButton value={data} label="Copy JSON" showLabel />
+      </Box>
       <Suspense fallback={<CircularProgress size={24} />}>
         <JsonView
           value={data as object}
@@ -298,9 +295,29 @@ export default function JsonViewCard({
               "--w-rjv-colon-color": secondaryTextColor,
               "--w-rjv-ellipsis-color": secondaryTextColor,
               "--w-rjv-info-color": secondaryTextColor,
-            } as React.CSSProperties
+            } as CSSProperties
           }
-        />
+        >
+          <JsonRow
+            render={(props, {keyName, value}) => (
+              <Box
+                {...props}
+                sx={{
+                  "& .json-copy-action": {
+                    display: "inline-flex",
+                  },
+                }}
+              >
+                {props.children}
+                <CopyValueButton
+                  className="json-copy-action"
+                  keyName={keyName}
+                  value={value}
+                />
+              </Box>
+            )}
+          />
+        </JsonView>
       </Suspense>
     </Box>
   );
