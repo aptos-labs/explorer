@@ -1036,21 +1036,27 @@ export default function UserTransactionOverviewTab({
           }
           tooltip={getLearnMoreTooltip("signature")}
         />
-        <ContentRow
-          title="State Change Hash:"
-          value={transactionData.state_change_hash}
-          tooltip={getLearnMoreTooltip("state_change_hash")}
-        />
-        <ContentRow
-          title="Event Root Hash:"
-          value={transactionData.event_root_hash}
-          tooltip={getLearnMoreTooltip("event_root_hash")}
-        />
-        <ContentRow
-          title="Accumulator Root Hash:"
-          value={transactionData.accumulator_root_hash}
-          tooltip={getLearnMoreTooltip("accumulator_root_hash")}
-        />
+        {transactionData.state_change_hash ? (
+          <ContentRow
+            title="State Change Hash:"
+            value={transactionData.state_change_hash}
+            tooltip={getLearnMoreTooltip("state_change_hash")}
+          />
+        ) : null}
+        {transactionData.event_root_hash ? (
+          <ContentRow
+            title="Event Root Hash:"
+            value={transactionData.event_root_hash}
+            tooltip={getLearnMoreTooltip("event_root_hash")}
+          />
+        ) : null}
+        {transactionData.accumulator_root_hash ? (
+          <ContentRow
+            title="Accumulator Root Hash:"
+            value={transactionData.accumulator_root_hash}
+            tooltip={getLearnMoreTooltip("accumulator_root_hash")}
+          />
+        ) : null}
       </ContentBox>
     </Box>
   );

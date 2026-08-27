@@ -1,7 +1,8 @@
-import {Grid, Skeleton, Stack, Typography} from "@mui/material";
+import {Alert, Grid, Skeleton, Stack, Typography} from "@mui/material";
 import {useParams} from "@tanstack/react-router";
 import {toResponseError} from "../../api/client";
 import {useGetTransaction} from "../../api/hooks/useGetTransaction";
+import {isIndexerSourced} from "../../api/indexerTransaction";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import {
   ContentRowsSkeleton,
@@ -78,11 +79,18 @@ export default function TransactionPage() {
             error={toResponseError(error)}
             txnHashOrVersion={txnHashOrVersion}
           />
-        ) : isPending || !data ? (
+        ) : isPending ? (
           <TransactionPageSkeleton
             urlTxnHashOrVersion={txnHashOrVersion}
             pathTab={params.tab}
           />
+        ) : !data ? (
+          <Alert severity="error">
+            Got an empty response fetching transaction with version or hash{" "}
+            {txnHashOrVersion}
+            <br />
+            Try again later
+          </Alert>
         ) : (
           <Stack
             direction="column"
@@ -91,6 +99,14 @@ export default function TransactionPage() {
               marginTop: 2,
             }}
           >
+            {isIndexerSourced(data) && (
+              <Alert severity="info">
+                This transaction was reconstructed from indexer data because the
+                fullnode has pruned it. Payload arguments, events, hashes, and
+                some write-set changes may be missing. Balance changes still
+                load from the indexer when available.
+              </Alert>
+            )}
             <TransactionTitle
               transaction={data}
               urlTxnHashOrVersion={txnHashOrVersion}

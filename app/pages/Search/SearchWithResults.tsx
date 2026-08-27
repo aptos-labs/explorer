@@ -45,7 +45,6 @@ import {
   SEARCH_PLACEHOLDER,
 } from "../layout/Search/searchConstants";
 import {
-  anyOwnedObjects,
   createFallbackAddressResult,
   detectInputType,
   filterSearchResults,
@@ -211,19 +210,6 @@ export default function SearchWithResults({
         }
 
         let filtered = filterSearchResults(resultsList);
-
-        if (
-          filtered.length === 0 &&
-          (inputType.is32Hex || inputType.isValidAccountAddr)
-        ) {
-          const fallback = await anyOwnedObjects(
-            normalized,
-            sdkV2Client,
-            signal,
-          );
-          if (signal.aborted) return;
-          if (fallback) filtered = [fallback];
-        }
 
         if (
           filtered.length === 0 &&

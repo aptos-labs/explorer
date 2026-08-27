@@ -11,7 +11,7 @@ import {
 import Box from "@mui/material/Box";
 import React from "react";
 import type {Types} from "~/types/aptos";
-import {getTransaction} from "../../../api";
+import {getTransaction} from "../../../api/client";
 import useFunctionFilter, {
   type FunctionFilterParams,
 } from "../../../api/hooks/useFunctionFilter";
@@ -25,10 +25,7 @@ import {
 import PageNumberPagination, {
   useCurrentPage,
 } from "../../../components/PageNumberPagination";
-import {
-  useAptosClient,
-  useSdkV2Client,
-} from "../../../global-config/GlobalConfig";
+import {useSdkV2Client} from "../../../global-config/GlobalConfig";
 import {tryStandardizeAddress} from "../../../utils";
 import FunctionFilter from "../../Transactions/Components/FunctionFilter";
 import {UserTransactionsTable} from "../../Transactions/TransactionsTable";
@@ -321,7 +318,6 @@ function CSVExportButton({
 }) {
   const [isExporting, setIsExporting] = React.useState(false);
   const [exportProgress, setExportProgress] = React.useState(0);
-  const aptosClient = useAptosClient();
   const logEvent = useLogEventWithBasic();
   const sdkV2Client = useSdkV2Client();
 
@@ -527,10 +523,7 @@ function CSVExportButton({
           try {
             return await retryWithBackoff(
               async () => {
-                return await getTransaction(
-                  {txnHashOrVersion: version},
-                  aptosClient,
-                );
+                return await getTransaction(String(version), sdkV2Client);
               },
               3,
               500,

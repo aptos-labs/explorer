@@ -91,7 +91,7 @@ describe("prefetchAccountPageData", () => {
 
 describe("prefetchTransactionPageData", () => {
   it("prefetches the transaction without awaiting", () => {
-    // Covers FEAT-TXN-014 — non-blocking transaction prefetch
+    // Covers FEAT-TXN-015 — non-blocking transaction prefetch
     const calls: string[] = [];
     const queryClient = {
       prefetchQuery: vi.fn((opts: {queryKey: unknown}) => {

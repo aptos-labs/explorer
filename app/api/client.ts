@@ -1,5 +1,12 @@
 import type {Aptos} from "@aptos-labs/ts-sdk";
+import type {Types} from "~/types/aptos";
 import {emitRateLimit} from "../context/rate-limit/rateLimitEvents";
+import {
+  fetchTransactionFromArchival,
+  headersFromAptosClient,
+} from "./archivalNode";
+import {getTransactionFromIndexer} from "./indexerTransaction";
+import {isPrunedOrNotFoundError} from "./prunedTransaction";
 
 export enum ResponseErrorType {
   NOT_FOUND = "Not Found",
@@ -87,8 +94,14 @@ export async function withResponseError<T>(promise: Promise<T>): Promise<T> {
     // Handle Response objects (fetch API errors)
     if (typeof error === "object" && error !== null && "status" in error) {
       const response = error as Response;
-      if (response.status === 404) {
-        throw {type: ResponseErrorType.NOT_FOUND};
+      if (response.status === 404 || response.status === 410) {
+        throw {
+          type: ResponseErrorType.NOT_FOUND,
+          message:
+            response.status === 410
+              ? "Transaction has been pruned from the fullnode."
+              : undefined,
+        };
       }
       if (response.status === 429) {
         emitRateLimit();
@@ -142,19 +155,83 @@ export function isRateLimitError(error: unknown): boolean {
   return false;
 }
 
-/**
- * Fetch transaction by hash or version
- */
-export async function getTransaction(txnHashOrVersion: string, client: Aptos) {
-  // Check if it's a version (all digits) or hash
+async function fetchTransactionFromFullnode(
+  txnHashOrVersion: string,
+  client: Aptos,
+): Promise<Types.Transaction> {
   if (/^\d+$/.test(txnHashOrVersion)) {
-    return withResponseError(
-      client.getTransactionByVersion({ledgerVersion: BigInt(txnHashOrVersion)}),
-    );
+    const txn = await client.getTransactionByVersion({
+      ledgerVersion: BigInt(txnHashOrVersion),
+    });
+    return txn as unknown as Types.Transaction;
   }
-  return withResponseError(
-    client.getTransactionByHash({transactionHash: txnHashOrVersion}),
+  const txn = await client.getTransactionByHash({
+    transactionHash: txnHashOrVersion,
+  });
+  return txn as unknown as Types.Transaction;
+}
+
+function isUnauthorizedApiError(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "status" in error &&
+    (error as {status: unknown}).status === 401
   );
+}
+
+function shouldTryHistoricalFallback(error: unknown): boolean {
+  // 401 happens when the SDK retries 410 against a same-site archive and
+  // forwards the explorer API key; archive hosts reject that key.
+  return isPrunedOrNotFoundError(error) || isUnauthorizedApiError(error);
+}
+
+/**
+ * Fetch transaction by hash or version.
+ *
+ * Confirmed txns come from the fullnode REST API (the SDK retries `410 Gone`
+ * against the node's advertised archival endpoint, forwarding credentials when
+ * the archive is same-site). Hash lookups that 404 (pruned hashes are
+ * indistinguishable from unknown ones) never get that retry. In both cases we
+ * then fetch `{archival_endpoint}/transactions/by_{hash|version}/…`
+ * **without** API credentials. When REST still fails, reconstruct from indexer
+ * GraphQL (version only — the indexer has no hash column).
+ */
+export async function getTransaction(
+  txnHashOrVersion: string,
+  client: Aptos,
+): Promise<Types.Transaction> {
+  try {
+    return await fetchTransactionFromFullnode(txnHashOrVersion, client);
+  } catch (error) {
+    if (shouldTryHistoricalFallback(error)) {
+      const fullnode = client.config?.fullnode;
+      if (fullnode) {
+        try {
+          const archived = await fetchTransactionFromArchival(
+            fullnode,
+            txnHashOrVersion,
+            headersFromAptosClient(client),
+          );
+          if (archived) {
+            return archived as Types.Transaction;
+          }
+        } catch {
+          // Archival misses should fall through to indexer / NOT_FOUND.
+        }
+      }
+      try {
+        const indexed = await getTransactionFromIndexer(
+          client,
+          txnHashOrVersion,
+        );
+        if (indexed) return indexed;
+      } catch {
+        // Indexer failures should not hide the original REST error.
+      }
+    }
+    return withResponseError(Promise.reject(error));
+  }
 }
 
 /**

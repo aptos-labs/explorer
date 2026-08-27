@@ -92,8 +92,7 @@ export function transactionQueryOptions(
 ) {
   return queryOptions<Types.Transaction, ResponseError>({
     queryKey: ["transaction", {txnHashOrVersion}, networkKey],
-    queryFn: () =>
-      getTransaction(txnHashOrVersion, client) as Promise<Types.Transaction>,
+    queryFn: () => getTransaction(txnHashOrVersion, client),
     staleTime: 60 * 60 * 1000, // 1 hour - transactions are immutable
     gcTime: 24 * 60 * 60 * 1000,
     enabled: !!txnHashOrVersion,

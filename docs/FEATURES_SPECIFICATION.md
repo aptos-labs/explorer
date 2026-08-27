@@ -76,7 +76,7 @@ The app shell that wraps every page.
 
 | Aspect | Detail |
 |--------|--------|
-| **Behavior** | Global `defaultPendingComponent` shows a loading indicator during route transitions with minimum display time to reduce flicker. Account and transaction detail routes do **not** use a blocking route `pendingComponent`; they paint in-page skeletons immediately (FEAT-ACCOUNT-013, FEAT-TXN-014). |
+| **Behavior** | Global `defaultPendingComponent` shows a loading indicator during route transitions with minimum display time to reduce flicker. Account and transaction detail routes do **not** use a blocking route `pendingComponent`; they paint in-page skeletons immediately (FEAT-ACCOUNT-013, FEAT-TXN-015). |
 
 ### FEAT-CHROME-004 — Go Back Button
 
@@ -114,9 +114,9 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 |---------------|-----------------|
 | `.apt` / `.petra` suffix | ANS name lookup via ts-sdk (`getPrimaryName`, `getName`) → account link |
 | Valid Move struct | Coin lookup via `CoinInfo` resource + Panora coin list prefix match |
-| Numeric | Parallel: block by height, transaction by version, block by version |
-| 32-byte hex | Parallel: transaction hash, account address, coin list |
-| Valid account address | Account, FA metadata, object core, resources, coin list, owned objects fallback |
+| Numeric | Ledger bounds (current `ledger_version` / `block_height`): every integer in range is a valid version/height, including history the serving fullnode has pruned. Does **not** fetch a full transaction body. The containing-block row uses REST `getBlockByVersion` inside the node's window and indexer `block_height` for pruned versions. |
+| 32-byte hex | Parallel: transaction hash existence (fullnode, then advertised archival endpoint **without** API credentials so pruned hashes still match; the body is cancelled on 200), account address, coin list |
+| Valid account address | Account, FA metadata, object core, coin list. Does **not** download the full `/accounts/{addr}/resources` list. |
 | Emoji-only (`/^\p{Emoji}+$/gu`) | Emojicoin market lookup: derives market address from `EMOJICOIN_REGISTRY_ADDRESS` via `createNamedObjectAddress`, verifies on-chain, returns coin + LP results |
 | Generic text (length > 2) | Coin list name/symbol match + known address label match |
 
@@ -129,7 +129,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **Grouping** | Results grouped by type with section headers (shared `SearchResultGroupHeader`). |
 | **Deduplication** | Prefer coin list coin over struct coin; drop redundant "Address" when Account/FA/Object exists. |
 | **Avatars** | Token logos, known-address brand marks via `identiconKey`, blockies fallback. |
-| **Fallback** | Valid-looking address with no on-chain hits → `anyOwnedObjects` check → still link to `/account/...` via `createFallbackAddressResult`. |
+| **Fallback** | Valid-looking address with no on-chain hits → still link to `/account/...` via `createFallbackAddressResult` (no extra owned-objects round trip). |
 | **GTM event** | `searchStats` event with `network`, `searchText`, `searchResult` ("notFound" or "success"), `duration`. |
 
 ### FEAT-SEARCH-004 — Home Page (non-search state)
@@ -258,15 +258,6 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **Behavior** | `/txn/$txnHashOrVersion` (no tab) redirects to `/txn/$txnHashOrVersion/userTxnOverview`; client-side correction for non-user transactions. |
 | **Invalid tab** | Redirects to the first tab for the transaction type. |
 
-### FEAT-TXN-014 — Progressive Transaction Page Load
-
-| Aspect | Detail |
-|--------|--------|
-| **Route loader** | Prefetches the transaction (`transactionQueryOptions`) and returns immediately — it does not `await` the fetch, so navigation is not blocked on the fullnode. |
-| **First paint** | Page chrome (header), a "Transaction" title, the URL hash/version, tab-strip skeletons, and overview skeletons render while the transaction is in flight. The previous full-page `null` loading state is gone. |
-| **Organize then fill** | Tab set, type chip, and overview body wait on the transaction object (needed to choose tabs). Secondary rows such as the parent block populate with their own skeletons after the overview is visible. |
-| **Errors** | Fullnode failures still render `TransactionError` (including typed `NOT_FOUND`). |
-
 ### FEAT-TXN-009 — Transaction Actions Parsing
 
 | Aspect | Detail |
@@ -302,6 +293,24 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **Title** | `Transaction/Title.tsx` renders the heading as **"Multisig Transaction"** with a primary outlined **"Multisig"** chip (groups icon) next to the `<h1>` when detected. |
 | **Metadata** | Page `<title>`, description, and keywords (`multisig`, `multi-signature`) reflect multisig transactions. |
 | **Function label** | `TransactionFunction.tsx` renders a styled **"Multisig Transaction"** `CodeLineBox` (groups icon) for multisig executions without an inner entry-function payload. |
+
+### FEAT-TXN-014 — Pruned Transaction Indexer Fallback
+
+| Aspect | Detail |
+|--------|--------|
+| **Trigger** | Fullnode REST `getTransactionByVersion` / `getTransactionByHash` fails with HTTP 404/410/`version_pruned`, or HTTP 401 after the SDK retries `410 Gone` against a same-site archive while forwarding the explorer API key (archive hosts 401 with `Unauthorized: API key not found`). `getTransaction` then retries archival REST (`/transactions/by_hash/…` or `/transactions/by_version/…`) **without** credentials. Pruned **hash** lookups return `404` with no archival hint, so discovery uses a cached version-0 probe. |
+| **Indexer reconstruction** | If REST (including archival retry) still fails, `getTransaction` queries indexer GraphQL (`user_transactions`, `block_metadata_transactions`, `signatures`, `fungible_asset_activities`, `table_items`) and maps a `Types.Transaction` for `/txn/$txnHashOrVersion` pages, per-row user-transaction tables, CSV export, and object-creation scans. Hash lookup cannot use the indexer (no hash column); those URLs rely on archival REST. |
+| **Mapped fields** | Version, sender, sequence number, timestamps, max gas, gas unit price, entry function id, signature, success + `gas_used` from the FA gas-fee activity, table-item write-set rows. Events, payload arguments, resource changes, and hashes are omitted when the indexer does not store them. |
+| **UI** | Indexer-sourced pages show an info alert that some fields may be missing. Empty transaction hashes and state/event/accumulator hashes are hidden rather than shown blank. Balance Change still loads from `fungible_asset_activities` (FEAT-TXN-003). |
+
+### FEAT-TXN-015 — Progressive Transaction Page Load
+
+| Aspect | Detail |
+|--------|--------|
+| **Route loader** | Prefetches the transaction (`transactionQueryOptions`) and returns immediately — it does not `await` the fetch, so navigation is not blocked on the fullnode. Prefetch uses the same `getTransaction` path as the page (archival REST, then indexer reconstruction — FEAT-TXN-014). |
+| **First paint** | Page chrome (header), a "Transaction" title, the URL hash/version, tab-strip skeletons, and overview skeletons render while the transaction is in flight. The previous full-page `null` loading state is gone. |
+| **Organize then fill** | Tab set, type chip, and overview body wait on the transaction object (needed to choose tabs). Secondary rows such as the parent block populate with their own skeletons after the overview is visible. Indexer-sourced reconstructed txns still show the FEAT-TXN-014 info alert once data arrives. |
+| **Errors** | After archival + indexer fallbacks fail, render `TransactionError` (including typed `NOT_FOUND`). An empty success response shows an in-page error alert. |
 
 ---
 
@@ -1356,6 +1365,12 @@ top of the HTML site.
 | `app/components/IndividualPageContent/ContentValue/CurrencyValue.test.tsx` | Currency formatting (octa → APT) |
 | `app/components/Table/verifiedLevel.test.ts` | FEAT-COIN-003 / FEAT-UI-002 (verification level determination: native, verified, banned, recognized, unverified, disabled) |
 | `app/pages/Transaction/utils.test.ts` | FEAT-TXN-002/003 (tx amounts, counterparty including decrypted encrypted payloads, balance changes), FEAT-TXN-013 (multisig transaction detection) |
+| `app/pages/layout/Search/searchNumeric.test.ts` | FEAT-SEARCH-002 (ledger-bounded numeric search; pruned versions still produce a transaction result; containing-block REST vs indexer) |
+| `app/api/archivalNode.test.ts` | FEAT-SEARCH-002 / FEAT-TXN-014 (parse `archival_endpoint` / `x-aptos-archival-endpoint`; hash existence retries archival without credentials; version archival fetch) |
+| `app/api/prunedTransaction.test.ts` | FEAT-TXN-014 (detect 404/410 / `version_pruned` REST errors) |
+| `app/api/indexerTransaction.test.ts` | FEAT-TXN-014 (indexer timestamp conversion; map user / block-metadata rows; hash lookups skipped; gas_used from FA gas fee; `getBlockHeightForVersion`) |
+| `app/api/client.transaction.test.ts` | FEAT-TXN-014 (`getTransaction` REST success skips indexer; prune falls back to indexer; pruned hash/version load from archival REST without credentials; SDK archive 401 still retries unauthenticated; non-prune errors do not) |
+| `app/api/legacyClient.test.ts` | FEAT-TXN-014 (legacy REST client retries 410 against `archival_endpoint`) |
 | `app/pages/Transaction/Tabs/Components/MultisigEventView.test.tsx` | FEAT-TXN-004 (multisig event detection, formatted summary/rows, v1/v2 name normalization, raw-JSON fallback, extra-field surfacing, payload decoding in execution and CreateTransaction events) |
 | `app/pages/Transaction/Tabs/Components/decodeMultisigPayload.test.ts` | FEAT-TXN-004 (BCS decoding of multisig payload bytes into an entry function; empty/invalid fallbacks) |
 | `app/pages/Transaction/Tabs/Components/decodeMoveArgument.test.ts` | FEAT-TXN-011 / FEAT-TXN-004 (ABI-typed BCS argument decoding: address, ints, bool, String, vector, Object, Option; positional alignment and invalid/leftover fallbacks) |
@@ -1373,11 +1388,11 @@ top of the HTML site.
 | `app/pages/Transaction/cctp/cctpScan.test.ts` | FEAT-TXN-009 (WormholeScan transfer link helper) |
 | `app/pages/Account/hooks/useAccountTabValues.test.ts` | FEAT-ACCOUNT-005 (tab set computation: all GraphQL/object/multisig combos, invariants) |
 | `app/pages/Account/hooks/useAccountPageLayout.test.ts` | FEAT-ACCOUNT-013 (layout 404s vs hard errors, derived flags), FEAT-ACCOUNT-004 (object redirect gating) |
-| `app/api/prefetchEntityPages.test.ts` | FEAT-ACCOUNT-013 (layout resources before full resource list), FEAT-TXN-014 (non-blocking transaction prefetch) |
+| `app/api/prefetchEntityPages.test.ts` | FEAT-ACCOUNT-013 (layout resources before full resource list), FEAT-TXN-015 (non-blocking transaction prefetch) |
 | `app/pages/Account/Tabs/ModulesTab/Contract.test.ts` | FEAT-MODULES-001 (contract result utilities, copy serialization) |
 | `app/pages/Account/Error.test.tsx` | FEAT-MODULES-008 (`AccountError` optional NOT_FOUND title/message) |
 | `app/pages/layout/Search/searchConstants.test.ts` | FEAT-SEARCH-001 (shared input tokens: placeholder, helper text, debounce, font, icon color), FEAT-SEARCH-003 (result-row type chip colors and labels) |
-| `app/pages/layout/Search/searchUtils.test.ts` | FEAT-SEARCH-003 (fallback address results) |
+| `app/pages/layout/Search/searchUtils.test.ts` | FEAT-SEARCH-003 (fallback address results), FEAT-SEARCH-002 (pruned hash search via archival) |
 | `app/pages/layout/Search/searchDetection.test.ts` | FEAT-SEARCH-002 (all input type detection: ANS, struct, numeric, hex, address, emoji, generic) |
 | `app/pages/layout/Search/searchFiltering.test.ts` | FEAT-SEARCH-003 (result filtering/deduplication, grouping with headers and type ordering) |
 | `app/pages/layout/Search/searchHelpers.test.ts` | FEAT-SEARCH-001 (normalization, cache keys), FEAT-SEARCH-002 (label lookup, coin lookup), FEAT-SEARCH-003 (definitiveResult) |
