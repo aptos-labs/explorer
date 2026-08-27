@@ -1,5 +1,6 @@
 import {QueryCache, QueryClient} from "@tanstack/react-query";
 import {createRouter as createTanStackRouter} from "@tanstack/react-router";
+import {isNotFoundError} from "./api/client";
 import {NavigationPending} from "./components/NavigationPending";
 import {
   emitRateLimit,
@@ -27,12 +28,7 @@ function createQueryClient() {
         refetchOnWindowFocus: true,
         // Custom retry logic
         retry: (failureCount, error) => {
-          if (
-            error &&
-            typeof error === "object" &&
-            "type" in error &&
-            (error as {type: string}).type === "Not Found"
-          ) {
+          if (isNotFoundError(error)) {
             return false;
           }
           if (isRateLimitLike(error)) {

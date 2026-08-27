@@ -1,7 +1,11 @@
-import {useQuery} from "@tanstack/react-query";
+import type {Aptos} from "@aptos-labs/ts-sdk";
+import {queryOptions, useQuery} from "@tanstack/react-query";
 import {useNetworkValue, useSdkV2Client} from "../../global-config";
 import {tryStandardizeAddress} from "../../utils";
 import type {FunctionFilterParams} from "./useFunctionFilter";
+
+/** Page size for the account transactions tab (GraphQL and REST). */
+export const ACCOUNT_TXN_PAGE_SIZE = 25;
 
 const ACCOUNT_TRANSACTIONS_COUNT_QUERY = `
   query AccountTransactionsCount($address: String) {
@@ -13,14 +17,12 @@ const ACCOUNT_TRANSACTIONS_COUNT_QUERY = `
   }
 `;
 
-export function useGetAccountAllTransactionCount(
-  address: string,
-): number | undefined {
-  const addr64Hash = tryStandardizeAddress(address);
-  const client = useSdkV2Client();
-  const networkValue = useNetworkValue();
-
-  const {data} = useQuery({
+export function accountTxnCountQueryOptions(
+  addr64Hash: string | undefined,
+  client: Aptos,
+  networkValue: string,
+) {
+  return queryOptions({
     queryKey: ["accountTxnCount", addr64Hash, networkValue],
     queryFn: () =>
       client.queryIndexer<{
@@ -33,11 +35,29 @@ export function useGetAccountAllTransactionCount(
       }),
     enabled: !!addr64Hash,
   });
+}
 
-  return typeof data?.account_transactions_aggregate?.aggregate?.count ===
-    "number"
-    ? data.account_transactions_aggregate.aggregate.count
-    : undefined;
+export function useGetAccountAllTransactionCount(address: string): {
+  count: number | undefined;
+  isLoading: boolean;
+  isError: boolean;
+} {
+  const addr64Hash = tryStandardizeAddress(address);
+  const client = useSdkV2Client();
+  const networkValue = useNetworkValue();
+
+  const {data, isLoading, isError} = useQuery(
+    accountTxnCountQueryOptions(addr64Hash, client, networkValue),
+  );
+
+  return {
+    count:
+      typeof data?.account_transactions_aggregate?.aggregate?.count === "number"
+        ? data.account_transactions_aggregate.aggregate.count
+        : undefined,
+    isLoading,
+    isError,
+  };
 }
 
 const ACCOUNT_TRANSACTIONS_QUERY = `
@@ -53,16 +73,14 @@ const ACCOUNT_TRANSACTIONS_QUERY = `
   }
 `;
 
-export function useGetAccountAllTransactionVersions(
-  address: string,
+export function accountTxnVersionsQueryOptions(
+  addr64Hash: string | undefined,
+  client: Aptos,
+  networkValue: string,
   limit: number,
   offset?: number,
-): number[] {
-  const addr64Hash = tryStandardizeAddress(address);
-  const client = useSdkV2Client();
-  const networkValue = useNetworkValue();
-
-  const {data} = useQuery({
+) {
+  return queryOptions({
     queryKey: ["accountTxnVersions", addr64Hash, limit, offset, networkValue],
     queryFn: () =>
       client.queryIndexer<{
@@ -75,15 +93,38 @@ export function useGetAccountAllTransactionVersions(
       }),
     enabled: !!addr64Hash,
   });
+}
 
-  if (!data) return [];
+export function useGetAccountAllTransactionVersions(
+  address: string,
+  limit: number,
+  offset?: number,
+): {versions: number[]; isLoading: boolean} {
+  const addr64Hash = tryStandardizeAddress(address);
+  const client = useSdkV2Client();
+  const networkValue = useNetworkValue();
+
+  const {data, isLoading} = useQuery(
+    accountTxnVersionsQueryOptions(
+      addr64Hash,
+      client,
+      networkValue,
+      limit,
+      offset,
+    ),
+  );
+
+  if (!data) return {versions: [], isLoading};
   const rows = data.account_transactions;
   if (!Array.isArray(rows)) {
-    return [];
+    return {versions: [], isLoading};
   }
-  return rows.map(
-    (resource: {transaction_version: number}) => resource.transaction_version,
-  );
+  return {
+    versions: rows.map(
+      (resource: {transaction_version: number}) => resource.transaction_version,
+    ),
+    isLoading,
+  };
 }
 
 export function useGetAllAccountTransactionVersions(address: string): {

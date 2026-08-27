@@ -17,6 +17,67 @@ export enum ResponseErrorType {
 
 export type ResponseError = {type: ResponseErrorType; message?: string};
 
+function errorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  if (
+    error &&
+    typeof error === "object" &&
+    "message" in error &&
+    typeof (error as {message: unknown}).message === "string"
+  ) {
+    return (error as {message: string}).message;
+  }
+  return "";
+}
+
+/**
+ * True for typed `NOT_FOUND` errors and HTTP/API 404-shaped failures.
+ * Layout probes for missing Move resources (ObjectCore, Token, Multisig)
+ * 404 in the common case and must not be treated as page-level failures.
+ */
+export function isNotFoundError(error: unknown): boolean {
+  if (!error || typeof error !== "object") return false;
+  if (
+    "type" in error &&
+    (error as ResponseError).type === ResponseErrorType.NOT_FOUND
+  ) {
+    return true;
+  }
+  if ("status" in error && (error as {status: unknown}).status === 404) {
+    return true;
+  }
+  const message = errorMessage(error).toLowerCase();
+  if (!message) return false;
+  return message.includes("not found") || /\b404\b/.test(message);
+}
+
+/** Normalize unknown query/API failures into the explorer `ResponseError` shape. */
+export function toResponseError(error: unknown): ResponseError {
+  if (
+    error &&
+    typeof error === "object" &&
+    "type" in error &&
+    Object.values(ResponseErrorType).includes(
+      (error as ResponseError).type as ResponseErrorType,
+    )
+  ) {
+    return {
+      type: (error as ResponseError).type,
+      message: (error as ResponseError).message,
+    };
+  }
+  if (isNotFoundError(error)) {
+    return {
+      type: ResponseErrorType.NOT_FOUND,
+      message: errorMessage(error) || undefined,
+    };
+  }
+  return {
+    type: ResponseErrorType.UNHANDLED,
+    message: errorMessage(error) || String(error),
+  };
+}
+
 /**
  * Wraps a promise with error handling and rate limit detection.
  *

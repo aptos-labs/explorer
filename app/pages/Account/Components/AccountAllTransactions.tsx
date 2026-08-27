@@ -4,6 +4,7 @@ import {
   AlertTitle,
   Button,
   CircularProgress,
+  Skeleton,
   Stack,
   Typography,
 } from "@mui/material";
@@ -15,6 +16,7 @@ import useFunctionFilter, {
   type FunctionFilterParams,
 } from "../../../api/hooks/useFunctionFilter";
 import {
+  ACCOUNT_TXN_PAGE_SIZE,
   useGetAccountAllTransactionCount,
   useGetAccountAllTransactionVersions,
   useGetAccountTransactionsByFunctionCount,
@@ -60,16 +62,23 @@ export function AccountAllTransactionsWithPagination({
   const offset = (currentPage - 1) * countPerPage;
   const onPageChange = useTransactionsPaginationCallback();
 
-  const versions = useGetAccountAllTransactionVersions(
+  const versionsQuery = useGetAccountAllTransactionVersions(
     address,
     countPerPage,
     offset,
   );
 
+  if (versionsQuery.isLoading && versionsQuery.versions.length === 0) {
+    return <UserTransactionsTable versions={[]} isLoading address={address} />;
+  }
+
   return (
     <Stack spacing={2}>
       <Box sx={{width: "auto", overflowX: "auto"}}>
-        <UserTransactionsTable versions={versions} address={address} />
+        <UserTransactionsTable
+          versions={versionsQuery.versions}
+          address={address}
+        />
       </Box>
       {numPages > 1 && (
         <PageNumberPagination
@@ -185,13 +194,22 @@ export default function AccountAllTransactions({
     isFilterActive,
   } = useFunctionFilter();
 
-  const rawTxnCount = useGetAccountAllTransactionCount(address);
+  const {
+    count: rawTxnCount,
+    isLoading: countIsLoading,
+    isError: countIsError,
+  } = useGetAccountAllTransactionCount(address);
 
-  const isCountUnknown = rawTxnCount === undefined;
-  const txnCount = isCountUnknown ? MAX_DISPLAYABLE_TRANSACTIONS : rawTxnCount;
+  const isCountUnknown =
+    Boolean(tryStandardizeAddress(address)) &&
+    !countIsLoading &&
+    (rawTxnCount === undefined || countIsError);
+  const txnCount = isCountUnknown
+    ? MAX_DISPLAYABLE_TRANSACTIONS
+    : (rawTxnCount ?? 0);
 
-  const countPerPage = 25;
-  const numPages = Math.ceil(txnCount / countPerPage);
+  const countPerPage = ACCOUNT_TXN_PAGE_SIZE;
+  const numPages = Math.max(1, Math.ceil(txnCount / countPerPage));
 
   return (
     <Stack spacing={2}>
@@ -252,11 +270,15 @@ export default function AccountAllTransactions({
                 fontWeight: "medium",
               }}
             >
-              {isCountUnknown
-                ? `Showing up to ${txnCount.toLocaleString()} transactions`
-                : `${txnCount.toLocaleString()} transactions`}
+              {countIsLoading ? (
+                <Skeleton width={160} />
+              ) : isCountUnknown ? (
+                `Showing up to ${txnCount.toLocaleString()} transactions`
+              ) : (
+                `${txnCount.toLocaleString()} transactions`
+              )}
             </Typography>
-            {txnCount > 0 && (
+            {!countIsLoading && txnCount > 0 && (
               <CSVExportButton
                 address={address}
                 totalTransactionCount={txnCount}

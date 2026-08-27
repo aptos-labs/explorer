@@ -1,8 +1,8 @@
 import {type UseQueryResult, useQuery} from "@tanstack/react-query";
 import {orderBy} from "es-toolkit";
 import type {Types} from "~/types/aptos";
-import {useAptosClient, useNetworkValue} from "../../global-config";
-import {getAccountResource} from "..";
+import {useAptosClientV2, useNetworkValue} from "../../global-config";
+import {accountResourceQueryOptions} from "../queries";
 import {type ResponseError, ResponseErrorType} from "../client";
 
 export type ModuleMetadata = {
@@ -34,29 +34,21 @@ export function useGetAccountResource(
   address: string | undefined,
   resource: string,
   ledgerVersion?: number,
+  options?: {retry?: number | boolean},
 ): UseQueryResult<Types.MoveResource, ResponseError> {
   const networkValue = useNetworkValue();
-  const aptosClient = useAptosClient();
+  const aptosClient = useAptosClientV2();
 
-  return useQuery<Types.MoveResource, ResponseError>({
-    queryKey: [
-      "accountResource",
-      {address, resource, ledgerVersion},
+  return useQuery({
+    ...accountResourceQueryOptions(
+      address ?? "",
+      resource,
+      aptosClient,
       networkValue,
-    ],
-    queryFn: async () => {
-      if (!address) {
-        throw new Error("Address is undefined");
-      }
-      return await getAccountResource(
-        {address, resourceType: resource, ledgerVersion},
-        aptosClient,
-      );
-    },
-    refetchOnWindowFocus: false,
+      ledgerVersion,
+    ),
+    ...(options?.retry !== undefined ? {retry: options.retry} : {}),
     enabled: !!address,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 60 * 60 * 1000,
   });
 }
 

@@ -32,12 +32,16 @@ Used by route loaders **and** components. When a route loader pre-fetches data, 
 | `transactionsQueryOptions` | 10 s | *global default* | Latest 25 transactions |
 | `ledgerInfoQueryOptions` | 1 s (configurable param) | *global default* | Caller can pass custom `staleTime` |
 | `blocksQueryOptions` | 5 s | *global default* | Recent 20 blocks |
-| `transactionQueryOptions` | 1 h | *global default* | Immutable — single transaction |
+| `transactionQueryOptions` | 1 h | 24 h | Immutable — single transaction |
 | `blockQueryOptions` | 1 h | *global default* | Immutable — single block |
 | `accountInfoQueryOptions` | 30 s | *global default* | Account info |
-| `accountResourcesQueryOptions` | 30 s | *global default* | Account resources |
+| `accountResourceQueryOptions` | 5 min | 1 h | Single resource; used for account-page layout probes |
+| `accountResourcesQueryOptions` | 5 min | 1 h | Full resource list (throws on 404; no longer swallows errors as `[]`) |
+| `aptBalanceQueryOptions` | *global default* | *global default* | `retry: false`; skipped when address is empty |
 | `accountModulesQueryOptions` | 1 min | *global default* | Modules change less frequently |
 | `accountTransactionsQueryOptions` | 10 s | *global default* | Account transaction list |
+
+Account and transaction **detail** route loaders call `prefetchAccountPageData` / `prefetchTransactionPageData` and return without awaiting. Account layout resource probes (`accountResourceQueryOptions` × 4) plus APT balance and the default-tab indexer list go out first; `accountResourcesQueryOptions` is scheduled only after those layout probes settle.
 
 ### Ledger & TPS
 
@@ -60,7 +64,7 @@ Used by route loaders **and** components. When a route loader pre-fetches data, 
 
 | Hook | File | staleTime | gcTime | Overrides | Notes |
 |---|---|---|---|---|---|
-| `useGetTransaction` | `useGetTransaction.ts` | 1 h | 24 h | — | Immutable — long cache |
+| `useGetTransaction` | `useGetTransaction.ts` | 1 h | 24 h | — | Immutable — long cache; shares `transactionQueryOptions` with the route loader |
 | `useGetAccountTransactions` | `useGetAccountTransactions.ts` | 30 s | 5 min | — | Dynamic list |
 
 ### Accounts
@@ -72,7 +76,7 @@ Used by route loaders **and** components. When a route loader pre-fetches data, 
 | `useGetAccountResource` | `useGetAccountResource.ts` | 5 min | 1 h | `refetchOnWindowFocus: false` | Key delegation target for many hooks |
 | `useGetAccountModules` | `useGetAccountModules.ts` | 5 min | 1 h | — | Module code |
 | `useGetAccountModule` | `useGetAccountModule.ts` | *global default* | *global default* | `refetchOnWindowFocus: false` | Single module |
-| `useGetAccountAPTBalance` | `useGetAccountAPTBalance.ts` | *global default* | *global default* | `retry: false` | APT balance |
+| `useGetAccountAPTBalance` | `useGetAccountAPTBalance.ts` | *global default* | *global default* | `retry: false`, `enabled: !!address` | APT balance |
 | `useGetProfile` | `useGetProfile.ts` | *global default* | *global default* | `retry: false` | aptid.xyz profile data |
 
 **Hooks delegating to `useGetAccountResource`** (inherit its 5 min / 1 h / no-refocus config):

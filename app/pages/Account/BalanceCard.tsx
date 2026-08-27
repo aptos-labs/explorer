@@ -15,6 +15,7 @@ import {useGetAccountAPTBalance} from "../../api/hooks/useGetAccountAPTBalance";
 import {getPrice} from "../../api/hooks/useGetPrice";
 import {Card} from "../../components/Card";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import {BalanceCardSkeleton} from "../../components/PageLoadSkeletons";
 import StyledTooltip from "../../components/StyledTooltip";
 import {useNetworkName} from "../../global-config/GlobalConfig";
 
@@ -70,6 +71,10 @@ export default function BalanceCard({address}: BalanceCardProps) {
       : null;
 
   const selectedProvider = portfolioProviders[portfolioProvider];
+
+  if (balance.isLoading || balance.isPending) {
+    return <BalanceCardSkeleton />;
+  }
 
   return balance.data ? (
     <Card sx={{height: "auto"}}>
