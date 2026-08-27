@@ -1,5 +1,11 @@
 // @vitest-environment jsdom
-import {fireEvent, render, screen, waitFor} from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import {afterEach, describe, expect, it, vi} from "vitest";
 import JsonViewCard from "./JsonViewCard";
 
@@ -21,6 +27,7 @@ const payload = {
 
 describe("FEAT-TXN-005 — JsonViewCard value interactions", () => {
   afterEach(() => {
+    cleanup();
     vi.restoreAllMocks();
   });
 
