@@ -18,7 +18,7 @@ import {
   useTheme,
 } from "@mui/material";
 import {useParams} from "@tanstack/react-router";
-import * as React from "react";
+import type * as React from "react";
 import {useEffect, useState} from "react";
 import type {Types} from "~/types/aptos";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
@@ -113,29 +113,36 @@ export function getTabValues(transaction: Types.Transaction): TabValue[] {
   }
 }
 
-function OverviewTab({
+export function getOverviewTabComponent(
+  transaction: Types.Transaction,
+): React.ComponentType<{transaction: Types.Transaction}> {
+  switch (transaction.type) {
+    case TransactionTypeName.User:
+      return UserTransactionOverviewTab;
+    case TransactionTypeName.BlockMetadata:
+      return BlockMetadataOverviewTab;
+    case TransactionTypeName.BlockEpilogue:
+      return BlockEpilogueOverviewTab;
+    case TransactionTypeName.StateCheckpoint:
+      return StateCheckpointOverviewTab;
+    case TransactionTypeName.Pending:
+      return PendingTransactionOverviewTab;
+    case TransactionTypeName.Genesis:
+      return GenesisTransactionOverviewTab;
+    case TransactionTypeName.Validator:
+      return ValidatorTransactionTab;
+    default:
+      return UnknownTab;
+  }
+}
+
+export function OverviewTab({
   transaction,
 }: {
   transaction: Types.Transaction;
 }): React.JSX.Element {
-  switch (transaction.type) {
-    case TransactionTypeName.User:
-      return <UserTransactionOverviewTab transaction={transaction} />;
-    case TransactionTypeName.BlockMetadata:
-      return <BlockMetadataOverviewTab transaction={transaction} />;
-    case TransactionTypeName.BlockEpilogue:
-      return <BlockEpilogueOverviewTab transaction={transaction} />;
-    case TransactionTypeName.StateCheckpoint:
-      return <StateCheckpointOverviewTab transaction={transaction} />;
-    case TransactionTypeName.Pending:
-      return <PendingTransactionOverviewTab transaction={transaction} />;
-    case TransactionTypeName.Genesis:
-      return <GenesisTransactionOverviewTab transaction={transaction} />;
-    case TransactionTypeName.Validator:
-      return <ValidatorTransactionTab transaction={transaction} />;
-    default:
-      return <UnknownTab transaction={transaction} />;
-  }
+  const TabComponent = getOverviewTabComponent(transaction);
+  return <TabComponent transaction={transaction} />;
 }
 
 const TabComponents = Object.freeze({
@@ -151,7 +158,22 @@ const TabComponents = Object.freeze({
 
 export type TabValue = keyof typeof TabComponents;
 
-function getTabLabel(value: TabValue): string {
+export function resolveTxnTab(
+  tab: string | undefined,
+  tabValues: readonly TabValue[],
+): TabValue {
+  const rewritten = tab ? rewriteTxnTab(tab) : undefined;
+  if (
+    rewritten &&
+    rewritten in TabComponents &&
+    tabValues.includes(rewritten as TabValue)
+  ) {
+    return rewritten as TabValue;
+  }
+  return tabValues[0];
+}
+
+export function getTabLabel(value: TabValue): string {
   switch (value) {
     case "overview":
       return "Overview";
@@ -174,7 +196,7 @@ function getTabLabel(value: TabValue): string {
   }
 }
 
-function getTabIcon(value: TabValue): React.JSX.Element {
+export function getTabIcon(value: TabValue): React.JSX.Element {
   switch (value) {
     case "overview":
       return <BarChartOutlinedIcon fontSize="small" />;
@@ -340,20 +362,8 @@ export default function TransactionTabs({
   const txnHashOrVersion = params?.txnHashOrVersion;
   const navigate = useNavigate();
 
-  // Validate tab value - check if it exists in TabComponents and is valid for this transaction
-  const isValidTab = React.useCallback(
-    (tabName: string | undefined): tabName is TabValue => {
-      if (!tabName) return false;
-      return (
-        tabName in TabComponents && tabValues.includes(tabName as TabValue)
-      );
-    },
-    [tabValues],
-  );
-
   const defaultTab = tabValues[0];
-  const rewrittenTab = tab ? rewriteTxnTab(tab) : undefined;
-  const value = isValidTab(rewrittenTab) ? rewrittenTab : defaultTab;
+  const value = resolveTxnTab(tab, tabValues);
 
   // Rewrite legacy overview tab names (and any other invalid tab) to the
   // canonical path without adding a history entry.

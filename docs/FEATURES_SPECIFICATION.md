@@ -1380,7 +1380,7 @@ top of the HTML site.
 | `e2e/encrypted-transaction-localnet.spec.ts` | FEAT-TXN-002 / FEAT-TXN-005 (Playwright: submit encrypted transfer on localnet, assert overview Encryption chips + Coin Transfer + Payload tab; gated by `APTOS_LOCALNET=1`) |
 | `app/pages/Transaction/Tabs/Components/SignatureOverviewTable.test.tsx` | FEAT-TXN-002 (signature overview: Ed25519, multi-Ed25519, single_sender, multi_agent, fee_payer, fallbacks; stable keys for duplicate secondary addresses) |
 | `app/pages/Transaction/Tabs/Components/moveParamTypeDisplay.test.ts` | FEAT-TXN-011 (Move type display badges) |
-| `app/pages/Transaction/txnTabValues.test.ts` | FEAT-TXN-001 (tab selection by transaction type, trace tab only for user txns), FEAT-TXN-012 (conditional Modules tab) |
+| `app/pages/Transaction/txnTabValues.test.ts` | FEAT-TXN-001 (tab selection by transaction type, shared `overview` tab component dispatch, trace tab only for user txns), FEAT-TXN-008 (legacy overview path rewrite), FEAT-TXN-012 (conditional Modules tab) |
 | `app/pages/Transaction/transactionModuleChanges.test.ts` | FEAT-TXN-012 (parse PublishPackage events and module write-set rows) |
 | `app/pages/Transaction/txnTabInvariants.test.ts` | FEAT-TXN-009 (DEX/LSD protocol coverage), TransactionTypeName enum values |
 | `app/pages/Transaction/cctp/formatRecipient.test.ts` | FEAT-TXN-009 (CCTP mint recipient formatting: EVM, Noble, Solana, Sui, Aptos) |

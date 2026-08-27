@@ -3,7 +3,22 @@
 import {describe, expect, it} from "vitest";
 import {TransactionTypeName} from "../../components/TransactionType";
 import {DECIBEL_CONTRACTS} from "../../utils/decibel";
-import {getTabValues} from "./Tabs";
+import {
+  getOverviewTabComponent,
+  getTabIcon,
+  getTabLabel,
+  getTabValues,
+  OverviewTab,
+  resolveTxnTab,
+} from "./Tabs";
+import BlockEpilogueOverviewTab from "./Tabs/BlockEpilogueOverviewTab";
+import BlockMetadataOverviewTab from "./Tabs/BlockMetadataOverviewTab";
+import GenesisTransactionOverviewTab from "./Tabs/GenesisTransactionOverviewTab";
+import PendingTransactionOverviewTab from "./Tabs/PendingTransactionOverviewTab";
+import StateCheckpointOverviewTab from "./Tabs/StateCheckpointOverviewTab";
+import UnknownTab from "./Tabs/UnknownTab";
+import UserTransactionOverviewTab from "./Tabs/UserTransactionOverviewTab";
+import ValidatorTransactionTab from "./Tabs/ValidatorTransactionTab";
 import {PUBLISH_PACKAGE_EVENT_TYPE_SUFFIX} from "./transactionModuleChanges";
 
 function makeTxn(type: string) {
@@ -148,5 +163,83 @@ describe("FEAT-TXN-001 — getTabValues", () => {
       const tabs = getTabValues(makeTxn(type));
       expect(tabs[0]).toBe("overview");
     }
+  });
+});
+
+describe("FEAT-TXN-001 — getOverviewTabComponent", () => {
+  it.each([
+    [TransactionTypeName.User, UserTransactionOverviewTab],
+    [TransactionTypeName.BlockMetadata, BlockMetadataOverviewTab],
+    [TransactionTypeName.BlockEpilogue, BlockEpilogueOverviewTab],
+    [TransactionTypeName.StateCheckpoint, StateCheckpointOverviewTab],
+    [TransactionTypeName.Pending, PendingTransactionOverviewTab],
+    [TransactionTypeName.Genesis, GenesisTransactionOverviewTab],
+    [TransactionTypeName.Validator, ValidatorTransactionTab],
+  ] as const)(
+    "maps %s to the type-specific overview tab",
+    (type, component) => {
+      expect(getOverviewTabComponent(makeTxn(type))).toBe(component);
+    },
+  );
+
+  it("maps unknown types to UnknownTab", () => {
+    expect(getOverviewTabComponent(makeTxn("some_future_type"))).toBe(
+      UnknownTab,
+    );
+  });
+
+  it("OverviewTab renders the dispatched component", () => {
+    const userEl = OverviewTab({
+      transaction: makeTxn(TransactionTypeName.User),
+    });
+    expect(userEl.type).toBe(UserTransactionOverviewTab);
+    const unknownEl = OverviewTab({transaction: makeTxn("some_future_type")});
+    expect(unknownEl.type).toBe(UnknownTab);
+  });
+});
+
+describe("FEAT-TXN-008 — resolveTxnTab", () => {
+  const userTabs = [
+    "overview",
+    "balanceChange",
+    "events",
+    "payload",
+    "changes",
+    "trace",
+  ] as const;
+
+  it("defaults to the first tab when tab is missing", () => {
+    expect(resolveTxnTab(undefined, userTabs)).toBe("overview");
+  });
+
+  it("keeps a valid canonical tab", () => {
+    expect(resolveTxnTab("events", userTabs)).toBe("events");
+    expect(resolveTxnTab("overview", userTabs)).toBe("overview");
+  });
+
+  it("rewrites legacy overview tab names to overview", () => {
+    expect(resolveTxnTab("userTxnOverview", userTabs)).toBe("overview");
+    expect(resolveTxnTab("blockMetadataOverview", userTabs)).toBe("overview");
+    expect(resolveTxnTab("unknown", userTabs)).toBe("overview");
+  });
+
+  it("falls back to the first tab for invalid names", () => {
+    expect(resolveTxnTab("not-a-tab", userTabs)).toBe("overview");
+  });
+
+  it("falls back when the tab is not valid for this transaction type", () => {
+    expect(resolveTxnTab("payload", ["overview"] as const)).toBe("overview");
+  });
+});
+
+describe("FEAT-TXN-001 — overview tab chrome", () => {
+  it("labels the shared overview tab Overview", () => {
+    expect(getTabLabel("overview")).toBe("Overview");
+    expect(getTabLabel("events")).toBe("Events");
+  });
+
+  it("uses the chart icon for overview", () => {
+    const icon = getTabIcon("overview");
+    expect(icon.props.fontSize).toBe("small");
   });
 });
