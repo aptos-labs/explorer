@@ -29,7 +29,7 @@ function estimateMarkdownTokens(text: string): string {
 
 function describeExplorerPath(pathname: string): string {
   if (pathname.startsWith("/txn/")) {
-    return "Transaction detail. Identifier is a version number or 0x-prefixed hash; tabs include `userTxnOverview`, `events`, `payload`, `changes`, `balanceChange`, and `trace`.";
+    return "Transaction detail. Identifier is a version number or 0x-prefixed hash; tabs include `overview`, `events`, `payload`, `changes`, `balanceChange`, and `trace`.";
   }
   if (pathname.startsWith("/account/")) {
     return "Account page. Identifier is a 0x address or ANS `.apt` name; tabs include `transactions`, `coins`, `tokens`, `resources`, `modules`, `multisig`, and `info`.";

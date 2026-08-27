@@ -6,7 +6,6 @@ import CallMergeOutlinedIcon from "@mui/icons-material/CallMergeOutlined";
 import CodeOutlinedIcon from "@mui/icons-material/CodeOutlined";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import ShowChartOutlinedIcon from "@mui/icons-material/ShowChartOutlined";
 import ViewModuleOutlinedIcon from "@mui/icons-material/ViewModuleOutlined";
 import {
@@ -19,7 +18,7 @@ import {
   useTheme,
 } from "@mui/material";
 import {useParams} from "@tanstack/react-router";
-import * as React from "react";
+import type * as React from "react";
 import {useEffect, useState} from "react";
 import type {Types} from "~/types/aptos";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
@@ -32,6 +31,7 @@ import {useNetworkName} from "../../global-config/GlobalConfig";
 import {useNavigate} from "../../routing";
 import {assertNever} from "../../utils";
 import {isDecibelTransaction} from "../../utils/decibel";
+import {rewriteTxnTab} from "../../utils/routeRedirects";
 import {getLearnMoreTooltip} from "./helpers";
 import BalanceChangeTab from "./Tabs/BalanceChangeTab";
 import BlockEpilogueOverviewTab from "./Tabs/BlockEpilogueOverviewTab";
@@ -68,7 +68,7 @@ function withModulesTabWhenApplicable(
 export function getTabValues(transaction: Types.Transaction): TabValue[] {
   switch (transaction.type) {
     case TransactionTypeName.User: {
-      const tabs: TabValue[] = ["userTxnOverview"];
+      const tabs: TabValue[] = ["overview"];
       if (isDecibelTransaction(transaction)) {
         tabs.push("decibelDetail");
       }
@@ -77,50 +77,76 @@ export function getTabValues(transaction: Types.Transaction): TabValue[] {
     }
     case TransactionTypeName.BlockMetadata:
       return withModulesTabWhenApplicable(transaction, [
-        "blockMetadataOverview",
+        "overview",
         "events",
         "changes",
       ]);
     case TransactionTypeName.StateCheckpoint:
-      return ["stateCheckpointOverview"];
+      return ["overview"];
     case TransactionTypeName.Pending:
-      return ["pendingTxnOverview", "payload"];
+      return ["overview", "payload"];
     case TransactionTypeName.Genesis:
       return withModulesTabWhenApplicable(transaction, [
-        "genesisTxnOverview",
+        "overview",
         "events",
         "payload",
         "changes",
       ]);
     case TransactionTypeName.Validator:
       return withModulesTabWhenApplicable(transaction, [
-        "validatorTxnOverview",
+        "overview",
         "events",
         "changes",
       ]);
     case TransactionTypeName.BlockEpilogue:
       return withModulesTabWhenApplicable(transaction, [
-        "blockEpilogueOverview",
+        "overview",
         "events",
         "changes",
       ]);
     default:
       return withModulesTabWhenApplicable(transaction, [
-        "unknown",
+        "overview",
         "events",
         "changes",
       ]);
   }
 }
 
+export function getOverviewTabComponent(
+  transaction: Types.Transaction,
+): React.ComponentType<{transaction: Types.Transaction}> {
+  switch (transaction.type) {
+    case TransactionTypeName.User:
+      return UserTransactionOverviewTab;
+    case TransactionTypeName.BlockMetadata:
+      return BlockMetadataOverviewTab;
+    case TransactionTypeName.BlockEpilogue:
+      return BlockEpilogueOverviewTab;
+    case TransactionTypeName.StateCheckpoint:
+      return StateCheckpointOverviewTab;
+    case TransactionTypeName.Pending:
+      return PendingTransactionOverviewTab;
+    case TransactionTypeName.Genesis:
+      return GenesisTransactionOverviewTab;
+    case TransactionTypeName.Validator:
+      return ValidatorTransactionTab;
+    default:
+      return UnknownTab;
+  }
+}
+
+export function OverviewTab({
+  transaction,
+}: {
+  transaction: Types.Transaction;
+}): React.JSX.Element {
+  const TabComponent = getOverviewTabComponent(transaction);
+  return <TabComponent transaction={transaction} />;
+}
+
 const TabComponents = Object.freeze({
-  userTxnOverview: UserTransactionOverviewTab,
-  blockMetadataOverview: BlockMetadataOverviewTab,
-  blockEpilogueOverview: BlockEpilogueOverviewTab,
-  stateCheckpointOverview: StateCheckpointOverviewTab,
-  pendingTxnOverview: PendingTransactionOverviewTab,
-  genesisTxnOverview: GenesisTransactionOverviewTab,
-  validatorTxnOverview: ValidatorTransactionTab,
+  overview: OverviewTab,
   decibelDetail: DecibelTab,
   balanceChange: BalanceChangeTab,
   events: EventsTab,
@@ -128,21 +154,28 @@ const TabComponents = Object.freeze({
   modules: TransactionModulesTab,
   changes: ChangesTab,
   trace: TransactionTraceTab,
-  unknown: UnknownTab,
 });
 
 export type TabValue = keyof typeof TabComponents;
 
-function getTabLabel(value: TabValue): string {
+export function resolveTxnTab(
+  tab: string | undefined,
+  tabValues: readonly TabValue[],
+): TabValue {
+  const rewritten = tab ? rewriteTxnTab(tab) : undefined;
+  if (
+    rewritten &&
+    rewritten in TabComponents &&
+    tabValues.includes(rewritten as TabValue)
+  ) {
+    return rewritten as TabValue;
+  }
+  return tabValues[0];
+}
+
+export function getTabLabel(value: TabValue): string {
   switch (value) {
-    case "userTxnOverview":
-    case "blockMetadataOverview":
-    case "blockEpilogueOverview":
-    case "stateCheckpointOverview":
-    case "pendingTxnOverview":
-    case "genesisTxnOverview":
-    case "validatorTxnOverview":
-    case "unknown":
+    case "overview":
       return "Overview";
     case "decibelDetail":
       return "Decibel";
@@ -163,15 +196,9 @@ function getTabLabel(value: TabValue): string {
   }
 }
 
-function getTabIcon(value: TabValue): React.JSX.Element {
+export function getTabIcon(value: TabValue): React.JSX.Element {
   switch (value) {
-    case "userTxnOverview":
-    case "blockMetadataOverview":
-    case "blockEpilogueOverview":
-    case "stateCheckpointOverview":
-    case "pendingTxnOverview":
-    case "genesisTxnOverview":
-    case "validatorTxnOverview":
+    case "overview":
       return <BarChartOutlinedIcon fontSize="small" />;
     case "decibelDetail":
       return <ShowChartOutlinedIcon fontSize="small" />;
@@ -187,8 +214,6 @@ function getTabIcon(value: TabValue): React.JSX.Element {
       return <CodeOutlinedIcon fontSize="small" />;
     case "trace":
       return <AccountTreeOutlinedIcon fontSize="small" />;
-    case "unknown":
-      return <HelpOutlineOutlinedIcon fontSize="small" />;
     default:
       return assertNever(value);
   }
@@ -337,30 +362,20 @@ export default function TransactionTabs({
   const txnHashOrVersion = params?.txnHashOrVersion;
   const navigate = useNavigate();
 
-  // Validate tab value - check if it exists in TabComponents and is valid for this transaction
-  const isValidTab = React.useCallback(
-    (tabName: string | undefined): tabName is TabValue => {
-      if (!tabName) return false;
-      return (
-        tabName in TabComponents && tabValues.includes(tabName as TabValue)
-      );
-    },
-    [tabValues],
-  );
-
   const defaultTab = tabValues[0];
-  const value = isValidTab(tab) ? tab : defaultTab;
+  const value = resolveTxnTab(tab, tabValues);
 
-  // Redirect to valid tab if invalid tab was provided
+  // Rewrite legacy overview tab names (and any other invalid tab) to the
+  // canonical path without adding a history entry.
   useEffect(() => {
-    if (tab && !isValidTab(tab)) {
+    if (tab && tab !== value) {
       navigate({
         to: "/txn/$txnHashOrVersion/$tab",
-        params: {txnHashOrVersion: txnHashOrVersion ?? "", tab: defaultTab},
+        params: {txnHashOrVersion: txnHashOrVersion ?? "", tab: value},
         replace: true,
       });
     }
-  }, [tab, txnHashOrVersion, defaultTab, navigate, isValidTab]);
+  }, [tab, value, txnHashOrVersion, navigate]);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
     navigate({

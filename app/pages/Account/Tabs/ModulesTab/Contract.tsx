@@ -1017,7 +1017,7 @@ function RunContractForm({
                             ...
                           </Typography>
                           <Link
-                            to={`/txn/${transactionResponse.transactionHash}/userTxnOverview`}
+                            to={`/txn/${transactionResponse.transactionHash}/overview`}
                             color="primary"
                           >
                             <Button

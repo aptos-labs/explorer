@@ -10,6 +10,7 @@ import {
   resolveTokenLegacyRedirect,
   resolveValidatorsEnhancedRedirect,
   resolveValidatorsRedirect,
+  rewriteTxnTab,
   shouldBlockWalletSubmission,
 } from "./routeRedirects";
 
@@ -110,11 +111,11 @@ describe("FEAT-ACCOUNT-012 / FEAT-ROUTING-002 — resolveEntityRedirect", () => 
   });
 
   describe("different entity default tabs", () => {
-    it("txn defaults to userTxnOverview", () => {
-      const result = resolveEntityRedirect("/txn/0xabc", {}, "userTxnOverview");
+    it("txn defaults to overview", () => {
+      const result = resolveEntityRedirect("/txn/0xabc", {}, "overview");
       expect(result).toEqual({
         kind: "default",
-        tab: "userTxnOverview",
+        tab: "overview",
         search: {},
       });
     });
@@ -150,6 +151,29 @@ describe("FEAT-ACCOUNT-012 / FEAT-ROUTING-002 — resolveEntityRedirect", () => 
         search: {},
       });
     });
+  });
+});
+
+describe("rewriteTxnTab", () => {
+  it("rewrites type-specific overview tabs to overview", () => {
+    expect(rewriteTxnTab("userTxnOverview")).toBe("overview");
+    expect(rewriteTxnTab("blockMetadataOverview")).toBe("overview");
+    expect(rewriteTxnTab("blockEpilogueOverview")).toBe("overview");
+    expect(rewriteTxnTab("stateCheckpointOverview")).toBe("overview");
+    expect(rewriteTxnTab("pendingTxnOverview")).toBe("overview");
+    expect(rewriteTxnTab("genesisTxnOverview")).toBe("overview");
+    expect(rewriteTxnTab("validatorTxnOverview")).toBe("overview");
+    expect(rewriteTxnTab("unknown")).toBe("overview");
+  });
+
+  it("leaves canonical and other tabs unchanged", () => {
+    expect(rewriteTxnTab("overview")).toBe("overview");
+    expect(rewriteTxnTab("events")).toBe("events");
+    expect(rewriteTxnTab("payload")).toBe("payload");
+    expect(rewriteTxnTab("changes")).toBe("changes");
+    expect(rewriteTxnTab("balanceChange")).toBe("balanceChange");
+    expect(rewriteTxnTab("trace")).toBe("trace");
+    expect(rewriteTxnTab("modules")).toBe("modules");
   });
 });
 

@@ -43,7 +43,7 @@
     {
       "id": "open-transaction",
       "name": "Open transaction",
-      "description": "Open /txn/{version} or /txn/{hash} for an Aptos user or system transaction, with optional detail tabs (userTxnOverview, events, payload, changes, balanceChange, trace).",
+      "description": "Open /txn/{version} or /txn/{hash} for an Aptos user or system transaction, with optional detail tabs (overview, events, payload, changes, balanceChange, trace).",
       "tags": ["transaction", "aptos"],
       "examples": ["Show transaction 123456789 on Aptos explorer"],
       "inputModes": ["text/plain"],

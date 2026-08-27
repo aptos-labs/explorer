@@ -30,7 +30,7 @@ const REQUIRED_PATH_SNIPPETS = [
   /** Validator list default tab */
   "/validators/all",
   /** Transaction detail tab */
-  "userTxnOverview",
+  "overview",
   "balanceChange",
   /** User transaction Sentio call trace tab */
   "/trace",

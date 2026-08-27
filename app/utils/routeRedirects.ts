@@ -13,6 +13,27 @@ export type EntityRedirectResult =
   | {kind: "default"; tab: string; search: Record<string, string>}
   | {kind: "none"};
 
+/**
+ * Legacy transaction overview tab path segments. These used to be
+ * type-specific (`userTxnOverview`, `blockMetadataOverview`, …) and are
+ * rewritten to the shared `overview` tab.
+ */
+export const LEGACY_TXN_OVERVIEW_TABS = new Set([
+  "userTxnOverview",
+  "blockMetadataOverview",
+  "blockEpilogueOverview",
+  "stateCheckpointOverview",
+  "pendingTxnOverview",
+  "genesisTxnOverview",
+  "validatorTxnOverview",
+  "unknown",
+]);
+
+/** Rewrite a transaction `$tab` segment to the canonical path name. */
+export function rewriteTxnTab(tab: string): string {
+  return LEGACY_TXN_OVERVIEW_TABS.has(tab) ? "overview" : tab;
+}
+
 export function resolveEntityRedirect(
   pathname: string,
   search: {tab?: string; modulesTab?: string; network?: string},
