@@ -6,6 +6,8 @@
  * signs a transaction or mutates chain state.
  */
 
+import {rewriteTxnTab} from "../utils/routeRedirects";
+
 export type NetworkName = "mainnet" | "testnet" | "devnet" | "local";
 
 export type NavigateFn = (options: {
@@ -115,7 +117,7 @@ export function buildWebMcpTools(navigate: NavigateFn): WebMCPTool[] {
           tab: {
             type: "string",
             enum: [
-              "userTxnOverview",
+              "overview",
               "events",
               "payload",
               "changes",
@@ -147,7 +149,8 @@ export function buildWebMcpTools(navigate: NavigateFn): WebMCPTool[] {
             "open_transaction: 'id' must be a decimal version or a 0x-prefixed 64-char hex hash",
           );
         }
-        const to = tab ? `/txn/${id}/${tab}` : `/txn/${id}`;
+        const tabPath = tab ? rewriteTxnTab(tab) : undefined;
+        const to = tabPath ? `/txn/${id}/${tabPath}` : `/txn/${id}`;
         const search = networkSearch(network);
         await navigate({to, search});
         return {ok: true, path: buildPath(to, search)};

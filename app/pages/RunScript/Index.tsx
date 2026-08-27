@@ -28,20 +28,20 @@ import {
   useTheme,
 } from "@mui/material";
 import {useState} from "react";
+import useSubmitTransaction from "../../api/hooks/useSubmitTransaction";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import StyledTooltip from "../../components/StyledTooltip";
 import {WalletConnector} from "../../components/WalletConnector";
 import {useNetworkName, useSdkV2Client} from "../../global-config/GlobalConfig";
 import {Link} from "../../routing";
 import {sortPetraFirst} from "../../utils";
-import useSubmitTransaction from "../../api/hooks/useSubmitTransaction";
 import PageHeader from "../layout/PageHeader";
 import {
-  type ScriptArgInput,
-  SCRIPT_ARG_TYPE_OPTIONS,
   convertScriptFunctionArguments,
   getScriptArgPlaceholder,
   normalizeScriptBytecode,
+  SCRIPT_ARG_TYPE_OPTIONS,
+  type ScriptArgInput,
 } from "./scriptArguments";
 
 const TOOLTIP_TIME = 2000;
@@ -647,7 +647,7 @@ function ScriptForm() {
                             ...
                           </Typography>
                           <Link
-                            to={`/txn/${transactionResponse.transactionHash}/userTxnOverview`}
+                            to={`/txn/${transactionResponse.transactionHash}/overview`}
                             color="primary"
                           >
                             <Button

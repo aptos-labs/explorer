@@ -84,7 +84,7 @@ test.describe("encrypted transaction localnet", () => {
     test.setTimeout(180_000);
     const hash = await submitEncryptedTransfer();
 
-    await page.goto(`/txn/${hash}/userTxnOverview?network=local`, {
+    await page.goto(`/txn/${hash}/overview?network=local`, {
       waitUntil: "domcontentloaded",
     });
 

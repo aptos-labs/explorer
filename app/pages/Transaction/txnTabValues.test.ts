@@ -14,7 +14,7 @@ describe("FEAT-TXN-001 — getTabValues", () => {
   it("returns 6 tabs for user transactions including trace", () => {
     const tabs = getTabValues(makeTxn(TransactionTypeName.User));
     expect(tabs).toEqual([
-      "userTxnOverview",
+      "overview",
       "balanceChange",
       "events",
       "payload",
@@ -86,42 +86,37 @@ describe("FEAT-TXN-001 — getTabValues", () => {
 
   it("returns overview, events, changes for block metadata", () => {
     const tabs = getTabValues(makeTxn(TransactionTypeName.BlockMetadata));
-    expect(tabs).toEqual(["blockMetadataOverview", "events", "changes"]);
+    expect(tabs).toEqual(["overview", "events", "changes"]);
   });
 
   it("returns only overview for state checkpoint", () => {
     const tabs = getTabValues(makeTxn(TransactionTypeName.StateCheckpoint));
-    expect(tabs).toEqual(["stateCheckpointOverview"]);
+    expect(tabs).toEqual(["overview"]);
   });
 
   it("returns overview and payload for pending", () => {
     const tabs = getTabValues(makeTxn(TransactionTypeName.Pending));
-    expect(tabs).toEqual(["pendingTxnOverview", "payload"]);
+    expect(tabs).toEqual(["overview", "payload"]);
   });
 
   it("returns overview, events, payload, changes for genesis", () => {
     const tabs = getTabValues(makeTxn(TransactionTypeName.Genesis));
-    expect(tabs).toEqual([
-      "genesisTxnOverview",
-      "events",
-      "payload",
-      "changes",
-    ]);
+    expect(tabs).toEqual(["overview", "events", "payload", "changes"]);
   });
 
   it("returns overview, events, changes for validator", () => {
     const tabs = getTabValues(makeTxn(TransactionTypeName.Validator));
-    expect(tabs).toEqual(["validatorTxnOverview", "events", "changes"]);
+    expect(tabs).toEqual(["overview", "events", "changes"]);
   });
 
   it("returns overview, events, changes for block epilogue", () => {
     const tabs = getTabValues(makeTxn(TransactionTypeName.BlockEpilogue));
-    expect(tabs).toEqual(["blockEpilogueOverview", "events", "changes"]);
+    expect(tabs).toEqual(["overview", "events", "changes"]);
   });
 
-  it("returns unknown, events, changes for unknown type", () => {
+  it("returns overview, events, changes for unknown type", () => {
     const tabs = getTabValues(makeTxn("some_future_type"));
-    expect(tabs).toEqual(["unknown", "events", "changes"]);
+    expect(tabs).toEqual(["overview", "events", "changes"]);
   });
 
   it("trace tab is only present for user transactions", () => {
@@ -151,7 +146,7 @@ describe("FEAT-TXN-001 — getTabValues", () => {
     ];
     for (const type of types) {
       const tabs = getTabValues(makeTxn(type));
-      expect(tabs[0]).toMatch(/Overview$|^unknown$/);
+      expect(tabs[0]).toBe("overview");
     }
   });
 });

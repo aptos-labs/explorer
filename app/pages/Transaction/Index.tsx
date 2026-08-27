@@ -10,6 +10,7 @@ import {
 } from "../../components/PageLoadSkeletons";
 import TitleHashButton, {HashType} from "../../components/TitleHashButton";
 import {truncateAddress} from "../../utils";
+import {rewriteTxnTab} from "../../utils/routeRedirects";
 import PageHeader from "../layout/PageHeader";
 import TransactionError from "./Error";
 import TransactionTabs from "./Tabs";
@@ -23,7 +24,8 @@ function TransactionPageSkeleton({
   urlTxnHashOrVersion: string;
   pathTab?: string;
 }) {
-  const tabHead = getTransactionTabHeadLabel(pathTab);
+  const tab = rewriteTxnTab(pathTab ?? "overview");
+  const tabHead = getTransactionTabHeadLabel(tab);
   const displayId = truncateAddress(urlTxnHashOrVersion);
 
   return (
@@ -40,7 +42,7 @@ function TransactionPageSkeleton({
           description={`View ${tabHead.toLowerCase()} for transaction ${urlTxnHashOrVersion} on the Aptos blockchain.`}
           type="transaction"
           keywords={["transaction", "tx"]}
-          canonicalPath={`/txn/${urlTxnHashOrVersion}/${pathTab ?? "userTxnOverview"}`}
+          canonicalPath={`/txn/${urlTxnHashOrVersion}/${tab}`}
         />
         <Typography variant="h3" component="h1">
           Transaction

@@ -5,6 +5,7 @@ import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import TitleHashButton, {HashType} from "../../components/TitleHashButton";
 import {TransactionType} from "../../components/TransactionType";
 import {truncateAddress} from "../../utils";
+import {rewriteTxnTab} from "../../utils/routeRedirects";
 import {getTransactionTabHeadLabel} from "./transactionTabMeta";
 import {isMultisigTransaction} from "./utils";
 
@@ -19,13 +20,14 @@ type TransactionTitleProps = {
 export default function TransactionTitle({
   transaction,
   urlTxnHashOrVersion,
-  pathTab = "userTxnOverview",
+  pathTab = "overview",
 }: TransactionTitleProps) {
   const version = "version" in transaction ? transaction.version : undefined;
   const isMultisig = isMultisigTransaction(transaction);
 
   const titleLabel = isMultisig ? "Multisig Transaction" : "Transaction";
-  const tabHead = getTransactionTabHeadLabel(pathTab);
+  const tab = rewriteTxnTab(pathTab);
+  const tabHead = getTransactionTabHeadLabel(tab);
   const displayId = truncateAddress(urlTxnHashOrVersion);
   const metadataTitle = `${tabHead} | ${titleLabel} ${displayId}`;
   const metadataDescription = isMultisig
@@ -52,7 +54,7 @@ export default function TransactionTitle({
           isMultisig ? "multi-signature" : "",
           version ? `version ${version}` : "",
         ].filter(Boolean)}
-        canonicalPath={`/txn/${urlTxnHashOrVersion}/${pathTab}`}
+        canonicalPath={`/txn/${urlTxnHashOrVersion}/${tab}`}
       />
       <Stack
         direction="row"

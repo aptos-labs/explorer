@@ -1,4 +1,5 @@
 import {createFileRoute, Outlet, redirect} from "@tanstack/react-router";
+import {rewriteTxnTab} from "../utils/routeRedirects";
 
 // Layout route for /txn/:txnHashOrVersion/*
 // Handles backward compatibility redirects from query params to path-based tabs
@@ -16,20 +17,20 @@ export const Route = createFileRoute("/txn/$txnHashOrVersion")({
         to: "/txn/$txnHashOrVersion/$tab",
         params: {
           txnHashOrVersion: params.txnHashOrVersion,
-          tab: searchParams.tab,
+          tab: rewriteTxnTab(searchParams.tab),
         },
         search: searchParams.network
           ? {network: searchParams.network}
           : undefined,
       });
     }
-    // Default: redirect to "userTxnOverview" tab only if on exact path
+    // Default: redirect to "overview" tab only if on exact path
     if (isExactMatch) {
       throw redirect({
         to: "/txn/$txnHashOrVersion/$tab",
         params: {
           txnHashOrVersion: params.txnHashOrVersion,
-          tab: "userTxnOverview",
+          tab: "overview",
         },
         search: searchParams?.network
           ? {network: searchParams.network}

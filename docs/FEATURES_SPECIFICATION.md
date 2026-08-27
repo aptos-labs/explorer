@@ -255,8 +255,9 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Behavior** | `/txn/$txnHashOrVersion` (no tab) redirects to `/txn/$txnHashOrVersion/userTxnOverview`; client-side correction for non-user transactions. |
-| **Invalid tab** | Redirects to the first tab for the transaction type. |
+| **Behavior** | `/txn/$txnHashOrVersion` (no tab) redirects to `/txn/$txnHashOrVersion/overview` for every transaction type. |
+| **Legacy overview paths** | `userTxnOverview`, `blockMetadataOverview`, `blockEpilogueOverview`, `stateCheckpointOverview`, `pendingTxnOverview`, `genesisTxnOverview`, `validatorTxnOverview` (and `unknown`) rewrite to `overview`. |
+| **Invalid tab** | Rewrites to the first tab for the transaction type. |
 
 ### FEAT-TXN-009 — Transaction Actions Parsing
 
@@ -1276,7 +1277,7 @@ top of the HTML site.
 | **Function arguments** | Dynamic add/remove list. Because a script has no on-chain ABI, each argument's Move type must be declared explicitly via a dropdown (`address`, `bool`, `u8`–`u256`, `0x1::string::String`, `vector<u8>`, `vector<address>`, `vector<u64>`, or a free-form **Custom type**). Values are converted to typed BCS arguments by `convertScriptFunctionArguments` in `app/pages/RunScript/scriptArguments.ts`. `signer` / `&signer` params are **not** entered — the wallet supplies them. |
 | **Bytecode validation** | `normalizeScriptBytecode` adds a `0x` prefix if missing and rejects empty, non-hex, or odd-length input. |
 | **Simulate** | Requires a connected wallet. Builds via `sdkV2Client.transaction.build.simple({sender, data})` then `transaction.simulate.simple({signerPublicKey, transaction})`; renders status, gas used, event/change counts, and the full JSON response. |
-| **Execute** | Signs and submits the script `InputTransactionData` via `useSubmitTransaction` (FEAT-WALLET-002); on success shows the tx hash with a link to `/txn/{hash}/userTxnOverview`. |
+| **Execute** | Signs and submits the script `InputTransactionData` via `useSubmitTransaction` (FEAT-WALLET-002); on success shows the tx hash with a link to `/txn/{hash}/overview`. |
 | **Warnings** | Two prominent alerts: an **error** alert stating this is an advanced, potentially irreversible action (a malicious script can move assets), and a **warning** alert urging the user to simulate first and read the simulation output (status, gas, events, changes) carefully. |
 | **Wallet gating** | When disconnected, shows `WalletConnector` instead of the action buttons. Network match is enforced by `useSubmitTransaction`. |
 | **Metadata** | `PageMetadata` with `noIndex` (advanced tool, not indexed). |
@@ -1399,7 +1400,7 @@ top of the HTML site.
 | `app/lib/networks.test.ts` | FEAT-NETWORK-001 (network config, hidden networks, localnet), FEAT-FLAGS-003 (feature labels) |
 | `app/lib/graphqlSupport.test.ts` | FEAT-FLAGS-001 (GraphQL URI per network), FEAT-COIN-001/FEAT-FA-001 (tab gating logic) |
 | `app/lib/validators.test.ts` | FEAT-NETWORK-001 (network name validation), FEAT-FLAGS-003 (feature name validation), well-known constants |
-| `app/utils/routeRedirects.test.ts` | FEAT-ACCOUNT-012 (entity default tab redirects for all route types), FEAT-TOKEN-004 (legacy numeric redirect), FEAT-VALIDATORS-006 (validators/validators-enhanced redirects), FEAT-SEARCH-001 (header search navigation), FEAT-WALLET-002 (wallet network mismatch), FEAT-ACCOUNT-002 (DeFi portfolio URLs) |
+| `app/utils/routeRedirects.test.ts` | FEAT-ACCOUNT-012 (entity default tab redirects for all route types), FEAT-TXN-008 (legacy overview tab rewrite to `overview`), FEAT-TOKEN-004 (legacy numeric redirect), FEAT-VALIDATORS-006 (validators/validators-enhanced redirects), FEAT-SEARCH-001 (header search navigation), FEAT-WALLET-002 (wallet network mismatch), FEAT-ACCOUNT-002 (DeFi portfolio URLs) |
 | `app/utils/walletNetwork.test.ts` | FEAT-WALLET-002 (loopback RPC + `custom` vs explorer `local` for non-Petra) |
 | `app/utils/rateLimiter.test.ts` | FEAT-RATELIMIT-002 (rate limit error detection, URL endpoint extraction) |
 | `app/utils/utilsCoverage.test.ts` | FEAT-ROUTING-003 (isValidStruct), FEAT-TXN-002 (sortTransactions), FEAT-WALLET-001 (sortPetraFirst), FEAT-MODULES-004 (bytecode size), FEAT-MODULES-001 (param names, function line numbers, gzip `transformCode`), isValidUrl, assertNever |
