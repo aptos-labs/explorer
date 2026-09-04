@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-08-27 (rev 30)
+> Last updated: 2026-09-04 (rev 31)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -99,6 +99,7 @@ Each detail page has tabs accessible via path segments:
 #### Settings
 - `/settings` — configure explorer preferences stored locally in the browser
   - **Move Bytecode Decompilation**: opt-in toggle to enable client-side decompilation of on-chain Move bytecode (Decompiled and Disassembly views on module code pages). Disabled by default; users must accept a disclaimer before enabling.
+  - **AI transaction descriptions (experimental)**: opt-in BYOK provider/model/API key. User and pending transaction overviews can then generate a description from Move source, script bytecode, and transaction inputs/outputs. The call is made from the browser to the configured provider; the explorer server never receives the API key.
   - **API Key Overrides**: per-network geomi.dev API keys (same functionality previously in the header settings dialog)
 
 #### Releases Hub
@@ -207,6 +208,9 @@ A: Visit `https://explorer.aptoslabs.com/account/0x1/modules` — this lists all
 
 **Q: "Can Explorer decompile module bytecode?"**
 A: Yes, after opting in. Visit `https://explorer.aptoslabs.com/settings` and enable **Move Bytecode Decompilation** (you must accept the disclaimer). Then open a module code page such as `https://explorer.aptoslabs.com/account/0x1/modules/code/coin` and select **Decompiled** or **Disassembly**. These are generated client-side in the browser using Move decompiler WASM.
+
+**Q: "Can Explorer explain what a transaction did using my own AI model?"**
+A: Yes, as an experimental opt-in. Visit `/settings`, enable **AI transaction descriptions**, and supply your own provider, model, and API key. On a user transaction overview (`/txn/{id}/overview`) choose **Describe this transaction**. The browser collects Move source / script bytecode plus inputs and outputs and calls your provider directly; the explorer server never sees the key.
 
 **Q: "Is there an APT coin page?"**
 A: Yes — `https://explorer.aptoslabs.com/coin/0x1::aptos_coin::AptosCoin` shows supply, metadata, and recent transactions for native APT.

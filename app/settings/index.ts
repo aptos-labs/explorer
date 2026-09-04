@@ -4,6 +4,7 @@ export {
   type ExplorerClientSettings,
   type GeomiDevApiKeyOverridesByNetwork,
   getGeomiDevApiKeyOverride,
+  isAiTransactionDescriptionConfigured,
   loadExplorerClientSettings,
   normalizeGeomiDevApiKeyOverride,
   persistExplorerClientSettings,

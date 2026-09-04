@@ -45,6 +45,7 @@ import {
   getTransactionAmount,
   getTransactionCounterparty,
 } from "../utils";
+import AiTransactionDescription from "./Components/AiTransactionDescription";
 import SignatureOverviewTable from "./Components/SignatureOverviewTable";
 import TransactionArguments from "./Components/TransactionArguments";
 import TransactionBlockRow from "./Components/TransactionBlockRow";
@@ -925,6 +926,7 @@ export default function UserTransactionOverviewTab({
         <TransactionAmountRow transaction={transactionData} />
         <TransactionActionsRow transaction={transactionData} />
       </ContentBox>
+      <AiTransactionDescription transaction={transactionData} />
       <ContentBox>
         <TransactionBlockRow version={transactionData.version} />
         {!transactionData?.replay_protection_nonce && (

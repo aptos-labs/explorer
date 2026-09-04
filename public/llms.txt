@@ -13,6 +13,7 @@
 - Resolve Aptos Name Service (ANS) `.apt` names to addresses
 - View Move objects (on-chain resources implementing the Object model)
 - Decompile on-chain Move module bytecode in-browser (WASM, no decompile backend; requires opt-in at `/settings`)
+- Opt in (experimental) to describe a transaction with your own AI provider/model from `/settings`; the request runs in the browser and is not proxied by the explorer
 
 ## URL Templates
 
@@ -53,7 +54,7 @@ All URLs default to mainnet. Append `?network=testnet`, `?network=devnet`, or `?
   - AIPs tab — Aptos Improvement Proposals index sourced from `aptos-foundation/AIPs` (number, title, status, author, link)
   - SDKs & Tools tab — latest stable releases for the Aptos CLI, `aptos-node`, and the TypeScript / Python / Rust / Go SDKs, with a drill-in list of recent versions per registry
   - Legacy paths `/deployments` and `/aips` redirect to `/releases/networks` and `/releases/aips` respectively
-- Settings: `/settings` — configure explorer preferences (decompilation opt-in, API key overrides)
+- Settings: `/settings` — configure explorer preferences (decompilation opt-in, experimental BYOK AI transaction descriptions, API key overrides)
 - Run Script: `/run-script` — advanced tool to paste compiled Move script bytecode, supply typed arguments, then simulate and execute the script transaction from a connected wallet
 
 ## Key Addresses
