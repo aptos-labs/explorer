@@ -1250,6 +1250,7 @@ top of the HTML site.
 |--------|--------|
 | **Components** | `ResponsiveKeyValueTable`, `ResponsiveKeyValueRow` in `app/components/Table/ResponsiveKeyValueTable.tsx`. |
 | **Behavior** | Wide viewports: `Table` + `TableContainer` with label column ~38% width. Below `stackBelow` (default `md`): vertical stack with label (`body2` semibold), optional `description` (`caption`), then value. Rows support optional `description` under the label in both modes. Nested key/value grids: render another `ResponsiveKeyValueTable` inside a row’s value; each instance has its own context and breakpoint (optional smaller `stackBelow` on the inner table). Value cells use `minWidth: 0` so nested tables can shrink and scroll. |
+| **Text selection** | Rows render through `GeneralTableRow`, which suppresses `user-select` **only** when the row navigates (`to`) or handles a click. Read-only key/value rows stay selectable, so values can be drag-selected and copied on desktop. |
 | **Consumers** | Transaction Events tab: Fee Statement (`FeeStatementEventView`), Decibel formatted views (`DecibelEventView` / `EventTable`), and Multisig events (`MultisigEventView`). |
 
 ---
@@ -1427,6 +1428,7 @@ top of the HTML site.
 | `app/api/indexerTransaction.test.ts` | FEAT-TXN-014 (indexer timestamp conversion; map user / block-metadata rows; hash lookups skipped; gas_used from FA gas fee; `getBlockHeightForVersion`) |
 | `app/api/client.transaction.test.ts` | FEAT-TXN-014 (`getTransaction` REST success skips archive/indexer; prune uses archive first and skips indexer on hit; archive miss/error then indexer reconstruction; pruned hash loads from archive; SDK archive 401 still retries unauthenticated; non-prune errors do not) |
 | `app/api/legacyClient.test.ts` | FEAT-TXN-014 (legacy REST client retries 410 against `archival_endpoint`) |
+| `app/components/Table/GeneralTableRow.test.tsx` | FEAT-UI-005 / FEAT-TXN-004 (read-only rows stay text-selectable; rows with `to` or `onClick` keep `user-select: none`) |
 | `app/pages/Transaction/Tabs/Components/MultisigEventView.test.tsx` | FEAT-TXN-004 (multisig event detection, formatted summary/rows, v1/v2 name normalization, raw-JSON fallback, extra-field surfacing, payload decoding in execution and CreateTransaction events) |
 | `app/pages/Transaction/Tabs/Components/decodeMultisigPayload.test.ts` | FEAT-TXN-004 (BCS decoding of multisig payload bytes into an entry function; empty/invalid fallbacks) |
 | `app/pages/Transaction/Tabs/Components/decodeMoveArgument.test.ts` | FEAT-TXN-011 / FEAT-TXN-004 (ABI-typed BCS argument decoding: address, ints, bool, String, vector, Object, Option; positional alignment and invalid/leftover fallbacks) |
