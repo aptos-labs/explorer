@@ -14,12 +14,16 @@ export default function GeneralTableRow({
   const navigate = useNavigate();
   const augmentTo = useAugmentToWithGlobalSearchParams();
   const clickDisabled = !to;
+  // Suppressing selection keeps drag gestures from highlighting text on rows
+  // that react to a click. Read-only rows must stay selectable so users can
+  // copy values out of key/value tables.
+  const isInteractive = Boolean(to || onClick);
 
   const sx = useMemo<SxProps>(
     () => ({
       textDecoration: "none",
       cursor: clickDisabled ? undefined : "pointer",
-      userSelect: "none",
+      userSelect: isInteractive ? "none" : undefined,
       backgroundColor: theme.palette.background.paper,
       "&:hover:not(:active)": clickDisabled
         ? undefined
@@ -39,6 +43,7 @@ export default function GeneralTableRow({
     }),
     [
       clickDisabled,
+      isInteractive,
       theme.palette.background.paper,
       theme.palette.mode,
       theme.palette.neutralShade.main,
