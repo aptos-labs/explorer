@@ -7,14 +7,20 @@ import {
   Box,
   Button,
   Checkbox,
+  Chip,
   Container,
   Divider,
+  FormControl,
   FormControlLabel,
   IconButton,
   InputAdornment,
+  InputLabel,
   Link as MuiLink,
+  MenuItem,
   Paper,
   Popover,
+  Select,
+  type SelectChangeEvent,
   Stack,
   Switch,
   TextField,
@@ -28,6 +34,11 @@ import {clearCachedSearchClients} from "../../api/createClient";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import {emitApiKeySaved} from "../../context/rate-limit";
 import {clearCachedV2Clients} from "../../global-config";
+import {
+  AI_PROVIDER_OPTIONS,
+  type AiProviderId,
+  getAiProviderOption,
+} from "../../lib/ai/providers";
 import {type NetworkName, networks} from "../../lib/constants";
 import {
   defaultExplorerClientSettings,
@@ -74,6 +85,7 @@ export default function SettingsPage() {
     useState<ExplorerClientSettings>(settings);
   const [isSaving, setIsSaving] = useState(false);
   const [showApiKeys, setShowApiKeys] = useState(false);
+  const [showAiApiKey, setShowAiApiKey] = useState(false);
   const [apiKeyInfoAnchor, setApiKeyInfoAnchor] = useState<HTMLElement | null>(
     null,
   );
@@ -128,11 +140,29 @@ export default function SettingsPage() {
     });
   };
 
+  const handleAiProviderChange = (event: SelectChangeEvent) => {
+    const nextProvider = event.target.value as AiProviderId;
+    setDraftSettings((current) => {
+      const previous = getAiProviderOption(current.aiProvider);
+      const next = getAiProviderOption(nextProvider);
+      const modelIsDefault =
+        !current.aiModel || current.aiModel === previous.defaultModel;
+      const baseUrlIsDefault =
+        !current.aiBaseUrl || current.aiBaseUrl === previous.defaultBaseUrl;
+      return {
+        ...current,
+        aiProvider: nextProvider,
+        aiModel: modelIsDefault ? next.defaultModel : current.aiModel,
+        aiBaseUrl: baseUrlIsDefault ? next.defaultBaseUrl : current.aiBaseUrl,
+      };
+    });
+  };
+
   return (
     <Box>
       <PageMetadata
         title="Settings"
-        description="Configure Aptos Explorer settings including API keys, decompilation preferences, and other options."
+        description="Configure Aptos Explorer settings including API keys, decompilation preferences, experimental AI descriptions, and other options."
         type="website"
       />
       <PageHeader />
@@ -254,6 +284,218 @@ export default function SettingsPage() {
                   </li>
                 </Box>
               </Alert>
+            </Stack>
+          </Paper>
+
+          {/* Experimental AI descriptions */}
+          <Paper
+            variant="outlined"
+            sx={{
+              p: 3,
+              borderColor: draftSettings.enableAiTransactionDescriptions
+                ? theme.palette.success.main
+                : theme.palette.divider,
+            }}
+          >
+            <Stack spacing={2}>
+              <Stack
+                direction="row"
+                sx={{
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
+                }}
+              >
+                <Box>
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    sx={{alignItems: "center", flexWrap: "wrap", rowGap: 1}}
+                  >
+                    <Typography variant="h6" sx={{fontWeight: 600}}>
+                      AI transaction descriptions
+                    </Typography>
+                    <Chip
+                      label="Experimental"
+                      size="small"
+                      variant="outlined"
+                    />
+                  </Stack>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "text.secondary",
+                      mt: 0.5,
+                    }}
+                  >
+                    Opt in to describe user transactions with your own model.
+                    The explorer gathers Move source, script bytecode (when
+                    present), and transaction inputs/outputs in your browser,
+                    then calls the provider you configure. Credentials are
+                    stored only in this browser and are never sent to Aptos
+                    Explorer servers.
+                  </Typography>
+                </Box>
+                <Switch
+                  checked={draftSettings.enableAiTransactionDescriptions}
+                  onChange={(event) =>
+                    setDraftSettings((current) => ({
+                      ...current,
+                      enableAiTransactionDescriptions: event.target.checked,
+                    }))
+                  }
+                  slotProps={{
+                    input: {
+                      "aria-label":
+                        "Enable experimental AI transaction descriptions",
+                    },
+                  }}
+                />
+              </Stack>
+
+              <Alert
+                severity="warning"
+                icon={<WarningAmberIcon fontSize="small" />}
+              >
+                <Typography variant="body2" gutterBottom sx={{fontWeight: 600}}>
+                  Experimental — please read before enabling
+                </Typography>
+                <Typography variant="body2">
+                  Descriptions are generated by a third-party model and can be
+                  incomplete or wrong. Source may be decompiled from bytecode
+                  when published source is missing. Your API key is sent only
+                  from this browser to the provider endpoint you set (not to
+                  explorer.aptoslabs.com). Official OpenAI endpoints may block
+                  browser calls (CORS); Anthropic, Gemini, OpenRouter, Groq, and
+                  many OpenAI-compatible proxies work. HTTPS pages cannot call
+                  HTTP localhost (Ollama) because of mixed content.
+                </Typography>
+              </Alert>
+
+              {draftSettings.enableAiTransactionDescriptions ? (
+                <Stack spacing={2.5}>
+                  <FormControl fullWidth>
+                    <InputLabel id="ai-provider-label">Provider</InputLabel>
+                    <Select
+                      labelId="ai-provider-label"
+                      label="Provider"
+                      value={draftSettings.aiProvider}
+                      onChange={handleAiProviderChange}
+                    >
+                      {AI_PROVIDER_OPTIONS.map((option) => (
+                        <MenuItem key={option.id} value={option.id}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+
+                  <TextField
+                    autoComplete="off"
+                    fullWidth
+                    label="Model"
+                    onChange={(event) =>
+                      setDraftSettings((current) => ({
+                        ...current,
+                        aiModel: event.target.value,
+                      }))
+                    }
+                    placeholder={
+                      getAiProviderOption(draftSettings.aiProvider)
+                        .defaultModel || "model-id"
+                    }
+                    value={draftSettings.aiModel}
+                    slotProps={{
+                      htmlInput: {spellCheck: false},
+                    }}
+                  />
+
+                  <TextField
+                    autoComplete="off"
+                    fullWidth
+                    label="Base URL"
+                    helperText={
+                      getAiProviderOption(draftSettings.aiProvider)
+                        .baseUrlHelper
+                    }
+                    onChange={(event) =>
+                      setDraftSettings((current) => ({
+                        ...current,
+                        aiBaseUrl: event.target.value,
+                      }))
+                    }
+                    placeholder={
+                      getAiProviderOption(draftSettings.aiProvider)
+                        .defaultBaseUrl || "https://openrouter.ai/api/v1"
+                    }
+                    value={draftSettings.aiBaseUrl}
+                    slotProps={{
+                      htmlInput: {spellCheck: false},
+                    }}
+                  />
+
+                  <TextField
+                    autoComplete="off"
+                    fullWidth
+                    label="API key"
+                    onChange={(event) =>
+                      setDraftSettings((current) => ({
+                        ...current,
+                        aiApiKey: event.target.value,
+                      }))
+                    }
+                    placeholder="Paste your provider API key"
+                    type={showAiApiKey ? "text" : "password"}
+                    value={draftSettings.aiApiKey}
+                    slotProps={{
+                      input: {
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              aria-label={
+                                showAiApiKey
+                                  ? "Hide AI API key"
+                                  : "Show AI API key"
+                              }
+                              edge="end"
+                              onClick={() => setShowAiApiKey((v) => !v)}
+                            >
+                              {showAiApiKey ? (
+                                <VisibilityOffIcon />
+                              ) : (
+                                <VisibilityIcon />
+                              )}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      },
+                      htmlInput: {spellCheck: false},
+                    }}
+                  />
+
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={draftSettings.rememberAiApiKey}
+                        onChange={(event) =>
+                          setDraftSettings((current) => ({
+                            ...current,
+                            rememberAiApiKey: event.target.checked,
+                          }))
+                        }
+                      />
+                    }
+                    label="Remember AI API key on this device"
+                  />
+
+                  <Alert severity="info">
+                    The key is stored only in this browser (session unless you
+                    remember it). Transaction description requests use{" "}
+                    <code>fetch</code> from the page to your provider, with{" "}
+                    <code>credentials: &quot;omit&quot;</code> so explorer
+                    cookies are not sent.
+                  </Alert>
+                </Stack>
+              ) : null}
             </Stack>
           </Paper>
 

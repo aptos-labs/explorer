@@ -8,8 +8,8 @@ import {
   useState,
 } from "react";
 import {
-  EXPLORER_SETTINGS_STORAGE_KEY,
   type ExplorerClientSettings,
+  isExplorerClientStorageKey,
   loadExplorerClientSettings,
   persistExplorerClientSettings,
   sanitizeExplorerClientSettings,
@@ -35,10 +35,7 @@ export function ExplorerSettingsProvider({children}: {children: ReactNode}) {
         event.storageArea === window.localStorage ||
         event.storageArea === window.sessionStorage;
 
-      if (
-        isRelevantStorageArea &&
-        (event.key === EXPLORER_SETTINGS_STORAGE_KEY || event.key === null)
-      ) {
+      if (isRelevantStorageArea && isExplorerClientStorageKey(event.key)) {
         setSettings(loadExplorerClientSettings());
       }
     };

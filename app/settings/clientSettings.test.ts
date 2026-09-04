@@ -1,8 +1,12 @@
 import {describe, expect, it} from "vitest";
+import type {ExplorerClientSettings} from "./clientSettings";
 import {
+  AI_API_KEY_STORAGE_KEY,
+  AI_PREFS_STORAGE_KEY,
   clearExplorerClientSettings,
   defaultExplorerClientSettings,
   EXPLORER_SETTINGS_STORAGE_KEY,
+  isAiTransactionDescriptionConfigured,
   loadExplorerClientSettings,
   normalizeGeomiDevApiKeyOverride,
   persistExplorerClientSettings,
@@ -46,6 +50,12 @@ function createStorageCollection({
   };
 }
 
+function settingsOf(
+  overrides: Partial<ExplorerClientSettings>,
+): ExplorerClientSettings {
+  return {...defaultExplorerClientSettings, ...overrides};
+}
+
 describe("clientSettings", () => {
   describe("normalizeGeomiDevApiKeyOverride", () => {
     it("trims surrounding whitespace", () => {
@@ -68,11 +78,12 @@ describe("clientSettings", () => {
           },
           rememberGeomiDevApiKeyOverride: true,
         }),
-      ).toEqual({
-        geomiDevApiKeyOverridesByNetwork: {mainnet: "override-key"},
-        rememberGeomiDevApiKeyOverride: true,
-        enableDecompilation: false,
-      });
+      ).toEqual(
+        settingsOf({
+          geomiDevApiKeyOverridesByNetwork: {mainnet: "override-key"},
+          rememberGeomiDevApiKeyOverride: true,
+        }),
+      );
     });
 
     it("forces remember to false when no keys are set", () => {
@@ -90,18 +101,19 @@ describe("clientSettings", () => {
           geomiDevApiKeyOverride: "  legacy  ",
           rememberGeomiDevApiKeyOverride: true,
         }),
-      ).toEqual({
-        geomiDevApiKeyOverridesByNetwork: {
-          mainnet: "legacy",
-          testnet: "legacy",
-          devnet: "legacy",
-          decibel: "legacy",
-          shelbynet: "legacy",
-          local: "legacy",
-        },
-        rememberGeomiDevApiKeyOverride: true,
-        enableDecompilation: false,
-      });
+      ).toEqual(
+        settingsOf({
+          geomiDevApiKeyOverridesByNetwork: {
+            mainnet: "legacy",
+            testnet: "legacy",
+            devnet: "legacy",
+            decibel: "legacy",
+            shelbynet: "legacy",
+            local: "legacy",
+          },
+          rememberGeomiDevApiKeyOverride: true,
+        }),
+      );
     });
 
     it("does not use legacy key when per-network map is present", () => {
@@ -111,17 +123,51 @@ describe("clientSettings", () => {
           geomiDevApiKeyOverridesByNetwork: {mainnet: "only-main"},
           rememberGeomiDevApiKeyOverride: true,
         }),
-      ).toEqual({
-        geomiDevApiKeyOverridesByNetwork: {mainnet: "only-main"},
-        rememberGeomiDevApiKeyOverride: true,
-        enableDecompilation: false,
-      });
+      ).toEqual(
+        settingsOf({
+          geomiDevApiKeyOverridesByNetwork: {mainnet: "only-main"},
+          rememberGeomiDevApiKeyOverride: true,
+        }),
+      );
     });
 
     it("falls back to the default settings shape", () => {
       expect(sanitizeExplorerClientSettings(undefined)).toEqual(
         defaultExplorerClientSettings,
       );
+    });
+
+    it("sanitizes experimental AI fields", () => {
+      // Covers FEAT-SETTINGS-003
+      expect(
+        sanitizeExplorerClientSettings({
+          enableAiTransactionDescriptions: true,
+          aiProvider: "anthropic",
+          aiModel: "  claude-sonnet-4-5  ",
+          aiBaseUrl: "  https://api.anthropic.com/  ",
+          aiApiKey: "  sk-ant-test  ",
+          rememberAiApiKey: true,
+        }),
+      ).toEqual(
+        settingsOf({
+          enableAiTransactionDescriptions: true,
+          aiProvider: "anthropic",
+          aiModel: "claude-sonnet-4-5",
+          aiBaseUrl: "https://api.anthropic.com/",
+          aiApiKey: "sk-ant-test",
+          rememberAiApiKey: true,
+        }),
+      );
+    });
+
+    it("rejects unknown AI providers and empty-key remember flags", () => {
+      expect(
+        sanitizeExplorerClientSettings({
+          aiProvider: "not-a-provider" as never,
+          rememberAiApiKey: true,
+          aiApiKey: "   ",
+        }),
+      ).toEqual(defaultExplorerClientSettings);
     });
   });
 
@@ -144,11 +190,12 @@ describe("clientSettings", () => {
         }),
       });
 
-      expect(loadExplorerClientSettings(storages)).toEqual({
-        geomiDevApiKeyOverridesByNetwork: {testnet: "session-key"},
-        rememberGeomiDevApiKeyOverride: false,
-        enableDecompilation: false,
-      });
+      expect(loadExplorerClientSettings(storages)).toEqual(
+        settingsOf({
+          geomiDevApiKeyOverridesByNetwork: {testnet: "session-key"},
+          rememberGeomiDevApiKeyOverride: false,
+        }),
+      );
     });
 
     it("reads and sanitizes remembered local settings", () => {
@@ -158,11 +205,12 @@ describe("clientSettings", () => {
         }),
       });
 
-      expect(loadExplorerClientSettings(storages)).toEqual({
-        geomiDevApiKeyOverridesByNetwork: {devnet: "saved-key"},
-        rememberGeomiDevApiKeyOverride: true,
-        enableDecompilation: false,
-      });
+      expect(loadExplorerClientSettings(storages)).toEqual(
+        settingsOf({
+          geomiDevApiKeyOverridesByNetwork: {devnet: "saved-key"},
+          rememberGeomiDevApiKeyOverride: true,
+        }),
+      );
     });
 
     it("migrates legacy persisted shape on load", () => {
@@ -178,6 +226,22 @@ describe("clientSettings", () => {
       expect(loaded.geomiDevApiKeyOverridesByNetwork.local).toBe("one-key");
       expect(loaded.rememberGeomiDevApiKeyOverride).toBe(true);
     });
+
+    it("ignores an AI API key stuffed into the geomi settings blob", () => {
+      // Covers FEAT-SETTINGS-003 — credentials stay on the dedicated key only
+      const storages = createStorageCollection({
+        localValue: JSON.stringify({
+          geomiDevApiKeyOverridesByNetwork: {mainnet: "geomi-key"},
+          aiApiKey: "should-not-load",
+          enableAiTransactionDescriptions: true,
+        }),
+      });
+
+      const loaded = loadExplorerClientSettings(storages);
+      expect(loaded.aiApiKey).toBe("");
+      expect(loaded.enableAiTransactionDescriptions).toBe(false);
+      expect(loaded.geomiDevApiKeyOverridesByNetwork.mainnet).toBe("geomi-key");
+    });
   });
 
   describe("persistExplorerClientSettings", () => {
@@ -185,38 +249,36 @@ describe("clientSettings", () => {
       const storages = createStorageCollection({});
 
       persistExplorerClientSettings(
-        {
+        settingsOf({
           geomiDevApiKeyOverridesByNetwork: {mainnet: "  persisted-key  "},
-          rememberGeomiDevApiKeyOverride: false,
-          enableDecompilation: false,
-        },
+        }),
         storages,
       );
 
-      expect(loadExplorerClientSettings(storages)).toEqual({
-        geomiDevApiKeyOverridesByNetwork: {mainnet: "persisted-key"},
-        rememberGeomiDevApiKeyOverride: false,
-        enableDecompilation: false,
-      });
+      expect(loadExplorerClientSettings(storages)).toEqual(
+        settingsOf({
+          geomiDevApiKeyOverridesByNetwork: {mainnet: "persisted-key"},
+        }),
+      );
     });
 
     it("writes remembered settings to local storage", () => {
       const storages = createStorageCollection({});
 
       persistExplorerClientSettings(
-        {
+        settingsOf({
           geomiDevApiKeyOverridesByNetwork: {testnet: "persisted-key"},
           rememberGeomiDevApiKeyOverride: true,
-          enableDecompilation: false,
-        },
+        }),
         storages,
       );
 
-      expect(loadExplorerClientSettings(storages)).toEqual({
-        geomiDevApiKeyOverridesByNetwork: {testnet: "persisted-key"},
-        rememberGeomiDevApiKeyOverride: true,
-        enableDecompilation: false,
-      });
+      expect(loadExplorerClientSettings(storages)).toEqual(
+        settingsOf({
+          geomiDevApiKeyOverridesByNetwork: {testnet: "persisted-key"},
+          rememberGeomiDevApiKeyOverride: true,
+        }),
+      );
     });
 
     it("clears stored settings when all keys are emptied", () => {
@@ -229,14 +291,7 @@ describe("clientSettings", () => {
         }),
       });
 
-      persistExplorerClientSettings(
-        {
-          geomiDevApiKeyOverridesByNetwork: {},
-          rememberGeomiDevApiKeyOverride: false,
-          enableDecompilation: false,
-        },
-        storages,
-      );
+      persistExplorerClientSettings(defaultExplorerClientSettings, storages);
 
       expect(loadExplorerClientSettings(storages)).toEqual(
         defaultExplorerClientSettings,
@@ -264,59 +319,44 @@ describe("clientSettings", () => {
       const storages = createStorageCollection({});
 
       persistExplorerClientSettings(
-        {
-          geomiDevApiKeyOverridesByNetwork: {},
-          rememberGeomiDevApiKeyOverride: false,
-          enableDecompilation: true,
-        },
+        settingsOf({enableDecompilation: true}),
         storages,
       );
 
-      expect(loadExplorerClientSettings(storages)).toEqual({
-        geomiDevApiKeyOverridesByNetwork: {},
-        rememberGeomiDevApiKeyOverride: false,
-        enableDecompilation: true,
-      });
+      expect(loadExplorerClientSettings(storages)).toEqual(
+        settingsOf({enableDecompilation: true}),
+      );
     });
 
     it("persists enableDecompilation in localStorage across sessions", () => {
       const storages = createStorageCollection({});
 
       persistExplorerClientSettings(
-        {
-          geomiDevApiKeyOverridesByNetwork: {},
-          rememberGeomiDevApiKeyOverride: false,
-          enableDecompilation: true,
-        },
+        settingsOf({enableDecompilation: true}),
         storages,
       );
 
-      // Simulate new session: clear sessionStorage, keep localStorage
       const freshStorages = {
         localStorage: storages.localStorage,
         sessionStorage: createStorageMock(),
       };
 
-      expect(loadExplorerClientSettings(freshStorages)).toEqual({
-        geomiDevApiKeyOverridesByNetwork: {},
-        rememberGeomiDevApiKeyOverride: false,
-        enableDecompilation: true,
-      });
+      expect(loadExplorerClientSettings(freshStorages)).toEqual(
+        settingsOf({enableDecompilation: true}),
+      );
     });
 
     it("preserves enableDecompilation independently from session-only API keys", () => {
       const storages = createStorageCollection({});
 
       persistExplorerClientSettings(
-        {
+        settingsOf({
           geomiDevApiKeyOverridesByNetwork: {mainnet: "session-key"},
-          rememberGeomiDevApiKeyOverride: false,
           enableDecompilation: true,
-        },
+        }),
         storages,
       );
 
-      // Simulate new session: sessionStorage is cleared (API keys lost)
       const freshStorages = {
         localStorage: storages.localStorage,
         sessionStorage: createStorageMock(),
@@ -324,7 +364,6 @@ describe("clientSettings", () => {
 
       const loaded = loadExplorerClientSettings(freshStorages);
       expect(loaded.enableDecompilation).toBe(true);
-      // API keys were session-only, so they should be gone
       expect(loaded.geomiDevApiKeyOverridesByNetwork).toEqual({});
     });
 
@@ -333,14 +372,122 @@ describe("clientSettings", () => {
 
       expect(() =>
         persistExplorerClientSettings(
-          {
+          settingsOf({
             geomiDevApiKeyOverridesByNetwork: {mainnet: "persisted-key"},
             rememberGeomiDevApiKeyOverride: true,
-            enableDecompilation: false,
-          },
+          }),
           storages,
         ),
       ).not.toThrow();
+    });
+
+    it("persists AI prefs without putting the API key in the geomi blob", () => {
+      // Covers FEAT-SETTINGS-003
+      const storages = createStorageCollection({});
+
+      persistExplorerClientSettings(
+        settingsOf({
+          geomiDevApiKeyOverridesByNetwork: {mainnet: "geomi-key"},
+          rememberGeomiDevApiKeyOverride: true,
+          enableAiTransactionDescriptions: true,
+          aiProvider: "anthropic",
+          aiModel: "claude-sonnet-4-5",
+          aiApiKey: "sk-ant-secret",
+          rememberAiApiKey: true,
+        }),
+        storages,
+      );
+
+      const geomiBlob = storages.localStorage.getItem(
+        EXPLORER_SETTINGS_STORAGE_KEY,
+      );
+      expect(geomiBlob).toBeTruthy();
+      expect(geomiBlob).not.toContain("sk-ant-secret");
+      expect(geomiBlob).not.toContain("aiApiKey");
+
+      const prefs = JSON.parse(
+        storages.localStorage.getItem(AI_PREFS_STORAGE_KEY) ?? "{}",
+      ) as Record<string, unknown>;
+      expect(prefs.aiApiKey).toBeUndefined();
+      expect(prefs.enableAiTransactionDescriptions).toBe(true);
+      expect(prefs.aiProvider).toBe("anthropic");
+      expect(storages.localStorage.getItem(AI_API_KEY_STORAGE_KEY)).toBe(
+        "sk-ant-secret",
+      );
+
+      expect(loadExplorerClientSettings(storages).aiApiKey).toBe(
+        "sk-ant-secret",
+      );
+    });
+
+    it("keeps a session-only AI key out of a new session while retaining prefs", () => {
+      // Covers FEAT-SETTINGS-003
+      const storages = createStorageCollection({});
+
+      persistExplorerClientSettings(
+        settingsOf({
+          enableAiTransactionDescriptions: true,
+          aiProvider: "openai",
+          aiModel: "gpt-4o-mini",
+          aiApiKey: "sk-test",
+          rememberAiApiKey: false,
+        }),
+        storages,
+      );
+
+      expect(storages.sessionStorage.getItem(AI_API_KEY_STORAGE_KEY)).toBe(
+        "sk-test",
+      );
+      expect(storages.localStorage.getItem(AI_API_KEY_STORAGE_KEY)).toBeNull();
+
+      const freshStorages = {
+        localStorage: storages.localStorage,
+        sessionStorage: createStorageMock(),
+      };
+      const loaded = loadExplorerClientSettings(freshStorages);
+      expect(loaded.enableAiTransactionDescriptions).toBe(true);
+      expect(loaded.aiModel).toBe("gpt-4o-mini");
+      expect(loaded.aiApiKey).toBe("");
+    });
+  });
+
+  describe("isAiTransactionDescriptionConfigured", () => {
+    it("requires opt-in, model, key, and a base URL for compatible providers", () => {
+      // Covers FEAT-SETTINGS-003
+      expect(
+        isAiTransactionDescriptionConfigured(defaultExplorerClientSettings),
+      ).toBe(false);
+      expect(
+        isAiTransactionDescriptionConfigured(
+          settingsOf({
+            enableAiTransactionDescriptions: true,
+            aiProvider: "anthropic",
+            aiModel: "claude-sonnet-4-5",
+            aiApiKey: "sk-ant",
+          }),
+        ),
+      ).toBe(true);
+      expect(
+        isAiTransactionDescriptionConfigured(
+          settingsOf({
+            enableAiTransactionDescriptions: true,
+            aiProvider: "openai_compatible",
+            aiModel: "llama3",
+            aiApiKey: "key",
+          }),
+        ),
+      ).toBe(false);
+      expect(
+        isAiTransactionDescriptionConfigured(
+          settingsOf({
+            enableAiTransactionDescriptions: true,
+            aiProvider: "openai_compatible",
+            aiModel: "llama3",
+            aiBaseUrl: "http://127.0.0.1:11434/v1",
+            aiApiKey: "key",
+          }),
+        ),
+      ).toBe(true);
     });
   });
 });

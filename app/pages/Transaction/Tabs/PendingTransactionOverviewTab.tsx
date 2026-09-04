@@ -8,6 +8,7 @@ import GasValue from "../../../components/IndividualPageContent/ContentValue/Gas
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {parseExpirationTimestamp} from "../../utils";
 import {getLearnMoreTooltip} from "../helpers";
+import AiTransactionDescription from "./Components/AiTransactionDescription";
 import SignatureOverviewTable from "./Components/SignatureOverviewTable";
 
 type PendingTransactionOverviewTabProps = {
@@ -68,6 +69,7 @@ export default function PendingTransactionOverviewTab({
           tooltip={getLearnMoreTooltip("signature")}
         />
       </ContentBox>
+      <AiTransactionDescription transaction={transactionData} />
     </Box>
   );
 }

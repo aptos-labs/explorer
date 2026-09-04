@@ -6,7 +6,7 @@
 > code. Tests (unit, integration, E2E) should reference the feature IDs defined
 > here (e.g. `// Covers FEAT-SEARCH-001`).
 >
-> **Last updated**: 2026-08-27
+> **Last updated**: 2026-09-04
 
 ---
 
@@ -200,6 +200,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **Signature** | Table-style breakdown (same layout family as FeeStatement on Events); hex fields use expandable hash chips; nested or unknown shapes fall back to JSON. |
 | **Hashes** | State, event, and accumulator root hashes. |
 | **Replay protection** | Nonce display when applicable (vs sequence number). |
+| **AI description** | Optional experimental card (FEAT-TXN-016) when the user has opted in at `/settings`. |
 
 ### FEAT-TXN-003 — Balance Change Tab
 
@@ -313,6 +314,16 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **First paint** | Page chrome (header), a "Transaction" title, the URL hash/version, tab-strip skeletons, and overview skeletons render while the transaction is in flight. The previous full-page `null` loading state is gone. |
 | **Organize then fill** | Tab set, type chip, and overview body wait on the transaction object (needed to choose tabs). Secondary rows such as the parent block populate with their own skeletons after the overview is visible. Indexer-sourced reconstructed txns still show the FEAT-TXN-014 info alert once data arrives. |
 | **Errors** | After archival + indexer fallbacks fail, render `TransactionError` (including typed `NOT_FOUND`). An empty success response shows an in-page error alert. |
+
+### FEAT-TXN-016 — On-demand AI transaction description (experimental)
+
+| Aspect | Detail |
+|--------|--------|
+| **Gating** | Shown on user and pending transaction overviews only when FEAT-SETTINGS-003 is enabled. Incomplete provider config links to `/settings`. |
+| **Action** | "Describe this transaction" (user-initiated). Does not auto-call a model on page load. |
+| **Context** | Built entirely in the browser: payload inputs (entry function / script / decrypted inner payload), events and write-set summaries (module bytecode omitted), published `PackageRegistry` source for the called module at the transaction version, or in-browser WASM decompilation of module/script bytecode when published source is missing. |
+| **Transport** | `POST` from the browser to the user-configured provider (OpenAI-compatible `/chat/completions`, Anthropic `/v1/messages` with `anthropic-dangerous-direct-browser-access`, Gemini `generateContent`). The explorer application server is not a proxy and never receives the API key. |
+| **Output** | Plain-text description with a provenance caption (published vs decompiled vs unavailable). Errors (HTTP, CORS, mixed content) are shown in-page. |
 
 ---
 
@@ -892,6 +903,16 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **Gating** | When disabled, "Decompiled" and "Disassembly" view buttons are hidden on module code pages, script bytecode decompiler, and module diff view. Only "Published Source" and "ABI" remain visible. |
 | **Persistence** | Stored in `enableDecompilation` field of `ExplorerClientSettings` in localStorage. |
 
+### FEAT-SETTINGS-003 — Experimental AI Transaction Descriptions (opt-in)
+
+| Aspect | Detail |
+|--------|--------|
+| **Toggle** | "AI transaction descriptions" switch on `/settings`. Disabled by default. Marked **Experimental**. |
+| **BYOK** | User supplies provider (OpenAI-compatible, OpenAI, Anthropic, Google Gemini), model id, optional base URL, and API key. Named providers pre-fill default endpoints/models; OpenAI-compatible requires a base URL (OpenRouter, Groq, Ollama, LiteLLM, …). |
+| **Client-only credentials** | The API key is stored only in the browser (`aptos-explorer-ai-api-key` in sessionStorage, or localStorage if "Remember AI API key on this device" is checked). Non-secret prefs live in `aptos-explorer-ai-settings` in localStorage. The geomi settings blob never contains the AI key. Requests use `fetch` from the page to the provider with `credentials: "omit"`. Provider URLs that are relative or that match the explorer origin are rejected. |
+| **Disclaimer** | Warning that output can be wrong, source may be decompiled, keys go only to the chosen provider (not explorer SSR), and some hosts block browser CORS / mixed content. |
+| **Gating** | The transaction-page description card is hidden until the toggle is on. Generation is disabled until provider + model + key (and base URL for compatible endpoints) are set. |
+
 ---
 
 ## 19. Theme / Color Mode
@@ -1389,7 +1410,11 @@ top of the HTML site.
 | `app/data/defunctProtocols.test.ts` | FEAT-ACCOUNT-003 (defunct protocol registry shape, uniqueness, known-address `// defunct` / `// winding_down` comment drift) |
 | `app/data/functionArgumentNameOverrides/lookup.test.ts` | FEAT-DATA-003 / FEAT-MODULES-006 (argument name override lookup) |
 | `app/types/defunctProtocol.test.ts` | FEAT-ACCOUNT-003 (withdrawal plugin validation) |
-| `app/settings/clientSettings.test.ts` | FEAT-SETTINGS-001 (settings persistence, sanitization) |
+| `app/settings/clientSettings.test.ts` | FEAT-SETTINGS-001 (settings persistence, sanitization), FEAT-SETTINGS-003 (AI prefs/key isolation from the geomi blob) |
+| `app/lib/ai/providers.test.ts` | FEAT-SETTINGS-003 (provider ids, default URLs, endpoint joining) |
+| `app/lib/ai/chatClient.test.ts` | FEAT-SETTINGS-003 / FEAT-TXN-016 (browser fetch, credentials omit, Anthropic CORS header, Gemini key not in URL, explorer-origin URL rejection) |
+| `app/lib/ai/transactionContext.test.ts` | FEAT-TXN-016 (function id parse, input/output extraction, prompt, write-set bytecode omitted) |
+| `app/lib/ai/gatherTransactionSources.test.ts` | FEAT-TXN-016 (published source preferred, bytecode decompile fallback, script decompile) |
 | `app/themes/colors/aptosBrandColors.a11y.test.ts` | FEAT-THEME-001 (WCAG contrast regression) |
 | `app/components/hooks/usePageMetadata.structuredData.test.ts` | FEAT-SEO-001 (JSON-LD generation) |
 | `app/components/IndividualPageContent/ContentValue/CurrencyValue.test.tsx` | Currency formatting (octa → APT) |
