@@ -102,7 +102,6 @@ export default function EventsTab({transaction}: EventsTabProps) {
             <ContentRow title="Type:" value={event.type} titleLayout="fit" />
             <ContentRow
               title="Data:"
-              titleLayout="fit"
               value={
                 feeStatementData ? (
                   <FeeStatementEventView
