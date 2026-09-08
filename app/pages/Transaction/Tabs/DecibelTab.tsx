@@ -782,7 +782,10 @@ function OrderRow({
   return (
     <GeneralTableRow>
       <GeneralTableCell>
-        {icon} {label}
+        <Stack direction="row" spacing={0.5} sx={{alignItems: "center"}}>
+          {icon}
+          <span>{label}</span>
+        </Stack>
       </GeneralTableCell>
       <GeneralTableCell>
         <SideChip side={order.side} />
@@ -840,8 +843,12 @@ function OrderCard({
             alignItems: "center",
           }}
         >
-          <Typography variant="subtitle2">
-            {icon} {label}
+          <Typography
+            variant="subtitle2"
+            sx={{display: "flex", alignItems: "center", gap: 0.5}}
+          >
+            {icon}
+            {label}
           </Typography>
           <SideChip side={order.side} />
         </Stack>
