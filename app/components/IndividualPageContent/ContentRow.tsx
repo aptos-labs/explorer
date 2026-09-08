@@ -32,10 +32,12 @@ const valueGridStyle = {
 } as const;
 
 const valueBoxStyle = {
-  display: "inline-flex",
+  display: "flex",
   flexWrap: "wrap",
   alignItems: "center",
   gap: 1,
+  width: "100%",
+  minWidth: 0,
 } as const;
 
 const ContentRow = memo(function ContentRow({

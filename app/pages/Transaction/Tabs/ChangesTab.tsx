@@ -443,6 +443,7 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
           {"data" in change && change.data && !isTableItemChange(change) && (
             <ContentRow
               title="Data:"
+              titleLayout="fit"
               value={
                 isMoveResourcePayload(change.data) ? (
                   <ResourceDataView

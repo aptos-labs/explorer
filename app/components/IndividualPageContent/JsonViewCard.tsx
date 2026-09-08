@@ -250,6 +250,8 @@ export default function JsonViewCard({
   return (
     <Box
       sx={{
+        width: "100%",
+        minWidth: 0,
         borderRadius: 1,
         backgroundColor: semanticColors.codeBlock.background,
         maxWidth: "100%",
@@ -308,6 +310,9 @@ export default function JsonViewCard({
               },
             },
           }),
+          "& .w-rjv": {
+            width: "100%",
+          },
         }}
       >
         <Suspense fallback={<CircularProgress size={24} />}>
