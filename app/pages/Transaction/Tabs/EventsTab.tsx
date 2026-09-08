@@ -125,6 +125,7 @@ export default function EventsTab({transaction}: EventsTabProps) {
                         ? event.data
                         : {__PLACEHOLDER__: event.data}
                     }
+                    copyData={event.data}
                   />
                 )
               }

@@ -160,7 +160,7 @@ function DecodedValueDisplay({value}: {value: unknown}) {
   const {isComplex, value: displayValue} = prepareDisplayValue(value);
 
   if (isComplex) {
-    return <JsonViewCard data={displayValue} />;
+    return <JsonViewCard data={displayValue} copyData={value} />;
   }
 
   return (

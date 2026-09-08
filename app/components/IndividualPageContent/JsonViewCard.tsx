@@ -8,6 +8,7 @@ import {
   CircularProgress,
   IconButton,
   Tooltip,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
 import type {CSSProperties, MouseEvent as ReactMouseEvent} from "react";
@@ -28,6 +29,8 @@ const COPY_FEEDBACK_MS = 1500;
 
 type JsonViewCardProps = {
   data: unknown;
+  /** When display data is transformed, copy this raw value instead. */
+  copyData?: unknown;
   collapsedByDefault?: boolean;
 };
 
@@ -79,14 +82,17 @@ function CopyValueButton({
   className,
   label,
   showLabel = false,
+  fullWidth = false,
 }: {
   value: unknown;
   keyName?: string | number;
   className?: string;
   label?: string;
   showLabel?: boolean;
+  fullWidth?: boolean;
 }) {
   const theme = useTheme();
+  const isTouch = useMediaQuery("(hover: none), (pointer: coarse)");
   const [status, setStatus] = useState<CopyStatus>("idle");
   const feedbackTimer = useRef<number | null>(null);
   const idleLabel =
@@ -132,17 +138,22 @@ function CopyValueButton({
 
   const icon =
     status === "copied" ? (
-      <CheckIcon sx={{fontSize: "0.9rem"}} />
+      <CheckIcon sx={{fontSize: fullWidth || isTouch ? "1.1rem" : "0.9rem"}} />
     ) : status === "error" ? (
-      <ErrorOutlineIcon sx={{fontSize: "0.9rem"}} />
+      <ErrorOutlineIcon
+        sx={{fontSize: fullWidth || isTouch ? "1.1rem" : "0.9rem"}}
+      />
     ) : (
-      <ContentCopyIcon sx={{fontSize: "0.9rem"}} />
+      <ContentCopyIcon
+        sx={{fontSize: fullWidth || isTouch ? "1.1rem" : "0.9rem"}}
+      />
     );
 
   const buttonSx = {
-    ml: 0.5,
-    p: "2px",
+    ml: fullWidth ? 0 : 0.5,
+    p: fullWidth ? "10px 16px" : "2px",
     verticalAlign: "middle",
+    touchAction: "manipulation",
     color:
       status === "copied"
         ? theme.palette.success.main
@@ -163,39 +174,56 @@ function CopyValueButton({
     },
   };
 
+  const button = showLabel ? (
+    <Button
+      aria-label={buttonLabel}
+      size={fullWidth ? "medium" : "small"}
+      variant="outlined"
+      fullWidth={fullWidth}
+      startIcon={icon}
+      onClick={handleClick}
+      sx={{
+        ...buttonSx,
+        minHeight: fullWidth ? 44 : undefined,
+        px: fullWidth ? 2 : "10px",
+      }}
+    >
+      {buttonLabel}
+    </Button>
+  ) : (
+    <IconButton
+      className={className}
+      aria-label={buttonLabel}
+      size={isTouch ? "medium" : "small"}
+      onClick={handleClick}
+      sx={{
+        ...buttonSx,
+        minWidth: isTouch ? 44 : 32,
+        minHeight: isTouch ? 44 : 32,
+      }}
+    >
+      {icon}
+    </IconButton>
+  );
+
+  if (showLabel || isTouch) {
+    return button;
+  }
+
   return (
     <Tooltip title={buttonLabel} placement="top" arrow>
-      {showLabel ? (
-        <Button
-          aria-label={buttonLabel}
-          size="small"
-          variant="outlined"
-          startIcon={icon}
-          onClick={handleClick}
-          sx={{...buttonSx, p: "4px 10px"}}
-        >
-          {buttonLabel}
-        </Button>
-      ) : (
-        <IconButton
-          className={className}
-          aria-label={buttonLabel}
-          size="small"
-          onClick={handleClick}
-          sx={buttonSx}
-        >
-          {icon}
-        </IconButton>
-      )}
+      {button}
     </Tooltip>
   );
 }
 
 export default function JsonViewCard({
   data,
+  copyData,
   collapsedByDefault,
 }: JsonViewCardProps) {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const semanticColors = getSemanticColors(theme.palette.mode);
 
   // Key color: warm coral tone for visual distinction from values (from theme)
@@ -222,103 +250,123 @@ export default function JsonViewCard({
   return (
     <Box
       sx={{
-        padding: 2,
         borderRadius: 1,
         backgroundColor: semanticColors.codeBlock.background,
-        overflow: "auto",
         maxWidth: "100%",
         maxHeight: MAX_CARD_HEIGHT,
-        position: "relative",
-        // Only long strings are clickable because they expand/collapse on click.
-        ".w-rjv-value-short": longStringHoverStyle,
-        ".w-rjv-line .json-copy-action": {
-          opacity: 0,
-          pointerEvents: "none",
-          transition: "opacity 0.15s ease",
-          minWidth: 32,
-          minHeight: 32,
-        },
-        ".w-rjv-line:hover .json-copy-action, .w-rjv-line:focus-within .json-copy-action":
-          {
-            opacity: 1,
-            pointerEvents: "auto",
-          },
-        "@media (hover: none), (pointer: coarse)": {
-          ".w-rjv-line .json-copy-action": {
-            opacity: 1,
-            pointerEvents: "auto",
-            minWidth: 40,
-            minHeight: 40,
-          },
-        },
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
       }}
     >
       <Box
         sx={{
-          display: "none",
+          display: "flex",
+          flexShrink: 0,
           justifyContent: "flex-end",
-          mb: 1,
-          "@media (hover: none), (pointer: coarse)": {
-            display: "flex",
-          },
+          alignItems: "center",
+          px: isMobile ? 1 : 1.5,
+          py: isMobile ? 0.75 : 1,
+          borderBottom: `1px solid ${alpha(theme.palette.divider, 0.6)}`,
         }}
       >
-        <CopyValueButton value={data} label="Copy JSON" showLabel />
+        <CopyValueButton
+          value={copyData ?? data}
+          label="Copy JSON"
+          showLabel={!isMobile}
+        />
       </Box>
-      <Suspense fallback={<CircularProgress size={24} />}>
-        <JsonView
-          value={data as object}
-          collapsed={collapsedByDefault ? 1 : false}
-          displayDataTypes={false}
-          displayObjectSize={false}
-          enableClipboard={false}
-          indentWidth={24}
-          shortenTextAfterLength={80}
-          style={
-            {
-              fontFamily: theme.typography.fontFamily,
-              fontSize: theme.typography.fontSize,
-              lineHeight: 1.6,
-              backgroundColor: "transparent",
-              // Custom colors using CSS variables
-              // Key: warm coral tone for visual distinction
-              "--w-rjv-key-string": keyColor,
-              // Values: cool blue tone
-              "--w-rjv-type-string-color": valueColor,
-              "--w-rjv-type-int-color": valueColor,
-              "--w-rjv-type-float-color": valueColor,
-              "--w-rjv-type-boolean-color": valueColor,
-              // Secondary elements: muted
-              "--w-rjv-type-null-color": secondaryTextColor,
-              "--w-rjv-arrow-color": secondaryTextColor,
-              "--w-rjv-brackets-color": secondaryTextColor,
-              "--w-rjv-colon-color": secondaryTextColor,
-              "--w-rjv-ellipsis-color": secondaryTextColor,
-              "--w-rjv-info-color": secondaryTextColor,
-            } as CSSProperties
-          }
-        >
-          <JsonRow
-            render={(props, {keyName, value}) => (
-              <Box
-                {...props}
-                sx={{
-                  "& .json-copy-action": {
-                    display: "inline-flex",
-                  },
-                }}
-              >
-                {props.children}
-                <CopyValueButton
-                  className="json-copy-action"
-                  keyName={keyName}
-                  value={value}
-                />
-              </Box>
-            )}
-          />
-        </JsonView>
-      </Suspense>
+      <Box
+        sx={{
+          flex: 1,
+          minHeight: 0,
+          px: isMobile ? 1 : 1.5,
+          py: isMobile ? 1 : 1.5,
+          overflow: "auto",
+          WebkitOverflowScrolling: "touch",
+          // Only long strings are clickable because they expand/collapse on click.
+          ".w-rjv-value-short": longStringHoverStyle,
+          ".w-rjv-line .json-copy-action": {
+            opacity: isMobile ? 1 : 0,
+            pointerEvents: isMobile ? "auto" : "none",
+            transition: "opacity 0.15s ease",
+            minWidth: isMobile ? 44 : 32,
+            minHeight: isMobile ? 44 : 32,
+          },
+          ...(!isMobile && {
+            ".w-rjv-line:hover .json-copy-action, .w-rjv-line:focus-within .json-copy-action":
+              {
+                opacity: 1,
+                pointerEvents: "auto",
+              },
+            "@media (hover: none), (pointer: coarse)": {
+              ".w-rjv-line .json-copy-action": {
+                opacity: 1,
+                pointerEvents: "auto",
+                minWidth: 44,
+                minHeight: 44,
+              },
+            },
+          }),
+        }}
+      >
+        <Suspense fallback={<CircularProgress size={24} />}>
+          <JsonView
+            value={data as object}
+            collapsed={collapsedByDefault ? 1 : false}
+            displayDataTypes={false}
+            displayObjectSize={false}
+            enableClipboard={false}
+            indentWidth={isMobile ? 16 : 24}
+            shortenTextAfterLength={isMobile ? 48 : 80}
+            style={
+              {
+                fontFamily: theme.typography.fontFamily,
+                fontSize: isMobile
+                  ? theme.typography.body2.fontSize
+                  : theme.typography.fontSize,
+                lineHeight: 1.6,
+                backgroundColor: "transparent",
+                // Custom colors using CSS variables
+                // Key: warm coral tone for visual distinction
+                "--w-rjv-key-string": keyColor,
+                // Values: cool blue tone
+                "--w-rjv-type-string-color": valueColor,
+                "--w-rjv-type-int-color": valueColor,
+                "--w-rjv-type-float-color": valueColor,
+                "--w-rjv-type-boolean-color": valueColor,
+                // Secondary elements: muted
+                "--w-rjv-type-null-color": secondaryTextColor,
+                "--w-rjv-arrow-color": secondaryTextColor,
+                "--w-rjv-brackets-color": secondaryTextColor,
+                "--w-rjv-colon-color": secondaryTextColor,
+                "--w-rjv-ellipsis-color": secondaryTextColor,
+                "--w-rjv-info-color": secondaryTextColor,
+              } as CSSProperties
+            }
+          >
+            <JsonRow
+              render={(props, {keyName, value}) => (
+                <Box
+                  {...props}
+                  sx={{
+                    "& .json-copy-action": {
+                      display: "inline-flex",
+                    },
+                  }}
+                >
+                  {props.children}
+                  <CopyValueButton
+                    className="json-copy-action"
+                    keyName={keyName}
+                    value={value}
+                  />
+                </Box>
+              )}
+            />
+          </JsonView>
+        </Suspense>
+      </Box>
     </Box>
   );
 }
