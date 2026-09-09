@@ -268,6 +268,8 @@ export const mainnetKnownAddresses: Record<string, string> = {
     "Kraken Staking",
   "0x0cf869189c785beaaad2f5c636ced4805aeae9cbf49070dc93aed2f16b99012a":
     "Gate 1",
+  "0xf88e0088e6d25533b81e792fe35ddfab29b6b8d736e06f4f839963fbaab13d9b":
+    "Hotcoin Hot Wallet 01",
   "0xe8ca094fec460329aaccc2a644dc73c5e39f1a2ad6e97f82b6cbdc1a5949b9ea":
     "MEXC 1",
   "0xde084991b91637a08e4da2f1b398f5f935e1393b65d13cc99c597ec5dc105b6b":
