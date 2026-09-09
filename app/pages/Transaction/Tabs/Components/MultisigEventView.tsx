@@ -699,6 +699,7 @@ function renderFieldValue(kind: FieldKind, value: unknown): React.ReactNode {
                 ? (value as Record<string, unknown>)
                 : {value}
             }
+            copyData={value}
           />
         </Box>
       );
