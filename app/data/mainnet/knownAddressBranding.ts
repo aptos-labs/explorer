@@ -257,6 +257,11 @@ const mainnetLabeledBranding: Record<string, KnownAddressBranding> = {
     description:
       "Address commonly associated with Gate.io deposit and withdrawal flows on Aptos.",
   },
+  "0xf88e0088e6d25533b81e792fe35ddfab29b6b8d736e06f4f839963fbaab13d9b": {
+    icon: "/address-icons/cex-hotcoin.png",
+    description:
+      "Address commonly associated with Hotcoin deposit and withdrawal flows on Aptos.",
+  },
   "0xe8ca094fec460329aaccc2a644dc73c5e39f1a2ad6e97f82b6cbdc1a5949b9ea": {
     icon: "/address-icons/cex-mexc.png",
     description:
