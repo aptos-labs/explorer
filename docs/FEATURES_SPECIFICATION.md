@@ -266,7 +266,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **Location** | `UserTransactionOverviewTab.tsx` → `TransactionActionsRow`. |
 | **DEX swaps** | ThalaSwap (v1, v2, CL), Liquidswap (v0, v0.5), PancakeSwap, SushiSwap, AnimeSwap, Obric, Aux Exchange, Cellana Finance, Thetis Market, Cetus, Hyperion, Tapp, Earnium. The same parsers apply to fullnode-decrypted encrypted entry-function payloads. |
 | **LSD/staking** | Amnis, TruFi, ThalaLSD, Kofi. |
-| **Other actions** | Econia order/fill, Circle CCTP bridge out/in (with cross-chain recipient formatting for EVM, Noble bech32, Solana base58, Sui, Aptos), token mint/burn, object transfer, fungible transfers, legacy token deposit/withdraw, claim fees/rewards, add/remove liquidity. |
+| **Other actions** | Econia order/fill, Circle CCTP bridge out/in (with cross-chain recipient formatting for EVM, Noble bech32, Solana base58, Sui, Aptos), token mint/burn, object transfer, fungible transfers, legacy token deposit/withdraw, claim fees/rewards, add/remove liquidity, **confidential asset** (transfer with encrypted amount hidden; deposit/withdraw with plaintext amounts; register, rollover, normalize, key rotation). Event parsers live in `app/pages/Transaction/confidentialAsset/parseConfidentialAssetEvents.ts` with payload fallbacks for common entry functions. |
 
 ### FEAT-TXN-010 — Transaction Trace Tab (Sentio)
 
@@ -1419,6 +1419,7 @@ top of the HTML site.
 | `app/pages/Transaction/cctp/domains.test.ts` | FEAT-TXN-009 (CCTP domain names and EVM domain recipient formatting) |
 | `app/pages/Transaction/cctp/parseCctpEvents.test.ts` | FEAT-TXN-009 (CCTP DepositForBurn / MintAndWithdraw event parsing) |
 | `app/pages/Transaction/cctp/cctpScan.test.ts` | FEAT-TXN-009 (WormholeScan transfer link helper) |
+| `app/pages/Transaction/confidentialAsset/parseConfidentialAssetEvents.test.ts` | FEAT-TXN-009 (confidential asset event and payload parsing) |
 | `app/pages/Account/hooks/useAccountTabValues.test.ts` | FEAT-ACCOUNT-005 (tab set computation: all GraphQL/object/multisig combos, invariants) |
 | `app/pages/Account/hooks/useAccountPageLayout.test.ts` | FEAT-ACCOUNT-013 (layout 404s vs hard errors, derived flags), FEAT-ACCOUNT-004 (object redirect gating) |
 | `app/api/prefetchEntityPages.test.ts` | FEAT-ACCOUNT-013 (layout resources before full resource list), FEAT-TXN-015 (non-blocking transaction prefetch) |

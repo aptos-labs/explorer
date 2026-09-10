@@ -16,6 +16,7 @@ import GasFeeValue from "../../../components/IndividualPageContent/ContentValue/
 import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {LearnMoreTooltip} from "../../../components/IndividualPageContent/LearnMoreTooltip";
+import StyledTooltip from "../../../components/StyledTooltip";
 import {TransactionStatus} from "../../../components/TransactionStatus";
 import {useNetworkName} from "../../../global-config/GlobalConfig";
 import type {NetworkName} from "../../../lib/constants";
@@ -39,12 +40,21 @@ import {
   parseCctpDepositForBurnEvent,
   parseCctpMintAndWithdrawEvent,
 } from "../cctp/parseCctpEvents";
+import {
+  type ConfidentialAssetAction,
+  confidentialAssetEventParsers,
+  parseConfidentialAssetFromPayload,
+} from "../confidentialAsset/parseConfidentialAssetEvents";
 import {getLearnMoreTooltip} from "../helpers";
 import {
   findCoinData,
   getTransactionAmount,
   getTransactionCounterparty,
 } from "../utils";
+import {
+  FungibleAssetAmount,
+  FungibleAssetChip,
+} from "./Components/FungibleAssetDisplay";
 import SignatureOverviewTable from "./Components/SignatureOverviewTable";
 import TransactionArguments from "./Components/TransactionArguments";
 import TransactionBlockRow from "./Components/TransactionBlockRow";
@@ -369,7 +379,8 @@ type EventAction =
   | CctpBridgeIn
   | DecibelPerpOrder
   | DecibelPerpDeposit
-  | DecibelPerpWithdraw;
+  | DecibelPerpWithdraw
+  | ConfidentialAssetAction;
 
 type Swap = {
   actionType: "swap";
@@ -570,6 +581,9 @@ const parsers = [
   parseEarniumEvent,
   parseCctpDepositForBurnEvent,
   parseCctpMintAndWithdrawEvent,
+
+  // confidential asset
+  ...confidentialAssetEventParsers,
 
   // staking / unstaking actions
   parseAmisLSDEvent,
@@ -782,6 +796,18 @@ function TransactionActionsRow({
     actions.push(decibelResult);
   }
 
+  const confidentialFromEvents = actions.filter(
+    (action): action is ConfidentialAssetAction =>
+      action.actionType === "confidential asset",
+  );
+  const confidentialFromPayload = parseConfidentialAssetFromPayload(
+    transaction,
+    confidentialFromEvents,
+  );
+  if (confidentialFromPayload.length > 0) {
+    actions.push(...confidentialFromPayload);
+  }
+
   const {data: coinData} = useGetCoinList();
   const networkName = useNetworkName();
   const enrichedActions = enrichCctpBridgeInActions(events, actions);
@@ -832,6 +858,8 @@ function TransactionActionsRow({
             return decibelPerpDepositAction(coinData, action, i);
           case "perp withdraw":
             return decibelPerpWithdrawAction(coinData, action, i);
+          case "confidential asset":
+            return confidentialAssetAction(coinData, action, i);
         }
       })}
       tooltip={
@@ -1552,31 +1580,182 @@ const objectTransferAction = (action: ObjectTransfer, i: number) => {
   );
 };
 
-const FungibleAssetAmount = ({
-  metadata,
-  amount,
-  coinData,
-}: {
-  metadata: string;
-  amount: string;
-  coinData: {data: CoinDescription[]} | undefined;
-}) => {
-  const {data: assetMetadata} = useGetAssetMetadata(metadata);
-  const assetCoin = findCoinData(coinData?.data ?? [], metadata);
-  const decimals = assetCoin?.decimals ?? assetMetadata?.decimals ?? 0;
-  const displayAmount = Number(amount) / 10 ** decimals;
+const CONFIDENTIAL_TRANSFER_AMOUNT_TOOLTIP =
+  "Transfer amount is encrypted on-chain and cannot be displayed.";
 
-  return (
-    <React.Fragment>
-      {displayAmount}
-      <HashButton
-        hash={metadata}
-        type={HashType.FUNGIBLE_ASSET}
-        img={assetCoin?.logoUrl}
-        size="small"
-      />
-    </React.Fragment>
-  );
+const confidentialAssetAction = (
+  coinData: {data: CoinDescription[]} | undefined,
+  action: ConfidentialAssetAction,
+  i: number,
+) => {
+  const actionBoxSx = {
+    marginBottom: 1,
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    columnGap: 1,
+    rowGap: 0.5,
+    width: "100%",
+  };
+  const rowSx = {
+    display: "flex",
+    alignItems: "center",
+    gap: 1,
+    width: {xs: "100%", sm: "auto"},
+    flexWrap: "wrap",
+  };
+
+  switch (action.subAction) {
+    case "transfer": {
+      const {from, to} = action;
+      if (!from || !to) {
+        return null;
+      }
+      return (
+        <Box key={`action-${i}`} sx={actionBoxSx}>
+          <Box sx={rowSx}>
+            <StyledTooltip title={CONFIDENTIAL_TRANSFER_AMOUNT_TOOLTIP}>
+              <span>🔒 Confidentially transferred</span>
+            </StyledTooltip>
+            <FungibleAssetChip metadata={action.metadata} coinData={coinData} />
+          </Box>
+          <Box sx={rowSx}>
+            <span>from</span>
+            <HashButton hash={from} type={HashType.ACCOUNT} />
+          </Box>
+          <Box sx={rowSx}>
+            <span>to</span>
+            <HashButton hash={to} type={HashType.ACCOUNT} />
+          </Box>
+        </Box>
+      );
+    }
+    case "deposit": {
+      const {addr} = action;
+      if (!addr) {
+        return null;
+      }
+      return (
+        <Box key={`action-${i}`} sx={actionBoxSx}>
+          <Box sx={rowSx}>
+            <span>🔒 Deposited</span>
+            {action.amount ? (
+              <FungibleAssetAmount
+                metadata={action.metadata}
+                amount={action.amount}
+                coinData={coinData}
+              />
+            ) : (
+              <FungibleAssetChip
+                metadata={action.metadata}
+                coinData={coinData}
+              />
+            )}
+            <span>into confidential store for</span>
+            <HashButton hash={addr} type={HashType.ACCOUNT} />
+          </Box>
+        </Box>
+      );
+    }
+    case "withdraw": {
+      const {from, to} = action;
+      if (!from || !to) {
+        return null;
+      }
+      return (
+        <Box key={`action-${i}`} sx={actionBoxSx}>
+          <Box sx={rowSx}>
+            <span>🔒 Withdrew</span>
+            {action.amount ? (
+              <FungibleAssetAmount
+                metadata={action.metadata}
+                amount={action.amount}
+                coinData={coinData}
+              />
+            ) : (
+              <FungibleAssetChip
+                metadata={action.metadata}
+                coinData={coinData}
+              />
+            )}
+            <span>from confidential store</span>
+          </Box>
+          <Box sx={rowSx}>
+            <span>from</span>
+            <HashButton hash={from} type={HashType.ACCOUNT} />
+          </Box>
+          <Box sx={rowSx}>
+            <span>to</span>
+            <HashButton hash={to} type={HashType.ACCOUNT} />
+          </Box>
+        </Box>
+      );
+    }
+    case "register": {
+      const {addr} = action;
+      if (!addr) {
+        return null;
+      }
+      return (
+        <Box key={`action-${i}`} sx={actionBoxSx}>
+          <Box sx={rowSx}>
+            <span>🔒 Registered confidential store for</span>
+            <FungibleAssetChip metadata={action.metadata} coinData={coinData} />
+            <span>on</span>
+            <HashButton hash={addr} type={HashType.ACCOUNT} />
+          </Box>
+        </Box>
+      );
+    }
+    case "rollover": {
+      const {addr} = action;
+      if (!addr) {
+        return null;
+      }
+      return (
+        <Box key={`action-${i}`} sx={actionBoxSx}>
+          <Box sx={rowSx}>
+            <span>🔒 Rolled over pending confidential balance for</span>
+            <FungibleAssetChip metadata={action.metadata} coinData={coinData} />
+            <span>on</span>
+            <HashButton hash={addr} type={HashType.ACCOUNT} />
+          </Box>
+        </Box>
+      );
+    }
+    case "normalize": {
+      const {addr} = action;
+      if (!addr) {
+        return null;
+      }
+      return (
+        <Box key={`action-${i}`} sx={actionBoxSx}>
+          <Box sx={rowSx}>
+            <span>🔒 Normalized confidential balance for</span>
+            <FungibleAssetChip metadata={action.metadata} coinData={coinData} />
+            <span>on</span>
+            <HashButton hash={addr} type={HashType.ACCOUNT} />
+          </Box>
+        </Box>
+      );
+    }
+    case "key_rotation": {
+      const {addr} = action;
+      if (!addr) {
+        return null;
+      }
+      return (
+        <Box key={`action-${i}`} sx={actionBoxSx}>
+          <Box sx={rowSx}>
+            <span>🔒 Rotated confidential encryption key for</span>
+            <FungibleAssetChip metadata={action.metadata} coinData={coinData} />
+            <span>on</span>
+            <HashButton hash={addr} type={HashType.ACCOUNT} />
+          </Box>
+        </Box>
+      );
+    }
+  }
 };
 
 const fungibleAssetTransferAction = (
