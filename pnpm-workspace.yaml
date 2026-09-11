@@ -13,7 +13,11 @@ minimumReleaseAge: 7200
 # the 5-day window. Audit each entry on bump and remove it once the locked
 # version is comfortably older than the cutoff. See
 # https://pnpm.io/settings#minimumreleaseageexclude
-minimumReleaseAgeExclude: []
+minimumReleaseAgeExclude:
+  [
+    # Renovate security update: vitest@4.1.11
+    vitest@4.1.11
+  ]
 
 allowBuilds:
   "@parcel/watcher": false
