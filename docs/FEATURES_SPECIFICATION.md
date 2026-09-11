@@ -181,7 +181,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Transaction Type | Available Tabs |
 |------------------|----------------|
-| User | Overview, Balance Change, Events, Payload, Modules (when package/modules changed), Changes, Trace |
+| User | Overview, Payments, Balance Change, Events, Payload, Modules (when package/modules changed), Changes, Trace |
 | Block metadata | Overview, Events, Modules (when applicable), Changes |
 | State checkpoint | Overview |
 | Pending | Overview, Payload |
@@ -315,6 +315,18 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **First paint** | Page chrome (header), a "Transaction" title, the URL hash/version, tab-strip skeletons, and overview skeletons render while the transaction is in flight. The previous full-page `null` loading state is gone. |
 | **Organize then fill** | Tab set, type chip, and overview body wait on the transaction object (needed to choose tabs). Secondary rows such as the parent block populate with their own skeletons after the overview is visible. Indexer-sourced reconstructed txns still show the FEAT-TXN-014 info alert once data arrives. |
 | **Errors** | After archival + indexer fallbacks fail, render `TransactionError` (including typed `NOT_FOUND`). An empty success response shows an in-page error alert. |
+
+### FEAT-TXN-016 — Payments Tab
+
+| Aspect | Detail |
+|--------|--------|
+| **Route** | `/txn/$txnHashOrVersion/payments`. User transactions only (placed after Overview / Decibel, before Balance Change). |
+| **Goal** | Explain *what was paid* in plain language: who sent what to whom, which fees were charged, and whether any step was confidential or went through a partner. |
+| **Identified kinds** | **Peer-to-peer** (`0x1::coin` / `aptos_account` / `primary_fungible_store` / `fungible_asset::transfer` and matching Deposit/Withdraw hops). **Controlled (through a partner)** — `transfer_with_ref` / dispatchable FA, non-framework modules that move funds, and multi-hop A→intermediary→B. **Confidential** — `0x1::confidential_asset` transfers; encrypted amounts are never shown. Connecting a wallet highlights whether you are sender/recipient but does **not** decrypt ciphertexts (wallets do not expose the confidential-asset decryption key). **Public → confidential** deposits and **confidential → public** withdraws show plaintext `u64` amounts from events. **Exchange** — swap events (generic `Swap*` parser including Pancake-style `amount_x_in` / `amount_y_out`) and, when no swap event exists, inferred inputs/outputs from mixed-asset movements. |
+| **Fees** | Always shown for user transactions: execution, I/O, storage fee, storage refund, net (from `0x1::transaction_fee::FeeStatement` when present, else `gas_used × gas_unit_price`). Fee payer / sponsor is labeled when the signature carries `fee_payer_address`. Same-asset withdraw-minus-deposit skims are called out as partner/protocol fees. |
+| **Multi-step flow** | When two or more payment steps are identified, **or** a single step has multiple payment legs (for example a swap's input and output), render a flow diagram (same graph as a Mermaid `flowchart LR`) with copyable Mermaid source. Network-fee edges alone do not trigger the diagram. |
+| **Data source** | Transaction body (payload, events, write-set) plus indexer `fungible_asset_activities` already used by FEAT-TXN-003. **No extra REST/view walk.** A client-side call-graph tracker is stubbed (`CLIENT_SIDE_PAYMENT_TRACKER.enabled = false`) because it would multiply API usage. |
+| **Empty** | "Network fees only" when gas/storage exist but no token payment pattern matches; otherwise "No payment identified". Failed user transactions still describe the intended payment, prefixed as failed. |
 
 ---
 
@@ -1427,10 +1439,14 @@ top of the HTML site.
 | `app/pages/Transaction/Tabs/Components/decodeMoveArgument.test.ts` | FEAT-TXN-011 / FEAT-TXN-004 (ABI-typed BCS argument decoding: address, ints, bool, String, vector, Object, Option; positional alignment and invalid/leftover fallbacks) |
 | `app/pages/Transaction/Tabs/Components/useEntryFunctionArgNames.test.ts` | FEAT-TXN-011 (entry function arg / type-param name resolution from Move source, signer-slot dropping, no-source fallback) |
 | `e2e/transaction-balance-change.spec.ts` | FEAT-TXN-003 (Playwright: testnet Balance Change tab loads indexer FA activities; asserts gas-fee row; skips outside CI when testnet gateway returns 401 for local preview origin) |
+| `e2e/transaction-payments.spec.ts` | FEAT-TXN-016 (Playwright: testnet Payments tab loads and explains network fees) |
 | `e2e/encrypted-transaction-localnet.spec.ts` | FEAT-TXN-002 / FEAT-TXN-005 (Playwright: submit encrypted transfer on localnet, assert overview Encryption chips + Coin Transfer + Payload tab; gated by `APTOS_LOCALNET=1`) |
 | `app/pages/Transaction/Tabs/Components/SignatureOverviewTable.test.tsx` | FEAT-TXN-002 (signature overview: Ed25519, multi-Ed25519, single_sender, multi_agent, fee_payer, fallbacks; stable keys for duplicate secondary addresses) |
 | `app/pages/Transaction/Tabs/Components/moveParamTypeDisplay.test.ts` | FEAT-TXN-011 (Move type display badges) |
-| `app/pages/Transaction/txnTabValues.test.ts` | FEAT-TXN-001 (tab selection by transaction type, shared `overview` tab component dispatch, trace tab only for user txns), FEAT-TXN-008 (legacy overview path rewrite), FEAT-TXN-012 (conditional Modules tab) |
+| `app/pages/Transaction/txnTabValues.test.ts` | FEAT-TXN-001 (tab selection by transaction type, shared `overview` tab component dispatch, trace tab only for user txns, Payments tab on user txns), FEAT-TXN-008 (legacy overview path rewrite), FEAT-TXN-012 (conditional Modules tab) |
+| `app/pages/Transaction/payments/identifyPayments.test.ts` | FEAT-TXN-016 (P2P, controlled/partner hops, confidential amount hiding, public↔confidential, exchange I/O, fee breakdown, Mermaid multi-step, client-trace fallback) |
+| `app/pages/Transaction/payments/clientTrace.test.ts` | FEAT-TXN-016 (client-side call-graph tracker remains disabled) |
+| `app/pages/Transaction/Tabs/PaymentsTab.test.tsx` | FEAT-TXN-016 (Payments tab copy, visible fee breakdown, encrypted confidential amounts, Mermaid source for multi-leg flows) |
 | `app/pages/Transaction/transactionModuleChanges.test.ts` | FEAT-TXN-012 (parse PublishPackage events and module write-set rows) |
 | `app/pages/Transaction/txnTabInvariants.test.ts` | FEAT-TXN-009 (DEX/LSD protocol coverage), TransactionTypeName enum values |
 | `app/pages/Transaction/cctp/formatRecipient.test.ts` | FEAT-TXN-009 (CCTP mint recipient formatting: EVM, Noble, Solana, Sui, Aptos) |

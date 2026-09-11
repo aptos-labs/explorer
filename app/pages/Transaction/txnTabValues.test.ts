@@ -26,10 +26,11 @@ function makeTxn(type: string) {
 }
 
 describe("FEAT-TXN-001 — getTabValues", () => {
-  it("returns 6 tabs for user transactions including trace", () => {
+  it("returns 7 tabs for user transactions including payments and trace", () => {
     const tabs = getTabValues(makeTxn(TransactionTypeName.User));
     expect(tabs).toEqual([
       "overview",
+      "payments",
       "balanceChange",
       "events",
       "payload",
@@ -201,6 +202,7 @@ describe("FEAT-TXN-001 — getOverviewTabComponent", () => {
 describe("FEAT-TXN-008 — resolveTxnTab", () => {
   const userTabs = [
     "overview",
+    "payments",
     "balanceChange",
     "events",
     "payload",
@@ -236,6 +238,7 @@ describe("FEAT-TXN-001 — overview tab chrome", () => {
   it("labels the shared overview tab Overview", () => {
     expect(getTabLabel("overview")).toBe("Overview");
     expect(getTabLabel("events")).toBe("Events");
+    expect(getTabLabel("payments")).toBe("Payments");
   });
 
   it("uses the chart icon for overview", () => {
