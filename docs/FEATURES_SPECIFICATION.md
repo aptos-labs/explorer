@@ -6,7 +6,7 @@
 > code. Tests (unit, integration, E2E) should reference the feature IDs defined
 > here (e.g. `// Covers FEAT-SEARCH-001`).
 >
-> **Last updated**: 2026-08-27
+> **Last updated**: 2026-09-11
 
 ---
 
@@ -42,6 +42,8 @@
 28. [Shared UI Components](#28-shared-ui-components)
 29. [Analytics & Telemetry](#29-analytics--telemetry)
 30. [Releases Hub](#30-releases-hub)
+31. [Run Script (Advanced)](#31-run-script-advanced)
+32. [Security Headers](#32-security-headers)
 
 ---
 
@@ -381,7 +383,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | Known address branding | `useKnownAddressBranding` match | Logo (with optional `iconBadge` overlay, e.g. "0x1"), description. Per-network data from `knownAddressBranding.ts`. |
 | Defunct protocol | Mainnet, `getDefunctProtocol` match | "MAY BE DEFUNCT" warning. "Withdraw Funds" button if withdrawal plugin exists (currently no plugins registered). Dialog shows owner %, operator fee, entry function, but no in-app tx submission. Registry in `app/data/defunctProtocols.ts` covers labeled mainnet protocols that have shut down or are winding down. Known-address labels tagged `// defunct`, `// winding_down`, or `// deprecated` in `app/data/mainnet/knownAddresses.ts` must have a matching registry row. |
 | Aptos Names promo | `useGetInDevMode` true (dev/earlydev mode) | ANS claim CTA. |
-| Petra Vault (multisig) | Account is multisig | "MULTISIG" pill + Petra Vault onboarding link. |
+| Petra Vault (multisig) | Account is multisig | "MULTISIG" pill + Petra Vault onboarding link. Vault embeds explorer under FEAT-SEC-001 (`frame-ancestors` allowlist). |
 
 ### FEAT-ACCOUNT-004 — Object Detection & Redirect
 
@@ -1181,7 +1183,7 @@ top of the HTML site.
 | Aspect | Detail |
 |--------|--------|
 | **PWA detection** | `app/hooks/useIsStandalonePWA.ts` — true when `matchMedia('(display-mode: standalone)')` or `'(display-mode: window-controls-overlay)'` matches, or legacy iOS `navigator.standalone === true`. SSR-safe (returns `false` server-side and on first client render). |
-| **Iframe detection** | `app/hooks/useIsInIframe.ts` — true when `window.self !== window.top`, or when accessing `window.top` throws (cross-origin frame). SSR-safe (returns `false` server-side and on first client render). |
+| **Iframe detection** | `app/hooks/useIsInIframe.ts` — true when `window.self !== window.top`, or when accessing `window.top` throws (cross-origin frame). SSR-safe (returns `false` server-side and on first client render). Cross-origin framing is only permitted for Petra Vault (FEAT-SEC-001). |
 | **Trigger** | `app/components/layout/ShareButton.tsx` — `IosShareIcon` `IconButton` rendered in the persistent `Header` on every page when the explorer runs as an installed PWA **or** when the explorer is loaded inside an iframe. Hidden in regular top-level browser tabs (the browser already exposes a share/copy URL action there). |
 | **Behavior** | Calls `navigator.share({ url, title })` with the current `window.location.href` and `document.title`. Falls back to `navigator.clipboard.writeText(url)` and shows a "Link copied to clipboard" snackbar when Web Share is unavailable, the platform's `canShare` returns false, or `navigator.share` rejects with a non-`AbortError`. User-cancelled `AbortError` shows no toast. |
 | **Helper** | `app/components/layout/sharePage.ts` — pure async helper returning `"shared" \| "copied" \| "cancelled" \| "error"` so the logic is unit-testable without a real browser. |
@@ -1304,6 +1306,21 @@ top of the HTML site.
 
 ---
 
+## 32. Security Headers
+
+### FEAT-SEC-001 — Iframe ancestors (Petra Vault)
+
+| Aspect | Detail |
+|--------|--------|
+| **Policy** | `Content-Security-Policy: frame-ancestors 'self' https://vault.petra.app` |
+| **Allowed ancestors** | Same-origin frames, and Petra Vault (`https://vault.petra.app`) so multisig users can run explorer (module Run / proposals) inside Vault. |
+| **Denied** | Any other embedding origin. The policy is not `frame-ancestors *` and is not `'none'`. |
+| **Not used** | `X-Frame-Options: DENY` / `SAMEORIGIN`. `X-Frame-Options` cannot allowlist a third-party origin (`ALLOW-FROM` is obsolete). Sending `DENY` together with CSP can still block Vault in Safari. |
+| **Surfaces** | `vercel.json` `headers` on `/` and `/(.*)` (static assets and host-applied HTML). SSR `app/ssr.tsx` calls `attachFrameAncestorsHeader` (`app/utils/frameAncestors.ts`) on markdown and HTML function responses because Vercel host headers do not always apply to TanStack Start functions. |
+| **Related** | FEAT-PWA-002 (in-app Share when framed), FEAT-ACCOUNT-003 (Petra Vault banner). |
+
+---
+
 ## Appendix A: URL Pattern Reference
 
 | URL Pattern | Feature ID |
@@ -1346,7 +1363,8 @@ top of the HTML site.
 | `app/utils/moduleErrorHandler.test.ts` | FEAT-ERROR-001 (chunk error handling, reload behavior) |
 | `app/utils/llmsRouteCoverage.test.ts` | FEAT-SEO-003 (LLM doc drift) |
 | `app/utils/agentSkillsIndex.test.ts` | FEAT-SEO-004 (agent-skills index schema, digest integrity, frontmatter) |
-| `app/utils/vercelHeaders.test.ts` | FEAT-SEO-004 (homepage and global RFC 8288 discovery `Link` headers; `framework: tanstack-start`, `buildCommand`, and no pinned `outputDirectory` so production is Nitro SSR) |
+| `app/utils/vercelHeaders.test.ts` | FEAT-SEO-004 (homepage and global RFC 8288 discovery `Link` headers; `framework: tanstack-start`, `buildCommand`, and no pinned `outputDirectory` so production is Nitro SSR), FEAT-SEC-001 (`Content-Security-Policy: frame-ancestors` allowlist; no `X-Frame-Options`) |
+| `app/utils/frameAncestors.test.ts` | FEAT-SEC-001 (CSP allowlist is `'self'` + Petra Vault; SSR helper sets CSP when missing and does not send `X-Frame-Options`) |
 | `app/utils/nitroSsrRenderer.test.ts` | FEAT-SEO-004 (`nitro({renderer: false})` and no root `index.html`, so Start SSR owns the `/**` route instead of Nitro's `renderer-template`) |
 | `app/utils/registerServiceWorker.test.ts` | FEAT-PWA-001 (service worker registration from the hydrated client bundle) |
 | `app/utils/mcpServerCard.test.ts` | FEAT-SEO-004 (MCP Server Card minimum fields and advertised WebMCP tools) |

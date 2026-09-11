@@ -5,6 +5,7 @@ import {
 } from "@tanstack/react-start/server";
 import llmsReference from "../public/llms.txt?raw";
 import {attachAgentDiscoveryHeaders} from "./utils/agentDiscoveryHeaders";
+import {attachFrameAncestorsHeader} from "./utils/frameAncestors";
 import {negotiateMarkdownRequest} from "./utils/markdownHomeNegotiation";
 
 function getSsrCacheControl(request: Request) {
@@ -71,10 +72,11 @@ const startFetch = createStartHandler(cacheAwareRenderHandler);
  * Accept and otherwise returns HTTP 500 JSON ("Only HTML requests are
  * supported here").
  * Markdown negotiation therefore has to happen on this outer fetch, not
- * inside the render callback. Discovery Link / Vary: Accept are attached
- * here as well because host-level header rules (Vercel `headers` in
- * `vercel.json`, formerly Netlify `[[headers]]`) apply to static assets,
- * not always to SSR function responses.
+ * inside the render callback. Discovery Link / Vary: Accept and CSP
+ * `frame-ancestors` (Petra Vault) are attached here as well because
+ * host-level header rules (Vercel `headers` in `vercel.json`, formerly
+ * Netlify `[[headers]]`) apply to static assets, not always to SSR
+ * function responses.
  */
 // Nitro / Vercel invoke this module as a Fetch API handler
 // (`serverEntrypoint.fetch`). The framework's own `default-entry/server.js`
@@ -84,9 +86,9 @@ export default {
   async fetch(...args: Parameters<typeof startFetch>) {
     const request = args[0];
     const markdown = negotiateMarkdownRequest(request, llmsReference);
-    if (markdown) return markdown;
+    if (markdown) return attachFrameAncestorsHeader(markdown);
 
     const response = await startFetch(...args);
-    return attachAgentDiscoveryHeaders(response);
+    return attachFrameAncestorsHeader(attachAgentDiscoveryHeaders(response));
   },
 };
