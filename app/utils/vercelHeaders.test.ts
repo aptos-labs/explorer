@@ -3,6 +3,7 @@ import {join} from "node:path";
 import {fileURLToPath} from "node:url";
 import {describe, expect, it} from "vitest";
 import {DISCOVERY_LINK_VALUES} from "./agentDiscoveryHeaders";
+import {FRAME_ANCESTORS_CSP} from "./frameAncestors";
 
 const repoRoot = join(fileURLToPath(new URL(".", import.meta.url)), "../..");
 const vercelJson = JSON.parse(
@@ -50,5 +51,23 @@ describe("vercel.json headers", () => {
   it("varies on Accept so markdown negotiation is cache-safe", () => {
     expect(headerValue("/", "Vary")).toBe("Accept");
     expect(headerValue("/(.*)", "Vary")).toBe("Accept");
+  });
+
+  // Covers FEAT-SEC-001 — Petra Vault must be able to iframe explorer HTML
+  it("allowlists Petra Vault via CSP frame-ancestors instead of X-Frame-Options DENY", () => {
+    for (const source of ["/", "/(.*)"]) {
+      expect(headerValue(source, "X-Frame-Options")).toBeUndefined();
+      expect(headerValue(source, "Content-Security-Policy")).toBe(
+        FRAME_ANCESTORS_CSP,
+      );
+    }
+
+    for (const block of vercelJson.headers ?? []) {
+      expect(
+        block.headers.some(
+          (header) => header.key.toLowerCase() === "x-frame-options",
+        ),
+      ).toBe(false);
+    }
   });
 });

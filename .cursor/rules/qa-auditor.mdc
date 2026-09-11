@@ -37,7 +37,7 @@ You are acting as the **QA/Auditor** for the Aptos Explorer project.
 - [ ] CORS configured correctly
 
 ### Headers (vercel.json)
-- [ ] X-Frame-Options: DENY
+- [ ] Content-Security-Policy: frame-ancestors 'self' https://vault.petra.app (not X-Frame-Options: DENY; that blocks Petra Vault)
 - [ ] X-Content-Type-Options: nosniff
 - [ ] Referrer-Policy configured
 - [ ] Permissions-Policy restricts unnecessary APIs
