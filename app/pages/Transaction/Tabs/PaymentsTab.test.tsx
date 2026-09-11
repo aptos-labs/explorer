@@ -99,6 +99,7 @@ function baseUserTx(
     hash: "0xpay",
     state_change_hash: "0x0",
     event_root_hash: "0x0",
+    state_checkpoint_hash: null,
     gas_used: "100",
     success: true,
     vm_status: "Executed successfully",
@@ -137,9 +138,12 @@ describe("PaymentsTab — FEAT-TXN-016", () => {
     render(withProviders(<PaymentsTab transaction={baseUserTx()} />));
 
     expect(
-      screen.getByRole("heading", {name: /Peer-to-peer transfer/i}),
+      screen.getByRole("heading", {
+        level: 2,
+        name: /Peer-to-peer transfer/i,
+      }),
     ).toBeTruthy();
-    expect(screen.getByText(/no intermediary/i)).toBeTruthy();
+    expect(screen.getAllByText(/no intermediary/i).length).toBeGreaterThan(0);
     expect(screen.getByLabelText("Payment fees")).toBeTruthy();
     expect(screen.getByText(/Net network fee/i)).toBeTruthy();
     expect(screen.getByText("Execution (compute)")).toBeTruthy();
