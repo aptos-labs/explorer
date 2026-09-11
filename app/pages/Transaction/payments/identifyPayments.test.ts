@@ -12,7 +12,11 @@ import {
   P2P_ENTRY_FUNCTIONS,
   sameAddress,
 } from "./identifyPayments";
-import {paymentFlowToMermaid, shouldRenderPaymentMermaid} from "./mermaid";
+import {
+  paymentFlowToMermaid,
+  paymentLegCount,
+  shouldRenderPaymentMermaid,
+} from "./mermaid";
 
 const SENDER =
   "0x00000000000000000000000000000000000000000000000000000000000000aa";
@@ -444,6 +448,12 @@ describe("FEAT-TXN-016 — exchange inputs and outputs", () => {
     expect(result.steps[0].amount?.raw).toBe("1000");
     expect(result.steps[0].amountOut?.raw).toBe("500");
     expect(result.explanation).toMatch(/inputs and outputs/i);
+    expect(
+      shouldRenderPaymentMermaid(
+        result.steps.length,
+        paymentLegCount(result.flow),
+      ),
+    ).toBe(true);
   });
 
   it("infers exchange I/O from mixed asset movements when no swap event exists", () => {
@@ -536,6 +546,7 @@ describe("FEAT-TXN-016 — mermaid + client-side tracker", () => {
   it("escapes mermaid labels and skips the diagram for a single step", () => {
     expect(shouldRenderPaymentMermaid(1)).toBe(false);
     expect(shouldRenderPaymentMermaid(2)).toBe(true);
+    expect(shouldRenderPaymentMermaid(1, 2)).toBe(true);
     const mermaid = paymentFlowToMermaid({
       nodes: [
         {id: "nSender", label: 'Alice "A" [from]', role: "account"},

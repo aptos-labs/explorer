@@ -167,6 +167,7 @@ export default function PaymentFlowDiagram({
         ))}
       </Stack>
       <Accordion
+        defaultExpanded
         disableGutters
         elevation={0}
         sx={{border: 1, borderColor: "divider"}}
@@ -190,6 +191,7 @@ export default function PaymentFlowDiagram({
             </Tooltip>
             <Box
               component="pre"
+              aria-label="Mermaid source"
               sx={{
                 m: 0,
                 pr: 5,

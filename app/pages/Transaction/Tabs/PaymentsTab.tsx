@@ -34,7 +34,7 @@ import {
   formatPaymentAmount,
   identifyPayments,
 } from "../payments/identifyPayments";
-import {shouldRenderPaymentMermaid} from "../payments/mermaid";
+import {paymentLegCount, shouldRenderPaymentMermaid} from "../payments/mermaid";
 import type {
   PaymentAmount,
   PaymentFeeLine,
@@ -252,8 +252,10 @@ function StepCard({
 
 function FeesPanel({fees}: {fees: PaymentFeeLine[]}) {
   const net = fees.find((fee) => fee.kind === "net");
-  const refund = fees.find((fee) => fee.kind === "storage_refund");
   const partner = fees.filter((fee) => fee.kind === "partner");
+  const breakdown = fees.filter(
+    (fee) => fee.kind !== "net" && fee.kind !== "partner",
+  );
   return (
     <Paper
       variant="outlined"
@@ -285,44 +287,24 @@ function FeesPanel({fees}: {fees: PaymentFeeLine[]}) {
             ) : null}
           </Box>
         ) : null}
-        {refund && refund.amountOctas !== "0" ? (
-          <Typography variant="body2">
-            Storage refund: <APTCurrencyValue amount={refund.amountOctas} />
-          </Typography>
+        {breakdown.length > 0 ? (
+          <Stack spacing={1.5} aria-label="Fee breakdown">
+            {breakdown.map((fee) => (
+              <Box key={fee.id}>
+                <Typography variant="subtitle2">{fee.label}</Typography>
+                <Typography variant="body2">
+                  <APTCurrencyValue amount={fee.amountOctas} /> —{" "}
+                  {fee.explanation}
+                </Typography>
+              </Box>
+            ))}
+          </Stack>
         ) : null}
         {partner.map((fee) => (
           <Alert key={fee.id} severity="warning">
             {fee.label}: {fee.explanation}
           </Alert>
         ))}
-        <Accordion
-          disableGutters
-          elevation={0}
-          sx={{border: 1, borderColor: "divider"}}
-        >
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="body2" sx={{fontWeight: 600}}>
-              Full fee breakdown
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Stack spacing={1.5}>
-              {fees.map((fee) => (
-                <Box key={fee.id}>
-                  <Typography variant="subtitle2">{fee.label}</Typography>
-                  {fee.kind === "partner" ? (
-                    <Typography variant="body2">{fee.explanation}</Typography>
-                  ) : (
-                    <Typography variant="body2">
-                      <APTCurrencyValue amount={fee.amountOctas} /> —{" "}
-                      {fee.explanation}
-                    </Typography>
-                  )}
-                </Box>
-              ))}
-            </Stack>
-          </AccordionDetails>
-        </Accordion>
       </Stack>
     </Paper>
   );
@@ -357,7 +339,10 @@ export default function PaymentsTab({
     );
   }
 
-  const showMermaid = shouldRenderPaymentMermaid(identification.steps.length);
+  const showMermaid = shouldRenderPaymentMermaid(
+    identification.steps.length,
+    paymentLegCount(identification.flow),
+  );
 
   return (
     <Box sx={{marginBottom: 3}} data-entity-type="payments">

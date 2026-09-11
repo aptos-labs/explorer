@@ -41,6 +41,19 @@ export function paymentFlowToMermaid(flow: PaymentFlowGraph): string {
   return lines.join("\n");
 }
 
-export function shouldRenderPaymentMermaid(stepCount: number): boolean {
-  return stepCount >= 2;
+/** Non-fee legs in the payment graph (swap in/out, partner hops, etc.). */
+export function paymentLegCount(flow: PaymentFlowGraph): number {
+  return flow.edges.filter((edge) => edge.kind !== "fee").length;
+}
+
+/**
+ * Show a flow diagram when the transaction has multiple payment steps, or a
+ * single step with multiple legs (for example a swap's input and output).
+ * Network-fee edges alone do not trigger the diagram.
+ */
+export function shouldRenderPaymentMermaid(
+  stepCount: number,
+  paymentLegs = 0,
+): boolean {
+  return stepCount >= 2 || paymentLegs >= 2;
 }
