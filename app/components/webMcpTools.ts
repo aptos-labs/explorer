@@ -103,7 +103,7 @@ export function buildWebMcpTools(navigate: NavigateFn): WebMCPTool[] {
       name: "open_transaction",
       title: "Open transaction",
       description:
-        "Open the Aptos Explorer transaction page for a given version number (integer) or transaction hash (0x-prefixed 64-char hex). Optional tab selects which detail view to show.",
+        "Open the Aptos Explorer transaction page for a given version number (integer) or transaction hash (0x-prefixed 64-char hex). Optional tab selects which detail view to show (overview, payments, events, payload, changes, balanceChange, trace).",
       inputSchema: {
         type: "object",
         required: ["id"],
@@ -118,6 +118,7 @@ export function buildWebMcpTools(navigate: NavigateFn): WebMCPTool[] {
             type: "string",
             enum: [
               "overview",
+              "payments",
               "events",
               "payload",
               "changes",

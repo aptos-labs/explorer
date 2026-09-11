@@ -32,6 +32,8 @@ const REQUIRED_PATH_SNIPPETS = [
   /** Transaction detail tab */
   "overview",
   "balanceChange",
+  /** User transaction Payments tab — transfer / confidential / exchange identification */
+  "/payments",
   /** User transaction Sentio call trace tab */
   "/trace",
   /** Conditional transaction tab — Move package / module changes */
