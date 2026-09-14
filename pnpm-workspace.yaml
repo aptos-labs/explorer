@@ -25,6 +25,16 @@ minimumReleaseAgeExclude:
     react-simple-maps@5.0.5
   ]
 
+# Temporary: patched image-size 2.0.3/2.0.4 (ICNS/JXL/HEIF infinite-loop DoS)
+# published 2026-09-14, inside both the 5-day minimumReleaseAge gate and Safe
+# Chain's 48h floor. Transitive via nitro → @netlify/dev-utils (dev-only Netlify
+# local tooling). Drop these once an override to >=2.0.3 is age-eligible
+# (after 2026-09-19).
+audit:
+  ignore:
+    - GHSA-w3rx-r6r6-pgpr
+    - GHSA-5p2g-fcmc-qvqq
+
 allowBuilds:
   "@parcel/watcher": false
   "@swc/core": true
