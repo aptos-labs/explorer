@@ -13,7 +13,11 @@ minimumReleaseAge: 7200
 # the 5-day window. Audit each entry on bump and remove it once the locked
 # version is comfortably older than the cutoff. See
 # https://pnpm.io/settings#minimumreleaseageexclude
-minimumReleaseAgeExclude: []
+minimumReleaseAgeExclude:
+  [
+    # Temporary Renovate update exception; remove after 2026-09-17.
+    react-simple-maps@5.0.5
+  ]
 
 allowBuilds:
   "@parcel/watcher": false

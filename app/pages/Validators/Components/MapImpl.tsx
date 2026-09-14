@@ -156,17 +156,7 @@ export default function ValidatorMap({validatorGeoGroups, groupBy}: MapProps) {
                     ? theme.palette.neutralShade.lighter
                     : brandColors.sand
                 }
-                style={{
-                  default: {
-                    outline: "0",
-                  },
-                  hover: {
-                    outline: "0",
-                  },
-                  pressed: {
-                    outline: "0",
-                  },
-                }}
+                style={{outline: "0"}}
               />
             ))
           }
