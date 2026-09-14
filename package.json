@@ -39,7 +39,7 @@
     "react-dom": "19.2.8",
     "react-helmet-async": "3.0.0",
     "react-hook-form": "7.85.0",
-    "react-simple-maps": "3.0.0",
+    "react-simple-maps": "5.0.5",
     "react-syntax-highlighter": "16.1.1"
   },
   "scripts": {
