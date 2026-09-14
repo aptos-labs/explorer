@@ -914,7 +914,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Toggle** | "Switch to light/dark mode" `MenuItem` rendered inside the header overflow menu (`HeaderOverflowMenu`). The menu is shown on every viewport — on compact viewports it doubles as the primary nav menu; on wide viewports (`lg+`) it collapses to a "preferences" drop-down next to the Settings icon containing just the theme toggle. There is no longer a dedicated dark-mode `Button` in the toolbar. |
+| **Toggle** | On wide viewports (`lg+`), a dedicated sun/moon `IconButton` (`ColorModeToggleButton`) in the header toolbar next to Settings. On compact viewports (`xs`–`md`), the same action appears as a "Switch to light/dark mode" `MenuItem` inside `HeaderOverflowMenu` (the hamburger nav menu). |
 | **Persistence** | Cookie (`COLOR_MODE_COOKIE`) + system preference detection. |
 | **Implementation** | MUI `ThemeProvider` via `ProvideColorMode`. |
 | **Light theme** | Neutral grey app background (`#ECEEF2`), white cards/panels, cooler borders, soft grey stripes for tables and filled inputs. Body text ink (`#171612`). |
@@ -1200,7 +1200,7 @@ top of the HTML site.
 | **Behavior** | Calls `navigator.share({ url, title })` with the current `window.location.href` and `document.title`. Falls back to `navigator.clipboard.writeText(url)` and shows a "Link copied to clipboard" snackbar when Web Share is unavailable, the platform's `canShare` returns false, or `navigator.share` rejects with a non-`AbortError`. User-cancelled `AbortError` shows no toast. |
 | **Helper** | `app/components/layout/sharePage.ts` — pure async helper returning `"shared" \| "copied" \| "cancelled" \| "error"` so the logic is unit-testable without a real browser. |
 | **Why these contexts** | An installed PWA hides the address bar, and an iframe hides the embedding browser's chrome from the embedded document; surfacing a Share action in the app shell preserves shareability without cluttering the desktop browser chrome on regular tabs. |
-| **Header layout** | The dark-mode toggle is no longer a dedicated toolbar `Button`. It lives inside `HeaderOverflowMenu` on every viewport — see FEAT-THEME-001. This keeps the toolbar layout consistent regardless of whether the Share button is present (PWA / iframe) or hidden (regular browser tab). |
+| **Header layout** | On wide viewports (`lg+`), the theme toggle is a dedicated toolbar `IconButton` (`ColorModeToggleButton`) beside Settings; on compact viewports it remains inside `HeaderOverflowMenu` — see FEAT-THEME-001. The Share button slot is unchanged (PWA / iframe only). |
 
 ---
 
