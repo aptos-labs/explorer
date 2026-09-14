@@ -50,6 +50,7 @@ import TransactionTraceTab from "./Tabs/TransactionTraceTab";
 import UnknownTab from "./Tabs/UnknownTab";
 import UserTransactionOverviewTab from "./Tabs/UserTransactionOverviewTab";
 import ValidatorTransactionTab from "./Tabs/ValidatorTransactionTab";
+import {hasIdentifiedPayment} from "./payments/identifyPayments";
 import {transactionHasModuleSummary} from "./transactionModuleChanges";
 
 function insertModulesTabBeforeChanges(tabs: TabValue[]): TabValue[] {
@@ -74,14 +75,10 @@ export function getTabValues(transaction: Types.Transaction): TabValue[] {
       if (isDecibelTransaction(transaction)) {
         tabs.push("decibelDetail");
       }
-      tabs.push(
-        "payments",
-        "balanceChange",
-        "events",
-        "payload",
-        "changes",
-        "trace",
-      );
+      if (hasIdentifiedPayment(transaction)) {
+        tabs.push("payments");
+      }
+      tabs.push("balanceChange", "events", "payload", "changes", "trace");
       return withModulesTabWhenApplicable(transaction, tabs);
     }
     case TransactionTypeName.BlockMetadata:

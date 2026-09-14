@@ -12,7 +12,7 @@ Canonical URL templates for [Aptos Explorer](https://explorer.aptoslabs.com). Al
 ## Entity → URL template
 
 - **Transaction**: `/txn/{version}` or `/txn/{hash}`
-  - Tabs: `/txn/{id}/overview`, `/events`, `/payload`, `/modules` (when applicable), `/changes`, `/balanceChange`, `/payments`, `/trace`
+  - Tabs: `/txn/{id}/overview`, `/events`, `/payload`, `/modules` (when applicable), `/changes`, `/balanceChange`, `/payments` (when a payment is identified), `/trace`
 - **Account**: `/account/{address}` (redirects to `/transactions`)
   - Tabs: `/transactions`, `/coins`, `/tokens`, `/resources`, `/modules`, `/multisig`, `/info`
   - Modules: `/modules/packages`, `/modules/code/{moduleName}`, `/modules/run/{moduleName}/{functionName}`, `/modules/view/{moduleName}/{functionName}`

@@ -1509,6 +1509,15 @@ function identifyFromTransactionBody(
   };
 }
 
+/**
+ * Whether the Payments tab should be offered. True only when the transaction
+ * body yields at least one payment step (P2P, partner-controlled, confidential,
+ * wrap/unwrap, or exchange). Network fees alone do not count.
+ */
+export function hasIdentifiedPayment(transaction: Types.Transaction): boolean {
+  return identifyPayments({transaction}).steps.length > 0;
+}
+
 export function identifyPayments(
   input: IdentifyPaymentsInput,
 ): PaymentIdentification {

@@ -5,6 +5,7 @@ import {CONFIDENTIAL_ASSET_EVENT_TYPES} from "../confidentialAsset/parseConfiden
 import {CLIENT_SIDE_PAYMENT_TRACKER} from "./clientTrace";
 import {
   canonicalAssetId,
+  hasIdentifiedPayment,
   identifyPayments,
   isControlledTransferFunction,
   parseExchangeEvent,
@@ -151,6 +152,7 @@ describe("FEAT-TXN-016 — P2P transfers", () => {
     expect(result.steps[0].amount?.raw).toBe("100000000");
     expect(result.headline).toMatch(/Peer-to-peer/i);
     expect(result.explanation).toMatch(/no intermediary/i);
+    expect(hasIdentifiedPayment(makeUserTx())).toBe(true);
   });
 
   it("pairs FA withdraw/deposit events into a P2P hop", () => {
@@ -539,6 +541,7 @@ describe("FEAT-TXN-016 — fees", () => {
     expect(result.primaryKind).toBe("fees_only");
     expect(result.headline).toMatch(/Network fees only/);
     expect(result.fees.some((fee) => fee.kind === "net")).toBe(true);
+    expect(hasIdentifiedPayment(tx)).toBe(false);
   });
 });
 
