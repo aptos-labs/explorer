@@ -3,6 +3,12 @@ registry: https://registry.npmjs.org/
 autoInstallPeers: true
 strictPeerDependencies: false
 
+# pnpm 12 otherwise prepends an environment document to pnpm-lock.yaml.
+# GitHub's dependency graph currently reads that document as an empty project
+# graph. Keep the lockfile scanner-compatible; package.json, .tool-versions,
+# and pnpm/action-setup still pin the exact pnpm version used by CI.
+pmOnFail: ignore
+
 # Supply-chain mitigation: refuse to install package versions newer than this
 # many minutes. 7200 minutes = 5 days, giving the npm registry / community
 # time to detect compromised or malicious releases before they enter our
