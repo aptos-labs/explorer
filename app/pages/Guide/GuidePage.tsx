@@ -1,6 +1,5 @@
 import {
   Box,
-  Container,
   Divider,
   Link as MuiLink,
   Paper,
@@ -23,7 +22,11 @@ function GuideParagraphs({texts}: {texts: string[]}) {
           key={text}
           variant="body1"
           component="p"
-          sx={{mb: 2, maxWidth: "65ch"}}
+          sx={{
+            mb: 2,
+            maxWidth: "65ch",
+            overflowWrap: "anywhere",
+          }}
         >
           <InlineMarkup text={text} />
         </Typography>
@@ -37,7 +40,10 @@ function GuideBullets({items}: {items: string[]}) {
     return null;
   }
   return (
-    <Box component="ul" sx={{pl: 3, mb: 2, maxWidth: "65ch"}}>
+    <Box
+      component="ul"
+      sx={{pl: 3, mb: 2, maxWidth: "65ch", overflowWrap: "anywhere"}}
+    >
       {items.map((item) => (
         <Box component="li" key={item} sx={{mb: 1}}>
           <Typography variant="body1" component="span">
@@ -53,7 +59,7 @@ export default function GuidePage() {
   const {t, tList} = useTranslation();
 
   return (
-    <Box>
+    <Box sx={{width: "100%", maxWidth: "100%", minWidth: 0}}>
       <PageMetadata
         title={t("guide.meta.title")}
         description={t("guide.meta.description")}
@@ -69,7 +75,14 @@ export default function GuidePage() {
         canonicalPath="/guide"
       />
       <PageHeader />
-      <Container maxWidth="lg" sx={{py: 4}}>
+      <Box
+        sx={{
+          py: 4,
+          width: "100%",
+          maxWidth: "100%",
+          minWidth: 0,
+        }}
+      >
         <Typography
           variant="h3"
           component="h1"
@@ -86,6 +99,7 @@ export default function GuidePage() {
             color: "text.secondary",
             mb: 4,
             maxWidth: "65ch",
+            overflowWrap: "anywhere",
           }}
         >
           <InlineMarkup text={t("guide.meta.intro")} />
@@ -96,6 +110,9 @@ export default function GuidePage() {
           spacing={4}
           sx={{
             alignItems: "flex-start",
+            width: "100%",
+            maxWidth: "100%",
+            minWidth: 0,
           }}
         >
           <Paper
@@ -105,6 +122,8 @@ export default function GuidePage() {
             sx={{
               p: 2,
               width: {xs: "100%", md: 260},
+              maxWidth: "100%",
+              boxSizing: "border-box",
               flexShrink: 0,
               position: {md: "sticky"},
               top: {md: 112},
@@ -136,7 +155,15 @@ export default function GuidePage() {
             </Stack>
           </Paper>
 
-          <Box component="article" sx={{minWidth: 0, flex: 1}}>
+          <Box
+            component="article"
+            sx={{
+              minWidth: 0,
+              flex: 1,
+              maxWidth: "100%",
+              overflowWrap: "anywhere",
+            }}
+          >
             {GUIDE_SECTIONS.map((section, index) => (
               <Box
                 key={section.id}
@@ -167,7 +194,7 @@ export default function GuidePage() {
             ))}
           </Box>
         </Stack>
-      </Container>
+      </Box>
     </Box>
   );
 }

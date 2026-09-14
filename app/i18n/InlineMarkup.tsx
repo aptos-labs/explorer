@@ -6,6 +6,8 @@ import {isInternalHref, parseInlineMarkup} from "./inlineMarkup";
 const codeSx = {
   fontFamily: "monospace",
   fontSize: "0.9em",
+  overflowWrap: "anywhere",
+  wordBreak: "break-word",
 } as const;
 
 function MarkupLink({href, children}: {href: string; children: ReactNode}) {

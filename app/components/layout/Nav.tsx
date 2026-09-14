@@ -23,10 +23,13 @@ function NavButton({
       <Button
         variant="nav"
         title={title}
-        style={{
+        sx={{
           color: "inherit",
-          fontSize: "1rem",
+          fontSize: {lg: "0.9375rem", xl: "1rem"},
           fontWeight: isActive ? 700 : undefined,
+          minWidth: 0,
+          px: {lg: 0.75, xl: 1.25},
+          whiteSpace: "nowrap",
         }}
       >
         {label}
@@ -46,8 +49,11 @@ export default function Nav() {
       sx={{
         display: {xs: "none", lg: "flex"},
         alignItems: "center",
-        gap: {lg: 3, xl: 8},
-        marginRight: {lg: "2rem", xl: "3.5rem"},
+        // Keep the lg+ toolbar's min-content under the viewport width. The
+        // previous xl gap (64px) made the document ~1700px wide at 1536px.
+        gap: {lg: 0.75, xl: 2},
+        flexShrink: 0,
+        minWidth: 0,
       }}
     >
       <NavButton

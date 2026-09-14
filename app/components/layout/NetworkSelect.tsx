@@ -47,7 +47,7 @@ export default function NetworkSelect() {
   };
 
   return (
-    <FormControl size="small" sx={{ml: 2, minWidth: 120}}>
+    <FormControl size="small" sx={{minWidth: 120, flexShrink: 0}}>
       <Select
         value={networkName}
         onChange={handleChange}

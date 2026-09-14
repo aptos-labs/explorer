@@ -213,6 +213,8 @@ function RootComponent() {
                                 flexGrow: 1,
                                 display: "flex",
                                 flexDirection: "column",
+                                minWidth: 0,
+                                maxWidth: "100%",
                               }}
                             >
                               <SkipToContent />
@@ -226,6 +228,8 @@ function RootComponent() {
                                   flexDirection: "column",
                                   flexGrow: 4,
                                   paddingTop: "2rem",
+                                  minWidth: 0,
+                                  maxWidth: "100%",
                                 }}
                               >
                                 <Suspense fallback={<Fallback />}>

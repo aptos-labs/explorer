@@ -124,11 +124,14 @@ export default function Header() {
         }}
       >
         <FeatureBar />
-        <Container maxWidth={false}>
+        <Container maxWidth={false} sx={{minWidth: 0}}>
           <Toolbar
             sx={{
               height: "5rem",
               color: theme.palette.text.primary,
+              minWidth: 0,
+              width: "100%",
+              columnGap: {xs: 0.5, lg: 0.5, xl: 1},
             }}
             disableGutters
           >
@@ -139,8 +142,10 @@ export default function Header() {
               sx={{
                 display: "flex",
                 alignItems: "center",
-                gap: 1.5,
+                gap: {xs: 1.5, lg: 1, xl: 1.5},
                 marginRight: "auto",
+                minWidth: 0,
+                flexShrink: 0,
                 textDecoration: "none",
                 color: "inherit",
               }}
@@ -154,7 +159,7 @@ export default function Header() {
                 variant="h6"
                 sx={{
                   fontWeight: 600,
-                  display: {xs: "block", sm: "none"},
+                  display: {xs: "block", sm: "none", lg: "block", xl: "none"},
                   fontSize: "1rem",
                 }}
               >
@@ -164,7 +169,7 @@ export default function Header() {
                 variant="h6"
                 sx={{
                   fontWeight: 600,
-                  display: {xs: "none", sm: "block"},
+                  display: {xs: "none", sm: "block", lg: "none", xl: "block"},
                   fontSize: {sm: "1.1rem", md: "1.25rem"},
                 }}
               >
@@ -181,8 +186,8 @@ export default function Header() {
                 to="/guide"
                 aria-label={t("chrome.openGuide")}
                 sx={{
-                  marginLeft: "1rem",
                   color: "inherit",
+                  flexShrink: 0,
                 }}
               >
                 <HelpOutlineOutlinedIcon fontSize="small" />
@@ -194,8 +199,8 @@ export default function Header() {
                 to="/settings"
                 aria-label={t("chrome.openSettings")}
                 sx={{
-                  marginLeft: "1rem",
                   color: "inherit",
+                  flexShrink: 0,
                 }}
               >
                 <SettingsOutlinedIcon fontSize="small" />
@@ -205,7 +210,7 @@ export default function Header() {
 
             <HeaderOverflowMenu />
             {!isOnMobile && (
-              <Box sx={{marginLeft: "1rem"}}>
+              <Box sx={{flexShrink: 0}}>
                 <WalletConnector
                   networkSupport={networkName}
                   handleNavigate={() =>

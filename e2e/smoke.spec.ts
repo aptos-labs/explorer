@@ -28,4 +28,27 @@ test.describe("smoke", () => {
       page.getByRole("heading", {level: 1, name: /User Guide/i}),
     ).toBeVisible();
   });
+
+  // Covers FEAT-GUIDE-001 / FEAT-CHROME-001 — no sideways pan into empty space
+  test("user guide does not overflow horizontally", async ({page}) => {
+    await page.goto("/guide");
+    await expect(
+      page.getByRole("heading", {level: 1, name: /User Guide/i}),
+    ).toBeVisible();
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - window.innerWidth,
+    );
+    expect(overflow).toBeLessThanOrEqual(1);
+  });
+
+  test("user guide does not overflow horizontally on a narrow viewport", async ({
+    page,
+  }) => {
+    await page.setViewportSize({width: 375, height: 812});
+    await page.goto("/guide");
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - window.innerWidth,
+    );
+    expect(overflow).toBeLessThanOrEqual(1);
+  });
 });

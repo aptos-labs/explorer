@@ -67,6 +67,7 @@ The app shell that wraps every page.
 | **Settings** | Gear icon links to `/settings` page (see FEAT-SETTINGS-001). Rate Limit Drawer also links to `/settings`. |
 | **Wallet connector** | Connect/disconnect wallet button (see FEAT-WALLET). |
 | **Feature bar** | Colored banner when running on a non-production feature branch (see FEAT-FLAGS-004). |
+| **No horizontal page scroll** | The `lg+` toolbar (nav, network, help, settings, theme, wallet) fits the viewport so the document does not scroll sideways into empty space. |
 
 ### FEAT-CHROME-002 — Footer
 
@@ -1370,6 +1371,7 @@ top of the HTML site.
 |--------|--------|
 | **Content** | Article-style guide covering what the explorer is, chrome, search, networks, transactions, accounts/objects, modules, blocks, validators, assets, analytics, releases, Run Script, configuration, wallet, verification, URLs/agents, glossary, and troubleshooting. Copy lives in the English i18n catalog so future locales can translate it. |
 | **TOC** | Sticky "On this page" nav with hash links to each section. |
+| **Layout** | The guide column is width-constrained (`min-width: 0`, wrapping long tokens) so it does not extend the page sideways. |
 | **Navigation** | Header help icon (desktop), overflow menu (compact), footer link. WebMCP `open_guide` tool. |
 | **Metadata** | `PageMetadata` type `article`, canonical `/guide`. |
 
@@ -1489,6 +1491,7 @@ top of the HTML site.
 | `app/pages/Transaction/Tabs/Components/decodeMultisigPayload.test.ts` | FEAT-TXN-004 (BCS decoding of multisig payload bytes into an entry function; empty/invalid fallbacks) |
 | `app/pages/Transaction/Tabs/Components/decodeMoveArgument.test.ts` | FEAT-TXN-011 / FEAT-TXN-004 (ABI-typed BCS argument decoding: address, ints, bool, String, vector, Object, Option; positional alignment and invalid/leftover fallbacks) |
 | `app/pages/Transaction/Tabs/Components/useEntryFunctionArgNames.test.ts` | FEAT-TXN-011 (entry function arg / type-param name resolution from Move source, signer-slot dropping, no-source fallback) |
+| `e2e/smoke.spec.ts` | FEAT-GUIDE-001 / FEAT-CHROME-001 (Playwright: `/guide` loads; document does not overflow horizontally on desktop and a 375px viewport) |
 | `e2e/transaction-balance-change.spec.ts` | FEAT-TXN-003 (Playwright: testnet Balance Change tab loads indexer FA activities; asserts gas-fee row; skips outside CI when testnet gateway returns 401 for local preview origin) |
 | `e2e/transaction-payments.spec.ts` | FEAT-TXN-016 (Playwright: Payments tab hidden on fees-only testnet txn; shown and explains a live P2P transfer) |
 | `e2e/encrypted-transaction-localnet.spec.ts` | FEAT-TXN-002 / FEAT-TXN-005 (Playwright: submit encrypted transfer on localnet, assert overview Encryption chips + Coin Transfer + Payload tab; gated by `APTOS_LOCALNET=1`) |

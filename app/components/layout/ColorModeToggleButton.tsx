@@ -16,8 +16,8 @@ export default function ColorModeToggleButton() {
       onClick={toggleColorMode}
       aria-label={isDark ? t("chrome.switchToLight") : t("chrome.switchToDark")}
       sx={{
-        marginLeft: "1rem",
         color: "inherit",
+        flexShrink: 0,
       }}
     >
       {isDark ? (
