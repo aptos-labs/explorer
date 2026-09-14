@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-09-14 (rev 32)
+> Last updated: 2026-09-14 (rev 33)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -99,8 +99,12 @@ Each detail page has tabs accessible via path segments:
 
 #### Settings
 - `/settings` — configure explorer preferences stored locally in the browser
+  - **Language**: browser default or an explicit catalog (English ships with the app). Applies to chrome, settings copy, and the user guide.
   - **Move Bytecode Decompilation**: opt-in toggle to enable client-side decompilation of on-chain Move bytecode (Decompiled and Disassembly views on module code pages). Disabled by default; users must accept a disclaimer before enabling.
   - **API Key Overrides**: per-network geomi.dev API keys (same functionality previously in the header settings dialog)
+
+#### User Guide
+- `/guide` — in-app user guide covering search, networks, transactions, accounts, modules, settings, and how to read explorer pages. `/help` redirects here.
 
 #### Releases Hub
 - `/releases` — top-level hub for everything network-version-related; redirects to the `networks` tab by default
@@ -482,6 +486,7 @@ and never sign transactions. Currently registered:
 | `open_block` | Open `/block/{height}`. |
 | `open_releases` | Open `/releases` (or `/releases/networks|aips|sdks`). |
 | `open_coin` | Open `/coin/{type}` for a fully-qualified Move coin type. |
+| `open_guide` | Open `/guide` (in-app user guide). |
 
 Each tool declares a JSON Schema `inputSchema` and the `readOnlyHint`
 annotation. Registration cleans up via `AbortSignal` on unmount.

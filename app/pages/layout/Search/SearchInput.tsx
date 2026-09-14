@@ -5,18 +5,16 @@ import {
   InputAdornment,
   TextField,
 } from "@mui/material";
-import {
-  SEARCH_HELPER_TEXT,
-  SEARCH_ICON_COLOR,
-  SEARCH_INPUT_FONT_SIZE,
-  SEARCH_PLACEHOLDER,
-} from "./searchConstants";
+import {SEARCH_ICON_COLOR, SEARCH_INPUT_FONT_SIZE} from "./searchConstants";
+import {useTranslation} from "../../../i18n";
 
 interface SearchInputProps extends AutocompleteRenderInputParams {
   loading?: boolean;
 }
 
 export default function SearchInput({loading, ...params}: SearchInputProps) {
+  const {t} = useTranslation();
+
   return (
     <form style={{width: "100%"}}>
       <TextField
@@ -29,7 +27,7 @@ export default function SearchInput({loading, ...params}: SearchInputProps) {
               fontSize: SEARCH_INPUT_FONT_SIZE,
               lineHeight: SEARCH_INPUT_FONT_SIZE,
             },
-            "aria-label": "search",
+            "aria-label": t("search.ariaLabel"),
             startAdornment: (
               <InputAdornment
                 position="start"
@@ -45,8 +43,8 @@ export default function SearchInput({loading, ...params}: SearchInputProps) {
             ),
           },
         }}
-        placeholder={SEARCH_PLACEHOLDER}
-        helperText={SEARCH_HELPER_TEXT}
+        placeholder={t("search.placeholder")}
+        helperText={t("search.helper")}
         fullWidth
       />
     </form>

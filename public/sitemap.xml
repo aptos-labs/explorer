@@ -131,6 +131,13 @@
     <priority>0.5</priority>
   </url>
 
+  <!-- User Guide -->
+  <url>
+    <loc>https://explorer.aptoslabs.com/guide</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
   <!-- Settings -->
   <url>
     <loc>https://explorer.aptoslabs.com/settings</loc>

@@ -1,3 +1,5 @@
+import {en} from "../../../i18n/messages/en";
+
 /**
  * Shared tokens for the explorer's search UI.
  *
@@ -8,13 +10,11 @@
  * lockstep instead of drifting apart in each component.
  */
 
-/** Placeholder shown in every search input. */
-export const SEARCH_PLACEHOLDER =
-  "Search by address, txn, block, coin, or ANS name";
+/** Placeholder shown in every search input. English source lives in the i18n catalog. */
+export const SEARCH_PLACEHOLDER = en.search.placeholder;
 
 /** Helper text describing what can be searched. */
-export const SEARCH_HELPER_TEXT =
-  "Account address or name · Txn hash or version · Block height · Coin type · ANS name";
+export const SEARCH_HELPER_TEXT = en.search.helper;
 
 /** Debounce (ms) between the last keystroke and firing a search. */
 export const SEARCH_DEBOUNCE_MS = 400;
@@ -54,24 +54,46 @@ export function searchResultTypeChipColor(type?: string): SearchChipColor {
   }
 }
 
+/** i18n key for a search-result type chip. */
+export function searchResultTypeMessageKey(type?: string): string {
+  switch (type) {
+    case "account":
+      return "search.type.account";
+    case "address":
+      return "search.type.address";
+    case "transaction":
+      return "search.type.transaction";
+    case "block":
+      return "search.type.block";
+    case "coin":
+      return "search.type.coin";
+    case "fungible-asset":
+      return "search.type.fungibleAsset";
+    case "object":
+      return "search.type.object";
+    default:
+      return "search.type.result";
+  }
+}
+
 /** Human-readable label for a search-result type, shown in the row's chip. */
 export function searchResultTypeLabel(type?: string): string {
   switch (type) {
     case "account":
-      return "Account";
+      return en.search.type.account;
     case "address":
-      return "Address";
+      return en.search.type.address;
     case "transaction":
-      return "Transaction";
+      return en.search.type.transaction;
     case "block":
-      return "Block";
+      return en.search.type.block;
     case "coin":
-      return "Coin";
+      return en.search.type.coin;
     case "fungible-asset":
-      return "Fungible Asset";
+      return en.search.type.fungibleAsset;
     case "object":
-      return "Object";
+      return en.search.type.object;
     default:
-      return "Result";
+      return en.search.type.result;
   }
 }

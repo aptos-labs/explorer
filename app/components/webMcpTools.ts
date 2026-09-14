@@ -302,5 +302,25 @@ export function buildWebMcpTools(navigate: NavigateFn): WebMCPTool[] {
         return {ok: true, path: buildPath(to, search)};
       },
     },
+    {
+      name: "open_guide",
+      title: "Open user guide",
+      description:
+        "Open the in-app Aptos Explorer user guide at /guide. Use when the user asks how to use the explorer, what a page or tab means, how to switch networks, or how to configure settings (language, API keys, decompilation).",
+      inputSchema: {
+        type: "object",
+        additionalProperties: false,
+        properties: {
+          network: NETWORK_SCHEMA,
+        },
+      },
+      annotations: {readOnlyHint: true},
+      execute: async (input) => {
+        const {network} = (input as {network?: NetworkName}) ?? {};
+        const search = networkSearch(network);
+        await navigate({to: "/guide", search});
+        return {ok: true, path: buildPath("/guide", search)};
+      },
+    },
   ];
 }
