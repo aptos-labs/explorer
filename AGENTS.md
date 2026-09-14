@@ -496,7 +496,7 @@ Environment variables in this repository are a **contract with deployments** (Ve
 
 ### Aikido Safe Chain (required for every install)
 
-CI wraps **every** `pnpm` invocation with [Aikido Safe Chain](https://github.com/AikidoSec/safe-chain) via `.github/actions/setup-node-pnpm` (`aptos-labs/actions/aikidosec-safe-chain`). Safe Chain MITM-proxies the npm registry, blocks malware against Aikido Intel, and **suppresses package versions newer than 48 hours**. That is in addition to pnpm's own `minimumReleaseAge: 7200` (5 days) in `pnpm-workspace.yaml`.
+CI wraps **every** `pnpm` invocation with [Aikido Safe Chain](https://github.com/AikidoSec/safe-chain) via the pinned, checksum-verified installer in `.github/actions/setup-node-pnpm`. Safe Chain MITM-proxies the npm registry, blocks malware against Aikido Intel, and **suppresses package versions newer than 48 hours**. That is in addition to pnpm's own `minimumReleaseAge: 7200` (5 days) in `pnpm-workspace.yaml`.
 
 **Rules for all agents (no exceptions without explicit human approval):**
 

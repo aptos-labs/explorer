@@ -52,6 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
+- **pnpm 12 CI and dependency scanning compatibility**: Updated Aikido Safe Chain from `1.4.7` to `1.5.20`, the release that adds pnpm 12 support, so pnpm 12's native downloader can install through the malware-scanning proxy without crashing it. The installer is pinned to an immutable release and verified with SHA-256 before execution. pnpm now keeps `pnpm-lock.yaml` as one YAML document because GitHub's dependency graph still mistakes pnpm 12's leading environment document for an empty application graph; exact pnpm `12.4.1` pinning remains enforced by `package.json`, `.tool-versions`, and `pnpm/action-setup`.
 - **pnpm audit — nanoid override**: Added a `nanoid@3.3.18` override so the PostCSS 3.x line picks up the GHSA-2v37-7h3g-55p8 fix (`customAlphabet` / `customRandom` infinite loop when `size` is 0). `image-size` (GHSA-w3rx-r6r6-pgpr / GHSA-5p2g-fcmc-qvqq) and `extract-zip` (GHSA-jmr9-qjv8-65gv) remain reported: no patched npm releases exist (`image-size@2.0.3` and `extract-zip@2.0.2` are unpublished). Both are transitive through `@netlify/vite-plugin-tanstack-start` (dev-only Netlify local tooling). Stale `minimumReleaseAgeExclude` entries were cleared now that locked versions are older than the 5-day gate. The updated lockfile was re-fetched through Aikido Safe Chain (malware scan of 1057 packages, 48h minimum package age, `@aptos-labs/*` the only age exclusion).
 
 ### Changed
