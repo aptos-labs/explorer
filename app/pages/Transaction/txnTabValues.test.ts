@@ -26,7 +26,7 @@ function makeTxn(type: string) {
 }
 
 describe("FEAT-TXN-001 — getTabValues", () => {
-  it("returns 6 tabs for user transactions including trace", () => {
+  it("returns 6 tabs for user transactions without an identified payment", () => {
     const tabs = getTabValues(makeTxn(TransactionTypeName.User));
     expect(tabs).toEqual([
       "overview",
@@ -36,6 +36,72 @@ describe("FEAT-TXN-001 — getTabValues", () => {
       "changes",
       "trace",
     ]);
+    expect(tabs).not.toContain("payments");
+  });
+
+  it("inserts the Payments tab when a transfer is identified", () => {
+    const txn = {
+      type: TransactionTypeName.User,
+      sender:
+        "0x00000000000000000000000000000000000000000000000000000000000000aa",
+      success: true,
+      gas_used: "100",
+      gas_unit_price: "100",
+      payload: {
+        type: "entry_function_payload",
+        function: "0x1::aptos_account::transfer",
+        type_arguments: [],
+        arguments: [
+          "0x00000000000000000000000000000000000000000000000000000000000000bb",
+          "100000000",
+        ],
+      },
+      events: [],
+      changes: [],
+    } as unknown as Parameters<typeof getTabValues>[0];
+    const tabs = getTabValues(txn);
+    expect(tabs).toEqual([
+      "overview",
+      "payments",
+      "balanceChange",
+      "events",
+      "payload",
+      "changes",
+      "trace",
+    ]);
+  });
+
+  it("omits the Payments tab when only network fees are identified", () => {
+    const txn = {
+      type: TransactionTypeName.User,
+      sender:
+        "0x00000000000000000000000000000000000000000000000000000000000000aa",
+      success: true,
+      gas_used: "100",
+      gas_unit_price: "100",
+      payload: {
+        type: "entry_function_payload",
+        function: "0x1::account::rotate_authentication_key",
+        type_arguments: [],
+        arguments: [],
+      },
+      events: [
+        {
+          guid: {creation_number: "0", account_address: "0x1"},
+          sequence_number: "0",
+          type: "0x1::transaction_fee::FeeStatement",
+          data: {
+            execution_gas_units: "80",
+            io_gas_units: "20",
+            storage_fee_octas: "0",
+            storage_fee_refund_octas: "0",
+            total_charge_gas_units: "100",
+          },
+        },
+      ],
+      changes: [],
+    } as unknown as Parameters<typeof getTabValues>[0];
+    expect(getTabValues(txn)).not.toContain("payments");
   });
 
   it("includes modules tab before changes when write_module changes exist", () => {
@@ -201,6 +267,7 @@ describe("FEAT-TXN-001 — getOverviewTabComponent", () => {
 describe("FEAT-TXN-008 — resolveTxnTab", () => {
   const userTabs = [
     "overview",
+    "payments",
     "balanceChange",
     "events",
     "payload",
@@ -236,6 +303,7 @@ describe("FEAT-TXN-001 — overview tab chrome", () => {
   it("labels the shared overview tab Overview", () => {
     expect(getTabLabel("overview")).toBe("Overview");
     expect(getTabLabel("events")).toBe("Events");
+    expect(getTabLabel("payments")).toBe("Payments");
   });
 
   it("uses the chart icon for overview", () => {

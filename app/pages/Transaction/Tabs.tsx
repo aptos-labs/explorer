@@ -6,6 +6,7 @@ import CallMergeOutlinedIcon from "@mui/icons-material/CallMergeOutlined";
 import CodeOutlinedIcon from "@mui/icons-material/CodeOutlined";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FileCopyOutlinedIcon from "@mui/icons-material/FileCopyOutlined";
+import PaymentsOutlinedIcon from "@mui/icons-material/PaymentsOutlined";
 import ShowChartOutlinedIcon from "@mui/icons-material/ShowChartOutlined";
 import ViewModuleOutlinedIcon from "@mui/icons-material/ViewModuleOutlined";
 import {
@@ -41,6 +42,7 @@ import DecibelTab from "./Tabs/DecibelTab";
 import EventsTab from "./Tabs/EventsTab";
 import GenesisTransactionOverviewTab from "./Tabs/GenesisTransactionOverviewTab";
 import PayloadTab from "./Tabs/PayloadTab";
+import PaymentsTab from "./Tabs/PaymentsTab";
 import PendingTransactionOverviewTab from "./Tabs/PendingTransactionOverviewTab";
 import StateCheckpointOverviewTab from "./Tabs/StateCheckpointOverviewTab";
 import TransactionModulesTab from "./Tabs/TransactionModulesTab";
@@ -48,6 +50,7 @@ import TransactionTraceTab from "./Tabs/TransactionTraceTab";
 import UnknownTab from "./Tabs/UnknownTab";
 import UserTransactionOverviewTab from "./Tabs/UserTransactionOverviewTab";
 import ValidatorTransactionTab from "./Tabs/ValidatorTransactionTab";
+import {hasIdentifiedPayment} from "./payments/identifyPayments";
 import {transactionHasModuleSummary} from "./transactionModuleChanges";
 
 function insertModulesTabBeforeChanges(tabs: TabValue[]): TabValue[] {
@@ -71,6 +74,9 @@ export function getTabValues(transaction: Types.Transaction): TabValue[] {
       const tabs: TabValue[] = ["overview"];
       if (isDecibelTransaction(transaction)) {
         tabs.push("decibelDetail");
+      }
+      if (hasIdentifiedPayment(transaction)) {
+        tabs.push("payments");
       }
       tabs.push("balanceChange", "events", "payload", "changes", "trace");
       return withModulesTabWhenApplicable(transaction, tabs);
@@ -148,6 +154,7 @@ export function OverviewTab({
 const TabComponents = Object.freeze({
   overview: OverviewTab,
   decibelDetail: DecibelTab,
+  payments: PaymentsTab,
   balanceChange: BalanceChangeTab,
   events: EventsTab,
   payload: PayloadTab,
@@ -179,6 +186,8 @@ export function getTabLabel(value: TabValue): string {
       return "Overview";
     case "decibelDetail":
       return "Decibel";
+    case "payments":
+      return "Payments";
     case "balanceChange":
       return "Balance Change";
     case "events":
@@ -202,6 +211,8 @@ export function getTabIcon(value: TabValue): React.JSX.Element {
       return <BarChartOutlinedIcon fontSize="small" />;
     case "decibelDetail":
       return <ShowChartOutlinedIcon fontSize="small" />;
+    case "payments":
+      return <PaymentsOutlinedIcon fontSize="small" />;
     case "balanceChange":
       return <AccountBalanceWalletOutlinedIcon fontSize="small" />;
     case "events":
