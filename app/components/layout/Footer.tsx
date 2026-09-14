@@ -6,6 +6,7 @@ import AptosLogoFullDark from "../../assets/svg/aptos_logo_full_dark.svg?react";
 import AptosLogoFullLight from "../../assets/svg/aptos_logo_full_light.svg?react";
 import {Link} from "../../routing";
 import {clearCache} from "../../utils/cacheManager";
+import {useTranslation} from "../../i18n";
 
 // Import SVGs - we'll use inline SVGs for SSR compatibility
 const GithubIcon = () => (
@@ -86,6 +87,7 @@ const socialLinks = [
 
 export default function Footer() {
   const theme = useTheme();
+  const {t} = useTranslation();
   const isDark = theme.palette.mode === "dark";
   const [cacheCleared, setCacheCleared] = useState(false);
 
@@ -177,7 +179,7 @@ export default function Footer() {
               >
                 © {new Date().getFullYear()}{" "}
                 <Box component="span" sx={{whiteSpace: "nowrap"}}>
-                  Aptos Labs
+                  {t("footer.copyrightOwner")}
                 </Box>
               </Typography>
               <Stack
@@ -194,7 +196,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   sx={footerLinkSx}
                 >
-                  Privacy
+                  {t("footer.privacy")}
                 </Box>
                 <Box
                   component="a"
@@ -203,19 +205,24 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   sx={footerLinkSx}
                 >
-                  Terms
+                  {t("footer.terms")}
                 </Box>
                 <Link to="/verification" sx={footerLinkSx}>
-                  Token & Address Verification
+                  {t("footer.verification")}
+                </Link>
+                <Link to="/guide" sx={footerLinkSx}>
+                  {t("footer.guide")}
                 </Link>
                 <Box
                   component="button"
                   type="button"
                   onClick={handleClearCache}
                   sx={footerButtonSx}
-                  title="Clear search cache"
+                  title={t("footer.clearCacheTitle")}
                 >
-                  {cacheCleared ? "✓ Cleared" : "Clear Cache"}
+                  {cacheCleared
+                    ? t("footer.cacheCleared")
+                    : t("footer.clearCache")}
                 </Box>
               </Stack>
             </Grid>

@@ -2,6 +2,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import {useLocation} from "@tanstack/react-router";
 import {useGetInMainnet} from "../../api/hooks/useGetInMainnet";
+import {useTranslation} from "../../i18n";
 import {Link} from "../../routing";
 
 function NavButton({
@@ -36,11 +37,12 @@ function NavButton({
 
 export default function Nav() {
   const inMainnet = useGetInMainnet();
+  const {t} = useTranslation();
 
   return (
     <Box
       component="nav"
-      aria-label="Main navigation"
+      aria-label={t("chrome.navAriaLabel")}
       sx={{
         display: {xs: "none", lg: "flex"},
         alignItems: "center",
@@ -50,36 +52,40 @@ export default function Nav() {
     >
       <NavButton
         to="/transactions"
-        title="View All Transactions"
-        label="Transactions"
+        title={t("chrome.nav.transactionsTitle")}
+        label={t("chrome.nav.transactions")}
       />
       {inMainnet && (
         <NavButton
           to="/analytics"
-          title="View Network Analytics"
-          label="Analytics"
+          title={t("chrome.nav.analyticsTitle")}
+          label={t("chrome.nav.analytics")}
         />
       )}
       <NavButton
         to="/validators"
-        title="View All Validators"
-        label="Validators"
+        title={t("chrome.nav.validatorsTitle")}
+        label={t("chrome.nav.validators")}
       />
-      <NavButton to="/blocks" title="View Latest Blocks" label="Blocks" />
+      <NavButton
+        to="/blocks"
+        title={t("chrome.nav.blocksTitle")}
+        label={t("chrome.nav.blocks")}
+      />
       <NavButton
         to="/coins"
-        title="View Coins & Fungible Assets"
-        label="Coins"
+        title={t("chrome.nav.coinsTitle")}
+        label={t("chrome.nav.coins")}
       />
       <NavButton
         to="/releases"
-        title="View Network Deployments, AIPs, and SDK & Tool Releases"
-        label="Releases"
+        title={t("chrome.nav.releasesTitle")}
+        label={t("chrome.nav.releases")}
       />
       <NavButton
         to="/run-script"
-        title="Build, Simulate, and Execute a Move Script (Advanced)"
-        label="Run Script"
+        title={t("chrome.nav.runScriptTitle")}
+        label={t("chrome.nav.runScript")}
       />
     </Box>
   );

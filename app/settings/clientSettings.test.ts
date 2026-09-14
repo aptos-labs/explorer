@@ -72,6 +72,7 @@ describe("clientSettings", () => {
         geomiDevApiKeyOverridesByNetwork: {mainnet: "override-key"},
         rememberGeomiDevApiKeyOverride: true,
         enableDecompilation: false,
+        localePreference: "auto",
       });
     });
 
@@ -101,6 +102,7 @@ describe("clientSettings", () => {
         },
         rememberGeomiDevApiKeyOverride: true,
         enableDecompilation: false,
+        localePreference: "auto",
       });
     });
 
@@ -115,7 +117,22 @@ describe("clientSettings", () => {
         geomiDevApiKeyOverridesByNetwork: {mainnet: "only-main"},
         rememberGeomiDevApiKeyOverride: true,
         enableDecompilation: false,
+        localePreference: "auto",
       });
+    });
+
+    it("normalizes localePreference", () => {
+      // Covers FEAT-I18N-001 (locale preference sanitization)
+      expect(
+        sanitizeExplorerClientSettings({
+          localePreference: "en",
+        }).localePreference,
+      ).toBe("en");
+      expect(
+        sanitizeExplorerClientSettings({
+          localePreference: "fr",
+        }).localePreference,
+      ).toBe("auto");
     });
 
     it("falls back to the default settings shape", () => {
@@ -148,6 +165,7 @@ describe("clientSettings", () => {
         geomiDevApiKeyOverridesByNetwork: {testnet: "session-key"},
         rememberGeomiDevApiKeyOverride: false,
         enableDecompilation: false,
+        localePreference: "auto",
       });
     });
 
@@ -162,6 +180,7 @@ describe("clientSettings", () => {
         geomiDevApiKeyOverridesByNetwork: {devnet: "saved-key"},
         rememberGeomiDevApiKeyOverride: true,
         enableDecompilation: false,
+        localePreference: "auto",
       });
     });
 
@@ -189,6 +208,7 @@ describe("clientSettings", () => {
           geomiDevApiKeyOverridesByNetwork: {mainnet: "  persisted-key  "},
           rememberGeomiDevApiKeyOverride: false,
           enableDecompilation: false,
+          localePreference: "auto",
         },
         storages,
       );
@@ -197,6 +217,7 @@ describe("clientSettings", () => {
         geomiDevApiKeyOverridesByNetwork: {mainnet: "persisted-key"},
         rememberGeomiDevApiKeyOverride: false,
         enableDecompilation: false,
+        localePreference: "auto",
       });
     });
 
@@ -208,6 +229,7 @@ describe("clientSettings", () => {
           geomiDevApiKeyOverridesByNetwork: {testnet: "persisted-key"},
           rememberGeomiDevApiKeyOverride: true,
           enableDecompilation: false,
+          localePreference: "auto",
         },
         storages,
       );
@@ -216,6 +238,7 @@ describe("clientSettings", () => {
         geomiDevApiKeyOverridesByNetwork: {testnet: "persisted-key"},
         rememberGeomiDevApiKeyOverride: true,
         enableDecompilation: false,
+        localePreference: "auto",
       });
     });
 
@@ -234,6 +257,7 @@ describe("clientSettings", () => {
           geomiDevApiKeyOverridesByNetwork: {},
           rememberGeomiDevApiKeyOverride: false,
           enableDecompilation: false,
+          localePreference: "auto",
         },
         storages,
       );
@@ -268,6 +292,7 @@ describe("clientSettings", () => {
           geomiDevApiKeyOverridesByNetwork: {},
           rememberGeomiDevApiKeyOverride: false,
           enableDecompilation: true,
+          localePreference: "auto",
         },
         storages,
       );
@@ -276,6 +301,7 @@ describe("clientSettings", () => {
         geomiDevApiKeyOverridesByNetwork: {},
         rememberGeomiDevApiKeyOverride: false,
         enableDecompilation: true,
+        localePreference: "auto",
       });
     });
 
@@ -287,6 +313,7 @@ describe("clientSettings", () => {
           geomiDevApiKeyOverridesByNetwork: {},
           rememberGeomiDevApiKeyOverride: false,
           enableDecompilation: true,
+          localePreference: "auto",
         },
         storages,
       );
@@ -301,6 +328,7 @@ describe("clientSettings", () => {
         geomiDevApiKeyOverridesByNetwork: {},
         rememberGeomiDevApiKeyOverride: false,
         enableDecompilation: true,
+        localePreference: "auto",
       });
     });
 
@@ -312,6 +340,7 @@ describe("clientSettings", () => {
           geomiDevApiKeyOverridesByNetwork: {mainnet: "session-key"},
           rememberGeomiDevApiKeyOverride: false,
           enableDecompilation: true,
+          localePreference: "auto",
         },
         storages,
       );
@@ -328,6 +357,31 @@ describe("clientSettings", () => {
       expect(loaded.geomiDevApiKeyOverridesByNetwork).toEqual({});
     });
 
+    it("persists localePreference without API keys", () => {
+      // Covers FEAT-I18N-001
+      const storages = createStorageCollection({});
+
+      persistExplorerClientSettings(
+        {
+          geomiDevApiKeyOverridesByNetwork: {},
+          rememberGeomiDevApiKeyOverride: false,
+          enableDecompilation: false,
+          localePreference: "en",
+        },
+        storages,
+      );
+
+      expect(loadExplorerClientSettings(storages).localePreference).toBe("en");
+
+      const freshStorages = {
+        localStorage: storages.localStorage,
+        sessionStorage: createStorageMock(),
+      };
+      expect(loadExplorerClientSettings(freshStorages).localePreference).toBe(
+        "en",
+      );
+    });
+
     it("fails gracefully when storage writes throw", () => {
       const storages = createStorageCollection({shouldThrowOnLocalWrite: true});
 
@@ -337,6 +391,7 @@ describe("clientSettings", () => {
             geomiDevApiKeyOverridesByNetwork: {mainnet: "persisted-key"},
             rememberGeomiDevApiKeyOverride: true,
             enableDecompilation: false,
+            localePreference: "auto",
           },
           storages,
         ),

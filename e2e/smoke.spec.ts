@@ -21,4 +21,11 @@ test.describe("smoke", () => {
       .click();
     await expect(page).toHaveURL(/\/blocks/);
   });
+
+  test("user guide page is reachable", async ({page}) => {
+    await page.goto("/guide");
+    await expect(
+      page.getByRole("heading", {level: 1, name: /User Guide/i}),
+    ).toBeVisible();
+  });
 });

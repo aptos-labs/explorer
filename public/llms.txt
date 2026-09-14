@@ -53,7 +53,8 @@ All URLs default to mainnet. Append `?network=testnet`, `?network=devnet`, or `?
   - AIPs tab — Aptos Improvement Proposals index sourced from `aptos-foundation/AIPs` (number, title, status, author, link)
   - SDKs & Tools tab — latest stable releases for the Aptos CLI, `aptos-node`, and the TypeScript / Python / Rust / Go SDKs, with a drill-in list of recent versions per registry
   - Legacy paths `/deployments` and `/aips` redirect to `/releases/networks` and `/releases/aips` respectively
-- Settings: `/settings` — configure explorer preferences (decompilation opt-in, API key overrides)
+- Settings: `/settings` — configure explorer preferences (language, decompilation opt-in, API key overrides)
+- User guide: `/guide` — in-app guide to using the explorer, reading pages, and configuring it (`/help` redirects here)
 - Run Script: `/run-script` — advanced tool to paste compiled Move script bytecode, supply typed arguments, then simulate and execute the script transaction from a connected wallet
 
 ## Key Addresses
@@ -104,5 +105,5 @@ All URLs default to mainnet. Append `?network=testnet`, `?network=devnet`, or `?
 - OAuth Protected Resource Metadata (RFC 9728): [/.well-known/oauth-protected-resource](https://explorer.aptoslabs.com/.well-known/oauth-protected-resource) — `authorization_servers` is empty because pages are unauthenticated.
 - HTTP `Link` response header: SSR HTML and static files advertise the MCP Server Card, A2A card, `api-catalog`, the agent-skills index, `auth.md`, and both `llms.txt` / `llms-full.txt` via RFC 8288 `Link` headers so agents can discover resources without parsing HTML.
 - Markdown content negotiation: send `Accept: text/markdown`. The homepage responds with `/llms.txt`; other HTML routes return a short path stub. HTML remains the default for browsers. (`Vary: Accept` is set on SSR responses so CDNs do not mix the two.)
-- WebMCP: when the user's browser supports `navigator.modelContext`, the Explorer registers read-only navigation tools (`search_explorer`, `open_transaction`, `open_account`, `open_block`, `open_releases`, `open_coin`) so in-browser agents can open pages by identifier.
+- WebMCP: when the user's browser supports `navigator.modelContext`, the Explorer registers read-only navigation tools (`search_explorer`, `open_transaction`, `open_account`, `open_block`, `open_releases`, `open_coin`, `open_guide`) so in-browser agents can open pages by identifier.
 - Content usage: [/robots.txt](https://explorer.aptoslabs.com/robots.txt) declares Content Signals — `ai-train=no, search=yes, ai-input=yes`.

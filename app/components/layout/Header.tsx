@@ -1,6 +1,7 @@
 import {AccountAddress} from "@aptos-labs/ts-sdk";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import {
   alpha,
   Box,
@@ -21,6 +22,7 @@ import {useInView} from "../../hooks/useInView";
 import {useIsInIframe} from "../../hooks/useIsInIframe";
 import {useIsStandalonePWA} from "../../hooks/useIsStandalonePWA";
 import {useLogEventWithBasic} from "../../pages/Account/hooks/useLogEventWithBasic";
+import {useTranslation} from "../../i18n";
 import {Link, useNavigate} from "../../routing";
 import {addressFromWallet, sortPetraFirst} from "../../utils";
 import {WalletConnector} from "../WalletConnector";
@@ -47,6 +49,7 @@ export default function Header() {
 
   const theme = useTheme();
   const logEvent = useLogEventWithBasic();
+  const {t} = useTranslation();
   const isDark = theme.palette.mode === "dark";
 
   const {ref, inView} = useInView({
@@ -155,7 +158,7 @@ export default function Header() {
                   fontSize: "1rem",
                 }}
               >
-                Explorer
+                {t("chrome.appNameShort")}
               </Typography>
               <Typography
                 variant="h6"
@@ -165,7 +168,7 @@ export default function Header() {
                   fontSize: {sm: "1.1rem", md: "1.25rem"},
                 }}
               >
-                Aptos Explorer
+                {t("chrome.appName")}
               </Typography>
             </Box>
 
@@ -175,8 +178,21 @@ export default function Header() {
             {!isOnMobile && (
               <IconButton
                 component={Link}
+                to="/guide"
+                aria-label={t("chrome.openGuide")}
+                sx={{
+                  marginLeft: "1rem",
+                  color: "inherit",
+                }}
+              >
+                <HelpOutlineOutlinedIcon fontSize="small" />
+              </IconButton>
+            )}
+            {!isOnMobile && (
+              <IconButton
+                component={Link}
                 to="/settings"
-                aria-label="Open settings"
+                aria-label={t("chrome.openSettings")}
                 sx={{
                   marginLeft: "1rem",
                   color: "inherit",

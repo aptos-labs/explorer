@@ -28,6 +28,7 @@ import {
   useNetworkValue,
   useSdkV2Client,
 } from "../../global-config/GlobalConfig";
+import {useTranslation} from "../../i18n";
 import {useAugmentToWithGlobalSearchParams, useNavigate} from "../../routing";
 import {
   getLocalStorageWithExpiry,
@@ -39,10 +40,8 @@ import {
 } from "../layout/Search/SearchResultRow";
 import {
   SEARCH_DEBOUNCE_MS,
-  SEARCH_HELPER_TEXT,
   SEARCH_ICON_COLOR,
   SEARCH_INPUT_FONT_SIZE,
-  SEARCH_PLACEHOLDER,
 } from "../layout/Search/searchConstants";
 import {
   createFallbackAddressResult,
@@ -89,6 +88,7 @@ export default function SearchWithResults({
   const queryClient = useQueryClient();
   const coinList = useGetCoinList();
   const augmentToWithGlobalSearchParams = useAugmentToWithGlobalSearchParams();
+  const {t} = useTranslation();
 
   const [query, setQuery] = useState(initialQuery ?? "");
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -299,9 +299,9 @@ export default function SearchWithResults({
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder={SEARCH_PLACEHOLDER}
-        helperText={SEARCH_HELPER_TEXT}
-        aria-label="Search the Aptos Explorer"
+        placeholder={t("search.placeholder")}
+        helperText={t("search.helper")}
+        aria-label={t("search.ariaLabel")}
         slotProps={{
           input: {
             startAdornment: (

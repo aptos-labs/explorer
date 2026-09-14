@@ -1,6 +1,6 @@
 {
   "name": "Aptos Explorer",
-  "description": "Official Aptos blockchain explorer. Agents should fetch HTML or markdown pages over HTTPS and use published URL templates; this host does not expose an A2A JSON-RPC task endpoint. Browser agents can use WebMCP tools registered on the page. Skills below describe how to open transactions, accounts, blocks, coins, search, and releases.",
+  "description": "Official Aptos blockchain explorer. Agents should fetch HTML or markdown pages over HTTPS and use published URL templates; this host does not expose an A2A JSON-RPC task endpoint. Browser agents can use WebMCP tools registered on the page. Skills below describe how to open transactions, accounts, blocks, coins, search, releases, and the user guide.",
   "version": "2.0.0",
   "protocolVersion": "0.3.0",
   "url": "https://explorer.aptoslabs.com/",
@@ -82,6 +82,18 @@
       "description": "Open /coin/{type} for a fully-qualified Move coin type such as 0x1::aptos_coin::AptosCoin.",
       "tags": ["coin", "fungible-asset", "aptos"],
       "examples": ["Show APT coin info on Aptos explorer"],
+      "inputModes": ["text/plain"],
+      "outputModes": ["text/html", "text/markdown"]
+    },
+    {
+      "id": "open-guide",
+      "name": "Open user guide",
+      "description": "Open /guide for the in-app Aptos Explorer user guide (search, networks, transactions, accounts, settings, and configuration).",
+      "tags": ["help", "guide", "aptos", "explorer"],
+      "examples": [
+        "How do I use Aptos Explorer?",
+        "Where are explorer settings?"
+      ],
       "inputModes": ["text/plain"],
       "outputModes": ["text/html", "text/markdown"]
     }

@@ -55,7 +55,9 @@ import {useHashToPathRedirect} from "../hooks/useHashToPathRedirect";
 import {useOldUrlRedirect} from "../hooks/useOldUrlRedirect";
 import {BASE_URL} from "../lib/constants";
 import {ExplorerSettingsProvider} from "../settings";
+import {I18nProvider} from "../i18n";
 import {googleFontsStylesheetHref} from "../themes/typography";
+import {useTranslation} from "../i18n";
 
 // Router context type
 interface RouterContext {
@@ -139,6 +141,40 @@ export const Route = createRootRouteWithContext<RouterContext>()({
   component: RootComponent,
 });
 
+function SkipToContent() {
+  const {t} = useTranslation();
+  return (
+    <Box
+      component="a"
+      href="#main-content"
+      sx={{
+        position: "absolute",
+        top: "-100%",
+        left: "50%",
+        transform: "translateX(-50%)",
+        zIndex: 9999,
+        px: 3,
+        py: 1.5,
+        borderRadius: 1,
+        fontWeight: 600,
+        fontSize: "0.9rem",
+        textDecoration: "none",
+        color: "background.default",
+        bgcolor: "text.primary",
+        border: "2px solid",
+        borderColor: "background.default",
+        outline: "none",
+        transition: "top 0.1s",
+        "&:focus": {
+          top: "1rem",
+        },
+      }}
+    >
+      {t("chrome.skipToContent")}
+    </Box>
+  );
+}
+
 function RootComponent() {
   const {queryClient} = Route.useRouteContext();
 
@@ -162,71 +198,46 @@ function RootComponent() {
                 <CssBaseline />
                 <RateLimitProvider>
                   <ExplorerSettingsProvider>
-                    <GlobalConfigProvider>
-                      <LocalnetUnavailableModal />
-                      <RateLimitDrawer />
-                      <WebMCPProvider />
-                      <VercelAnalytics />
-                      <GraphqlClientProvider>
-                        <WalletAdapterProvider>
-                          <Box
-                            sx={{
-                              minHeight: "100vh",
-                              backgroundColor: "transparent",
-                              flexGrow: 1,
-                              display: "flex",
-                              flexDirection: "column",
-                            }}
-                          >
+                    <I18nProvider>
+                      <GlobalConfigProvider>
+                        <LocalnetUnavailableModal />
+                        <RateLimitDrawer />
+                        <WebMCPProvider />
+                        <VercelAnalytics />
+                        <GraphqlClientProvider>
+                          <WalletAdapterProvider>
                             <Box
-                              component="a"
-                              href="#main-content"
                               sx={{
-                                position: "absolute",
-                                top: "-100%",
-                                left: "50%",
-                                transform: "translateX(-50%)",
-                                zIndex: 9999,
-                                px: 3,
-                                py: 1.5,
-                                borderRadius: 1,
-                                fontWeight: 600,
-                                fontSize: "0.9rem",
-                                textDecoration: "none",
-                                color: "background.default",
-                                bgcolor: "text.primary",
-                                border: "2px solid",
-                                borderColor: "background.default",
-                                outline: "none",
-                                transition: "top 0.1s",
-                                "&:focus": {
-                                  top: "1rem",
-                                },
-                              }}
-                            >
-                              Skip to main content
-                            </Box>
-                            <Header />
-                            <Container
-                              id="main-content"
-                              component="main"
-                              maxWidth="xl"
-                              sx={{
+                                minHeight: "100vh",
+                                backgroundColor: "transparent",
+                                flexGrow: 1,
                                 display: "flex",
                                 flexDirection: "column",
-                                flexGrow: 4,
-                                paddingTop: "2rem",
                               }}
                             >
-                              <Suspense fallback={<Fallback />}>
-                                <Outlet />
-                              </Suspense>
-                            </Container>
-                            <Footer />
-                          </Box>
-                        </WalletAdapterProvider>
-                      </GraphqlClientProvider>
-                    </GlobalConfigProvider>
+                              <SkipToContent />
+                              <Header />
+                              <Container
+                                id="main-content"
+                                component="main"
+                                maxWidth="xl"
+                                sx={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  flexGrow: 4,
+                                  paddingTop: "2rem",
+                                }}
+                              >
+                                <Suspense fallback={<Fallback />}>
+                                  <Outlet />
+                                </Suspense>
+                              </Container>
+                              <Footer />
+                            </Box>
+                          </WalletAdapterProvider>
+                        </GraphqlClientProvider>
+                      </GlobalConfigProvider>
+                    </I18nProvider>
                   </ExplorerSettingsProvider>
                 </RateLimitProvider>
               </ProvideColorMode>

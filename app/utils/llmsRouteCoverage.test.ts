@@ -44,6 +44,8 @@ const REQUIRED_PATH_SNIPPETS = [
   "/validators/delegation",
   /** Settings page */
   "/settings",
+  /** In-app user guide */
+  "/guide",
   /** Run Script advanced tool */
   "/run-script",
   /** Releases hub */

@@ -1,3 +1,5 @@
+import {normalizeLocalePreference} from "../i18n/detectLocale";
+import type {LocalePreference} from "../i18n/locales";
 import {type NetworkName, networks} from "../lib/constants";
 
 /** Per-network geomi.dev API key overrides (trimmed non-empty strings only). */
@@ -9,10 +11,12 @@ export interface ExplorerClientSettings {
   geomiDevApiKeyOverridesByNetwork: GeomiDevApiKeyOverridesByNetwork;
   rememberGeomiDevApiKeyOverride: boolean;
   enableDecompilation: boolean;
+  localePreference: LocalePreference;
 }
 
 export const EXPLORER_SETTINGS_STORAGE_KEY = "aptos-explorer-settings";
 const DECOMPILATION_STORAGE_KEY = "aptos-explorer-enable-decompilation";
+const LOCALE_STORAGE_KEY = "aptos-explorer-locale";
 
 const ALL_NETWORK_NAMES = Object.keys(networks) as NetworkName[];
 
@@ -20,6 +24,7 @@ export const defaultExplorerClientSettings: ExplorerClientSettings = {
   geomiDevApiKeyOverridesByNetwork: {},
   rememberGeomiDevApiKeyOverride: false,
   enableDecompilation: false,
+  localePreference: "auto",
 };
 
 type StorageLike = Pick<Storage, "getItem" | "setItem" | "removeItem">;
@@ -116,8 +121,9 @@ function hasAnyApiKeyOverride(
 
 export function sanitizeExplorerClientSettings(
   value:
-    | (Partial<ExplorerClientSettings> & {
+    | (Partial<Omit<ExplorerClientSettings, "localePreference">> & {
         geomiDevApiKeyOverride?: string;
+        localePreference?: unknown;
       })
     | null
     | undefined,
@@ -141,11 +147,13 @@ export function sanitizeExplorerClientSettings(
     );
 
   const enableDecompilation = value?.enableDecompilation === true;
+  const localePreference = normalizeLocalePreference(value?.localePreference);
 
   return {
     geomiDevApiKeyOverridesByNetwork,
     rememberGeomiDevApiKeyOverride,
     enableDecompilation,
+    localePreference,
   };
 }
 
@@ -191,6 +199,39 @@ export function clearExplorerClientSettings(
     } catch {
       // Ignore storage removal failures.
     }
+
+    try {
+      storage.removeItem(LOCALE_STORAGE_KEY);
+    } catch {
+      // Ignore storage removal failures.
+    }
+  }
+}
+
+function loadLocalePreference(
+  storages: ExplorerSettingsStorage,
+): LocalePreference | undefined {
+  const storage = storages.localStorage ?? storages.sessionStorage;
+  if (!storage) return undefined;
+  try {
+    const raw = storage.getItem(LOCALE_STORAGE_KEY);
+    if (raw === null) return undefined;
+    return normalizeLocalePreference(raw);
+  } catch {
+    return undefined;
+  }
+}
+
+function persistLocalePreference(
+  preference: LocalePreference,
+  storages: ExplorerSettingsStorage,
+) {
+  const storage = storages.localStorage ?? storages.sessionStorage;
+  if (!storage) return;
+  try {
+    storage.setItem(LOCALE_STORAGE_KEY, preference);
+  } catch {
+    // Ignore storage write failures.
   }
 }
 
@@ -213,6 +254,7 @@ export function loadExplorerClientSettings(
   storages: ExplorerSettingsStorage = getAvailableStorages(),
 ): ExplorerClientSettings {
   const decompFlag = loadDecompilationFlag(storages);
+  const localePreference = loadLocalePreference(storages);
 
   const sessionSettings = loadStoredExplorerClientSettings(
     storages.sessionStorage,
@@ -224,6 +266,9 @@ export function loadExplorerClientSettings(
     });
     if (decompFlag !== undefined) {
       settings.enableDecompilation = decompFlag;
+    }
+    if (localePreference !== undefined) {
+      settings.localePreference = localePreference;
     }
     return settings;
   }
@@ -237,12 +282,16 @@ export function loadExplorerClientSettings(
     if (decompFlag !== undefined) {
       settings.enableDecompilation = decompFlag;
     }
+    if (localePreference !== undefined) {
+      settings.localePreference = localePreference;
+    }
     return settings;
   }
 
   return {
     ...defaultExplorerClientSettings,
     enableDecompilation: decompFlag ?? false,
+    localePreference: localePreference ?? "auto",
   };
 }
 
@@ -271,6 +320,7 @@ export function persistExplorerClientSettings(
   clearExplorerClientSettings(storages);
 
   persistDecompilationFlag(sanitizedSettings.enableDecompilation, storages);
+  persistLocalePreference(sanitizedSettings.localePreference, storages);
 
   if (
     !hasAnyApiKeyOverride(sanitizedSettings.geomiDevApiKeyOverridesByNetwork)

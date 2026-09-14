@@ -13,15 +13,16 @@ import HamburgerIcon from "../../assets/svg/icon_hamburger.svg?react";
 import IconLight from "../../assets/svg/icon_light.svg?react";
 import {useColorMode} from "../../context/color-mode";
 import {useNetworkName} from "../../global-config";
+import {useTranslation} from "../../i18n";
 import {useNavigate} from "../../routing";
 import {sortPetraFirst} from "../../utils";
 import {WalletConnector} from "../WalletConnector";
 
 /**
  * Compact-viewport header menu (`xs`–`md`, below the `lg` breakpoint).
- * Mirrors inline `Nav` links, Settings, the theme toggle, and the wallet
+ * Mirrors inline `Nav` links, User Guide, Settings, the theme toggle, and the wallet
  * connector. On wide viewports (`lg+`) the toolbar shows those controls
- * directly (`ColorModeToggleButton`, Settings icon, `Nav`, `WalletConnector`).
+ * directly (`ColorModeToggleButton`, Help, Settings icon, `Nav`, `WalletConnector`).
  *
  * Previously named `NavMobile`, then `HeaderOverflowMenu` when it briefly
  * rendered on all viewports as a preferences drop-down.
@@ -34,6 +35,7 @@ export default function HeaderOverflowMenu() {
   const inMainnet = useGetInMainnet();
   const {account} = useWallet();
   const {toggleColorMode} = useColorMode();
+  const {t} = useTranslation();
   const menuOpen = Boolean(menuAnchorEl);
   const isDark = theme.palette.mode === "dark";
 
@@ -58,7 +60,7 @@ export default function HeaderOverflowMenu() {
     <Box sx={{display: {xs: "block", lg: "none"}}}>
       <Button
         id="header-overflow-menu-button"
-        aria-label="Navigation menu"
+        aria-label={t("chrome.overflowMenuAriaLabel")}
         aria-controls={menuOpen ? "header-overflow-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={menuOpen ? "true" : undefined}
@@ -99,34 +101,39 @@ export default function HeaderOverflowMenu() {
         }}
       >
         <MenuItem onClick={() => handleCloseAndNavigate("/transactions")}>
-          Transactions
+          {t("chrome.nav.transactions")}
         </MenuItem>
         {inMainnet ? (
           <MenuItem onClick={() => handleCloseAndNavigate("/analytics")}>
-            Analytics
+            {t("chrome.nav.analytics")}
           </MenuItem>
         ) : null}
         <MenuItem onClick={() => handleCloseAndNavigate("/validators")}>
-          Validators
+          {t("chrome.nav.validators")}
         </MenuItem>
         <MenuItem onClick={() => handleCloseAndNavigate("/blocks")}>
-          Blocks
+          {t("chrome.nav.blocks")}
         </MenuItem>
         <MenuItem onClick={() => handleCloseAndNavigate("/coins")}>
-          Coins
+          {t("chrome.nav.coins")}
         </MenuItem>
         <MenuItem onClick={() => handleCloseAndNavigate("/releases")}>
-          Releases
+          {t("chrome.nav.releases")}
         </MenuItem>
         <MenuItem onClick={() => handleCloseAndNavigate("/run-script")}>
-          Run Script
+          {t("chrome.nav.runScript")}
+        </MenuItem>
+        <MenuItem onClick={() => handleCloseAndNavigate("/guide")}>
+          {t("chrome.nav.guide")}
         </MenuItem>
         <MenuItem onClick={() => handleCloseAndNavigate("/settings")}>
-          Settings
+          {t("chrome.nav.settings")}
         </MenuItem>
         <MenuItem
           onClick={handleToggleColorMode}
-          aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+          aria-label={
+            isDark ? t("chrome.switchToLight") : t("chrome.switchToDark")
+          }
         >
           <ListItemIcon
             sx={{minWidth: "1.75rem", color: theme.palette.text.primary}}
@@ -138,7 +145,7 @@ export default function HeaderOverflowMenu() {
             )}
           </ListItemIcon>
           <ListItemText>
-            {isDark ? "Switch to light mode" : "Switch to dark mode"}
+            {isDark ? t("chrome.switchToLight") : t("chrome.switchToDark")}
           </ListItemText>
         </MenuItem>
         <Divider />

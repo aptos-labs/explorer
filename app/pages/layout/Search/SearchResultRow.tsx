@@ -2,11 +2,12 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import {Box, Chip, Typography, useTheme} from "@mui/material";
 import type React from "react";
 import {memo} from "react";
+import {useTranslation} from "../../../i18n";
 import {Link} from "../../../routing";
 import {SearchResultAvatar} from "./SearchResultAvatar";
 import {
   searchResultTypeChipColor,
-  searchResultTypeLabel,
+  searchResultTypeMessageKey,
 } from "./searchConstants";
 import type {SearchResult} from "./searchUtils";
 
@@ -56,6 +57,7 @@ export const SearchResultRow = memo(function SearchResultRow({
   showChevron = false,
 }: SearchResultRowProps): React.JSX.Element {
   const theme = useTheme();
+  const {t} = useTranslation();
 
   if (!result.to) {
     return (
@@ -90,7 +92,7 @@ export const SearchResultRow = memo(function SearchResultRow({
         sizePx={24}
       />
       <Chip
-        label={searchResultTypeLabel(result.type)}
+        label={t(searchResultTypeMessageKey(result.type))}
         color={searchResultTypeChipColor(result.type)}
         size="small"
         sx={{flexShrink: 0, fontWeight: 600, fontSize: "0.7rem"}}
