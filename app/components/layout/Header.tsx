@@ -24,6 +24,7 @@ import {useLogEventWithBasic} from "../../pages/Account/hooks/useLogEventWithBas
 import {Link, useNavigate} from "../../routing";
 import {addressFromWallet, sortPetraFirst} from "../../utils";
 import {WalletConnector} from "../WalletConnector";
+import ColorModeToggleButton from "./ColorModeToggleButton";
 import FeatureBar from "./FeatureBar";
 import HeaderOverflowMenu from "./HeaderOverflowMenu";
 import Nav from "./Nav";
@@ -184,6 +185,7 @@ export default function Header() {
                 <SettingsOutlinedIcon fontSize="small" />
               </IconButton>
             )}
+            {!isOnMobile && <ColorModeToggleButton />}
 
             <HeaderOverflowMenu />
             {!isOnMobile && (

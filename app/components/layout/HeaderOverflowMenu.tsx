@@ -1,11 +1,5 @@
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {
-  Divider,
-  ListItemIcon,
-  ListItemText,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import {Divider, ListItemIcon, ListItemText, useTheme} from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
@@ -24,17 +18,13 @@ import {sortPetraFirst} from "../../utils";
 import {WalletConnector} from "../WalletConnector";
 
 /**
- * Header overflow menu. Always renders the dark-mode toggle so that the
- * theme switch lives in a single, predictable place across viewports and
- * standalone-PWA / iframe embeddings.
+ * Compact-viewport header menu (`xs`–`md`, below the `lg` breakpoint).
+ * Mirrors inline `Nav` links, Settings, the theme toggle, and the wallet
+ * connector. On wide viewports (`lg+`) the toolbar shows those controls
+ * directly (`ColorModeToggleButton`, Settings icon, `Nav`, `WalletConnector`).
  *
- * On compact viewports (`xs`–`md`) it also doubles as the primary nav menu
- * (mirroring the inline `Nav` links and the wallet connector). On wide
- * viewports (`lg+`) those duplicate entries are suppressed and the menu acts
- * as a small "preferences" drop-down anchored next to the Settings icon.
- *
- * Previously named `NavMobile`. Renamed to a viewport-neutral name once the
- * component started rendering on all viewports (not just mobile).
+ * Previously named `NavMobile`, then `HeaderOverflowMenu` when it briefly
+ * rendered on all viewports as a preferences drop-down.
  */
 export default function HeaderOverflowMenu() {
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
@@ -46,8 +36,6 @@ export default function HeaderOverflowMenu() {
   const {toggleColorMode} = useColorMode();
   const menuOpen = Boolean(menuAnchorEl);
   const isDark = theme.palette.mode === "dark";
-  const isWideViewport = useMediaQuery(theme.breakpoints.up("lg"));
-  const showCompactItems = !isWideViewport;
 
   const handleIconClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setMenuAnchorEl(event.currentTarget);
@@ -67,10 +55,10 @@ export default function HeaderOverflowMenu() {
   };
 
   return (
-    <Box sx={{display: "block"}}>
+    <Box sx={{display: {xs: "block", lg: "none"}}}>
       <Button
         id="header-overflow-menu-button"
-        aria-label={showCompactItems ? "Navigation menu" : "Preferences menu"}
+        aria-label="Navigation menu"
         aria-controls={menuOpen ? "header-overflow-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={menuOpen ? "true" : undefined}
@@ -110,58 +98,32 @@ export default function HeaderOverflowMenu() {
           maxWidth: "none",
         }}
       >
-        {showCompactItems && [
-          <MenuItem
-            key="transactions"
-            onClick={() => handleCloseAndNavigate("/transactions")}
-          >
-            Transactions
-          </MenuItem>,
-          inMainnet ? (
-            <MenuItem
-              key="analytics"
-              onClick={() => handleCloseAndNavigate("/analytics")}
-            >
-              Analytics
-            </MenuItem>
-          ) : null,
-          <MenuItem
-            key="validators"
-            onClick={() => handleCloseAndNavigate("/validators")}
-          >
-            Validators
-          </MenuItem>,
-          <MenuItem
-            key="blocks"
-            onClick={() => handleCloseAndNavigate("/blocks")}
-          >
-            Blocks
-          </MenuItem>,
-          <MenuItem
-            key="coins"
-            onClick={() => handleCloseAndNavigate("/coins")}
-          >
-            Coins
-          </MenuItem>,
-          <MenuItem
-            key="releases"
-            onClick={() => handleCloseAndNavigate("/releases")}
-          >
-            Releases
-          </MenuItem>,
-          <MenuItem
-            key="run-script"
-            onClick={() => handleCloseAndNavigate("/run-script")}
-          >
-            Run Script
-          </MenuItem>,
-          <MenuItem
-            key="settings"
-            onClick={() => handleCloseAndNavigate("/settings")}
-          >
-            Settings
-          </MenuItem>,
-        ]}
+        <MenuItem onClick={() => handleCloseAndNavigate("/transactions")}>
+          Transactions
+        </MenuItem>
+        {inMainnet ? (
+          <MenuItem onClick={() => handleCloseAndNavigate("/analytics")}>
+            Analytics
+          </MenuItem>
+        ) : null}
+        <MenuItem onClick={() => handleCloseAndNavigate("/validators")}>
+          Validators
+        </MenuItem>
+        <MenuItem onClick={() => handleCloseAndNavigate("/blocks")}>
+          Blocks
+        </MenuItem>
+        <MenuItem onClick={() => handleCloseAndNavigate("/coins")}>
+          Coins
+        </MenuItem>
+        <MenuItem onClick={() => handleCloseAndNavigate("/releases")}>
+          Releases
+        </MenuItem>
+        <MenuItem onClick={() => handleCloseAndNavigate("/run-script")}>
+          Run Script
+        </MenuItem>
+        <MenuItem onClick={() => handleCloseAndNavigate("/settings")}>
+          Settings
+        </MenuItem>
         <MenuItem
           onClick={handleToggleColorMode}
           aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
@@ -179,19 +141,14 @@ export default function HeaderOverflowMenu() {
             {isDark ? "Switch to light mode" : "Switch to dark mode"}
           </ListItemText>
         </MenuItem>
-        {showCompactItems && [
-          <Divider key="wallet-divider" />,
-          <WalletConnector
-            key="wallet"
-            networkSupport={networkName}
-            handleNavigate={() =>
-              navigate({to: `/account/${account?.address}`})
-            }
-            sortAvailableWallets={sortPetraFirst}
-            sortInstallableWallets={sortPetraFirst}
-            modalMaxWidth="sm"
-          />,
-        ]}
+        <Divider />
+        <WalletConnector
+          networkSupport={networkName}
+          handleNavigate={() => navigate({to: `/account/${account?.address}`})}
+          sortAvailableWallets={sortPetraFirst}
+          sortInstallableWallets={sortPetraFirst}
+          modalMaxWidth="sm"
+        />
       </Menu>
     </Box>
   );
