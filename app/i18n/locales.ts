@@ -55,6 +55,7 @@ export const FULL_UI_LOCALES = [
   "zh-Hant",
   "ms",
   "ta",
+  "pl",
   "ha",
   "zu",
   "am",
