@@ -7,6 +7,7 @@ export const SUPPORTED_LOCALES = [
   "pt",
   "vi",
   "ar",
+  "fr",
 ] as const;
 
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
@@ -27,4 +28,5 @@ export const LOCALE_META: Record<
   pt: {nativeName: "Português", ogLocale: "pt_BR", dir: "ltr"},
   vi: {nativeName: "Tiếng Việt", ogLocale: "vi_VN", dir: "ltr"},
   ar: {nativeName: "العربية", ogLocale: "ar_SA", dir: "rtl"},
+  fr: {nativeName: "Français", ogLocale: "fr_FR", dir: "ltr"},
 };
