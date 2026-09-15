@@ -180,7 +180,6 @@ export default function Header() {
 
             <Nav />
             <NetworkSelect />
-            <LanguageSelect />
             {showShareButton && <ShareButton />}
             {!isOnMobile && (
               <IconButton
@@ -208,6 +207,7 @@ export default function Header() {
                 <SettingsOutlinedIcon fontSize="small" />
               </IconButton>
             )}
+            {!isOnMobile && <LanguageSelect />}
             {!isOnMobile && <ColorModeToggleButton />}
 
             <HeaderOverflowMenu />

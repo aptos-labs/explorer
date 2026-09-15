@@ -20,7 +20,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-function renderHeaderSelect() {
+function renderHeaderButton() {
   return render(
     <ExplorerSettingsProvider>
       <I18nProvider>
@@ -31,19 +31,18 @@ function renderHeaderSelect() {
 }
 
 describe("FEAT-SETTINGS-003 / FEAT-CHROME-001 — header language switch", () => {
-  it("lists browser default and native names, then persists a catalog", () => {
-    renderHeaderSelect();
+  it("opens an icon menu of native names, then persists a catalog", () => {
+    renderHeaderButton();
 
-    const combobox = screen.getByRole("combobox", {name: "Language"});
-    expect(combobox.textContent).toContain("Browser default");
+    const button = screen.getByRole("button", {name: "Language"});
+    expect(button.querySelector("svg")).toBeTruthy();
 
-    fireEvent.mouseDown(combobox);
-    expect(screen.getByRole("option", {name: "Hausa"})).toBeTruthy();
-    expect(screen.getByRole("option", {name: "isiZulu"})).toBeTruthy();
-    expect(screen.getByRole("option", {name: "አማርኛ"})).toBeTruthy();
-    fireEvent.click(screen.getByRole("option", {name: "Français"}));
+    fireEvent.click(button);
+    expect(screen.getByRole("menuitem", {name: "Hausa"})).toBeTruthy();
+    expect(screen.getByRole("menuitem", {name: "isiZulu"})).toBeTruthy();
+    expect(screen.getByRole("menuitem", {name: "አማርኛ"})).toBeTruthy();
+    fireEvent.click(screen.getByRole("menuitem", {name: "Français"}));
 
-    expect(screen.getByRole("combobox").textContent).toContain("Français");
     expect(window.localStorage.getItem("aptos-explorer-locale")).toBe("fr");
   });
 });
