@@ -27,4 +27,17 @@ runs:
         echo "SAFE_CHAIN_MINIMUM_PACKAGE_AGE_EXCLUSIONS=@aptos-labs/*" >> "${GITHUB_ENV}"
 
     - name: Setup AikidoSec Safe Chain
-      uses: aptos-labs/actions/aikidosec-safe-chain@fdd3a3a628c840d5c35086a87e9cc3141b635505 # main (2026-05-20)
+      shell: bash
+      # Installed directly instead of via aptos-labs/actions/aikidosec-safe-chain.
+      # That action is pinned to Safe Chain 1.4.7, which dies with
+      # "Safe-chain: Uncaught exception: unexpected end of file" whenever it has to
+      # verify a lockfile from scratch. CI always verifies from scratch (no
+      # ~/.safe-chain to reuse), so the proxy died before serving any tarball and
+      # every install on a cache-missing lockfile failed. 1.5.20 hits the same
+      # response-body condition but recovers ("forwarding it unmodified") instead of
+      # throwing. Move back to the shared action once it ships a current version.
+      #
+      # Pin an exact release: the installer verifies the binary checksum, and `--ci`
+      # puts the Safe Chain shims on PATH so every later pnpm call is wrapped.
+      run: |
+        curl -fsSL https://github.com/AikidoSec/safe-chain/releases/download/1.5.20/install-safe-chain.sh | sh -s -- --ci
