@@ -37,6 +37,36 @@ test.describe("smoke", () => {
     await expect(page.getByRole("menuitem", {name: "Language"})).toBeVisible();
   });
 
+  // Covers FEAT-CHROME-001 / FEAT-NETWORK-001 — compact header menus on phones
+  test("hamburger and network dropdown open on a narrow viewport", async ({
+    page,
+  }) => {
+    await page.setViewportSize({width: 375, height: 812});
+    await page.goto("/");
+    const hamburger = page.getByRole("button", {name: "Navigation menu"});
+    const hamburgerBox = await hamburger.boundingBox();
+    expect(hamburgerBox?.width).toBeGreaterThanOrEqual(44);
+    expect(hamburgerBox?.width).toBeLessThanOrEqual(56);
+    expect(hamburgerBox?.height).toBeGreaterThanOrEqual(44);
+    expect(hamburgerBox?.height).toBeLessThanOrEqual(56);
+    await hamburger.click();
+    await expect(
+      page.getByRole("menuitem", {name: "Transactions"}),
+    ).toBeVisible();
+    expect(
+      await page.evaluate(() => getComputedStyle(document.body).overflow),
+    ).not.toBe("hidden");
+    await page.keyboard.press("Escape");
+    await expect(
+      page.getByRole("menuitem", {name: "Transactions"}),
+    ).toHaveCount(0);
+    await page.getByLabel("Select network").click();
+    await expect(page.getByRole("option", {name: /testnet/i})).toBeVisible();
+    expect(
+      await page.evaluate(() => getComputedStyle(document.body).overflow),
+    ).not.toBe("hidden");
+  });
+
   test("user guide page is reachable", async ({page}) => {
     await page.goto("/guide");
     await expect(

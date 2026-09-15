@@ -102,26 +102,43 @@ export default function Header() {
           height: "5rem",
           width: "100%",
           position: "absolute",
+          pointerEvents: "none",
         }}
         ref={ref}
       />
       <MuiAppBar
+        position="sticky"
+        color="transparent"
+        elevation={0}
         sx={{
-          position: "sticky",
-          top: "0",
-          borderRadius: "0",
-          backdropFilter: "blur(10px)",
-          background: "transparent",
-          ...(!inView &&
-            isDark && {
-              background: alpha(theme.palette.background.default, 0.85),
-              borderBottom: `1px solid ${theme.palette.common}`,
-            }),
-          ...(!inView &&
-            !isDark && {
-              background: alpha(theme.palette.background.default, 0.8),
-              borderBottom: `2px solid ${alpha(theme.palette.text.primary, 0.05)}`,
-            }),
+          top: 0,
+          borderRadius: 0,
+          backgroundColor: "transparent",
+          overflow: "visible",
+          zIndex: (theme) => theme.zIndex.appBar,
+          isolation: "isolate",
+          // Keep blur on a non-interactive layer. Applying backdrop-filter on
+          // the sticky AppBar itself makes iOS Safari skip taps on children
+          // (hamburger + network select).
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            inset: 0,
+            zIndex: -1,
+            pointerEvents: "none",
+            backdropFilter: "blur(10px)",
+            WebkitBackdropFilter: "blur(10px)",
+            ...(!inView &&
+              isDark && {
+                backgroundColor: alpha(theme.palette.background.default, 0.85),
+                borderBottom: `1px solid ${theme.palette.common}`,
+              }),
+            ...(!inView &&
+              !isDark && {
+                backgroundColor: alpha(theme.palette.background.default, 0.8),
+                borderBottom: `2px solid ${alpha(theme.palette.text.primary, 0.05)}`,
+              }),
+          },
         }}
       >
         <FeatureBar />

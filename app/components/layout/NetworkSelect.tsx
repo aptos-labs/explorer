@@ -54,8 +54,15 @@ export default function NetworkSelect() {
         displayEmpty
         inputProps={{"aria-label": t("network.selectAriaLabel")}}
         renderValue={renderValue}
+        MenuProps={{
+          disableScrollLock: true,
+          disableAutoFocusItem: true,
+          disableRestoreFocus: true,
+        }}
         sx={{
           color: theme.palette.text.primary,
+          touchAction: "manipulation",
+          "& .MuiSelect-icon": {pointerEvents: "none"},
           "& .MuiOutlinedInput-notchedOutline": {
             borderColor: theme.palette.divider,
           },

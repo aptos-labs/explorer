@@ -1,7 +1,7 @@
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {Divider, ListItemIcon, ListItemText, useTheme} from "@mui/material";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import type React from "react";
@@ -42,6 +42,7 @@ export default function HeaderOverflowMenu() {
   const isDark = theme.palette.mode === "dark";
 
   const handleIconClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
     setMenuAnchorEl(event.currentTarget);
   };
   const handleMenuClose = () => {
@@ -59,47 +60,62 @@ export default function HeaderOverflowMenu() {
   };
 
   return (
-    <Box sx={{display: {xs: "block", lg: "none"}}}>
-      <Button
+    <Box sx={{display: {xs: "block", lg: "none"}, flexShrink: 0}}>
+      <IconButton
         id="header-overflow-menu-button"
         aria-label={t("chrome.overflowMenuAriaLabel")}
         aria-controls={menuOpen ? "header-overflow-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={menuOpen ? "true" : undefined}
+        size="large"
         onClick={handleIconClick}
         sx={{
-          minWidth: "0",
-          width: "1.5rem",
-          padding: "0",
-          ml: 2,
           color: "inherit",
-          "&:hover": {
-            background: "transparent",
-            color: theme.palette.text.secondary,
+          touchAction: "manipulation",
+          width: 48,
+          height: 48,
+          overflow: "hidden",
+          "& svg": {
+            pointerEvents: "none",
+            width: 24,
+            height: 24,
+            display: "block",
           },
           "&[aria-expanded=true]": {opacity: "0.7"},
         }}
       >
-        {menuOpen ? <CloseIcon /> : <HamburgerIcon />}
-      </Button>
+        {menuOpen ? (
+          <CloseIcon width={24} height={24} aria-hidden="true" />
+        ) : (
+          <HamburgerIcon width={24} height={24} aria-hidden="true" />
+        )}
+      </IconButton>
       <Menu
+        id="header-overflow-menu"
         anchorEl={menuAnchorEl}
         open={menuOpen}
         onClose={handleMenuClose}
+        disableScrollLock
+        disableAutoFocusItem
+        disableRestoreFocus
+        marginThreshold={12}
+        anchorOrigin={{vertical: "bottom", horizontal: "right"}}
+        transformOrigin={{vertical: "top", horizontal: "right"}}
         slotProps={{
           list: {
             "aria-labelledby": "header-overflow-menu-button",
             sx: {
               minWidth: 240,
-              padding: "1rem",
+              py: 1,
             },
           },
-        }}
-        sx={{
-          marginTop: "1rem",
-          boxShadow: 0,
-          minWidth: "400px",
-          maxWidth: "none",
+          paper: {
+            sx: {
+              maxHeight: "min(552px, calc(100dvh - 96px))",
+              overflowY: "auto",
+              WebkitOverflowScrolling: "touch",
+            },
+          },
         }}
       >
         <MenuItem onClick={() => handleCloseAndNavigate("/transactions")}>
