@@ -18,10 +18,17 @@ if (!locale || !jsonPath || !outPath) {
   process.exit(1);
 }
 
-if (!/^[a-z]{2}$/.test(locale)) {
+if (!/^[a-z]{2,3}(-[A-Za-z]+)?$/.test(locale)) {
   console.error(`Unsupported locale id: ${locale}`);
   process.exit(1);
 }
+
+const exportName = locale.includes("-")
+  ? locale.replace(
+      /-([A-Za-z]+)/g,
+      (_, part) => part[0].toUpperCase() + part.slice(1),
+    )
+  : locale;
 
 function emit(value, indent) {
   const pad = "  ".repeat(indent);
@@ -51,7 +58,7 @@ function emit(value, indent) {
 const data = JSON.parse(readFileSync(jsonPath, "utf8"));
 const source = `import type {MessageTree} from "../translate";
 
-export const ${locale} = ${emit(data, 0)} as const satisfies MessageTree;
+export const ${exportName} = ${emit(data, 0)} as const satisfies MessageTree;
 `;
 writeFileSync(outPath, source);
 console.log(`Wrote ${outPath}`);

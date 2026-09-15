@@ -66,7 +66,7 @@ explorer/
 
 ## Internationalization
 
-Chrome (header, nav, footer, skip link), search tokens, settings copy, and the in-app user guide are translated in every shipped catalog. Remaining explorer UI copy lives in `app/i18n/messages/en.ts` and `app/i18n/messages/en/`. Full-UI locales (`zh`, `es`, `fr`, `de`, `ja`, `ko`, `pt`, `ar`, `vi`) include those keys; other locales omit them and fall back to English. On-chain identifiers stay untranslated.
+Chrome (header, nav, footer, skip link), search tokens, settings copy, and the in-app user guide are translated in every shipped catalog. Remaining explorer UI copy lives in `app/i18n/messages/en.ts` and `app/i18n/messages/en/`. Full-UI locales (`zh`, `fil`, `es`, `fr`, `de`, `ja`, `ko`, `pt`, `ar`, `vi`) include those keys; other locales omit them and fall back to English. On-chain identifiers stay untranslated.
 
 **Keep i18n working in future changes.** Do not land new user-visible chrome, settings, search, or guide strings as hardcoded English. Add those keys to `app/i18n/messages/en.ts` first, then the same keys in every shipped catalog. Remaining explorer UI keys go in `app/i18n/messages/en/` (and the English barrel) and must be added to every **full-UI** locale; other catalogs may omit them (English fallback). Use `useTranslation()` (`t` / `tList`) and locale-bound `formatNumber` / `formatInteger` / `formatDateTime` instead of ad-hoc `toLocaleString`. Language is selected from the header globe icon (`LanguageSelect`, `lg+`) or the hamburger Language item (compact), and from `/settings`; all write immediately to `aptos-explorer-locale`.
 
@@ -85,7 +85,7 @@ IDs must match `SUPPORTED_LOCALES` in `app/i18n/locales.ts`. Native names match 
 | --- | --- | --- |
 | `en` | English | Source catalog |
 | `zh` | 简体中文 | Simplified Chinese; full UI catalog |
-| `fil` | Filipino | `tl` maps here |
+| `fil` | Filipino | `tl` maps here; full UI catalog |
 | `es` | Español | Full UI catalog |
 | `fr` | Français | Full UI catalog |
 | `de` | Deutsch | Full UI catalog |

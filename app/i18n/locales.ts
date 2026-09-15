@@ -37,6 +37,7 @@ export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 /** Locales that translate remaining explorer UI copy, not only chrome/settings/guide. */
 export const FULL_UI_LOCALES = [
   "zh",
+  "fil",
   "es",
   "fr",
   "de",
