@@ -51,6 +51,7 @@ export const FULL_UI_LOCALES = [
   "id",
   "vi",
   "tr",
+  "bn",
   "sw",
   "zh-Hant",
   "ms",
