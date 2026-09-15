@@ -37,6 +37,7 @@ function renderSelect() {
 afterEach(() => {
   cleanup();
   document.body.style.overflow = "";
+  document.documentElement.style.overflow = "";
   networkMocks.setNetworkName.mockClear();
   networkMocks.navigate.mockClear();
 });
@@ -47,8 +48,8 @@ describe("FEAT-NETWORK-001 — header network selector", () => {
 
     fireEvent.mouseDown(screen.getByLabelText("Select network"));
 
-    expect(screen.getByRole("option", {name: "testnet"})).toBeTruthy();
-    expect(screen.getByRole("option", {name: "localnet"})).toBeTruthy();
+    expect(screen.getByRole("option", {name: /testnet/i})).toBeTruthy();
+    expect(screen.getByRole("option", {name: /localnet/i})).toBeTruthy();
     expect(document.body.style.overflow).not.toBe("hidden");
     expect(document.documentElement.style.overflow).not.toBe("hidden");
   });
@@ -57,7 +58,7 @@ describe("FEAT-NETWORK-001 — header network selector", () => {
     renderSelect();
 
     fireEvent.mouseDown(screen.getByLabelText("Select network"));
-    fireEvent.click(screen.getByRole("option", {name: "testnet"}));
+    fireEvent.click(screen.getByRole("option", {name: /testnet/i}));
 
     expect(networkMocks.setNetworkName).toHaveBeenCalledWith("testnet");
     expect(networkMocks.navigate).toHaveBeenCalledWith({

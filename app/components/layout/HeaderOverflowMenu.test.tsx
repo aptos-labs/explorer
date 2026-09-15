@@ -50,6 +50,7 @@ function renderMenu() {
 afterEach(() => {
   cleanup();
   document.body.style.overflow = "";
+  document.documentElement.style.overflow = "";
 });
 
 describe("FEAT-CHROME-001 — compact overflow menu on mobile", () => {
