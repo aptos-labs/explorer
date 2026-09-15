@@ -291,6 +291,9 @@ export default defineConfig({
   },
   test: {
     exclude: [...configDefaults.exclude, "e2e/**"],
+    // Full-UI catalogs are large data modules. Coverage + isolate re-evaluation
+    // of that graph can keep Vite environments alive past the 10s default.
+    teardownTimeout: 30_000,
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "lcov"],
@@ -300,6 +303,8 @@ export default defineConfig({
         "e2e/**",
         "scripts/**",
         "analytics/**",
+        // Translation catalogs are string tables, not executable logic.
+        "app/i18n/messages/**",
       ],
     },
   },

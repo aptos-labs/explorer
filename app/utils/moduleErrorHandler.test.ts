@@ -197,14 +197,26 @@ describe("moduleErrorHandler", () => {
   });
 
   describe("handleModuleFetchError", () => {
+    // `handleModuleFetchError` schedules a 0–100ms `setTimeout` that
+    // `console.info`s and reloads. Leaving that timer on real clocks races
+    // Vitest worker teardown (`Closing rpc while "onUserConsoleLog" was pending`).
+    beforeEach(() => {
+      vi.useFakeTimers();
+      vi.spyOn(console, "info").mockImplementation(() => {});
+      vi.spyOn(console, "error").mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+      vi.clearAllTimers();
+      vi.useRealTimers();
+    });
+
     it("returns false for non-module errors", () => {
       expect(handleModuleFetchError(new Error("Regular error"))).toBe(false);
       expect(replaceMock).not.toHaveBeenCalled();
     });
 
     it("schedules reload for module fetch errors", async () => {
-      vi.useFakeTimers();
-
       const error = new Error("Failed to fetch dynamically imported module");
       const result = handleModuleFetchError(error);
 
@@ -217,8 +229,6 @@ describe("moduleErrorHandler", () => {
       // Check cache-busting parameter was added
       const calledUrl = replaceMock.mock.calls[0][0];
       expect(calledUrl).toContain("_reload=");
-
-      vi.useRealTimers();
     });
 
     it("increments reload attempts on each call", () => {
