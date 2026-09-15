@@ -45,6 +45,7 @@ export const FULL_UI_LOCALES = [
   "ko",
   "pt",
   "ar",
+  "th",
   "vi",
   "sw",
   "ha",
