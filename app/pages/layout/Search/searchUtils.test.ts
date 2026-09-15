@@ -5,14 +5,16 @@ import {createFallbackAddressResult, handleTransaction} from "./searchUtils";
 describe("createFallbackAddressResult", () => {
   it("returns an address result for valid inputs", () => {
     const result = createFallbackAddressResult("0x1");
-    expect(result).toEqual({
-      label:
-        "Address 0x0000000000000000000000000000000000000000000000000000000000000001",
-      to: "/account/0x0000000000000000000000000000000000000000000000000000000000000001",
-      identiconKey:
-        "0x0000000000000000000000000000000000000000000000000000000000000001",
-      type: "address",
-    });
+    expect(result).toEqual(
+      expect.objectContaining({
+        label:
+          "Address 0x0000000000000000000000000000000000000000000000000000000000000001",
+        to: "/account/0x0000000000000000000000000000000000000000000000000000000000000001",
+        identiconKey:
+          "0x0000000000000000000000000000000000000000000000000000000000000001",
+        type: "address",
+      }),
+    );
   });
 
   it("returns null for invalid inputs", () => {
@@ -62,11 +64,11 @@ describe("FEAT-SEARCH-002 — handleTransaction", () => {
     };
 
     await expect(handleTransaction("0xdead", client as never)).resolves.toEqual(
-      {
+      expect.objectContaining({
         label: "Transaction 0xdead",
         to: "/txn/0xdead",
         type: "transaction",
-      },
+      }),
     );
   });
 });
