@@ -6,7 +6,7 @@
 > code. Tests (unit, integration, E2E) should reference the feature IDs defined
 > here (e.g. `// Covers FEAT-SEARCH-001`).
 >
-> **Last updated**: 2026-09-14
+> **Last updated**: 2026-09-15
 
 ---
 
@@ -59,7 +59,7 @@ The app shell that wraps every page.
 |--------|--------|
 | **Logo** | Aptos logo links to `/`, scrolls to top. |
 | **Desktop Nav** | Links: Transactions, Analytics (mainnet only), Validators, Blocks, Coins, Releases, Run Script. Active link highlighted via `useLocation`. |
-| **Mobile Nav** | Hamburger opens `HeaderOverflowMenu` with the same links, plus User Guide, Settings, language, theme toggle, and Wallet. |
+| **Mobile Nav** | Compact viewports use a 48px hamburger `IconButton` that opens `HeaderOverflowMenu` with the same links, plus User Guide, Settings, language, theme toggle, and Wallet. The menu does **not** lock document scroll (MUI's default `overflow: hidden` on `body` makes the overlay appear inert on iOS Safari) and is height-capped so items including Wallet stay reachable. |
 | **Search** | Header autocomplete search (see FEAT-SEARCH). |
 | **Network selector** | Dropdown to switch `?network=` param (see FEAT-NETWORK). |
 | **Language selector** | On wide viewports (`lg+`), a globe `IconButton` (`LanguageSelect`) in the header toolbar next to Settings. On compact viewports (`xs`–`md`), the same action is a Language `MenuItem` inside `HeaderOverflowMenu` that opens the catalog list. Applies immediately (see FEAT-SETTINGS-003). |
@@ -947,6 +947,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 |--------|--------|
 | **Param** | `?network=` in URL. |
 | **Behavior** | Navigate to same path with new network param, `replace: true`. |
+| **Mobile** | The header Select menu uses `disableScrollLock` so the dropdown opens on phone browsers instead of being dismissed by MUI's body scroll-lock. |
 | **Visible networks** | mainnet, testnet, devnet + localnet (`local`) shown separately. |
 | **Hidden networks** | `decibel`, `shelbynet` — in `networks` map but filtered from dropdown. Wallet adapter sees them as `"local"`. |
 | **Persistence** | Cookie fallback when no URL param. SSR special-cases `local`. |
@@ -1441,6 +1442,8 @@ top of the HTML site.
 | `app/i18n/messages.en.test.ts` | FEAT-I18N-001 / FEAT-GUIDE-001 (English chrome and guide titles; shipped locale key/placeholder parity) |
 | `app/i18n/agentsLocales.test.ts` | FEAT-I18N-001 (`AGENTS.md` shipped-locales table matches `SUPPORTED_LOCALES` / `LOCALE_META`) |
 | `app/components/layout/LanguageSelect.test.tsx` | FEAT-SETTINGS-003 / FEAT-CHROME-001 (header language icon menu lists catalogs and persists `aptos-explorer-locale`) |
+| `app/components/layout/HeaderOverflowMenu.test.tsx` | FEAT-CHROME-001 (compact hamburger opens without locking body scroll; 48px IconButton tap target) |
+| `app/components/layout/NetworkSelect.test.tsx` | FEAT-NETWORK-001 (header network dropdown opens without locking body scroll; choosing an option updates the URL) |
 | `app/pages/Guide/guideSections.test.ts` | FEAT-GUIDE-001 (section ids, titles, body copy) |
 | `app/utils/routerParams.test.ts` | FEAT-ROUTING-003 (`pathSplatToSegments` normalization) |
 | `app/api/hooks/aptosFeatureFlagsUpstream.test.ts` | FEAT-RELEASES-001 (upstream Rust enum parse for unlisted feature flag names) |

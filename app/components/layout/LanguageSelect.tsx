@@ -89,6 +89,9 @@ function LocaleOptionsMenu({
       anchorEl={anchorEl}
       open={open}
       onClose={onClose}
+      disableScrollLock
+      disableAutoFocusItem
+      disableRestoreFocus
       slotProps={{
         list: {
           "aria-label": t("settings.language.title"),
@@ -174,6 +177,9 @@ export default function LanguageSelect({
           onChange={handleSelectChange}
           inputProps={{"aria-label": label}}
           MenuProps={{
+            disableScrollLock: true,
+            disableAutoFocusItem: true,
+            disableRestoreFocus: true,
             sx: {
               "& .MuiPaper-root": {maxHeight: 360},
             },
