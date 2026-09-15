@@ -65,9 +65,13 @@ describe("FEAT-CHROME-001 — compact overflow menu on mobile", () => {
     expect(document.body.style.overflow).not.toBe("hidden");
   });
 
-  it("uses a 44px-class icon button so the hamburger is tappable", () => {
+  it("uses a 48px icon button with a 24px glyph so the hamburger is tappable", () => {
     renderMenu();
     const button = screen.getByRole("button", {name: "Navigation menu"});
     expect(button.className).toMatch(/MuiIconButton-sizeLarge/);
+    const svg = button.querySelector("svg");
+    expect(svg).toBeTruthy();
+    expect(svg?.getAttribute("width")).toBe("24");
+    expect(svg?.getAttribute("height")).toBe("24");
   });
 });

@@ -72,11 +72,23 @@ export default function HeaderOverflowMenu() {
         sx={{
           color: "inherit",
           touchAction: "manipulation",
-          "& svg": {pointerEvents: "none"},
+          width: 48,
+          height: 48,
+          overflow: "hidden",
+          "& svg": {
+            pointerEvents: "none",
+            width: 24,
+            height: 24,
+            display: "block",
+          },
           "&[aria-expanded=true]": {opacity: "0.7"},
         }}
       >
-        {menuOpen ? <CloseIcon /> : <HamburgerIcon />}
+        {menuOpen ? (
+          <CloseIcon width={24} height={24} aria-hidden="true" />
+        ) : (
+          <HamburgerIcon width={24} height={24} aria-hidden="true" />
+        )}
       </IconButton>
       <Menu
         id="header-overflow-menu"

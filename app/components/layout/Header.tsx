@@ -115,6 +115,8 @@ export default function Header() {
           borderRadius: 0,
           backgroundColor: "transparent",
           overflow: "visible",
+          zIndex: (theme) => theme.zIndex.appBar,
+          isolation: "isolate",
           // Keep blur on a non-interactive layer. Applying backdrop-filter on
           // the sticky AppBar itself makes iOS Safari skip taps on children
           // (hamburger + network select).

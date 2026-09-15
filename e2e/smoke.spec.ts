@@ -43,13 +43,23 @@ test.describe("smoke", () => {
   }) => {
     await page.setViewportSize({width: 375, height: 812});
     await page.goto("/");
-    await page.getByRole("button", {name: "Navigation menu"}).click();
+    const hamburger = page.getByRole("button", {name: "Navigation menu"});
+    const hamburgerBox = await hamburger.boundingBox();
+    expect(hamburgerBox?.width).toBe(48);
+    expect(hamburgerBox?.height).toBe(48);
+    await hamburger.click();
     await expect(
       page.getByRole("menuitem", {name: "Transactions"}),
     ).toBeVisible();
+    expect(
+      await page.evaluate(() => getComputedStyle(document.body).overflow),
+    ).not.toBe("hidden");
     await page.keyboard.press("Escape");
     await page.getByLabel("Select network").click();
     await expect(page.getByRole("option", {name: /testnet/i})).toBeVisible();
+    expect(
+      await page.evaluate(() => getComputedStyle(document.body).overflow),
+    ).not.toBe("hidden");
   });
 
   test("user guide page is reachable", async ({page}) => {

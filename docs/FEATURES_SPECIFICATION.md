@@ -59,7 +59,7 @@ The app shell that wraps every page.
 |--------|--------|
 | **Logo** | Aptos logo links to `/`, scrolls to top. |
 | **Desktop Nav** | Links: Transactions, Analytics (mainnet only), Validators, Blocks, Coins, Releases, Run Script. Active link highlighted via `useLocation`. |
-| **Mobile Nav** | Compact viewports use a 48px hamburger `IconButton` that opens `HeaderOverflowMenu` with the same links, plus User Guide, Settings, language, theme toggle, and Wallet. The menu does **not** lock document scroll (MUI's default `overflow: hidden` on `body` makes the overlay appear inert on iOS Safari) and is height-capped so items including Wallet stay reachable. |
+| **Mobile Nav** | Compact viewports use a 48px hamburger `IconButton` (glyph pinned at 24×24 so the SVG cannot overflow the tap target) that opens `HeaderOverflowMenu` with the same links, plus User Guide, Settings, language, theme toggle, and Wallet. The menu does **not** lock document scroll (MUI's default `overflow: hidden` on `body` makes the overlay appear inert on iOS Safari) and is height-capped so items including Wallet stay reachable. Header blur lives on a non-interactive `::before` layer so iOS Safari still hit-tests the hamburger and network Select. |
 | **Search** | Header autocomplete search (see FEAT-SEARCH). |
 | **Network selector** | Dropdown to switch `?network=` param (see FEAT-NETWORK). |
 | **Language selector** | On wide viewports (`lg+`), a globe `IconButton` (`LanguageSelect`) in the header toolbar next to Settings. On compact viewports (`xs`–`md`), the same action is a Language `MenuItem` inside `HeaderOverflowMenu` that opens the catalog list. Applies immediately (see FEAT-SETTINGS-003). |
@@ -1442,7 +1442,7 @@ top of the HTML site.
 | `app/i18n/messages.en.test.ts` | FEAT-I18N-001 / FEAT-GUIDE-001 (English chrome and guide titles; shipped locale key/placeholder parity) |
 | `app/i18n/agentsLocales.test.ts` | FEAT-I18N-001 (`AGENTS.md` shipped-locales table matches `SUPPORTED_LOCALES` / `LOCALE_META`) |
 | `app/components/layout/LanguageSelect.test.tsx` | FEAT-SETTINGS-003 / FEAT-CHROME-001 (header language icon menu lists catalogs and persists `aptos-explorer-locale`) |
-| `app/components/layout/HeaderOverflowMenu.test.tsx` | FEAT-CHROME-001 (compact hamburger opens without locking body scroll; 48px IconButton tap target) |
+| `app/components/layout/HeaderOverflowMenu.test.tsx` | FEAT-CHROME-001 (compact hamburger opens without locking body scroll; 48px IconButton with 24×24 glyph) |
 | `app/components/layout/NetworkSelect.test.tsx` | FEAT-NETWORK-001 (header network dropdown opens without locking body scroll; choosing an option updates the URL) |
 | `app/pages/Guide/guideSections.test.ts` | FEAT-GUIDE-001 (section ids, titles, body copy) |
 | `app/utils/routerParams.test.ts` | FEAT-ROUTING-003 (`pathSplatToSegments` normalization) |
@@ -1497,7 +1497,7 @@ top of the HTML site.
 | `app/pages/Transaction/Tabs/Components/decodeMultisigPayload.test.ts` | FEAT-TXN-004 (BCS decoding of multisig payload bytes into an entry function; empty/invalid fallbacks) |
 | `app/pages/Transaction/Tabs/Components/decodeMoveArgument.test.ts` | FEAT-TXN-011 / FEAT-TXN-004 (ABI-typed BCS argument decoding: address, ints, bool, String, vector, Object, Option; positional alignment and invalid/leftover fallbacks) |
 | `app/pages/Transaction/Tabs/Components/useEntryFunctionArgNames.test.ts` | FEAT-TXN-011 (entry function arg / type-param name resolution from Move source, signer-slot dropping, no-source fallback) |
-| `e2e/smoke.spec.ts` | FEAT-GUIDE-001 / FEAT-CHROME-001 / FEAT-SETTINGS-003 (Playwright: `/guide` loads; document does not overflow horizontally on desktop and a 375px viewport; desktop header language icon is present) |
+| `e2e/smoke.spec.ts` | FEAT-GUIDE-001 / FEAT-CHROME-001 / FEAT-NETWORK-001 / FEAT-SETTINGS-003 (Playwright: `/guide` loads; document does not overflow horizontally on desktop and a 375px viewport; desktop header language icon is present; hamburger and network dropdown open on a 375px viewport without body scroll-lock; hamburger stays a 48px tap target) |
 | `e2e/transaction-balance-change.spec.ts` | FEAT-TXN-003 (Playwright: testnet Balance Change tab loads indexer FA activities; asserts gas-fee row; skips outside CI when testnet gateway returns 401 for local preview origin) |
 | `e2e/transaction-payments.spec.ts` | FEAT-TXN-016 (Playwright: Payments tab hidden on fees-only testnet txn; shown and explains a live P2P transfer) |
 | `e2e/encrypted-transaction-localnet.spec.ts` | FEAT-TXN-002 / FEAT-TXN-005 (Playwright: submit encrypted transfer on localnet, assert overview Encryption chips + Coin Transfer + Payload tab; gated by `APTOS_LOCALNET=1`) |
