@@ -10,6 +10,7 @@ describe("isSupportedLocale", () => {
     expect(isSupportedLocale("en")).toBe(true);
     expect(isSupportedLocale("zh")).toBe(true);
     expect(isSupportedLocale("ko")).toBe(true);
+    expect(isSupportedLocale("ja")).toBe(true);
   });
 
   it("rejects unknown tags", () => {
@@ -41,6 +42,7 @@ describe("resolveLocale", () => {
     expect(resolveLocale("auto", ["EN-us"])).toBe("en");
     expect(resolveLocale("auto", ["zh-CN", "en"])).toBe("zh");
     expect(resolveLocale("auto", ["ko-KR"])).toBe("ko");
+    expect(resolveLocale("auto", ["ja-JP"])).toBe("ja");
   });
 
   it("falls back to English when no browser language is supported", () => {

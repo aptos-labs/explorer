@@ -1,4 +1,4 @@
-export const SUPPORTED_LOCALES = ["en", "zh", "ko"] as const;
+export const SUPPORTED_LOCALES = ["en", "zh", "ko", "ja"] as const;
 
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
@@ -13,4 +13,5 @@ export const LOCALE_META: Record<
   en: {nativeName: "English", ogLocale: "en_US", dir: "ltr"},
   zh: {nativeName: "简体中文", ogLocale: "zh_CN", dir: "ltr"},
   ko: {nativeName: "한국어", ogLocale: "ko_KR", dir: "ltr"},
+  ja: {nativeName: "日本語", ogLocale: "ja_JP", dir: "ltr"},
 };
