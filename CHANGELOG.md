@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Tamil (`ta`)**: Remaining explorer UI copy is translated.
 - **Malay (`ms`)**: Remaining explorer UI copy is translated.
 - **Polish (`pl`)**: Remaining explorer UI copy is translated.
+- **Urdu (`ur`)**: Remaining explorer UI copy is translated (RTL).
 
 - **Transaction Payments tab**: User-transaction detail has a **Payments** tab (`/txn/{id}/payments`) when a payment is identified from the transaction body: peer-to-peer, partner-controlled (TransferRef / dispatchable FA / intermediary hops), confidential (encrypted amounts stay hidden even if you connect a wallet — connecting only highlights that you are a party), public↔confidential wraps/unwraps, and exchange inputs/outputs. The tab is hidden when nothing beyond network fees matches. When shown, fees (gas, storage, refunds, partner skims) are spelled out, and multi-step transactions include a flow diagram with copyable Mermaid source. Identification uses the transaction body plus indexer FA activities already loaded for Balance Change (a deeper client-side call-graph walk is stubbed and left off to avoid extra API usage).
 - **Known address — Hotcoin Hot Wallet 01**: Mainnet CEX hot wallet `0xf88e…3d9b` (verification request #1735) with explorer label and branding icon (`public/address-icons/cex-hotcoin.png`).

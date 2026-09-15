@@ -56,6 +56,7 @@ export const FULL_UI_LOCALES = [
   "ms",
   "ta",
   "pl",
+  "ur",
   "ha",
   "zu",
   "am",
