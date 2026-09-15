@@ -18,6 +18,7 @@ import HashButton, {HashType} from "../../../components/HashButton";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {Link} from "../../../routing";
 import {tryStandardizeAddress} from "../../../utils";
+import {useTranslation} from "../../../i18n";
 import {getTransactionModuleSummary} from "../transactionModuleChanges";
 
 type TransactionModulesTabProps = {
@@ -32,6 +33,7 @@ function moduleCodePath(address: string, moduleName: string): string {
 export default function TransactionModulesTab({
   transaction,
 }: TransactionModulesTabProps): React.JSX.Element {
+  const {t} = useTranslation();
   const summary = getTransactionModuleSummary(transaction);
 
   if (!summary) {
@@ -89,14 +91,14 @@ export default function TransactionModulesTab({
           >
             <ViewModuleOutlinedIcon fontSize="small" color="action" />
             <Typography variant="h6" component="h2">
-              Package publish
+              {t("txnModules.packagePublish")}
             </Typography>
           </Stack>
           <Table size="small">
             <TableHead>
               <TableRow>
-                <TableCell>Code address</TableCell>
-                <TableCell width={160}>Kind</TableCell>
+                <TableCell>{t("txnModules.codeAddress")}</TableCell>
+                <TableCell width={160}>{t("txnModules.kind")}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -113,7 +115,11 @@ export default function TransactionModulesTab({
                   <TableCell>
                     <Chip
                       size="small"
-                      label={row.isUpgrade ? "Upgrade" : "New publish"}
+                      label={
+                        row.isUpgrade
+                          ? t("txnModules.upgrade")
+                          : t("txnModules.newPublish")
+                      }
                       color={row.isUpgrade ? "warning" : "success"}
                       variant="outlined"
                     />
@@ -136,17 +142,17 @@ export default function TransactionModulesTab({
           >
             <ViewModuleOutlinedIcon fontSize="small" color="action" />
             <Typography variant="h6" component="h2">
-              Module bytecode changes
+              {t("txnModules.bytecodeChanges")}
             </Typography>
           </Stack>
           <Table size="small">
             <TableHead>
               <TableRow>
-                <TableCell width={120}>Change</TableCell>
-                <TableCell>Address</TableCell>
-                <TableCell>Module</TableCell>
+                <TableCell width={120}>{t("txnModules.change")}</TableCell>
+                <TableCell>{t("txnModules.address")}</TableCell>
+                <TableCell>{t("txnModules.module")}</TableCell>
                 <TableCell width={100} align="right">
-                  Explorer
+                  {t("txnModules.explorer")}
                 </TableCell>
               </TableRow>
             </TableHead>
@@ -156,7 +162,11 @@ export default function TransactionModulesTab({
                   <TableCell>
                     <Chip
                       size="small"
-                      label={row.kind === "write_module" ? "Write" : "Delete"}
+                      label={
+                        row.kind === "write_module"
+                          ? t("txnModules.write")
+                          : t("txnModules.delete")
+                      }
                       color={row.kind === "write_module" ? "primary" : "error"}
                       variant="outlined"
                     />

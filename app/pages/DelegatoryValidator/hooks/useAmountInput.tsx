@@ -5,6 +5,7 @@ import {StakeOperation} from "../../../api/hooks/delegations";
 import AmountTextField from "../../../components/AmountTextField";
 import {OCTA} from "../../../constants";
 import {MINIMUM_APT_IN_POOL} from "../constants";
+import {useTranslation} from "../../../i18n";
 
 function sanitizeInput(input: string): string {
   const digitsAndDecimals = /[0-9.]/g;
@@ -32,6 +33,7 @@ function isValidAmount(
 }
 
 const useAmountInput = (stakeOperation: StakeOperation) => {
+  const {t} = useTranslation();
   const [amount, setAmount] = useState<string>("");
 
   const onAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,16 +66,19 @@ const useAmountInput = (stakeOperation: StakeOperation) => {
             stakedAmount - Number(amount) < MINIMUM_APT_IN_POOL &&
             amount !== stakedAmount.toString()
           ) {
-            return `If you unlock ${amount} APT, your total staked amount ${stakedAmount} APT will be unlocked.`;
+            return t("staking.unlockAll", {amount, staked: stakedAmount});
           } else if (
             amount &&
             unlockedAmount + Number(amount) < MINIMUM_APT_IN_POOL &&
             amount !== stakedAmount.toString()
           ) {
             if (stakedAmount - MINIMUM_APT_IN_POOL > MINIMUM_APT_IN_POOL) {
-              return `If you unlock ${amount} APT, ${MINIMUM_APT_IN_POOL} APT will be unlocked.`;
+              return t("staking.unlockMin", {
+                amount,
+                min: MINIMUM_APT_IN_POOL,
+              });
             } else {
-              return `If you unlock ${amount} APT, your total staked amount ${stakedAmount} APT will be unlocked.`;
+              return t("staking.unlockAll", {amount, staked: stakedAmount});
             }
           }
           break;
@@ -90,28 +95,40 @@ const useAmountInput = (stakeOperation: StakeOperation) => {
             stakedAmount + Number(amount) < MINIMUM_APT_IN_POOL &&
             amount !== unlockedAmount.toString()
           ) {
-            return `If you restake ${amount} APT, your total unlocked amount ${unlockedAmount} APT will be restaked.`;
+            return t("staking.restakeAll", {
+              amount,
+              unlocked: unlockedAmount,
+            });
           } else if (
             amount &&
             unlockedAmount - Number(amount) < MINIMUM_APT_IN_POOL &&
             amount !== unlockedAmount.toString()
           ) {
-            return `If you restake ${amount} APT, your total unlocked amount ${unlockedAmount} APT will be restaked.`;
+            return t("staking.restakeAll", {
+              amount,
+              unlocked: unlockedAmount,
+            });
           } else if (
             amount &&
             stakedAmount + Number(amount) < MINIMUM_APT_IN_POOL &&
             amount !== unlockedAmount.toString()
           ) {
             if (unlockedAmount - MINIMUM_APT_IN_POOL > MINIMUM_APT_IN_POOL) {
-              return `If you restake ${amount} APT, ${MINIMUM_APT_IN_POOL} APT will be restaked.`;
+              return t("staking.restakeMin", {
+                amount,
+                min: MINIMUM_APT_IN_POOL,
+              });
             } else {
-              return `If you restake ${amount} APT, your total unlocked amount ${unlockedAmount} APT will be restaked.`;
+              return t("staking.restakeAll", {
+                amount,
+                unlocked: unlockedAmount,
+              });
             }
           }
           break;
         case StakeOperation.STAKE:
           if (stakedAmount === 0) {
-            return "Minimum stake amount is 11 APT.";
+            return t("staking.minStake11");
           }
       }
     }

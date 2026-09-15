@@ -52,6 +52,7 @@ import {
   useSdkV2Client,
 } from "../../../../global-config/GlobalConfig";
 import {Link, useNavigate} from "../../../../routing";
+import {englishT, useTranslation, type TFunction} from "../../../../i18n";
 import {
   encodeInputArgsForViewRequest,
   extractFunctionParamNames,
@@ -197,7 +198,7 @@ type ContractFormType = {
 
 type FormTriggerSubmit = UseFormHandleSubmit<ContractFormType>;
 
-function getErrorMessage(error: unknown): string {
+function getErrorMessage(error: unknown, t: TFunction = englishT): string {
   if (error instanceof Error) {
     return error.message;
   }
@@ -207,35 +208,37 @@ function getErrorMessage(error: unknown): string {
       return errorObj.message;
     }
   }
-  return "Unknown error";
+  return t("contract.unknownError");
 }
 
 /** Get a user-friendly type name. */
-function getFriendlyTypeName(type: string): string {
+function getFriendlyTypeName(type: string, t: TFunction = englishT): string {
   // Simplify common types
-  if (type === "address") return "Address";
-  if (type === "bool") return "Boolean";
-  if (type === "u8") return "Number (u8)";
-  if (type === "u16") return "Number (u16)";
-  if (type === "u32") return "Number (u32)";
-  if (type === "u64") return "Number (u64)";
-  if (type === "u128") return "Number (u128)";
-  if (type === "u256") return "Number (u256)";
-  if (type === "i8") return "Signed Number (i8)";
-  if (type === "i16") return "Signed Number (i16)";
-  if (type === "i32") return "Signed Number (i32)";
-  if (type === "i64") return "Signed Number (i64)";
-  if (type === "i128") return "Signed Number (i128)";
-  if (type === "i256") return "Signed Number (i256)";
-  if (type === "0x1::string::String") return "String";
-  if (type.startsWith("vector<u8>")) return "Bytes (hex or array)";
+  if (type === "address") return t("contract.type.address");
+  if (type === "bool") return t("contract.type.bool");
+  if (type === "u8") return t("contract.type.u8");
+  if (type === "u16") return t("contract.type.u16");
+  if (type === "u32") return t("contract.type.u32");
+  if (type === "u64") return t("contract.type.u64");
+  if (type === "u128") return t("contract.type.u128");
+  if (type === "u256") return t("contract.type.u256");
+  if (type === "i8") return t("contract.type.i8");
+  if (type === "i16") return t("contract.type.i16");
+  if (type === "i32") return t("contract.type.i32");
+  if (type === "i64") return t("contract.type.i64");
+  if (type === "i128") return t("contract.type.i128");
+  if (type === "i256") return t("contract.type.i256");
+  if (type === "0x1::string::String") return t("contract.type.string");
+  if (type.startsWith("vector<u8>")) return t("contract.type.bytes");
   if (type.startsWith("vector<")) {
     const inner = type.slice(7, -1);
-    return `Array of ${getFriendlyTypeName(inner)}`;
+    return t("contract.type.arrayOf", {name: getFriendlyTypeName(inner, t)});
   }
   if (type.startsWith("0x1::option::Option<")) {
     const inner = type.slice(20, -1);
-    return `Optional ${getFriendlyTypeName(inner)}`;
+    return t("contract.type.optionalOf", {
+      name: getFriendlyTypeName(inner, t),
+    });
   }
   // Return shortened version for complex types
   if (type.includes("::")) {
@@ -246,17 +249,18 @@ function getFriendlyTypeName(type: string): string {
 }
 
 /** Get placeholder text for input based on type. */
-function getPlaceholder(type: string): string {
-  if (type === "address") return "0x1 or name.apt";
-  if (type === "bool") return "true or false";
-  if (type.startsWith("u")) return "0";
-  if (type.startsWith("i")) return "0";
-  if (type === "0x1::string::String") return "Enter text...";
-  if (type === "vector<u8>") return "0xDEADBEEF or [222, 173, 190, 239]";
-  if (type.startsWith("vector<address>")) return '0x1, 0x2 or ["0x1", "0x2"]';
-  if (type.startsWith("vector<"))
-    return 'value1, value2 or ["value1", "value2"]';
-  if (type.startsWith("0x1::option::Option<")) return "Leave empty for none";
+function getPlaceholder(type: string, t: TFunction = englishT): string {
+  if (type === "address") return t("contract.placeholder.address");
+  if (type === "bool") return t("contract.placeholder.bool");
+  if (type.startsWith("u")) return t("contract.placeholder.number");
+  if (type.startsWith("i")) return t("contract.placeholder.number");
+  if (type === "0x1::string::String") return t("contract.placeholder.text");
+  if (type === "vector<u8>") return t("contract.placeholder.bytes");
+  if (type.startsWith("vector<address>"))
+    return t("contract.placeholder.addresses");
+  if (type.startsWith("vector<")) return t("contract.placeholder.vector");
+  if (type.startsWith("0x1::option::Option<"))
+    return t("contract.placeholder.optionNone");
   return "";
 }
 
@@ -277,6 +281,7 @@ function Contract({
   isObject: boolean;
   isRead: boolean;
 }) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const {
     data,
@@ -350,14 +355,8 @@ function Contract({
         <ErrorPage
           address={address}
           error={error}
-          notFoundTitle="No modules found"
-          notFoundMessage={
-            <>
-              No Move modules were returned for this address on this network
-              (HTTP 404 from the modules API). If you expected modules here,
-              confirm the address and network, or try again later.
-            </>
-          }
+          notFoundTitle={t("notFound.modulesTitle")}
+          notFoundMessage={t("notFound.modulesBody")}
         />
       );
     }
@@ -366,16 +365,7 @@ function Contract({
 
   if (modules.length === 0) {
     if (packagesFetched && sortedPackages.length === 0 && modulesFetched) {
-      return (
-        <EmptyTabContent
-          message={
-            <>
-              No Move modules and no package metadata for this address on this
-              network.
-            </>
-          }
-        />
-      );
+      return <EmptyTabContent message={t("contract.noModules")} />;
     }
     return <EmptyTabContent />;
   }
@@ -432,7 +422,9 @@ function Contract({
                   color: "text.secondary",
                 }}
               >
-                Select a function to {isRead ? "view" : "run"}
+                {isRead
+                  ? t("contract.selectToView")
+                  : t("contract.selectToRun")}
               </Typography>
               <Typography
                 variant="body2"
@@ -440,8 +432,17 @@ function Contract({
                   color: "text.secondary",
                 }}
               >
-                {totalFunctions} {isRead ? "view" : "entry"} function
-                {totalFunctions !== 1 ? "s" : ""} available
+                {t(
+                  totalFunctions !== 1
+                    ? "contract.functionsAvailablePlural"
+                    : "contract.functionsAvailable",
+                  {
+                    count: totalFunctions,
+                    kind: isRead
+                      ? t("contract.viewKind")
+                      : t("contract.entryKind"),
+                  },
+                )}
               </Typography>
             </Box>
           ) : isRead ? (
@@ -471,7 +472,7 @@ function Contract({
                     color: "text.secondary",
                   }}
                 >
-                  Source Code
+                  {t("contract.sourceCode")}
                 </Typography>
                 <Code
                   sourceBytecode={selectedModule?.source}
@@ -494,6 +495,7 @@ function ContractSidebar({
   getLinkToFn,
   isObject,
 }: ContractSidebarProps) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const logEvent = useLogEventWithBasic();
@@ -554,7 +556,7 @@ function ContractSidebar({
           <TextField
             size="small"
             fullWidth
-            placeholder="Search functions..."
+            placeholder={t("contract.searchFunctions")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             slotProps={{
@@ -578,7 +580,10 @@ function ContractSidebar({
                 mb: 2,
               }}
             >
-              {filteredCount} of {totalCount} functions
+              {t("contract.functionsCount", {
+                filtered: filteredCount,
+                total: totalCount,
+              })}
             </Typography>
           )}
 
@@ -636,7 +641,7 @@ function ContractSidebar({
                   py: 4,
                 }}
               >
-                No functions match "{searchQuery}"
+                {t("contract.noFunctionMatch", {query: searchQuery})}
               </Typography>
             )}
           </Box>
@@ -648,7 +653,11 @@ function ContractSidebar({
           groupBy={(option) => option.moduleName}
           getOptionLabel={(option) => option.fnName}
           renderInput={(params) => (
-            <TextField {...params} label="Select a function" size="small" />
+            <TextField
+              {...params}
+              label={t("contract.selectFunction")}
+              size="small"
+            />
           )}
           onChange={(_, fn) => {
             if (fn) {
@@ -680,6 +689,7 @@ function RunContractForm({
   fn: Types.MoveFunction;
   sourceCode?: string;
 }) {
+  const {t} = useTranslation();
   const networkName = useNetworkName();
   const sdkV2Client = useSdkV2Client();
   const {connected, account} = useWallet();
@@ -762,15 +772,14 @@ function RunContractForm({
         sdkV2Client,
       );
     } catch (e: unknown) {
-      const errorMsg =
-        e instanceof Error ? e.message : "Failed to resolve ANS name";
+      const errorMsg = e instanceof Error ? e.message : t("contract.ansFailed");
       setAnsError(errorMsg);
       setSimulationInProcess(false);
       return;
     }
 
     if (!account?.address || !account?.publicKey) {
-      setSimulationError("Wallet account not available for simulation");
+      setSimulationError(t("contract.walletUnavailable"));
       setSimulationInProcess(false);
       return;
     }
@@ -806,7 +815,7 @@ function RunContractForm({
       });
     } catch (error) {
       setSimulationError(
-        error instanceof Error ? error.message : "Simulation failed",
+        error instanceof Error ? error.message : t("contract.simulationFailed"),
       );
       logEvent("function_simulated", fn.name, {txn_status: "error"});
     }
@@ -828,8 +837,7 @@ function RunContractForm({
         sdkV2Client,
       );
     } catch (e: unknown) {
-      const errorMsg =
-        e instanceof Error ? e.message : "Failed to resolve ANS name";
+      const errorMsg = e instanceof Error ? e.message : t("contract.ansFailed");
       setAnsError(errorMsg);
       return;
     }
@@ -890,7 +898,7 @@ function RunContractForm({
                 {transactionInProcess ? (
                   <CircularProgress size={24} color="inherit" />
                 ) : (
-                  "Execute"
+                  t("contract.execute")
                 )}
               </Button>
               <Button
@@ -910,7 +918,7 @@ function RunContractForm({
                 {simulationInProcess ? (
                   <CircularProgress size={24} color="inherit" />
                 ) : (
-                  "Simulate"
+                  t("contract.simulate")
                 )}
               </Button>
             </Stack>
@@ -924,7 +932,7 @@ function RunContractForm({
                   mt: 1,
                 }}
               >
-                Fill in all required fields to execute
+                {t("contract.fillToExecute")}
               </Typography>
             )}
 
@@ -940,7 +948,7 @@ function RunContractForm({
                   <ErrorIcon color="error" fontSize="small" />
                   <Box>
                     <Typography variant="subtitle2" color="error">
-                      ANS Resolution Error
+                      {t("contract.ansError")}
                     </Typography>
                     <Typography
                       variant="body2"
@@ -979,8 +987,8 @@ function RunContractForm({
                       color={isFunctionSuccess ? "success.main" : "error"}
                     >
                       {isFunctionSuccess
-                        ? "Transaction Successful"
-                        : "Transaction Failed"}
+                        ? t("contract.transactionSuccessful")
+                        : t("contract.transactionFailed")}
                     </Typography>
 
                     {!isFunctionSuccess && transactionResponse.message && (
@@ -1025,7 +1033,7 @@ function RunContractForm({
                               variant="outlined"
                               endIcon={<OpenInNew fontSize="small" />}
                             >
-                              View
+                              {t("common.view")}
                             </Button>
                           </Link>
                         </Stack>
@@ -1051,7 +1059,7 @@ function RunContractForm({
                   <ErrorIcon color="error" fontSize="small" />
                   <Box>
                     <Typography variant="subtitle2" color="error">
-                      Simulation Failed
+                      {t("contract.simulationFailedTitle")}
                     </Typography>
                     <Typography
                       variant="body2"
@@ -1085,7 +1093,7 @@ function RunContractForm({
                 color: "text.secondary",
               }}
             >
-              Connect wallet to execute transactions
+              {t("contract.connectToExecute")}
             </Typography>
           </Stack>
         )
@@ -1097,6 +1105,7 @@ function RunContractForm({
 const TOOLTIP_TIME = 2000;
 
 function FieldCopyButton({value}: {value: unknown}) {
+  const {t} = useTranslation();
   const [tooltipOpen, setTooltipOpen] = useState(false);
 
   async function handleCopy(e: React.MouseEvent) {
@@ -1112,7 +1121,7 @@ function FieldCopyButton({value}: {value: unknown}) {
 
   return (
     <StyledTooltip
-      title={tooltipOpen ? "Copied!" : "Copy value"}
+      title={tooltipOpen ? t("common.copiedExclaim") : t("contract.copyValue")}
       placement="top"
       open={tooltipOpen || undefined}
       disableFocusListener={tooltipOpen}
@@ -1123,7 +1132,7 @@ function FieldCopyButton({value}: {value: unknown}) {
         className="field-copy-btn"
         onClick={handleCopy}
         size="small"
-        aria-label="Copy field value"
+        aria-label={t("contract.copyFieldAria")}
         sx={{
           opacity: 0,
           transition: "opacity 0.15s",
@@ -1214,6 +1223,7 @@ function ReadContractForm({
   fn: Types.MoveFunction;
   sourceCode?: string;
 }) {
+  const {t} = useTranslation();
   const aptosClient = useAptosClient();
   const sdkV2Client = useSdkV2Client();
   const [result, setResult] = useState<Types.MoveValue[]>();
@@ -1253,9 +1263,8 @@ function ReadContractForm({
         sdkV2Client,
       );
     } catch (e: unknown) {
-      const errorMsg =
-        e instanceof Error ? e.message : "Failed to resolve ANS name";
-      setErrMsg(`ANS Resolution Error: ${errorMsg}`);
+      const errorMsg = e instanceof Error ? e.message : t("contract.ansFailed");
+      setErrMsg(`${t("contract.ansError")}: ${errorMsg}`);
       return;
     }
 
@@ -1269,7 +1278,9 @@ function ReadContractForm({
         }),
       };
     } catch (e: unknown) {
-      setErrMsg(`Parsing arguments failed: ${getErrorMessage(e)}`);
+      setErrMsg(
+        t("contract.parsingArgsFailed", {message: getErrorMessage(e, t)}),
+      );
       return;
     }
     setInProcess(true);
@@ -1279,7 +1290,7 @@ function ReadContractForm({
       setErrMsg(undefined);
       logEvent("function_interacted", fn.name, {txn_status: "success"});
     } catch (e: unknown) {
-      let error = getErrorMessage(e);
+      let error = getErrorMessage(e, t);
       const prefix = "Error:";
       if (error.startsWith(prefix)) {
         error = error.substring(prefix.length).trim();
@@ -1315,7 +1326,7 @@ function ReadContractForm({
             {inProcess ? (
               <CircularProgress size={24} color="inherit" />
             ) : (
-              "Query"
+              t("contract.query")
             )}
           </Button>
 
@@ -1328,7 +1339,7 @@ function ReadContractForm({
                 mt: 1,
               }}
             >
-              Fill in all required fields to query
+              {t("contract.fillToQuery")}
             </Typography>
           )}
 
@@ -1359,7 +1370,7 @@ function ReadContractForm({
                       <ErrorIcon color="error" fontSize="small" />
                       <Box>
                         <Typography variant="subtitle2" color="error">
-                          Error
+                          {t("contract.error")}
                         </Typography>
                         <Typography
                           variant="body2"
@@ -1380,7 +1391,7 @@ function ReadContractForm({
                           color: "success.main",
                         }}
                       >
-                        Result
+                        {t("contract.result")}
                       </Typography>
                       <Stack spacing={1.5}>
                         {result?.map((r, idx) =>
@@ -1419,7 +1430,11 @@ function ReadContractForm({
 
                 {!errMsg && result && (
                   <StyledTooltip
-                    title={tooltipOpen ? "Copied!" : "Copy all"}
+                    title={
+                      tooltipOpen
+                        ? t("common.copiedExclaim")
+                        : t("contract.copyAll")
+                    }
                     placement="top"
                     open={tooltipOpen || undefined}
                     disableFocusListener={tooltipOpen}
@@ -1429,7 +1444,7 @@ function ReadContractForm({
                     <IconButton
                       onClick={copyValue}
                       size="small"
-                      aria-label="Copy full response"
+                      aria-label={t("contract.copyFullResponse")}
                     >
                       <ContentCopy fontSize="small" />
                     </IconButton>
@@ -1445,6 +1460,7 @@ function ReadContractForm({
 }
 
 function SimulationResultDisplay({result}: {result: unknown[]}) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const [expanded, setExpanded] = useState(true);
   const [tooltipOpen, setTooltipOpen] = useState(false);
@@ -1498,7 +1514,11 @@ function SimulationResultDisplay({result}: {result: unknown[]}) {
               variant="subtitle2"
               color={isSuccess ? "success.main" : "error"}
             >
-              Simulation {isSuccess ? "Successful" : "Failed"}
+              {t(
+                isSuccess
+                  ? "contract.simulationSuccessful"
+                  : "contract.simulationFailedTitle",
+              )}
             </Typography>
             {vmStatus && (
               <Typography
@@ -1513,7 +1533,11 @@ function SimulationResultDisplay({result}: {result: unknown[]}) {
             )}
           </Box>
           <StyledTooltip
-            title={tooltipOpen ? "Copied!" : "Copy full response"}
+            title={
+              tooltipOpen
+                ? t("common.copiedExclaim")
+                : t("contract.copyFullResponse")
+            }
             placement="top"
             open={tooltipOpen || undefined}
             disableFocusListener={tooltipOpen}
@@ -1541,7 +1565,7 @@ function SimulationResultDisplay({result}: {result: unknown[]}) {
                   color: "text.secondary",
                 }}
               >
-                Gas Used
+                {t("contract.gasUsed")}
               </Typography>
               <Typography
                 variant="body2"
@@ -1560,7 +1584,7 @@ function SimulationResultDisplay({result}: {result: unknown[]}) {
                 color: "text.secondary",
               }}
             >
-              Events
+              {t("contract.events")}
             </Typography>
             <Typography
               variant="body2"
@@ -1578,7 +1602,7 @@ function SimulationResultDisplay({result}: {result: unknown[]}) {
                 color: "text.secondary",
               }}
             >
-              Changes
+              {t("contract.changes")}
             </Typography>
             <Typography
               variant="body2"
@@ -1597,7 +1621,9 @@ function SimulationResultDisplay({result}: {result: unknown[]}) {
           endIcon={expanded ? <ExpandLess /> : <ExpandMore />}
           sx={{textTransform: "none", mb: expanded ? 1 : 0}}
         >
-          {expanded ? "Hide" : "Show"} Full Response
+          {expanded
+            ? t("contract.hideFullResponse")
+            : t("contract.showFullResponse")}
         </Button>
 
         <Collapse in={expanded}>
@@ -1661,29 +1687,30 @@ function ResultCard({
 }
 
 function HelpSection() {
+  const {t} = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const theme = useTheme();
 
   const helpItems = [
     {
-      title: "ANS Names",
-      desc: "Use .apt names for addresses (e.g., gregnazario.apt)",
+      title: t("contract.help.ansTitle"),
+      desc: t("contract.help.ansDesc"),
     },
     {
-      title: "Bytes (vector<u8>)",
-      desc: "Use hex (0xDEADBEEF) or array ([222, 173, 190, 239])",
+      title: t("contract.help.bytesTitle"),
+      desc: t("contract.help.bytesDesc"),
     },
     {
-      title: "Optional Values",
-      desc: "Leave empty for Option::none",
+      title: t("contract.help.optionalTitle"),
+      desc: t("contract.help.optionalDesc"),
     },
     {
-      title: "Arrays",
-      desc: 'Use JSON ["a", "b"] or comma-separated: a, b',
+      title: t("contract.help.arraysTitle"),
+      desc: t("contract.help.arraysDesc"),
     },
     {
-      title: "Nested Arrays",
-      desc: "Must use JSON format",
+      title: t("contract.help.nestedTitle"),
+      desc: t("contract.help.nestedDesc"),
     },
   ];
 
@@ -1699,7 +1726,7 @@ function HelpSection() {
           textTransform: "none",
         }}
       >
-        Input format help
+        {t("contract.inputHelp")}
       </Button>
       <Collapse in={expanded}>
         <Box
@@ -1760,6 +1787,7 @@ function ContractForm({
   isView: boolean;
   sourceCode?: string;
 }) {
+  const {t} = useTranslation();
   const {account} = useWallet();
   const theme = useTheme();
   const [fnCopyTooltipOpen, setFnCopyTooltipOpen] = useState(false);
@@ -1863,7 +1891,9 @@ function ContractForm({
             </Typography>
             <StyledTooltip
               title={
-                fnCopyTooltipOpen ? "Copied!" : "Copy full function identifier"
+                fnCopyTooltipOpen
+                  ? t("common.copiedExclaim")
+                  : t("contract.copyFunctionId")
               }
               placement="top"
               open={fnCopyTooltipOpen || undefined}
@@ -1874,13 +1904,13 @@ function ContractForm({
               <IconButton
                 onClick={copyFullFunctionId}
                 size="small"
-                aria-label="Copy full function identifier"
+                aria-label={t("contract.copyFunctionIdAria")}
               >
                 <ContentCopy fontSize="small" />
               </IconButton>
             </StyledTooltip>
             <Chip
-              label={isView ? "View" : "Entry"}
+              label={isView ? t("contract.viewChip") : t("contract.entryChip")}
               size="small"
               color={isView ? "info" : "primary"}
               variant="outlined"
@@ -2024,7 +2054,7 @@ function ContractForm({
                   color: "text.secondary",
                 }}
               >
-                Type Arguments
+                {t("contract.typeArguments")}
               </Typography>
               <Stack spacing={2}>
                 {fn.generic_type_params.map((_, i) => {
@@ -2041,7 +2071,7 @@ function ContractForm({
                           onChange={onChange}
                           value={value ?? ""}
                           label={typeParamName}
-                          placeholder="0x1::module::Type"
+                          placeholder={t("contract.typePlaceholder")}
                           fullWidth
                           size="small"
                         />
@@ -2063,13 +2093,13 @@ function ContractForm({
                   color: "text.secondary",
                 }}
               >
-                Arguments
+                {t("contract.arguments")}
               </Typography>
               <Stack spacing={2}>
                 {hasSigner && (
                   <TextField
                     value={account?.address ?? ""}
-                    label="signer (your wallet)"
+                    label={t("contract.signerWallet")}
                     disabled
                     fullWidth
                     size="small"
@@ -2082,8 +2112,8 @@ function ContractForm({
                 )}
                 {fnParams.map((param, i) => {
                   const isOption = param.startsWith("0x1::option::Option");
-                  const friendlyName = getFriendlyTypeName(param);
-                  const placeholder = getPlaceholder(param);
+                  const friendlyName = getFriendlyTypeName(param, t);
+                  const placeholder = getPlaceholder(param, t);
                   // Use extracted param name if available, otherwise fall back to friendly type name
                   const argName = paramNames?.[i];
                   const displayLabel = argName
@@ -2122,7 +2152,7 @@ function ContractForm({
                               endAdornment: isOption ? (
                                 <InputAdornment position="end">
                                   <Chip
-                                    label="optional"
+                                    label={t("contract.optional")}
                                     size="small"
                                     variant="outlined"
                                     sx={{height: 20, fontSize: 10}}
@@ -2150,7 +2180,7 @@ function ContractForm({
                   color: "text.secondary",
                 }}
               >
-                Options
+                {t("contract.options")}
               </Typography>
               <Controller
                 name="ledgerVersion"
@@ -2160,11 +2190,11 @@ function ContractForm({
                   <TextField
                     onChange={onChange}
                     value={value ?? ""}
-                    label="Ledger Version"
-                    placeholder="Leave empty for latest"
+                    label={t("contract.ledgerVersion")}
+                    placeholder={t("contract.ledgerPlaceholder")}
                     fullWidth
                     size="small"
-                    helperText="Query at a specific blockchain version"
+                    helperText={t("contract.ledgerHelper")}
                   />
                 )}
               />

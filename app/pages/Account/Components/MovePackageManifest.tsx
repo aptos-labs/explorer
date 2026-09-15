@@ -21,6 +21,7 @@ import {
   getPublicFunctionLineNumber,
   transformCode,
 } from "../../../utils";
+import {useTranslation} from "../../../i18n";
 import {useLogEventWithBasic} from "../hooks/useLogEventWithBasic";
 import {useModulesPathParams} from "../Tabs/ModulesTab/Tabs";
 
@@ -129,6 +130,7 @@ function ExpandCode({sourceCode}: {sourceCode: string | undefined}) {
 }
 
 export function MovePackageManifest({manifest}: {manifest: string}) {
+  const {t} = useTranslation();
   const {selectedModuleName} = useModulesPathParams();
   const logEvent = useLogEventWithBasic();
   const styles = useHighlighterStyles();
@@ -193,13 +195,13 @@ export function MovePackageManifest({manifest}: {manifest: string}) {
               fontWeight: 700,
             }}
           >
-            Package Manifest
+            {t("modules.packageManifest")}
           </Typography>
         </Stack>
         {sourceCode && (
           <Stack direction="row" spacing={2}>
             <StyledTooltip
-              title="Code copied"
+              title={t("common.codeCopied")}
               placement="right"
               open={tooltipOpen}
               disableFocusListener
@@ -228,7 +230,7 @@ export function MovePackageManifest({manifest}: {manifest: string}) {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  copy code
+                  {t("modules.copyCode")}
                 </Typography>
               </Button>
             </StyledTooltip>
@@ -254,7 +256,7 @@ export function MovePackageManifest({manifest}: {manifest: string}) {
                   whiteSpace: "nowrap",
                 }}
               >
-                download
+                {t("modules.download")}
               </Typography>
             </Button>
             <ExpandCode sourceCode={sourceCode} />

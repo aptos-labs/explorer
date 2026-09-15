@@ -20,6 +20,7 @@ import * as React from "react";
 import {useCallback, useState} from "react";
 import type {Types} from "~/types/aptos";
 import {useGetFaMetadata} from "../../../../api/hooks/useGetFaMetadata";
+import {useTranslation} from "../../../../i18n";
 import HashButton, {HashType} from "../../../../components/HashButton";
 import IdenticonImg from "../../../../components/IdenticonImg";
 import CurrencyValue, {
@@ -110,6 +111,7 @@ function TokenInfoCell({balanceChange}: BalanceChangeCellProps) {
 }
 
 function AmountCell({balanceChange}: BalanceChangeCellProps) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
   const isNegative = balanceChange.amount < 0;
@@ -145,7 +147,11 @@ function AmountCell({balanceChange}: BalanceChangeCellProps) {
         currencyCode={balanceChange.asset.symbol}
         decimals={balanceChange.asset.decimals}
       />{" "}
-      <StyledTooltip open={showCopied} title="Copied!" placement="top">
+      <StyledTooltip
+        open={showCopied}
+        title={t("common.copiedExclaim")}
+        placement="top"
+      >
         <ContentCopy style={{height: "1rem", width: "1.25rem"}} />
       </StyledTooltip>
     </GeneralTableCell>
@@ -627,21 +633,26 @@ type BalanceChangeHeaderCellProps = {
 function BalanceChangeHeaderCell({column}: BalanceChangeHeaderCellProps) {
   switch (column) {
     case "address":
-      return <GeneralTableHeaderCell header="Account" />;
+      return <GeneralTableHeaderCell headerKey="table.account" />;
     case "type":
-      return <GeneralTableHeaderCell header="Event Type" />;
+      return <GeneralTableHeaderCell headerKey="table.eventType" />;
     case "tokenInfo":
-      return <GeneralTableHeaderCell header="Asset" />;
+      return <GeneralTableHeaderCell headerKey="table.asset" />;
     case "verified":
       return (
         <GeneralTableHeaderCell
-          header="Verified"
+          headerKey="table.verified"
           tooltip={getLearnMoreTooltip("coin_verification")}
           isTableTooltip={true}
         />
       );
     case "amount":
-      return <GeneralTableHeaderCell header="Change" textAlignRight={true} />;
+      return (
+        <GeneralTableHeaderCell
+          headerKey="table.change"
+          textAlignRight={true}
+        />
+      );
     default:
       return assertNever(column);
   }
@@ -658,6 +669,7 @@ export function CoinBalanceChangeTable({
   transaction,
   columns = DEFAULT_COLUMNS,
 }: CoinBalanceChangeTableProps) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [selectedBalanceChange, setSelectedBalanceChange] =
@@ -702,7 +714,10 @@ export function CoinBalanceChangeTable({
 
   // Desktop table view
   return (
-    <Table aria-label="Balance changes" data-entity-type="balance-change">
+    <Table
+      aria-label={t("common.balanceChangesAria")}
+      data-entity-type="balance-change"
+    >
       <TableHead>
         <TableRow>
           {columns.map((column) => (

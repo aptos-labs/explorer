@@ -16,6 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 import {formatDistanceToNow} from "date-fns";
+import {useTranslation} from "../../i18n";
 import type {ReleaseResult} from "../../api/hooks/useGetReleases";
 
 type ReleaseCardProps = {
@@ -25,9 +26,10 @@ type ReleaseCardProps = {
 };
 
 function PrereleaseBadge() {
+  const {t} = useTranslation();
   return (
     <Chip
-      label="Pre-release"
+      label={t("releasesUi.prerelease")}
       color="warning"
       size="small"
       variant="outlined"
@@ -51,6 +53,7 @@ function RelativeDate({iso}: {iso: string | null}) {
 }
 
 export function ReleaseCard({name, registry, result}: ReleaseCardProps) {
+  const {t} = useTranslation();
   return (
     <Card variant="outlined" sx={{height: "100%"}}>
       <CardContent>
@@ -99,7 +102,7 @@ export function ReleaseCard({name, registry, result}: ReleaseCardProps) {
                   mb: 1,
                 }}
               >
-                Latest stable release
+                {t("releasesUi.latestStable")}
               </Typography>
             ) : (
               <Typography
@@ -110,11 +113,11 @@ export function ReleaseCard({name, registry, result}: ReleaseCardProps) {
                   mb: 1,
                 }}
               >
-                No stable release found — showing latest pre-release
+                {t("releasesUi.noStable")}
               </Typography>
             )}
             <Link href={result.link} target="_blank" rel="noopener noreferrer">
-              View release →
+              {t("releasesUi.viewRelease")}
             </Link>
 
             {result.recent.length > 0 && (
@@ -138,19 +141,26 @@ export function ReleaseCard({name, registry, result}: ReleaseCardProps) {
                       color: "text.secondary",
                     }}
                   >
-                    Recent releases ({result.recent.length})
+                    {t("releasesUi.recentReleases", {
+                      count: result.recent.length,
+                    })}
                   </Typography>
                 </AccordionSummary>
                 <AccordionDetails sx={{px: 0, pt: 0, overflowX: "auto"}}>
-                  <Table size="small" aria-label={`Recent ${name} releases`}>
+                  <Table
+                    size="small"
+                    aria-label={t("releasesUi.recentAria", {name})}
+                  >
                     <TableHead>
                       <TableRow>
-                        <TableCell sx={{pl: 0}}>Version</TableCell>
+                        <TableCell sx={{pl: 0}}>
+                          {t("releasesUi.version")}
+                        </TableCell>
                         <TableCell sx={{whiteSpace: "nowrap"}}>
-                          Published
+                          {t("releasesUi.published")}
                         </TableCell>
                         <TableCell sx={{pr: 0}} align="right">
-                          Link
+                          {t("releasesUi.link")}
                         </TableCell>
                       </TableRow>
                     </TableHead>
@@ -177,7 +187,7 @@ export function ReleaseCard({name, registry, result}: ReleaseCardProps) {
                               rel="noopener noreferrer"
                               underline="hover"
                             >
-                              View
+                              {t("common.view")}
                             </Link>
                           </TableCell>
                         </TableRow>

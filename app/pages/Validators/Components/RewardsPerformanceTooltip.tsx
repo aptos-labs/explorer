@@ -2,18 +2,18 @@ import {Stack} from "@mui/material";
 import {CodeLineBox} from "../../../components/CodeLineBox";
 import TableTooltip from "../../../components/Table/TableTooltip";
 import TooltipTypography from "../../../components/TooltipTypography";
+import {useTranslation} from "../../../i18n";
 
 export default function RewardsPerformanceTooltip() {
+  const {t} = useTranslation();
   return (
-    <TableTooltip title="Rewards Performance">
+    <TableTooltip titleKey="fields.rewardsPerformance">
       <Stack spacing={2}>
         <TooltipTypography variant="body2">
-          The Rewards Performance column shows the rewards percent of a
-          validator based upon proposal success.
+          {t("tooltips.rewardsPerformanceBody1")}
         </TooltipTypography>
         <TooltipTypography variant="body2">
-          It is calculated as a % of reward earned by the validator out of the
-          maximum reward earning opportunity:
+          {t("tooltips.rewardsPerformanceBody2")}
         </TooltipTypography>
         <CodeLineBox
           sx={{
@@ -24,12 +24,10 @@ export default function RewardsPerformanceTooltip() {
             width: "100%",
           }}
         >
-          (rewards earned across the epochs) / (maximum reward opportunity
-          across the epochs)
+          {t("tooltips.rewardsPerformanceFormula")}
         </CodeLineBox>
         <TooltipTypography variant="body2">
-          This is a cumulative metric across all epochs. Validators can improve
-          their performance by improving their proposal success rate.
+          {t("tooltips.rewardsPerformanceBody3")}
         </TooltipTypography>
       </Stack>
     </TableTooltip>

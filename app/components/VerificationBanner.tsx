@@ -12,6 +12,7 @@ import {
 } from "../api/hooks/useGetCoinList";
 import {useGetFaPairedCoin} from "../api/hooks/useGetFaPairedCoin";
 import {useNetworkName} from "../global-config/GlobalConfig";
+import {useTranslation} from "../i18n";
 import {Link} from "../routing";
 import {
   type VerifiedLevelInfo,
@@ -33,6 +34,7 @@ export default function VerificationBanner({
   symbol,
 }: VerificationBannerProps) {
   const theme = useTheme();
+  const {t} = useTranslation();
   const networkName = useNetworkName();
   const isCoin = id?.includes("::") ?? false;
 
@@ -128,17 +130,17 @@ export default function VerificationBanner({
           <Box>
             <strong>
               {level === VerifiedType.NATIVE_TOKEN
-                ? "Native Token"
+                ? t("verified.banner.nativeTitle")
                 : level === VerifiedType.LABS_VERIFIED
-                  ? "Verified by Aptos Labs"
-                  : "Community Verified"}
+                  ? t("verified.banner.labsTitle")
+                  : t("verified.banner.communityTitle")}
             </strong>
             {" — "}
             {level === VerifiedType.NATIVE_TOKEN
-              ? "This is a native token of the Aptos blockchain."
+              ? t("verified.banner.nativeBody")
               : level === VerifiedType.LABS_VERIFIED
-                ? "This asset has been verified by the Aptos Explorer team."
-                : "This asset is verified on the Panora community token list."}
+                ? t("verified.banner.labsBody")
+                : t("verified.banner.communityBody")}
           </Box>
         </Stack>
       </Alert>
@@ -159,8 +161,8 @@ export default function VerificationBanner({
     >
       <AlertTitle sx={{fontWeight: 700, mb: 0.5}}>
         {isRecognized
-          ? "This asset is recognized but not fully verified"
-          : "This asset is not verified"}
+          ? t("verified.banner.recognizedTitle")
+          : t("verified.banner.unverifiedTitle")}
       </AlertTitle>
       <Stack
         direction={{xs: "column", sm: "row"}}
@@ -173,8 +175,8 @@ export default function VerificationBanner({
       >
         <Box>
           {isRecognized
-            ? "This token appears in the Panora token list but has not been fully verified. Get verified to build trust with users."
-            : "This token has not been verified by the community or Aptos Labs. Verify your token to build trust and visibility."}
+            ? t("verified.banner.recognizedBody")
+            : t("verified.banner.unverifiedBody")}
         </Box>
         <Link to="/verification" sx={{textDecoration: "none", flexShrink: 0}}>
           <Button
@@ -191,7 +193,7 @@ export default function VerificationBanner({
               py: 0.75,
             }}
           >
-            Get Verified
+            {t("verified.banner.getVerified")}
           </Button>
         </Link>
       </Stack>

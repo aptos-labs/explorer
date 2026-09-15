@@ -3,6 +3,7 @@ import {Stack, Typography, useTheme} from "@mui/material";
 import type React from "react";
 import {type ResponseError, ResponseErrorType} from "../../api/client";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
+import {useTranslation} from "../../i18n";
 
 type ErrorProps = {
   error: ResponseError;
@@ -20,6 +21,7 @@ export default function AccountError({
   notFoundMessage,
 }: ErrorProps) {
   const theme = useTheme();
+  const {t} = useTranslation();
 
   const renderErrorContent = (title: string, message: React.ReactNode) => (
     <ContentBox>
@@ -57,7 +59,7 @@ export default function AccountError({
   switch (error.type) {
     case ResponseErrorType.NOT_FOUND:
       return renderErrorContent(
-        notFoundTitle ?? "Account Not Found",
+        notFoundTitle ?? t("notFound.accountTitle"),
         notFoundMessage ?? (
           <>
             {error.message && (
@@ -66,43 +68,46 @@ export default function AccountError({
                 <br />
               </>
             )}
-            Account not found. Please take a look at the Coins and Token tabs.
-            The account has never submitted a transaction, but it may still hold
-            assets.
+            {t("notFound.accountBody")}
           </>
         ),
       );
     case ResponseErrorType.INVALID_INPUT:
       return renderErrorContent(
-        "Invalid Input",
+        t("errors.invalidInput"),
         <>
-          ({error.type}): {error.message}
+          {t("errors.typeAndMessage", {
+            type: error.type,
+            message: error.message ?? "",
+          })}
         </>,
       );
     case ResponseErrorType.UNHANDLED:
       if (address) {
         return renderErrorContent(
-          "Error Loading Account",
+          t("notFound.accountLoad"),
           <>
-            Unknown error ({error.type}) fetching an Account with address{" "}
-            {address}:
+            {t("notFound.accountLoadBody", {
+              type: error.type,
+              address,
+            })}
             <br />
             {error.message}
             <br />
             <br />
-            Try again later
+            {t("common.tryAgainLater")}
           </>,
         );
       } else {
         return renderErrorContent(
-          "Too Many Requests",
-          <>Too many requests. Please try again 5 minutes later.</>,
+          t("errors.tooManyRequests"),
+          <>{t("errors.tooManyRequests5min")}</>,
         );
       }
     case ResponseErrorType.TOO_MANY_REQUESTS:
       return renderErrorContent(
-        "Too Many Requests",
-        <>Too many requests. Please try again 5 minutes later.</>,
+        t("errors.tooManyRequests"),
+        <>{t("errors.tooManyRequests5min")}</>,
       );
   }
 }

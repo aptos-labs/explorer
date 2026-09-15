@@ -300,6 +300,8 @@ export default defineConfig({
         "e2e/**",
         "scripts/**",
         "analytics/**",
+        // Translation catalogs are string tables, not executable logic.
+        "app/i18n/messages/**",
       ],
     },
   },

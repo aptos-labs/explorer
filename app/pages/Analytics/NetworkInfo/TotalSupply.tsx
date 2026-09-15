@@ -1,9 +1,11 @@
 import {APTOS_COIN} from "@aptos-labs/ts-sdk";
 import {useGetCoinSupplyLimit} from "../../../api/hooks/useGetCoinSupplyLimit";
 import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import {useTranslation} from "../../../i18n";
 import MetricCard from "./MetricCard";
 
 export default function TotalSupply() {
+  const {t} = useTranslation();
   const {
     isLoading,
     data: [totalSupply],
@@ -11,9 +13,9 @@ export default function TotalSupply() {
 
   return isLoading ? (
     <MetricCard
-      data="Loading..."
-      label="Total Supply"
-      tooltip="Amount of APT tokens flowing through the Aptos network."
+      data={t("common.loadingEllipsis")}
+      label={t("analytics.totalSupply")}
+      tooltip={t("analytics.totalSupplyTip")}
     />
   ) : (
     <MetricCard
@@ -22,8 +24,8 @@ export default function TotalSupply() {
           ? getFormattedBalanceStr(totalSupply.toString(), undefined, 0)
           : "-"
       }
-      label="Total Supply"
-      tooltip="Amount of APT tokens flowing through the Aptos network."
+      label={t("analytics.totalSupply")}
+      tooltip={t("analytics.totalSupplyTip")}
     />
   );
 }

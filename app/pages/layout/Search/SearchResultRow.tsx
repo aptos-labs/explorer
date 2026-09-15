@@ -18,9 +18,13 @@ import type {SearchResult} from "./searchUtils";
  */
 export const SearchResultGroupHeader = memo(function SearchResultGroupHeader({
   label,
+  labelKey,
 }: {
   label: string;
+  labelKey?: string;
 }): React.JSX.Element {
+  const {t} = useTranslation();
+  const displayLabel = labelKey ? t(labelKey) : label;
   return (
     <Box sx={{px: 2, py: 0.75, backgroundColor: "action.hover"}}>
       <Typography
@@ -34,7 +38,7 @@ export const SearchResultGroupHeader = memo(function SearchResultGroupHeader({
           color: "text.secondary",
         }}
       >
-        {label}
+        {displayLabel}
       </Typography>
     </Box>
   );
@@ -62,7 +66,11 @@ export const SearchResultRow = memo(function SearchResultRow({
   if (!result.to) {
     return (
       <Box sx={{px: 2, py: 1.5}}>
-        <Typography sx={{color: "text.secondary"}}>{result.label}</Typography>
+        <Typography sx={{color: "text.secondary"}}>
+          {result.labelKey
+            ? t(result.labelKey, result.labelVars)
+            : result.label}
+        </Typography>
       </Box>
     );
   }
@@ -107,7 +115,7 @@ export const SearchResultRow = memo(function SearchResultRow({
           fontSize: "0.9rem",
         }}
       >
-        {result.label}
+        {result.labelKey ? t(result.labelKey, result.labelVars) : result.label}
       </Typography>
       {showChevron && (
         <ArrowForwardIosIcon

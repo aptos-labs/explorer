@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import type React from "react";
 import {useState} from "react";
+import {useTranslation} from "../../i18n";
 import {
   useGetValidators,
   type ValidatorData,
@@ -80,7 +81,8 @@ function getValidatorsOrderedBy(
 }
 
 type SortableHeaderCellProps = {
-  header: string;
+  header?: string;
+  headerKey?: string;
   column: Column;
   direction?: "desc" | "asc";
   setDirection?: (dir: "desc" | "asc") => void;
@@ -91,6 +93,7 @@ type SortableHeaderCellProps = {
 
 function SortableHeaderCell({
   header,
+  headerKey,
   column,
   direction,
   setDirection,
@@ -101,6 +104,7 @@ function SortableHeaderCell({
   return (
     <GeneralTableHeaderCell
       header={header}
+      headerKey={headerKey}
       textAlignRight
       sortable
       direction={direction}
@@ -131,13 +135,13 @@ function ValidatorHeaderCell({
 }: ValidatorHeaderCellProps) {
   switch (column) {
     case "addr":
-      return <GeneralTableHeaderCell header="Staking Pool Address" />;
+      return <GeneralTableHeaderCell headerKey="table.stakingPoolAddress" />;
     case "operatorAddr":
-      return <GeneralTableHeaderCell header="Operator Address" />;
+      return <GeneralTableHeaderCell headerKey="table.operatorAddress" />;
     case "votingPower":
       return (
         <SortableHeaderCell
-          header="Voting Power"
+          headerKey="table.votingPower"
           column={column}
           direction={direction}
           setDirection={setDirection}
@@ -147,7 +151,7 @@ function ValidatorHeaderCell({
     case "rewardsPerf":
       return (
         <SortableHeaderCell
-          header="Rewards Perf"
+          headerKey="table.rewardsPerf"
           column={column}
           direction={direction}
           setDirection={setDirection}
@@ -158,7 +162,7 @@ function ValidatorHeaderCell({
     case "lastEpochPerf":
       return (
         <SortableHeaderCell
-          header="Last Epoch Perf"
+          headerKey="table.lastEpochPerf"
           column={column}
           direction={direction}
           setDirection={setDirection}
@@ -169,7 +173,7 @@ function ValidatorHeaderCell({
     case "location":
       return (
         <SortableHeaderCell
-          header="Location"
+          headerKey="table.location"
           column={column}
           direction={direction}
           setDirection={setDirection}
@@ -388,6 +392,7 @@ function ValidatorRow({validator, columns}: ValidatorRowProps) {
 }
 
 export function ValidatorsTable() {
+  const {t} = useTranslation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const {validators, isLoading} = useGetValidators();
@@ -420,7 +425,10 @@ export function ValidatorsTable() {
   // Desktop table view
   return (
     <Box sx={{overflowX: "auto"}}>
-      <Table aria-label="Validators" data-entity-type="validator">
+      <Table
+        aria-label={t("common.validatorsAria")}
+        data-entity-type="validator"
+      >
         <TableHead>
           <TableRow sx={{verticalAlign: "bottom"}}>
             {columns.map((column) => (

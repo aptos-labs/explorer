@@ -33,13 +33,11 @@ import {
   useAptosClient,
   useNetworkValue,
 } from "../../global-config/GlobalConfig";
+import {useTranslation} from "../../i18n";
 import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
 import {addressFromWallet} from "../../utils";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
-import {
-  REWARDS_LEARN_MORE_LINK,
-  REWARDS_TOOLTIP_TEXT,
-} from "../Validators/Components/Staking";
+import {REWARDS_LEARN_MORE_LINK} from "../Validators/Components/Staking";
 import {MINIMUM_APT_IN_POOL} from "./constants";
 import {DelegationStateContext} from "./context/DelegationContext";
 import useAmountInput from "./hooks/useAmountInput";
@@ -96,6 +94,7 @@ function StakeOperationDialogContent({
   accountResource: Types.MoveResource;
   validator: ValidatorData;
 }) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
   const {balance, lockedUntilSecs, rewardsRateYearly} = useGetDelegationState(
@@ -287,7 +286,7 @@ function StakeOperationDialogContent({
   const stakeDialog = (
     <StyledDialog handleDialogClose={handleClose} open={isDialogOpen}>
       <DialogTitle variant="h5" sx={{textAlign: "center"}}>
-        Stake Into The Pool
+        {t("staking.stakeIntoPool")}
       </DialogTitle>
       <DialogContent>
         <Stack direction="column" spacing={2}>
@@ -298,7 +297,7 @@ function StakeOperationDialogContent({
                 variant="outlined"
                 onClick={() => setAmount(min.toString())}
               >
-                MIN
+                {t("staking.min")}
               </Button>
             ) : null}
             {max !== null && (
@@ -306,42 +305,40 @@ function StakeOperationDialogContent({
                 variant="outlined"
                 onClick={() => setAmount(max.toString())}
               >
-                MAX
+                {t("staking.max")}
               </Button>
             )}
           </Stack>
           <ContentBoxSpaceBetween>
             <ContentRowSpaceBetween
-              title={"Staking Fee"}
+              titleKey="fields.stakingFee"
               value={`${Number(addStakeFee) / OCTA} APT`}
               tooltip={
-                <StyledLearnMoreTooltip
-                  text={
-                    "Refundable stake fee, that will be deducted from the current staking amount, to be returned to delegator after the current epoch ends."
-                  }
-                />
+                <StyledLearnMoreTooltip text={t("staking.stakeFeeTip")} />
               }
             />
             <ContentRowSpaceBetween
-              title={"Operator Commission"}
+              titleKey="fields.operatorCommission"
               value={commission && `${commission}%`}
             />
             <ContentRowSpaceBetween
-              title={"Compound Rewards"}
+              titleKey="fields.compoundRewards"
               value={`${rewardsRateYearly}% APR`}
               tooltip={
                 <StyledLearnMoreTooltip
-                  text={REWARDS_TOOLTIP_TEXT}
+                  text={t("staking.rewardsAprTip")}
                   link={REWARDS_LEARN_MORE_LINK}
                 />
               }
             />
             {Number(lockedUntilSecs) > currentTime / 1000 && (
               <ContentRowSpaceBetween
-                title={"Next Unlock In"}
+                titleKey="fields.nextUnlockIn"
                 value={
                   <TimestampValue
-                    timestamp={lockedUntilSecs?.toString() ?? "Unknown"}
+                    timestamp={
+                      lockedUntilSecs?.toString() ?? t("common.unknown")
+                    }
                     ensureMilliSeconds
                   />
                 }
@@ -357,16 +354,16 @@ function StakeOperationDialogContent({
             variant="body2"
             color={semanticColors.status.error}
           >
-            The commission rate for this pool is 100%, you will not receive
-            rewards.
+            {t("staking.commission100")}
           </TooltipTypography>
         ) : null}
       </DialogContent>
       <DialogActions>
         <StyledTooltip
-          title={`Minimum stake amount is ${min} APT and maximum stake amount is ${
-            Number(balance) / OCTA
-          } APT`}
+          title={t("staking.stakeMinMax", {
+            min: String(min),
+            max: String(Number(balance) / OCTA),
+          })}
           disableHoverListener={isAmountValid}
           placement="top"
         >
@@ -381,18 +378,14 @@ function StakeOperationDialogContent({
               fullWidth
               disabled={!isAmountValid}
             >
-              Deposit
+              {t("staking.deposit")}
             </Button>
           </Box>
         </StyledTooltip>
       </DialogActions>
       <DialogContent sx={{textAlign: "center"}}>
         <Typography variant="caption" color={theme.palette.text.secondary}>
-          <div>
-            Please do your own research. Aptos Labs is not responsible for the
-            performance of the validator nodes displayed here, or the security
-            of your funds
-          </div>
+          <div>{t("staking.researchFull")}</div>
         </Typography>
       </DialogContent>
     </StyledDialog>
@@ -402,8 +395,8 @@ function StakeOperationDialogContent({
     <StyledDialog handleDialogClose={handleClose} open={isDialogOpen}>
       <DialogTitle variant="h5" sx={{textAlign: "center"}}>
         {stakeOperation === StakeOperation.UNLOCK
-          ? "Unstake Funds"
-          : "Restake Funds"}
+          ? t("staking.unstakeFunds")
+          : t("staking.restakeFunds")}
       </DialogTitle>
       <DialogContent>
         <Stack direction="column" spacing={2}>
@@ -414,7 +407,7 @@ function StakeOperationDialogContent({
                 variant="outlined"
                 onClick={() => setAmount(min.toString())}
               >
-                MIN
+                {t("staking.min")}
               </Button>
             ) : null}
             {suggestedMax !== null && (
@@ -422,7 +415,7 @@ function StakeOperationDialogContent({
                 variant="outlined"
                 onClick={() => setAmount(suggestedMax.toString())}
               >
-                SUGGESTED MAX
+                {t("staking.suggestedMax")}
               </Button>
             )}
             {max !== null && (
@@ -430,7 +423,7 @@ function StakeOperationDialogContent({
                 variant="outlined"
                 onClick={() => setAmount(max.toString())}
               >
-                MAX
+                {t("staking.max")}
               </Button>
             )}
           </Stack>
@@ -443,15 +436,14 @@ function StakeOperationDialogContent({
           fullWidth
           disabled={amount === ""}
         >
-          {stakeOperation === StakeOperation.UNLOCK ? "UNSTAKE" : "RESTAKE"}
+          {stakeOperation === StakeOperation.UNLOCK
+            ? t("staking.op.unstake")
+            : t("staking.op.restake")}
         </Button>
       </DialogActions>
       <DialogContent sx={{textAlign: "center"}}>
         <Typography variant="caption" color={theme.palette.text.secondary}>
-          <div>
-            Please do your own research. Aptos Labs is not responsible for the
-            security of your funds
-          </div>
+          <div>{t("staking.researchShort")}</div>
         </Typography>
       </DialogContent>
     </StyledDialog>
@@ -463,7 +455,7 @@ function StakeOperationDialogContent({
   const WithdrawDialog = (
     <StyledDialog handleDialogClose={handleDialogClose} open={isDialogOpen}>
       <DialogTitle variant="h5" sx={{textAlign: "center"}}>
-        Withdraw Your Funds
+        {t("staking.withdrawFunds")}
       </DialogTitle>
       <DialogContent>
         <Stack direction="column" spacing={2}>
@@ -480,7 +472,7 @@ function StakeOperationDialogContent({
                     )
                   }
                 >
-                  {percentage === 1 ? "MAX" : `${percentage * 100}%`}
+                  {percentage === 1 ? t("staking.max") : `${percentage * 100}%`}
                 </Button>
               );
             })}
@@ -494,15 +486,12 @@ function StakeOperationDialogContent({
           fullWidth
           disabled={amount === ""}
         >
-          WITHDRAW
+          {t("staking.op.withdraw")}
         </Button>
       </DialogActions>
       <DialogContent sx={{textAlign: "center"}}>
         <Typography variant="caption" color={theme.palette.text.secondary}>
-          <div>
-            Please do your own research. Aptos Labs is not responsible for the
-            security of your funds
-          </div>
+          <div>{t("staking.researchShort")}</div>
         </Typography>
       </DialogContent>
     </StyledDialog>

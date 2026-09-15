@@ -24,6 +24,7 @@ import {
 import {useQueryClient} from "@tanstack/react-query";
 import {useState} from "react";
 import {type AIP, useGetAIPs} from "../../api/hooks/useGetAIPs";
+import {useTranslation} from "../../i18n";
 
 type StatusColor =
   | "default"
@@ -43,18 +44,19 @@ const STATUS_COLORS: Record<string, StatusColor> = {
 };
 
 const STATUS_FILTERS = [
-  "All",
-  "Draft",
-  "Last Call",
-  "Accepted",
-  "Final",
-  "Withdrawn",
-  "Living",
-];
+  {id: "all", labelKey: "aips.filter.all"},
+  {id: "draft", labelKey: "aips.filter.draft"},
+  {id: "last call", labelKey: "aips.filter.lastCall"},
+  {id: "accepted", labelKey: "aips.filter.accepted"},
+  {id: "final", labelKey: "aips.filter.final"},
+  {id: "withdrawn", labelKey: "aips.filter.withdrawn"},
+  {id: "living", labelKey: "aips.filter.living"},
+] as const;
 
 type SortField = keyof Pick<AIP, "number" | "title" | "status" | "author">;
 
 export default function AIpsTab() {
+  const {t} = useTranslation();
   const queryClient = useQueryClient();
   const theme = useTheme();
   // Below `sm` (~600px) we hide the Author column to keep the row dense and
@@ -62,7 +64,7 @@ export default function AIpsTab() {
   // GitHub which the leftmost link surfaces.
   const showAuthor = useMediaQuery(theme.breakpoints.up("sm"));
   const {data, isLoading, isError, error} = useGetAIPs();
-  const [statusFilter, setStatusFilter] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [sortField, setSortField] = useState<SortField>("number");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
 
@@ -81,8 +83,7 @@ export default function AIpsTab() {
   const filtered = (data ?? [])
     .filter(
       (aip) =>
-        statusFilter === "All" ||
-        aip.status.toLowerCase() === statusFilter.toLowerCase(),
+        statusFilter === "all" || aip.status.toLowerCase() === statusFilter,
     )
     .sort((a, b) => {
       const dir = sortDir === "asc" ? 1 : -1;
@@ -93,10 +94,10 @@ export default function AIpsTab() {
   // Pinned columns rendered after the leading link icon. We keep `author`
   // out of the loop and condition it on the responsive breakpoint below to
   // avoid leaving an empty column at narrow widths.
-  const SORTABLE_COLUMNS: {field: SortField; label: string}[] = [
-    {field: "number", label: "AIP #"},
-    {field: "title", label: "Title"},
-    {field: "status", label: "Status"},
+  const SORTABLE_COLUMNS: {field: SortField; labelKey: string}[] = [
+    {field: "number", labelKey: "table.aipNumber"},
+    {field: "title", labelKey: "table.title"},
+    {field: "status", labelKey: "table.status"},
   ];
   const totalCols = 1 + SORTABLE_COLUMNS.length + (showAuthor ? 1 : 0);
 
@@ -108,27 +109,27 @@ export default function AIpsTab() {
           variant="outlined"
           onClick={() => queryClient.invalidateQueries({queryKey: ["aips"]})}
         >
-          Refresh
+          {t("common.refresh")}
         </Button>
       </Box>
       {isRateLimited && (
         <Alert severity="warning" sx={{mb: 2}}>
-          GitHub API rate limited — try again in a few minutes
+          {t("aips.rateLimited")}
         </Alert>
       )}
       {isError && !isRateLimited && (
         <Alert severity="error" sx={{mb: 2}}>
-          Failed to load AIPs
+          {t("aips.loadFailed")}
         </Alert>
       )}
       <Stack direction="row" sx={{mb: 2, flexWrap: "wrap", gap: 1}}>
         {STATUS_FILTERS.map((s) => (
           <Chip
-            key={s}
-            label={s}
-            onClick={() => setStatusFilter(s)}
-            color={statusFilter === s ? "primary" : "default"}
-            variant={statusFilter === s ? "filled" : "outlined"}
+            key={s.id}
+            label={t(s.labelKey)}
+            onClick={() => setStatusFilter(s.id)}
+            color={statusFilter === s.id ? "primary" : "default"}
+            variant={statusFilter === s.id ? "filled" : "outlined"}
           />
         ))}
       </Stack>
@@ -138,8 +139,11 @@ export default function AIpsTab() {
           <Table size="small" sx={{tableLayout: "fixed"}}>
             <TableHead>
               <TableRow>
-                <TableCell sx={{width: 48, pr: 0}} aria-label="Source link" />
-                {SORTABLE_COLUMNS.map(({field, label}) => (
+                <TableCell
+                  sx={{width: 48, pr: 0}}
+                  aria-label={t("aips.sourceLinkAria")}
+                />
+                {SORTABLE_COLUMNS.map(({field, labelKey}) => (
                   <TableCell
                     key={field}
                     sx={
@@ -155,7 +159,7 @@ export default function AIpsTab() {
                       direction={sortField === field ? sortDir : "asc"}
                       onClick={() => handleSort(field)}
                     >
-                      {label}
+                      {t(labelKey)}
                     </TableSortLabel>
                   </TableCell>
                 ))}
@@ -166,7 +170,7 @@ export default function AIpsTab() {
                       direction={sortField === "author" ? sortDir : "asc"}
                       onClick={() => handleSort("author")}
                     >
-                      Author
+                      {t("aips.author")}
                     </TableSortLabel>
                   </TableCell>
                 )}
@@ -181,7 +185,7 @@ export default function AIpsTab() {
                         color: "text.secondary",
                       }}
                     >
-                      No AIPs match the selected filter
+                      {t("aips.noMatch")}
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -189,14 +193,16 @@ export default function AIpsTab() {
                 filtered.map((aip) => (
                   <TableRow key={aip.number} hover>
                     <TableCell sx={{pr: 0}}>
-                      <Tooltip title="Open on GitHub">
+                      <Tooltip title={t("aips.openOnGithub")}>
                         <IconButton
                           size="small"
                           component="a"
                           href={aip.githubUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          aria-label={`Open AIP-${aip.number} on GitHub`}
+                          aria-label={t("aips.openAipAria", {
+                            number: aip.number,
+                          })}
                         >
                           <OpenInNewIcon fontSize="small" />
                         </IconButton>

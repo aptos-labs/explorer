@@ -25,8 +25,8 @@ import {useRouter} from "@tanstack/react-router";
 import {useEffect, useMemo, useState} from "react";
 import {clearCachedSearchClients} from "../../api/createClient";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
-import {InlineMarkup, useTranslation} from "../../i18n";
 import LanguageSelect from "../../components/layout/LanguageSelect";
+import {InlineMarkup, translateNetworkName, useTranslation} from "../../i18n";
 import {emitApiKeySaved} from "../../context/rate-limit";
 import {clearCachedV2Clients} from "../../global-config";
 import {type NetworkName, networks} from "../../lib/constants";
@@ -40,13 +40,6 @@ import {
 import PageHeader from "../layout/PageHeader";
 
 const SETTINGS_NETWORKS = Object.keys(networks) as NetworkName[];
-
-function networkLabel(name: NetworkName): string {
-  if (name === "local") {
-    return "Local";
-  }
-  return name.charAt(0).toUpperCase() + name.slice(1);
-}
 
 function settingsEqual(
   a: ExplorerClientSettings,
@@ -354,13 +347,13 @@ export default function SettingsPage() {
                   autoComplete="off"
                   fullWidth
                   label={t("settings.apiKeys.fieldLabel", {
-                    network: networkLabel(network),
+                    network: translateNetworkName(network, t),
                   })}
                   onChange={(event) =>
                     updateOverride(network, event.target.value)
                   }
                   placeholder={t("settings.apiKeys.fieldPlaceholder", {
-                    network: networkLabel(network),
+                    network: translateNetworkName(network, t),
                   })}
                   slotProps={{
                     input: {

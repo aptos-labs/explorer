@@ -1,7 +1,8 @@
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import Button from "@mui/material/Button";
+import {useTranslation} from "../i18n";
 
-function BackButton(handleClick: () => void) {
+function BackButton(handleClick: () => void, label: string) {
   return (
     <Button
       color="primary"
@@ -16,12 +17,13 @@ function BackButton(handleClick: () => void) {
       }}
       startIcon={<ArrowBackRoundedIcon />}
     >
-      Back
+      {label}
     </Button>
   );
 }
 
 export default function GoBack() {
+  const {t} = useTranslation();
   if (
     typeof window !== "undefined" &&
     window.history.state &&
@@ -30,7 +32,7 @@ export default function GoBack() {
   ) {
     return BackButton(() => {
       window.history.back();
-    });
+    }, t("common.back"));
   } else {
     return null;
   }

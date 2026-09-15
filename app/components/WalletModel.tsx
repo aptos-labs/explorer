@@ -30,6 +30,7 @@ import {
   useTheme,
 } from "@mui/material";
 import {type JSX, useMemo} from "react";
+import {useTranslation} from "../i18n";
 import type {WalletConnectorProps} from "./WalletConnector";
 
 // Sort comparator for OKX wallet priority
@@ -61,6 +62,7 @@ export default function WalletsModal({
   fallbacks,
 }: WalletsModalProps): JSX.Element {
   const theme = useTheme();
+  const {t} = useTranslation();
   const {wallets: installedWallets = []} = useWallet();
 
   const walletSortingOptions = useMemo<WalletSortingOptions>(
@@ -122,7 +124,7 @@ export default function WalletsModal({
     <Dialog
       open={modalOpen}
       onClose={handleClose}
-      aria-label="wallet selector modal"
+      aria-label={t("wallet.selectorAriaLabel")}
       sx={{borderRadius: `${theme.shape.borderRadius}px`}}
       maxWidth={modalMaxWidth ?? "xs"}
       fullWidth
@@ -138,7 +140,7 @@ export default function WalletsModal({
         }}
       >
         <IconButton
-          aria-label="Close"
+          aria-label={t("common.close")}
           onClick={handleClose}
           sx={{
             position: "absolute",
@@ -149,7 +151,11 @@ export default function WalletsModal({
         >
           <CloseIcon />
         </IconButton>
-        <AboutAptosConnect renderEducationScreen={renderEducationScreen}>
+        <AboutAptosConnect
+          renderEducationScreen={(screen) => (
+            <EducationScreen screen={screen} />
+          )}
+        >
           <Typography
             align="center"
             variant="h5"
@@ -162,11 +168,11 @@ export default function WalletsModal({
           >
             {hasAptosConnectWallets ? (
               <>
-                <span>Log in or sign up</span>
-                <span>with Social + Aptos Connect</span>
+                <span>{t("wallet.logInOrSignUp")}</span>
+                <span>{t("wallet.withSocialConnect")}</span>
               </>
             ) : (
-              "Connect Wallet"
+              t("wallet.connect")
             )}
           </Typography>
           {networkSupport && (
@@ -192,7 +198,7 @@ export default function WalletsModal({
                 }}
                 align="center"
               >
-                {networkSupport} only
+                {t("wallet.networkOnly", {network: networkSupport})}
               </Typography>
             </Box>
           )}
@@ -220,7 +226,7 @@ export default function WalletsModal({
                   color: theme.palette.text.secondary,
                 }}
               >
-                Learn more about{" "}
+                {t("wallet.learnMoreAbout")}{" "}
                 <Box
                   component={AboutAptosConnect.Trigger}
                   sx={{
@@ -238,7 +244,8 @@ export default function WalletsModal({
                     appearance: "none",
                   }}
                 >
-                  Aptos Connect <ArrowForward sx={{height: 16, width: 16}} />
+                  {t("wallet.aboutAptosConnect")}{" "}
+                  <ArrowForward sx={{height: 16, width: 16}} />
                 </Box>
               </Typography>
 
@@ -280,7 +287,7 @@ export default function WalletsModal({
                 />
               </Stack>
               <Divider sx={{color: theme.palette.text.secondary, pt: 2}}>
-                Or
+                {t("common.or")}
               </Divider>
             </Stack>
           )}
@@ -317,6 +324,7 @@ interface WalletRowProps {
 
 function WalletRow({wallet, onConnect}: WalletRowProps) {
   const theme = useTheme();
+  const {t} = useTranslation();
   return (
     <WalletItem wallet={wallet} onConnect={onConnect} asChild>
       <ListItem disablePadding>
@@ -348,7 +356,7 @@ function WalletRow({wallet, onConnect}: WalletRowProps) {
                 size="small"
                 className="wallet-connect-install"
               >
-                Install
+                {t("common.install")}
               </Button>
             </WalletItem.InstallLink>
           ) : (
@@ -358,7 +366,7 @@ function WalletRow({wallet, onConnect}: WalletRowProps) {
                 size="small"
                 className="wallet-connect-button"
               >
-                Connect
+                {t("common.connect")}
               </Button>
             </WalletItem.ConnectButton>
           )}
@@ -385,7 +393,8 @@ function AptosConnectWalletRow({wallet, onConnect}: WalletRowProps) {
   );
 }
 
-function renderEducationScreen(screen: AboutAptosConnectEducationScreen) {
+function EducationScreen({screen}: {screen: AboutAptosConnectEducationScreen}) {
+  const {t} = useTranslation();
   return (
     <>
       <Box
@@ -396,7 +405,7 @@ function renderEducationScreen(screen: AboutAptosConnectEducationScreen) {
           justifyItems: "start",
         }}
       >
-        <IconButton aria-label="Go back" onClick={screen.cancel}>
+        <IconButton aria-label={t("common.goBack")} onClick={screen.cancel}>
           <ArrowBack />
         </IconButton>
         <Typography
@@ -407,7 +416,7 @@ function renderEducationScreen(screen: AboutAptosConnectEducationScreen) {
             width: "100%",
           }}
         >
-          About Aptos Connect
+          {t("wallet.aboutAptosConnect")}
         </Typography>
       </Box>
       <Box
@@ -448,7 +457,7 @@ function renderEducationScreen(screen: AboutAptosConnectEducationScreen) {
           onClick={screen.back}
           sx={{justifySelf: "start"}}
         >
-          Back
+          {t("common.back")}
         </Button>
         <Box
           sx={{
@@ -492,7 +501,9 @@ function renderEducationScreen(screen: AboutAptosConnectEducationScreen) {
           sx={{justifySelf: "end"}}
           endIcon={<ArrowForward sx={{height: 16, width: 16}} />}
         >
-          {screen.screenIndex === screen.totalScreens - 1 ? "Finish" : "Next"}
+          {screen.screenIndex === screen.totalScreens - 1
+            ? t("wallet.finish")
+            : t("wallet.next")}
         </Button>
       </Box>
     </>

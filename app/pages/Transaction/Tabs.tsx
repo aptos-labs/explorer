@@ -29,6 +29,7 @@ import StyledTab from "../../components/StyledTab";
 import StyledTabs from "../../components/StyledTabs";
 import {TransactionTypeName} from "../../components/TransactionType";
 import {useNetworkName} from "../../global-config/GlobalConfig";
+import {englishT, useTranslation, type TFunction} from "../../i18n";
 import {useNavigate} from "../../routing";
 import {assertNever} from "../../utils";
 import {isDecibelTransaction} from "../../utils/decibel";
@@ -180,26 +181,26 @@ export function resolveTxnTab(
   return tabValues[0];
 }
 
-export function getTabLabel(value: TabValue): string {
+export function getTabLabel(value: TabValue, t: TFunction = englishT): string {
   switch (value) {
     case "overview":
-      return "Overview";
+      return t("tabs.transaction.overview");
     case "decibelDetail":
-      return "Decibel";
+      return t("tabs.transaction.decibelDetail");
     case "payments":
-      return "Payments";
+      return t("tabs.transaction.payments");
     case "balanceChange":
-      return "Balance Change";
+      return t("tabs.transaction.balanceChange");
     case "events":
-      return "Events";
+      return t("tabs.transaction.events");
     case "payload":
-      return "Payload";
+      return t("tabs.transaction.payload");
     case "modules":
-      return "Modules";
+      return t("tabs.transaction.modules");
     case "changes":
-      return "Changes";
+      return t("tabs.transaction.changes");
     case "trace":
-      return "Trace";
+      return t("tabs.transaction.trace");
     default:
       return assertNever(value);
   }
@@ -237,6 +238,7 @@ type TabPanelProps = {
 
 function TabPanel({value, transaction}: TabPanelProps): React.JSX.Element {
   const theme = useTheme();
+  const {t} = useTranslation();
   const TabComponent = TabComponents[value];
   if (!TabComponent) {
     return (
@@ -257,7 +259,7 @@ function TabPanel({value, transaction}: TabPanelProps): React.JSX.Element {
           />
           <Stack spacing={1} sx={{flex: 1}}>
             <Typography variant="h6" color="error">
-              Invalid Tab
+              {t("errors.invalidTab")}
             </Typography>
             <Typography
               variant="body1"
@@ -265,7 +267,7 @@ function TabPanel({value, transaction}: TabPanelProps): React.JSX.Element {
                 color: "text.secondary",
               }}
             >
-              The tab "{value}" is not valid for this transaction type.
+              {t("errors.invalidTabBody", {tab: value})}
             </Typography>
           </Stack>
         </Stack>
@@ -285,6 +287,7 @@ function TransactionDebugInfo({
   networkName,
 }: TransactionDebugInfoProps): React.JSX.Element {
   const theme = useTheme();
+  const {t} = useTranslation();
   const [expanded, setExpanded] = useState(false);
 
   const handleChange = (_event: React.SyntheticEvent, isExpanded: boolean) => {
@@ -322,19 +325,19 @@ function TransactionDebugInfo({
           variant="body1"
           sx={{color: theme.palette.text.secondary, fontWeight: 500}}
         >
-          Transaction Debug Info
+          {t("txn.debugInfo")}
         </Typography>
       </AccordionSummary>
       <AccordionDetails sx={{padding: 4, paddingTop: 0}}>
         {expanded && (
           <Stack direction="column" spacing={4}>
             <ContentRow
-              title="Full Txn (for debug):"
+              titleKey="fields.fullTxnDebug"
               value={<JsonViewCard data={transaction} collapsedByDefault />}
               tooltip={getLearnMoreTooltip("transaction")}
             />
             <ContentRow
-              title="API link:"
+              titleKey="fields.apiLink"
               value={
                 <a
                   style={{color: "inherit"}}
@@ -342,7 +345,7 @@ function TransactionDebugInfo({
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Transaction {transaction.hash}
+                  {t("txn.apiLinkLabel", {hash: transaction.hash})}
                 </a>
               }
               tooltip={getLearnMoreTooltip("transaction")}
@@ -364,6 +367,7 @@ export default function TransactionTabs({
   tabValues = getTabValues(transaction),
 }: TransactionTabsProps): React.JSX.Element {
   const networkName = useNetworkName();
+  const {t} = useTranslation();
 
   const params = useParams({strict: false}) as {
     txnHashOrVersion?: string;
@@ -405,7 +409,7 @@ export default function TransactionTabs({
               key={value}
               value={value}
               icon={getTabIcon(value)}
-              label={getTabLabel(value)}
+              label={getTabLabel(value, t)}
               isFirst={i === 0}
               isLast={i === tabValues.length - 1}
             />

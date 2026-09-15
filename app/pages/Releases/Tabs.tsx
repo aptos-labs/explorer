@@ -6,6 +6,7 @@ import {useParams} from "@tanstack/react-router";
 import type * as React from "react";
 import StyledTab from "../../components/StyledTab";
 import StyledTabs from "../../components/StyledTabs";
+import {englishT, useTranslation} from "../../i18n";
 import {useNavigate} from "../../routing";
 import AIpsTab from "./AIPsTab";
 import DeploymentsTab from "./DeploymentsTab";
@@ -19,10 +20,10 @@ export enum RELEASES_TAB_VALUE {
 
 export const DEFAULT_RELEASES_TAB = RELEASES_TAB_VALUE.NETWORKS;
 
-const TAB_LABEL: Record<RELEASES_TAB_VALUE, string> = {
-  [RELEASES_TAB_VALUE.NETWORKS]: "Networks",
-  [RELEASES_TAB_VALUE.AIPS]: "AIPs",
-  [RELEASES_TAB_VALUE.SDKS]: "SDKs & Tools",
+const TAB_LABEL_KEYS: Record<RELEASES_TAB_VALUE, string> = {
+  [RELEASES_TAB_VALUE.NETWORKS]: "tabs.releases.networks",
+  [RELEASES_TAB_VALUE.AIPS]: "tabs.releases.aips",
+  [RELEASES_TAB_VALUE.SDKS]: "tabs.releases.sdks",
 };
 
 const TAB_ICON: Record<RELEASES_TAB_VALUE, React.JSX.Element> = {
@@ -42,8 +43,8 @@ export function isReleasesTab(value: string): value is RELEASES_TAB_VALUE {
 }
 
 export function releasesTabHeadTitle(tab: string): string {
-  if (isReleasesTab(tab)) return TAB_LABEL[tab];
-  return TAB_LABEL[DEFAULT_RELEASES_TAB];
+  if (isReleasesTab(tab)) return englishT(TAB_LABEL_KEYS[tab]);
+  return englishT(TAB_LABEL_KEYS[DEFAULT_RELEASES_TAB]);
 }
 
 function TabPanel({value}: {value: RELEASES_TAB_VALUE}): React.JSX.Element {
@@ -60,6 +61,7 @@ function TabPanel({value}: {value: RELEASES_TAB_VALUE}): React.JSX.Element {
 export default function ReleasesPageTabs(): React.JSX.Element {
   const params = useParams({strict: false}) as {tab?: string};
   const navigate = useNavigate();
+  const {t} = useTranslation();
 
   const value =
     params.tab && isReleasesTab(params.tab) ? params.tab : DEFAULT_RELEASES_TAB;
@@ -80,7 +82,7 @@ export default function ReleasesPageTabs(): React.JSX.Element {
               key={tabValue}
               value={tabValue}
               icon={TAB_ICON[tabValue]}
-              label={TAB_LABEL[tabValue]}
+              label={t(TAB_LABEL_KEYS[tabValue])}
               isFirst={i === 0}
               isLast={i === TAB_VALUES.length - 1}
             />

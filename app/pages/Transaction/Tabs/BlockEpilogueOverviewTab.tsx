@@ -44,12 +44,12 @@ export default function BlockEpilogueOverviewTab({
     >
       <ContentBox sx={{padding: 4}}>
         <ContentRow
-          title={"Version:"}
+          titleKey="fields.version"
           value={<Box sx={{fontWeight: 600}}>{transactionData.version}</Box>}
           tooltip={getLearnMoreTooltip("version")}
         />
         <ContentRow
-          title="Status:"
+          titleKey="fields.status"
           value={<TransactionStatus success={transactionData.success} />}
           tooltip={getLearnMoreTooltip("status")}
         />
@@ -57,7 +57,7 @@ export default function BlockEpilogueOverviewTab({
       <ContentBox>
         <TransactionBlockRow version={transactionData.version} />
         <ContentRow
-          title="Block gas limit reached:"
+          titleKey="fields.blockGasLimitReached"
           value={
             transactionData.block_end_info.block_gas_limit_reached
               ? "Yes"
@@ -66,7 +66,7 @@ export default function BlockEpilogueOverviewTab({
           tooltip={getLearnMoreTooltip("block_gas_limit_reached")}
         />
         <ContentRow
-          title="Block output limit reached:"
+          titleKey="fields.blockOutputLimitReached"
           value={
             transactionData.block_end_info.block_output_limit_reached
               ? "Yes"
@@ -75,17 +75,17 @@ export default function BlockEpilogueOverviewTab({
           tooltip={getLearnMoreTooltip("block_output_limit_reached")}
         />
         <ContentRow
-          title="Block approximate output size:"
+          titleKey="fields.blockApproximateOutputSize"
           value={transactionData.block_end_info.block_approx_output_size}
           tooltip={getLearnMoreTooltip("block_approx_output_size")}
         />
         <ContentRow
-          title="Block effective gas units:"
+          titleKey="fields.blockEffectiveGasUnits"
           value={transactionData.block_end_info.block_effective_block_gas_units}
           tooltip={getLearnMoreTooltip("block_effective_block_gas_units")}
         />
         <ContentRow
-          title="Timestamp:"
+          titleKey="fields.timestamp"
           value={
             <TimestampValue
               timestamp={transactionData.timestamp}
@@ -95,24 +95,24 @@ export default function BlockEpilogueOverviewTab({
           tooltip={getLearnMoreTooltip("timestamp")}
         />
         <ContentRow
-          title="VM Status:"
+          titleKey="fields.vmStatus"
           value={transactionData.vm_status}
           tooltip={getLearnMoreTooltip("vm_status")}
         />
       </ContentBox>
       <ContentBox>
         <ContentRow
-          title="State Change Hash:"
+          titleKey="fields.stateChangeHash"
           value={transactionData.state_change_hash}
           tooltip={getLearnMoreTooltip("state_change_hash")}
         />
         <ContentRow
-          title="Event Root Hash:"
+          titleKey="fields.eventRootHash"
           value={transactionData.event_root_hash}
           tooltip={getLearnMoreTooltip("event_root_hash")}
         />
         <ContentRow
-          title="Accumulator Root Hash:"
+          titleKey="fields.accumulatorRootHash"
           value={transactionData.accumulator_root_hash}
           tooltip={getLearnMoreTooltip("accumulator_root_hash")}
         />

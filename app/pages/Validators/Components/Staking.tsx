@@ -3,12 +3,12 @@ import {useGetStakingRewardsRate} from "../../../api/hooks/useGetStakingRewardsR
 import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
 import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {StyledLearnMoreTooltip} from "../../../components/StyledTooltip";
+import {englishT, useTranslation} from "../../../i18n";
 import MetricSection from "./MetricSection";
 import Body from "./Text/Body";
 import Subtitle from "./Text/Subtitle";
 
-export const REWARDS_TOOLTIP_TEXT =
-  "Represents the Annual Percentage Rate (APR) that accrue on staked APT. Rewards are paid out by the network after each Epoch. APR is subject to change based on validator performance or in accordance with network specifications. There is no guarantee that the current APR will continue to apply in future periods.";
+export const REWARDS_TOOLTIP_TEXT = englishT("staking.rewardsAprTip");
 export const REWARDS_LEARN_MORE_LINK =
   "https://aptos.dev/en/network/blockchain/staking#rewards";
 
@@ -17,6 +17,7 @@ type StakingProps = {
 };
 
 export default function Staking({isSkeletonLoading}: StakingProps) {
+  const {t} = useTranslation();
   const {totalVotingPower} = useGetValidatorSet();
   const {rewardsRateYearly} = useGetStakingRewardsRate();
 
@@ -34,7 +35,7 @@ export default function Staking({isSkeletonLoading}: StakingProps) {
             ? getFormattedBalanceStr(totalVotingPower, undefined, 0)
             : "-"}
         </Subtitle>
-        <Body color="inherit">APT Staked</Body>
+        <Body color="inherit">{t("staking.aptStaked")}</Body>
       </Stack>
       <Stack
         direction="row"
@@ -43,9 +44,9 @@ export default function Staking({isSkeletonLoading}: StakingProps) {
           alignItems: "center",
         }}
       >
-        <Body>{`${rewardsRateYearly}% APR Reward`}</Body>{" "}
+        <Body>{t("staking.aprReward", {rate: String(rewardsRateYearly)})}</Body>{" "}
         <StyledLearnMoreTooltip
-          text={REWARDS_TOOLTIP_TEXT}
+          text={t("staking.rewardsAprTip")}
           link={REWARDS_LEARN_MORE_LINK}
         />
       </Stack>

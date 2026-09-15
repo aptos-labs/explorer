@@ -1,6 +1,7 @@
 import {Box, Stack, Typography, useTheme} from "@mui/material";
 import {defaultFeatureName, type FeatureName, features} from "../../constants";
 import {useFeatureName} from "../../global-config";
+import {useTranslation} from "../../i18n";
 
 /**
  * This is the information bar on top of the screen when the current feature is not "prod".
@@ -8,13 +9,21 @@ import {useFeatureName} from "../../global-config";
  */
 export default function FeatureBar() {
   const theme = useTheme();
+  const {t} = useTranslation();
   const featureName = useFeatureName();
 
   if (featureName === defaultFeatureName) {
     return null;
   }
 
-  const featureLabel = features[featureName as FeatureName] || featureName;
+  const featureLabel =
+    featureName === "prod"
+      ? t("feature.prod")
+      : featureName === "dev"
+        ? t("feature.dev")
+        : featureName === "earlydev"
+          ? t("feature.earlydev")
+          : features[featureName as FeatureName] || featureName;
 
   return (
     <Box
@@ -30,7 +39,7 @@ export default function FeatureBar() {
           justifyContent: "center",
         }}
       >
-        <Typography>{`This is the ${featureLabel}.`}</Typography>
+        <Typography>{t("feature.banner", {name: featureLabel})}</Typography>
       </Stack>
     </Box>
   );

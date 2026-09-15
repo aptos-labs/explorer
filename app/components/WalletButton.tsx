@@ -3,6 +3,7 @@ import {AccountBalanceWalletOutlined as AccountBalanceWalletOutlinedIcon} from "
 import {Avatar, Button, Typography} from "@mui/material";
 import type React from "react";
 import {type JSX, useState} from "react";
+import {useTranslation} from "../i18n";
 import WalletMenu from "./WalletMenu";
 
 type WalletButtonProps = {
@@ -15,6 +16,7 @@ export default function WalletButton({
   handleNavigate,
 }: WalletButtonProps): JSX.Element {
   const {connected, account, wallet} = useWallet();
+  const {t} = useTranslation();
 
   const [popoverAnchor, setPopoverAnchor] = useState<HTMLButtonElement | null>(
     null,
@@ -56,13 +58,13 @@ export default function WalletButton({
             >
               {account?.ansName ||
                 truncateAddress(account?.address?.toString()) ||
-                "Unknown"}
+                t("common.unknown")}
             </Typography>
           </>
         ) : (
           <>
             <AccountBalanceWalletOutlinedIcon sx={{marginRight: 1}} />
-            <Typography noWrap>Connect Wallet</Typography>
+            <Typography noWrap>{t("wallet.connect")}</Typography>
           </>
         )}
       </Button>

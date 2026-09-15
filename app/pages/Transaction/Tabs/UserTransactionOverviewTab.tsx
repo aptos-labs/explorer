@@ -18,6 +18,7 @@ import TimestampValue from "../../../components/IndividualPageContent/ContentVal
 import {LearnMoreTooltip} from "../../../components/IndividualPageContent/LearnMoreTooltip";
 import StyledTooltip from "../../../components/StyledTooltip";
 import {TransactionStatus} from "../../../components/TransactionStatus";
+import {type TranslateVars, useTranslation} from "../../../i18n";
 import {useNetworkName} from "../../../global-config/GlobalConfig";
 import type {NetworkName} from "../../../lib/constants";
 import {standardizeAddress, tryStandardizeAddress} from "../../../utils";
@@ -244,7 +245,7 @@ function UserTransferOrInteractionRows({
     <>
       {counterparty && counterparty.role === "receiver" && (
         <ContentRow
-          title="Receiver:"
+          titleKey="fields.receiver"
           value={
             <HashButton hash={counterparty.address} type={HashType.ACCOUNT} />
           }
@@ -253,7 +254,7 @@ function UserTransferOrInteractionRows({
       )}
       {smartContractAddress && (
         <ContentRow
-          title="Smart Contract:"
+          titleKey="fields.smartContract"
           value={
             <HashButton hash={smartContractAddress} type={HashType.ACCOUNT} />
           }
@@ -271,10 +272,38 @@ function TransactionFunctionRow({
 }) {
   return (
     <ContentRow
-      title="Function:"
+      titleKey="fields.function"
       value={<TransactionFunction transaction={transaction} />}
       tooltip={getLearnMoreTooltip("function")}
     />
+  );
+}
+
+function TxnCopy({
+  messageKey,
+  vars,
+}: {
+  messageKey: string;
+  vars?: TranslateVars;
+}) {
+  const {t} = useTranslation();
+  return <span>{t(messageKey, vars)}</span>;
+}
+
+function CctpScanLink({href}: {href: string}) {
+  const {t} = useTranslation();
+  return (
+    <Link
+      href={href}
+      underline="none"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={t("txn.action.openCctpWormholeAria")}
+      sx={{fontSize: 12}}
+    >
+      {t("txn.action.onCctp")}
+      <OpenInNew sx={{fontSize: 12}} />
+    </Link>
   );
 }
 
@@ -283,6 +312,7 @@ function TransactionEncryptionRow({
 }: {
   transaction: Types.Transaction;
 }) {
+  const {t} = useTranslation();
   if (
     !("payload" in transaction) ||
     !isEncryptedTransactionPayload(transaction.payload)
@@ -298,24 +328,26 @@ function TransactionEncryptionRow({
         : "default";
   return (
     <ContentRow
-      title="Encryption:"
+      titleKey="fields.encryption"
       value={
         <Stack direction="row" spacing={1} useFlexGap sx={{flexWrap: "wrap"}}>
           <Chip
             icon={<LockOutlined />}
-            label="Encrypted payload"
+            label={t("payload.encryptedPayload")}
             size="small"
           />
           <Chip
             color={stateColor}
-            label={encryptedStateLabel(payload.encrypted_state)}
+            label={encryptedStateLabel(payload.encrypted_state, t)}
             size="small"
             variant="outlined"
           />
           {payload.encryption_epoch != null &&
             payload.encryption_epoch !== "" && (
               <Chip
-                label={`Epoch ${payload.encryption_epoch}`}
+                label={t("payload.epochChip", {
+                  epoch: payload.encryption_epoch,
+                })}
                 size="small"
                 variant="outlined"
               />
@@ -339,7 +371,7 @@ function TransactionArgumentsRow({
   }
   return (
     <ContentRow
-      title="Arguments:"
+      titleKey="fields.arguments"
       titleLayout="fit"
       value={<TransactionArguments transaction={transaction} />}
       tooltip={getLearnMoreTooltip("arguments")}
@@ -352,7 +384,7 @@ function TransactionAmountRow({transaction}: {transaction: Types.Transaction}) {
 
   return (
     <ContentRow
-      title="Amount:"
+      titleKey="fields.amount"
       value={
         amount !== undefined ? (
           <APTCurrencyValue amount={amount.toString()} />
@@ -814,7 +846,7 @@ function TransactionActionsRow({
 
   return (
     <ContentRow
-      title="Actions:"
+      titleKey="fields.actions"
       // biome-ignore lint/suspicious/useIterableCallbackReturn: all union cases are covered
       value={enrichedActions.map((action, i) => {
         switch (action.actionType) {
@@ -910,17 +942,17 @@ export default function UserTransactionOverviewTab({
     >
       <ContentBox sx={{padding: 4}}>
         <ContentRow
-          title={"Version:"}
+          titleKey="fields.version"
           value={<Box sx={{fontWeight: 600}}>{transactionData.version}</Box>}
           tooltip={getLearnMoreTooltip("version")}
         />
         <ContentRow
-          title="Status:"
+          titleKey="fields.status"
           value={<TransactionStatus success={transactionData.success} />}
           tooltip={getLearnMoreTooltip("status")}
         />
         <ContentRow
-          title="Sender:"
+          titleKey="fields.sender"
           value={
             <HashButton hash={transactionData.sender} type={HashType.ACCOUNT} />
           }
@@ -928,14 +960,14 @@ export default function UserTransactionOverviewTab({
         />
         {feePayer && (
           <ContentRow
-            title="Fee Payer:"
+            titleKey="fields.feePayer"
             value={<HashButton hash={feePayer} type={HashType.ACCOUNT} />}
             tooltip={getLearnMoreTooltip("fee_payer")}
           />
         )}
         {secondarySigners && secondarySigners.length > 0 && (
           <ContentRow
-            title="Secondary Signers:"
+            titleKey="fields.secondarySigners"
             value={secondarySigners.map((address) => (
               <HashButton
                 key={address}
@@ -957,20 +989,20 @@ export default function UserTransactionOverviewTab({
         <TransactionBlockRow version={transactionData.version} />
         {!transactionData?.replay_protection_nonce && (
           <ContentRow
-            title="Sequence Number:"
+            titleKey="fields.sequenceNumber"
             value={transactionData.sequence_number}
             tooltip={getLearnMoreTooltip("sequence_number")}
           />
         )}
         {transactionData?.replay_protection_nonce && (
           <ContentRow
-            title="Replay Protection Nonce:"
+            titleKey="fields.replayProtectionNonce"
             value={transactionData.replay_protection_nonce}
             tooltip={getLearnMoreTooltip("replay_protection_nonce")}
           />
         )}
         <ContentRow
-          title="Expiration Timestamp:"
+          titleKey="fields.expirationTimestamp"
           value={
             <TimestampValue
               timestamp={parseExpirationTimestamp(
@@ -982,7 +1014,7 @@ export default function UserTransactionOverviewTab({
           tooltip={getLearnMoreTooltip("expiration_timestamp_secs")}
         />
         <ContentRow
-          title="Timestamp:"
+          titleKey="fields.timestamp"
           value={
             <TimestampValue
               timestamp={transactionData.timestamp}
@@ -992,7 +1024,7 @@ export default function UserTransactionOverviewTab({
           tooltip={getLearnMoreTooltip("timestamp")}
         />
         <ContentRow
-          title="Gas Fee:"
+          titleKey="fields.gasFee"
           value={
             <GasFeeValue
               gasUsed={transactionData.gas_used}
@@ -1006,7 +1038,7 @@ export default function UserTransactionOverviewTab({
         {(feeStatement?.data?.storage_fee_refund_octas ?? 0) > 0 ? (
           <>
             <ContentRow
-              title="Storage Refund:"
+              titleKey="fields.storageRefund"
               value={
                 <GasFeeValue
                   gasUsed={transactionData.gas_used}
@@ -1019,7 +1051,7 @@ export default function UserTransactionOverviewTab({
               tooltip={getLearnMoreTooltip("storage_refund")}
             />
             <ContentRow
-              title="Net Gas Changes:"
+              titleKey="fields.netGasChanges"
               value={
                 <GasFeeValue
                   gasUsed={transactionData.gas_used}
@@ -1034,7 +1066,7 @@ export default function UserTransactionOverviewTab({
           </>
         ) : null}
         <ContentRow
-          title="Gas Unit Price:"
+          titleKey="fields.gasUnitPrice"
           value={
             <>
               <APTCurrencyValue amount={transactionData.gas_unit_price} />{" "}
@@ -1046,19 +1078,19 @@ export default function UserTransactionOverviewTab({
           tooltip={getLearnMoreTooltip("gas_unit_price")}
         />
         <ContentRow
-          title="Max Gas Limit:"
+          titleKey="fields.maxGasLimit"
           value={<GasValue gas={transactionData.max_gas_amount} />}
           tooltip={getLearnMoreTooltip("max_gas_amount")}
         />
         <ContentRow
-          title="VM Status:"
+          titleKey="fields.vmStatus"
           value={transactionData.vm_status}
           tooltip={getLearnMoreTooltip("vm_status")}
         />
       </ContentBox>
       <ContentBox>
         <ContentRow
-          title="Signature:"
+          titleKey="fields.signature"
           value={
             <SignatureOverviewTable signature={transactionData.signature} />
           }
@@ -1066,21 +1098,21 @@ export default function UserTransactionOverviewTab({
         />
         {transactionData.state_change_hash ? (
           <ContentRow
-            title="State Change Hash:"
+            titleKey="fields.stateChangeHash"
             value={transactionData.state_change_hash}
             tooltip={getLearnMoreTooltip("state_change_hash")}
           />
         ) : null}
         {transactionData.event_root_hash ? (
           <ContentRow
-            title="Event Root Hash:"
+            titleKey="fields.eventRootHash"
             value={transactionData.event_root_hash}
             tooltip={getLearnMoreTooltip("event_root_hash")}
           />
         ) : null}
         {transactionData.accumulator_root_hash ? (
           <ContentRow
-            title="Accumulator Root Hash:"
+            titleKey="fields.accumulatorRootHash"
             value={transactionData.accumulator_root_hash}
             tooltip={getLearnMoreTooltip("accumulator_root_hash")}
           />
@@ -1129,7 +1161,7 @@ const SwapActionContent = ({
           flexWrap: "wrap",
         }}
       >
-        <span>🔄 Swapped</span>
+        <TxnCopy messageKey="txn.action.swapped" />
         <span>{action.amountIn / 10 ** inDecimals}</span>
         <HashButton
           hash={action.assetIn}
@@ -1151,7 +1183,7 @@ const SwapActionContent = ({
           flexWrap: "wrap",
         }}
       >
-        <span>for</span>
+        <TxnCopy messageKey="txn.action.for" />
         <span>{action.amountOut / 10 ** outDecimals}</span>
         <HashButton
           hash={action.assetOut}
@@ -1172,7 +1204,7 @@ const SwapActionContent = ({
           width: {xs: "100%", sm: "auto"},
         }}
       >
-        <span>on</span>
+        <TxnCopy messageKey="txn.action.on" />
         <HashButton hash={action.dex} type={HashType.ACCOUNT} />
       </Box>
     </Box>
@@ -1275,7 +1307,7 @@ const liquidityAction = (
           width: {xs: "100%", sm: "auto"},
         }}
       >
-        <span>on</span>
+        <TxnCopy messageKey="txn.action.on" />
         <HashButton hash={action.dex} type={HashType.ACCOUNT} />
       </Box>
     </Box>
@@ -1332,7 +1364,7 @@ const claimAction = (
           width: {xs: "100%", sm: "auto"},
         }}
       >
-        <span>on</span>
+        <TxnCopy messageKey="txn.action.on" />
         <HashButton hash={action.dex} type={HashType.ACCOUNT} />
       </Box>
     </Box>
@@ -1398,17 +1430,21 @@ const liquidStakingAction = (
         }}
       >
         <span>
-          {action.subActionType === "mint"
-            ? "🏗️ Mint"
-            : action.subActionType === "stake"
-              ? "➕ Stake"
-              : action.subActionType === "unstake"
-                ? "➖ Unstake"
-                : action.subActionType === "request"
-                  ? "➖ Request Unstaking"
-                  : action.subActionType === "cancel"
-                    ? "➖ Cancel Unstaking"
-                    : "➖ Withdraw Unstaked"}
+          <TxnCopy
+            messageKey={
+              action.subActionType === "mint"
+                ? "txn.action.mint"
+                : action.subActionType === "stake"
+                  ? "txn.action.stake"
+                  : action.subActionType === "unstake"
+                    ? "txn.action.unstake"
+                    : action.subActionType === "request"
+                      ? "txn.action.requestUnstaking"
+                      : action.subActionType === "cancel"
+                        ? "txn.action.cancelUnstaking"
+                        : "txn.action.withdrawUnstaked"
+            }
+          />
         </span>
         {action.assetData.map((asset, index) => (
           <LiquidStakingContent
@@ -1428,7 +1464,7 @@ const liquidStakingAction = (
           width: {xs: "100%", sm: "auto"},
         }}
       >
-        <span>on</span>
+        <TxnCopy messageKey="txn.action.on" />
         <HashButton hash={action.dex} type={HashType.ACCOUNT} />
       </Box>
     </Box>
@@ -1458,7 +1494,7 @@ const nftMintAction = (action: TokenMint, i: number) => {
           flexWrap: "wrap",
         }}
       >
-        <span>🏗️ Minted</span>
+        <TxnCopy messageKey="txn.action.minted" />
         <HashButton hash={action.token_address} type={HashType.OBJECT} />
       </Box>
       <Box
@@ -1469,7 +1505,7 @@ const nftMintAction = (action: TokenMint, i: number) => {
           width: {xs: "100%", sm: "auto"},
         }}
       >
-        <span>in collection</span>
+        <TxnCopy messageKey="txn.inCollection" />
         <HashButton hash={action.collection_address} type={HashType.OBJECT} />
       </Box>
     </Box>
@@ -1499,7 +1535,7 @@ const nftBurnAction = (action: TokenBurn, i: number) => {
           flexWrap: "wrap",
         }}
       >
-        <span>🔥️ Burned</span>
+        <TxnCopy messageKey="txn.action.burned" />
         <HashButton hash={action.token_address} type={HashType.OBJECT} />
       </Box>
       <Box
@@ -1510,7 +1546,7 @@ const nftBurnAction = (action: TokenBurn, i: number) => {
           width: {xs: "100%", sm: "auto"},
         }}
       >
-        <span>in collection</span>
+        <TxnCopy messageKey="txn.inCollection" />
         <HashButton hash={action.collection_address} type={HashType.OBJECT} />
       </Box>
       <Box
@@ -1521,7 +1557,7 @@ const nftBurnAction = (action: TokenBurn, i: number) => {
           width: {xs: "100%", sm: "auto"},
         }}
       >
-        <span>from</span>
+        <TxnCopy messageKey="txn.action.from" />
         <HashButton hash={action.previous_owner} type={HashType.ACCOUNT} />
       </Box>
     </Box>
@@ -1551,7 +1587,7 @@ const objectTransferAction = (action: ObjectTransfer, i: number) => {
           flexWrap: "wrap",
         }}
       >
-        <span>⏩ Transferred</span>
+        <TxnCopy messageKey="txn.action.transferred" />
         <HashButton hash={action.address} type={HashType.OBJECT} />
       </Box>
       <Box
@@ -1562,7 +1598,7 @@ const objectTransferAction = (action: ObjectTransfer, i: number) => {
           width: {xs: "100%", sm: "auto"},
         }}
       >
-        <span>from</span>
+        <TxnCopy messageKey="txn.action.from" />
         <HashButton hash={action.from} type={HashType.ACCOUNT} />
       </Box>
       <Box
@@ -1573,7 +1609,7 @@ const objectTransferAction = (action: ObjectTransfer, i: number) => {
           width: {xs: "100%", sm: "auto"},
         }}
       >
-        <span>to</span>
+        <TxnCopy messageKey="txn.action.to" />
         <HashButton hash={action.to} type={HashType.ACCOUNT} />
       </Box>
     </Box>
@@ -1615,16 +1651,16 @@ const confidentialAssetAction = (
         <Box key={`action-${i}`} sx={actionBoxSx}>
           <Box sx={rowSx}>
             <StyledTooltip title={CONFIDENTIAL_TRANSFER_AMOUNT_TOOLTIP}>
-              <span>🔒 Confidentially transferred</span>
+              <TxnCopy messageKey="txn.action.confidentiallyTransferred" />
             </StyledTooltip>
             <FungibleAssetChip metadata={action.metadata} coinData={coinData} />
           </Box>
           <Box sx={rowSx}>
-            <span>from</span>
+            <TxnCopy messageKey="txn.action.from" />
             <HashButton hash={from} type={HashType.ACCOUNT} />
           </Box>
           <Box sx={rowSx}>
-            <span>to</span>
+            <TxnCopy messageKey="txn.action.to" />
             <HashButton hash={to} type={HashType.ACCOUNT} />
           </Box>
         </Box>
@@ -1638,7 +1674,7 @@ const confidentialAssetAction = (
       return (
         <Box key={`action-${i}`} sx={actionBoxSx}>
           <Box sx={rowSx}>
-            <span>🔒 Deposited</span>
+            <TxnCopy messageKey="txn.action.depositedConfidential" />
             {action.amount ? (
               <FungibleAssetAmount
                 metadata={action.metadata}
@@ -1651,7 +1687,7 @@ const confidentialAssetAction = (
                 coinData={coinData}
               />
             )}
-            <span>into confidential store for</span>
+            <TxnCopy messageKey="txn.action.intoConfidentialStore" />
             <HashButton hash={addr} type={HashType.ACCOUNT} />
           </Box>
         </Box>
@@ -1665,7 +1701,7 @@ const confidentialAssetAction = (
       return (
         <Box key={`action-${i}`} sx={actionBoxSx}>
           <Box sx={rowSx}>
-            <span>🔒 Withdrew</span>
+            <TxnCopy messageKey="txn.action.withdrewConfidential" />
             {action.amount ? (
               <FungibleAssetAmount
                 metadata={action.metadata}
@@ -1678,14 +1714,14 @@ const confidentialAssetAction = (
                 coinData={coinData}
               />
             )}
-            <span>from confidential store</span>
+            <TxnCopy messageKey="txn.action.fromConfidentialStore" />
           </Box>
           <Box sx={rowSx}>
-            <span>from</span>
+            <TxnCopy messageKey="txn.action.from" />
             <HashButton hash={from} type={HashType.ACCOUNT} />
           </Box>
           <Box sx={rowSx}>
-            <span>to</span>
+            <TxnCopy messageKey="txn.action.to" />
             <HashButton hash={to} type={HashType.ACCOUNT} />
           </Box>
         </Box>
@@ -1699,9 +1735,9 @@ const confidentialAssetAction = (
       return (
         <Box key={`action-${i}`} sx={actionBoxSx}>
           <Box sx={rowSx}>
-            <span>🔒 Registered confidential store for</span>
+            <TxnCopy messageKey="txn.action.registeredConfidential" />
             <FungibleAssetChip metadata={action.metadata} coinData={coinData} />
-            <span>on</span>
+            <TxnCopy messageKey="txn.action.on" />
             <HashButton hash={addr} type={HashType.ACCOUNT} />
           </Box>
         </Box>
@@ -1715,9 +1751,9 @@ const confidentialAssetAction = (
       return (
         <Box key={`action-${i}`} sx={actionBoxSx}>
           <Box sx={rowSx}>
-            <span>🔒 Rolled over pending confidential balance for</span>
+            <TxnCopy messageKey="txn.action.rolledOverConfidential" />
             <FungibleAssetChip metadata={action.metadata} coinData={coinData} />
-            <span>on</span>
+            <TxnCopy messageKey="txn.action.on" />
             <HashButton hash={addr} type={HashType.ACCOUNT} />
           </Box>
         </Box>
@@ -1731,9 +1767,9 @@ const confidentialAssetAction = (
       return (
         <Box key={`action-${i}`} sx={actionBoxSx}>
           <Box sx={rowSx}>
-            <span>🔒 Normalized confidential balance for</span>
+            <TxnCopy messageKey="txn.action.normalizedConfidential" />
             <FungibleAssetChip metadata={action.metadata} coinData={coinData} />
-            <span>on</span>
+            <TxnCopy messageKey="txn.action.on" />
             <HashButton hash={addr} type={HashType.ACCOUNT} />
           </Box>
         </Box>
@@ -1747,9 +1783,9 @@ const confidentialAssetAction = (
       return (
         <Box key={`action-${i}`} sx={actionBoxSx}>
           <Box sx={rowSx}>
-            <span>🔒 Rotated confidential encryption key for</span>
+            <TxnCopy messageKey="txn.action.rotatedConfidential" />
             <FungibleAssetChip metadata={action.metadata} coinData={coinData} />
-            <span>on</span>
+            <TxnCopy messageKey="txn.action.on" />
             <HashButton hash={addr} type={HashType.ACCOUNT} />
           </Box>
         </Box>
@@ -1785,7 +1821,7 @@ const fungibleAssetTransferAction = (
           flexWrap: "wrap",
         }}
       >
-        <span>💸 Transferred</span>
+        <TxnCopy messageKey="txn.action.transferredMoney" />
         <FungibleAssetAmount
           metadata={action.metadata}
           amount={action.amount}
@@ -1800,7 +1836,7 @@ const fungibleAssetTransferAction = (
           width: {xs: "100%", sm: "auto"},
         }}
       >
-        <span>from</span>
+        <TxnCopy messageKey="txn.action.from" />
         <HashButton hash={action.from} type={HashType.ACCOUNT} />
       </Box>
       <Box
@@ -1811,7 +1847,7 @@ const fungibleAssetTransferAction = (
           width: {xs: "100%", sm: "auto"},
         }}
       >
-        <span>to</span>
+        <TxnCopy messageKey="txn.action.to" />
         <HashButton hash={action.to} type={HashType.ACCOUNT} />
       </Box>
     </Box>
@@ -1841,11 +1877,11 @@ const legacyTokenDepositAction = (action: LegacyTokenDeposit, i: number) => {
           flexWrap: "wrap",
         }}
       >
-        <span>⬇️ Deposit</span>
+        <TxnCopy messageKey="txn.action.depositNft" />
         <span>{action.amount}</span>
-        <span>of</span>
+        <TxnCopy messageKey="txn.action.of" />
         <span>{action.id.token_data_id.name}</span>
-        <span>NFTs</span>
+        <TxnCopy messageKey="txn.action.nfts" />
       </Box>
       <Box
         sx={{
@@ -1855,7 +1891,7 @@ const legacyTokenDepositAction = (action: LegacyTokenDeposit, i: number) => {
           width: {xs: "100%", sm: "auto"},
         }}
       >
-        <span>to</span>
+        <TxnCopy messageKey="txn.action.to" />
         <HashButton hash={action.address} type={HashType.ACCOUNT} />
       </Box>
     </Box>
@@ -1885,11 +1921,11 @@ const legacyTokenWithdrawAction = (action: LegacyTokenWithdraw, i: number) => {
           flexWrap: "wrap",
         }}
       >
-        <span>⬆️ Withdraw</span>
+        <TxnCopy messageKey="txn.action.withdrawNft" />
         <span>{action.amount}</span>
-        <span>of</span>
+        <TxnCopy messageKey="txn.action.of" />
         <span>{action.id.token_data_id.name}</span>
-        <span>NFTs</span>
+        <TxnCopy messageKey="txn.action.nfts" />
       </Box>
       <Box
         sx={{
@@ -1899,7 +1935,7 @@ const legacyTokenWithdrawAction = (action: LegacyTokenWithdraw, i: number) => {
           width: {xs: "100%", sm: "auto"},
         }}
       >
-        <span>from</span>
+        <TxnCopy messageKey="txn.action.from" />
         <HashButton hash={action.address} type={HashType.ACCOUNT} />
       </Box>
     </Box>
@@ -3093,7 +3129,7 @@ const cctpBridgeOutAction = (
           flexWrap: "wrap",
         }}
       >
-        <span>Bridged out</span>
+        <TxnCopy messageKey="txn.bridgedOut" />
         {assetData.map((asset, index) => (
           <LiquidityAssetContent
             key={`action-${i}-asset-${asset.asset}`}
@@ -3113,9 +3149,12 @@ const cctpBridgeOutAction = (
           flexWrap: "wrap",
         }}
       >
-        <span>to</span>
+        <TxnCopy messageKey="txn.action.to" />
         <CctpRecipientDisplay recipient={recipient} />
-        <span>on {recipient.chainName}</span>
+        <TxnCopy
+          messageKey="txn.action.onChain"
+          vars={{chain: recipient.chainName}}
+        />
       </Box>
       <Box
         sx={{
@@ -3127,17 +3166,7 @@ const cctpBridgeOutAction = (
       >
         {scanUrl ? (
           <span>
-            <Link
-              href={scanUrl}
-              underline="none"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Open CCTP transfer on WormholeScan in new tab"
-              sx={{fontSize: 12}}
-            >
-              on CCTP
-              <OpenInNew sx={{fontSize: 12}} />
-            </Link>
+            <CctpScanLink href={scanUrl} />
           </span>
         ) : null}
       </Box>
@@ -3181,7 +3210,7 @@ const cctpBridgeInAction = (
           flexWrap: "wrap",
         }}
       >
-        <span>Bridged in</span>
+        <TxnCopy messageKey="txn.bridgedIn" />
         {assetData.map((asset, index) => (
           <LiquidityAssetContent
             key={`action-${i}-asset-${asset.asset}`}
@@ -3191,7 +3220,7 @@ const cctpBridgeInAction = (
             totalAssets={assetData.length}
           />
         ))}
-        <span>via CCTP</span>
+        <TxnCopy messageKey="txn.action.viaCctp" />
       </Box>
       {sourceRecipient ? (
         <Box
@@ -3203,9 +3232,12 @@ const cctpBridgeInAction = (
             flexWrap: "wrap",
           }}
         >
-          <span>from</span>
+          <TxnCopy messageKey="txn.action.from" />
           <CctpRecipientDisplay recipient={sourceRecipient} />
-          <span>on {sourceRecipient.chainName}</span>
+          <TxnCopy
+            messageKey="txn.action.onChain"
+            vars={{chain: sourceRecipient.chainName}}
+          />
         </Box>
       ) : null}
       <Box
@@ -3217,7 +3249,7 @@ const cctpBridgeInAction = (
           flexWrap: "wrap",
         }}
       >
-        <span>to</span>
+        <TxnCopy messageKey="txn.action.to" />
         <CctpRecipientDisplay recipient={recipient} />
       </Box>
     </Box>
@@ -3426,17 +3458,8 @@ const DECIBEL_ORDER_EMOJI: Record<DecibelPerpOrder["orderType"], string> = {
   twap: "⏱️",
 };
 
-const DECIBEL_ORDER_LABEL: Record<DecibelPerpOrder["orderType"], string> = {
-  limit: "Limit Order",
-  market: "Market Order",
-  cancel: "Cancel Order",
-  bulk: "Bulk Orders",
-  twap: "TWAP Order",
-};
-
 const decibelPerpOrderAction = (action: DecibelPerpOrder, i: number) => {
   const emoji = DECIBEL_ORDER_EMOJI[action.orderType];
-  const label = DECIBEL_ORDER_LABEL[action.orderType];
   return (
     <Box
       key={`action-${i}`}
@@ -3460,11 +3483,25 @@ const decibelPerpOrderAction = (action: DecibelPerpOrder, i: number) => {
         }}
       >
         <span>
-          {emoji} {label}
+          {emoji}{" "}
+          <TxnCopy messageKey={`decibel.orderType.${action.orderType}`} />
         </span>
-        {action.side && <span>{action.side === "buy" ? "Buy" : "Sell"}</span>}
-        {action.size && <span>size {action.size}</span>}
-        {action.price && <span>@ {action.price}</span>}
+        {action.side && (
+          <TxnCopy
+            messageKey={
+              action.side === "buy" ? "txn.action.buy" : "txn.action.sell"
+            }
+          />
+        )}
+        {action.size && (
+          <TxnCopy messageKey="txn.action.size" vars={{size: action.size}} />
+        )}
+        {action.price && (
+          <TxnCopy
+            messageKey="txn.action.atPrice"
+            vars={{price: action.price}}
+          />
+        )}
       </Box>
       <Box
         sx={{
@@ -3474,7 +3511,7 @@ const decibelPerpOrderAction = (action: DecibelPerpOrder, i: number) => {
           width: {xs: "100%", sm: "auto"},
         }}
       >
-        <span>on</span>
+        <TxnCopy messageKey="txn.action.on" />
         <HashButton hash={action.dex} type={HashType.ACCOUNT} />
       </Box>
     </Box>
@@ -3534,7 +3571,7 @@ const decibelPerpDepositAction = (
           flexWrap: "wrap",
         }}
       >
-        <span>{"📥 Deposit"}</span>
+        <TxnCopy messageKey="txn.action.depositDecibel" />
         <DecibelDepositWithdrawContent action={action} coinData={coinData} />
       </Box>
       <Box
@@ -3545,7 +3582,7 @@ const decibelPerpDepositAction = (
           width: {xs: "100%", sm: "auto"},
         }}
       >
-        <span>on</span>
+        <TxnCopy messageKey="txn.action.on" />
         <HashButton hash={action.dex} type={HashType.ACCOUNT} />
       </Box>
     </Box>
@@ -3579,7 +3616,7 @@ const decibelPerpWithdrawAction = (
           flexWrap: "wrap",
         }}
       >
-        <span>{"📤 Withdraw"}</span>
+        <TxnCopy messageKey="txn.action.withdrawDecibel" />
         <DecibelDepositWithdrawContent action={action} coinData={coinData} />
       </Box>
       <Box
@@ -3590,7 +3627,7 @@ const decibelPerpWithdrawAction = (
           width: {xs: "100%", sm: "auto"},
         }}
       >
-        <span>on</span>
+        <TxnCopy messageKey="txn.action.on" />
         <HashButton hash={action.dex} type={HashType.ACCOUNT} />
       </Box>
     </Box>

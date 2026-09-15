@@ -66,9 +66,9 @@ explorer/
 
 ## Internationalization
 
-Chrome (header, nav, footer, skip link), search tokens, settings copy, and the in-app user guide are translated. On-chain identifiers and most entity-page copy stay English until those surfaces are moved onto the same catalogs. Missing keys fall back to English.
+Chrome (header, nav, footer, skip link), search tokens, settings copy, and the in-app user guide are translated in every shipped catalog. Remaining explorer UI copy lives in `app/i18n/messages/en.ts` and `app/i18n/messages/en/`. Full-UI locales (`zh`, `fil`, `es`, `fr`, `de`, `ja`, `ko`, `ru`, `pt`, `ar`, `hi`, `th`, `id`, `vi`, `tr`, `bn`, `sw`, `zh-Hant`, `it`, `ms`, `ta`, `pl`, `ur`, `pt-PT`, `ha`, `zu`, `am`) include those keys; other locales omit them and fall back to English. On-chain identifiers stay untranslated.
 
-**Keep i18n working in future changes.** Do not land new user-visible chrome, settings, search, or guide strings as hardcoded English. Add keys to `app/i18n/messages/en.ts` first, then the same keys in every shipped catalog. Use `useTranslation()` (`t` / `tList`) and locale-bound `formatNumber` / `formatInteger` / `formatDateTime` instead of ad-hoc `toLocaleString`. Language is selected from the header globe icon (`LanguageSelect`, `lg+`) or the hamburger Language item (compact), and from `/settings`; all write immediately to `aptos-explorer-locale`.
+**Keep i18n working in future changes.** Do not land new user-visible chrome, settings, search, or guide strings as hardcoded English. Add those keys to `app/i18n/messages/en.ts` first, then the same keys in every shipped catalog. Remaining explorer UI keys go in `app/i18n/messages/en/` (and the English barrel) and must be added to every **full-UI** locale; other catalogs may omit them (English fallback). Use `useTranslation()` (`t` / `tList`) and locale-bound `formatNumber` / `formatInteger` / `formatDateTime` instead of ad-hoc `toLocaleString`. Language is selected from the header globe icon (`LanguageSelect`, `lg+`) or the hamburger Language item (compact), and from `/settings`; all write immediately to `aptos-explorer-locale`.
 
 **When the locale list changes** (add, remove, or rename a catalog), update this section in **`AGENTS.md` in the same PR** — including the shipped-locales table below. Also register the catalog in `SUPPORTED_LOCALES` / `LOCALE_META` (`app/i18n/locales.ts`) and `messageCatalogs` (`app/i18n/messages/index.ts`), add `app/i18n/messages/<id>.ts` (hyphenated ids: `zh-Hant.ts` exports `zhHant`, `pt-PT.ts` exports `ptPT`), extend browser-tag aliases in `app/i18n/detectLocale.ts` when needed, and update `docs/FEATURES_SPECIFICATION.md` (FEAT-I18N-001 / FEAT-SETTINGS-003) plus `CHANGELOG.md`. `app/i18n/agentsLocales.test.ts` fails if the table and `SUPPORTED_LOCALES` diverge.
 
@@ -84,36 +84,36 @@ IDs must match `SUPPORTED_LOCALES` in `app/i18n/locales.ts`. Native names match 
 | ID | Native name | Notes |
 | --- | --- | --- |
 | `en` | English | Source catalog |
-| `zh` | 简体中文 | Simplified Chinese |
-| `fil` | Filipino | `tl` maps here |
-| `es` | Español | |
-| `fr` | Français | |
-| `de` | Deutsch | |
-| `ja` | 日本語 | |
-| `ko` | 한국어 | |
-| `ru` | Русский | |
-| `pt` | Português (Brasil) | Brazilian Portuguese |
-| `ar` | العربية | RTL |
-| `hi` | हिन्दी | |
-| `th` | ไทย | |
-| `id` | Bahasa Indonesia | |
-| `vi` | Tiếng Việt | |
-| `tr` | Türkçe | |
-| `bn` | বাংলা | |
-| `sw` | Kiswahili | |
-| `zh-Hant` | 繁體中文 | Traditional Chinese |
-| `it` | Italiano | |
-| `ms` | Bahasa Melayu | |
-| `ta` | தமிழ் | |
+| `zh` | 简体中文 | Simplified Chinese; full UI catalog |
+| `fil` | Filipino | `tl` maps here; full UI catalog |
+| `es` | Español | Full UI catalog |
+| `fr` | Français | Full UI catalog |
+| `de` | Deutsch | Full UI catalog |
+| `ja` | 日本語 | Full UI catalog |
+| `ko` | 한국어 | Full UI catalog |
+| `ru` | Русский | Full UI catalog |
+| `pt` | Português (Brasil) | Brazilian Portuguese; full UI catalog |
+| `ar` | العربية | RTL; full UI catalog |
+| `hi` | हिन्दी | Full UI catalog |
+| `th` | ไทย | Full UI catalog |
+| `id` | Bahasa Indonesia | Full UI catalog |
+| `vi` | Tiếng Việt | Full UI catalog |
+| `tr` | Türkçe | Full UI catalog |
+| `bn` | বাংলা | Full UI catalog |
+| `sw` | Kiswahili | Full UI catalog |
+| `zh-Hant` | 繁體中文 | Traditional Chinese; full UI catalog |
+| `it` | Italiano | Full UI catalog |
+| `ms` | Bahasa Melayu | Full UI catalog |
+| `ta` | தமிழ் | Full UI catalog |
 | `uk` | Українська | |
 | `nl` | Nederlands | |
-| `pl` | Polski | |
+| `pl` | Polski | Full UI catalog |
 | `he` | עברית | RTL; `iw` maps here |
-| `ur` | اردو | RTL |
-| `pt-PT` | Português (Portugal) | European Portuguese |
-| `ha` | Hausa | |
-| `zu` | isiZulu | |
-| `am` | አማርኛ | Amharic |
+| `ur` | اردو | RTL; full UI catalog |
+| `pt-PT` | Português (Portugal) | European Portuguese; full UI catalog |
+| `ha` | Hausa | Full UI catalog |
+| `zu` | isiZulu | Full UI catalog |
+| `am` | አማርኛ | Amharic; full UI catalog |
 <!-- /i18n-supported-locales -->
 
 ---

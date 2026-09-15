@@ -1,5 +1,6 @@
 import RefreshIcon from "@mui/icons-material/Refresh";
 import {Box, Button, Card, CardContent, Typography} from "@mui/material";
+import {useTranslation} from "../i18n";
 import {Link} from "../routing";
 import {isModuleFetchError} from "../utils/moduleErrorHandler";
 
@@ -10,6 +11,7 @@ interface ErrorBoundaryProps {
 
 export function ErrorBoundary({error, reset}: ErrorBoundaryProps) {
   const isModuleError = isModuleFetchError(error);
+  const {t} = useTranslation();
 
   const handleReload = () => {
     window.location.reload();
@@ -34,7 +36,7 @@ export function ErrorBoundary({error, reset}: ErrorBoundaryProps) {
         <Card sx={{maxWidth: 500, textAlign: "center"}}>
           <CardContent>
             <Typography variant="h4" gutterBottom color="primary">
-              Update Available
+              {t("errors.updateAvailable")}
             </Typography>
             <Typography
               variant="body1"
@@ -43,8 +45,7 @@ export function ErrorBoundary({error, reset}: ErrorBoundaryProps) {
                 mb: 3,
               }}
             >
-              A new version of the explorer has been deployed. Please refresh
-              the page to load the latest version.
+              {t("errors.updateAvailableBody")}
             </Typography>
             <Box sx={{display: "flex", gap: 2, justifyContent: "center"}}>
               <Button
@@ -52,12 +53,12 @@ export function ErrorBoundary({error, reset}: ErrorBoundaryProps) {
                 onClick={handleReload}
                 startIcon={<RefreshIcon />}
               >
-                Refresh Page
+                {t("common.refreshPage")}
               </Button>
               {/* Use native anchor tag instead of Link component for module errors,
                   since the router may also be affected by the chunk loading failure */}
               <Button component="a" href="/" variant="outlined">
-                Go Home
+                {t("common.goHome")}
               </Button>
             </Box>
           </CardContent>
@@ -80,7 +81,7 @@ export function ErrorBoundary({error, reset}: ErrorBoundaryProps) {
       <Card sx={{maxWidth: 500, textAlign: "center"}}>
         <CardContent>
           <Typography variant="h4" gutterBottom color="error">
-            Something went wrong
+            {t("errors.somethingWentWrong")}
           </Typography>
           <Typography
             variant="body1"
@@ -89,7 +90,7 @@ export function ErrorBoundary({error, reset}: ErrorBoundaryProps) {
               mb: 3,
             }}
           >
-            {error.message || "An unexpected error occurred"}
+            {error.message || t("errors.unexpected")}
           </Typography>
           {process.env.NODE_ENV === "development" && (
             <Box
@@ -110,11 +111,11 @@ export function ErrorBoundary({error, reset}: ErrorBoundaryProps) {
           <Box sx={{display: "flex", gap: 2, justifyContent: "center"}}>
             {reset && (
               <Button variant="contained" onClick={reset}>
-                Try Again
+                {t("common.tryAgain")}
               </Button>
             )}
             <Button component={Link} to="/" variant="outlined">
-              Go Home
+              {t("common.goHome")}
             </Button>
           </Box>
         </CardContent>
@@ -124,6 +125,7 @@ export function ErrorBoundary({error, reset}: ErrorBoundaryProps) {
 }
 
 export function NotFoundError() {
+  const {t} = useTranslation();
   return (
     <Box
       sx={{
@@ -141,7 +143,7 @@ export function NotFoundError() {
             404
           </Typography>
           <Typography variant="h4" gutterBottom>
-            Page Not Found
+            {t("errors.pageNotFound")}
           </Typography>
           <Typography
             variant="body1"
@@ -150,10 +152,10 @@ export function NotFoundError() {
               mb: 3,
             }}
           >
-            The page you're looking for doesn't exist or has been moved.
+            {t("errors.pageNotFoundBody")}
           </Typography>
           <Button component={Link} to="/" variant="contained">
-            Go Home
+            {t("common.goHome")}
           </Button>
         </CardContent>
       </Card>

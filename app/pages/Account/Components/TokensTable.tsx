@@ -11,6 +11,7 @@ import {
   useTheme,
 } from "@mui/material";
 import {useMemo} from "react";
+import {useTranslation} from "../../../i18n";
 import type {TokenOwnership} from "../../../api/hooks/useGetAccountTokens";
 import StyledTooltip from "../../../components/StyledTooltip";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
@@ -298,17 +299,19 @@ type TokenHeaderCellProps = {
 function TokenHeaderCell({column}: TokenHeaderCellProps) {
   switch (column) {
     case "name":
-      return <GeneralTableHeaderCell header="Name" />;
+      return <GeneralTableHeaderCell headerKey="table.name" />;
     case "collectionName":
-      return <GeneralTableHeaderCell header="Collection" />;
+      return <GeneralTableHeaderCell headerKey="table.collection" />;
     case "store":
-      return <GeneralTableHeaderCell header="Store" />;
+      return <GeneralTableHeaderCell headerKey="table.store" />;
     case "propertyVersion":
-      return <GeneralTableHeaderCell header="Version" textAlignRight />;
+      return (
+        <GeneralTableHeaderCell headerKey="table.version" textAlignRight />
+      );
     case "type":
-      return <GeneralTableHeaderCell header="Type" textAlignRight />;
+      return <GeneralTableHeaderCell headerKey="table.type" textAlignRight />;
     case "amount":
-      return <GeneralTableHeaderCell header="Amount" textAlignRight />;
+      return <GeneralTableHeaderCell headerKey="table.amount" textAlignRight />;
     default:
       return assertNever(column);
   }
@@ -323,6 +326,7 @@ export function TokensTable({
   tokens,
   columns = DEFAULT_COLUMNS,
 }: TokensTableProps) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -359,7 +363,7 @@ export function TokensTable({
               py: 3,
             }}
           >
-            No tokens found
+            {t("accountUi.noTokensFound")}
           </Typography>
         )}
       </Box>
@@ -369,7 +373,10 @@ export function TokensTable({
   // Desktop table view
   return (
     <Box sx={{overflowX: "auto"}}>
-      <Table aria-label="Account tokens" data-entity-type="token">
+      <Table
+        aria-label={t("common.accountTokensAria")}
+        data-entity-type="token"
+      >
         <TableHead>
           <TableRow>
             {columns.map((column) => (
@@ -397,7 +404,7 @@ export function TokensTable({
                     color: "text.secondary",
                   }}
                 >
-                  No tokens found
+                  {t("accountUi.noTokensFound")}
                 </Typography>
               </GeneralTableCell>
             </TableRow>

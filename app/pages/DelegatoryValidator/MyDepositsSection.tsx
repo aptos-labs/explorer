@@ -34,6 +34,7 @@ import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import {useAptosClient} from "../../global-config/GlobalConfig";
 import {addressFromWallet, assertNever} from "../../utils";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
+import {useTranslation} from "../../i18n";
 import MyDepositsStatusTooltip from "./Components/MyDepositsStatusTooltip";
 import StakingStatusIcon, {
   STAKING_STATUS_STEPS,
@@ -60,25 +61,21 @@ const MyDepositsCells = Object.freeze({
 
 type Column = keyof typeof MyDepositsCells;
 
-const REWARD_EARNED_TOOLTIP_TEXT =
-  "Estimated rewards earned in the current staking status";
-
 function MyDepositsSectionHeaderCell({column}: {column: Column}) {
+  const {t} = useTranslation();
   switch (column) {
     case "amount":
       return (
         <GeneralTableHeaderCell
-          header="AMOUNT"
-          tooltip={
-            <StyledLearnMoreTooltip text="Estimated current total amount including principals and rewards earned" />
-          }
+          header={t("staking.amountUpper")}
+          tooltip={<StyledLearnMoreTooltip text={t("staking.amountTip")} />}
           sx={{paddingLeft: 3}}
         />
       );
     case "status":
       return (
         <GeneralTableHeaderCell
-          header="STATUS"
+          header={t("staking.statusUpper")}
           tooltip={<MyDepositsStatusTooltip steps={STAKING_STATUS_STEPS} />}
           textAlignRight
         />
@@ -86,8 +83,10 @@ function MyDepositsSectionHeaderCell({column}: {column: Column}) {
     case "rewardEarned":
       return (
         <GeneralTableHeaderCell
-          header="REWARD EARNED"
-          tooltip={<StyledLearnMoreTooltip text={REWARD_EARNED_TOOLTIP_TEXT} />}
+          header={t("staking.rewardEarnedUpper")}
+          tooltip={
+            <StyledLearnMoreTooltip text={t("staking.rewardEarnedTip")} />
+          }
           textAlignRight
         />
       );
@@ -96,7 +95,7 @@ function MyDepositsSectionHeaderCell({column}: {column: Column}) {
       return (
         <GeneralTableHeaderCell
           textAlignRight={true}
-          header="ACTIONS"
+          header={t("staking.actionsUpper")}
           sx={{paddingRight: 3}}
         />
       );
@@ -158,6 +157,7 @@ function RewardEarnedValue({
   MyDepositsSectionCellProps,
   "stake" | "status" | "stakePrincipals" | "canWithdrawPendingInactive"
 >) {
+  const {t} = useTranslation();
   const principalsAmount =
     status === StakingStatus.STAKED
       ? stakePrincipals?.activePrincipals
@@ -168,10 +168,10 @@ function RewardEarnedValue({
   const rewardsEarned = getStakeRewardsEarned(stake, principalsAmount);
 
   if (status === StakingStatus.WITHDRAW_READY || canWithdrawPendingInactive) {
-    return <>N/A</>;
+    return <>{t("common.na")}</>;
   }
   if (rewardsEarned === undefined) {
-    return <>In Progress</>;
+    return <>{t("staking.inProgress")}</>;
   }
   return <APTCurrencyValue amount={rewardsEarned.toString()} />;
 }
@@ -194,6 +194,7 @@ function StakeActionButton({
   MyDepositsSectionCellProps,
   "handleClickOpen" | "status" | "stakes" | "canWithdrawPendingInactive"
 > & {fullWidth?: boolean}) {
+  const {t} = useTranslation();
   const {account} = useWallet();
   // FIXME wallet address not guaranteed to be defined
   const balance = useGetAccountAPTBalance(addressFromWallet(account?.address));
@@ -209,11 +210,11 @@ function StakeActionButton({
 
   const buttonDisabled =
     status !== StakingStatus.WITHDRAW_READY && requirement.disabled;
-  const label = getStakeOperationLabel(stakeOperation);
+  const label = getStakeOperationLabel(stakeOperation, t);
 
   return (
     <StyledTooltip
-      title={`You can't ${label.toLocaleLowerCase()} because minimum APT requirement is not met`}
+      title={t("staking.opDisabled", {op: label.toLocaleLowerCase()})}
       disableHoverListener={!buttonDisabled}
     >
       <Box component="span" sx={{width: fullWidth ? "100%" : "auto"}}>
@@ -338,6 +339,7 @@ function MyDepositRow({
 }
 
 function MyDepositCard(deposit: MyDepositProps) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const {handleClickOpen, dialog} = useStakeOperationDialog(deposit);
   const {stake, status, stakes, stakePrincipals, canWithdrawPendingInactive} =
@@ -366,7 +368,7 @@ function MyDepositCard(deposit: MyDepositProps) {
         />
       </Stack>
       <ContentRowSpaceBetween
-        title="Reward Earned"
+        titleKey="fields.rewardEarned"
         value={
           <RewardEarnedValue
             stake={stake}
@@ -375,7 +377,7 @@ function MyDepositCard(deposit: MyDepositProps) {
             canWithdrawPendingInactive={canWithdrawPendingInactive}
           />
         }
-        tooltip={<StyledLearnMoreTooltip text={REWARD_EARNED_TOOLTIP_TEXT} />}
+        tooltip={<StyledLearnMoreTooltip text={t("staking.rewardEarnedTip")} />}
       />
       <StakeActionButton
         handleClickOpen={handleClickOpen}
@@ -417,6 +419,7 @@ function MyDepositSectionContent({
 }: MyDepositsSectionProps & {
   validator: ValidatorData;
 }) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const {account} = useWallet();
@@ -480,7 +483,7 @@ function MyDepositSectionContent({
           marginX: 1,
         }}
       >
-        My Deposits
+        {t("staking.myDeposits")}
       </Typography>
       {isOnMobile ? (
         <Stack direction="column" spacing={2} sx={{marginTop: 2}}>
@@ -497,7 +500,10 @@ function MyDepositSectionContent({
           ))}
         </Stack>
       ) : (
-        <Table aria-label="My deposits" data-entity-type="deposit">
+        <Table
+          aria-label={t("staking.myDepositsAria")}
+          data-entity-type="deposit"
+        >
           <TableHead>
             <TableRow>
               {DEFAULT_COLUMNS.map((columnName) => (

@@ -24,8 +24,8 @@ export default function MonthlyActiveUserChart({
   return (
     <CardOutline>
       <ChartTitle
-        label="Monthly Active Accounts"
-        tooltip="Daily count of distinct addresses with signed transactions over the last 30 days."
+        labelKey="analytics.monthlyActiveAccounts"
+        tooltipKey="analytics.monthlyActiveAccountsTip"
       />
       <LineChart labels={labels} dataset={dataset} decimals={1} />
     </CardOutline>

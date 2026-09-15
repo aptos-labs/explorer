@@ -17,6 +17,7 @@ import {
   TabStripSkeleton,
 } from "../../components/PageLoadSkeletons";
 import {useNavigate} from "../../routing";
+import {useTranslation} from "../../i18n";
 import {assertNever} from "../../utils";
 import {accountPagePath} from "./Index";
 import CoinsTab from "./Tabs/CoinsTab";
@@ -41,22 +42,22 @@ const TabComponents = Object.freeze({
 
 export type TabValue = keyof typeof TabComponents;
 
-function getTabLabel(value: TabValue): string {
+function getTabLabel(value: TabValue, t: (key: string) => string): string {
   switch (value) {
     case "transactions":
-      return "Transactions";
+      return t("tabs.account.transactions");
     case "coins":
-      return "Assets";
+      return t("tabs.account.coins");
     case "tokens":
-      return "NFTs";
+      return t("tabs.account.tokens");
     case "multisig":
-      return "Multisig";
+      return t("tabs.account.multisig");
     case "resources":
-      return "Resources";
+      return t("tabs.account.resources");
     case "modules":
-      return "Modules";
+      return t("tabs.account.modules");
     case "info":
-      return "Info";
+      return t("tabs.account.info");
     default:
       return assertNever(value);
   }
@@ -158,6 +159,7 @@ export default function AccountTabs({
   // Use path params for tab selection in TanStack Router
   const params = useParams({strict: false}) as {tab?: string};
   const navigate = useNavigate();
+  const {t} = useTranslation();
   const urlTab = params?.tab;
 
   const visibleTabValues: TabValue[] = (() => {
@@ -211,7 +213,7 @@ export default function AccountTabs({
                 key={value}
                 value={value}
                 icon={getTabIcon(value)}
-                label={getTabLabel(value)}
+                label={getTabLabel(value, t)}
                 isFirst={i === 0}
                 isLast={i === visibleTabValues.length - 1}
               />

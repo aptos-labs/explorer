@@ -5,12 +5,14 @@ import {useGetDelegatedStaking} from "../api/hooks/delegations/useGetDelegatedSt
 import {useAptosClient} from "../global-config/GlobalConfig";
 import {addressFromWallet} from "../utils";
 import {Banner} from "./Banner";
+import {useTranslation} from "../i18n";
 
 /**
  * Component that checks if a user has any pools with 0% commission
  * and displays a warning banner if they do.
  */
 export function OutOfCommissionPoolsBanner() {
+  const {t} = useTranslation();
   const {connected, account} = useWallet();
   const aptosClient = useAptosClient();
   const [zeroCommissionPoolAddresses, setZeroCommissionPoolAddresses] =
@@ -86,10 +88,18 @@ export function OutOfCommissionPoolsBanner() {
     return null;
   }
 
-  const message = `You have ${zeroCommissionPoolAddresses.length} staking ${zeroCommissionPoolAddresses.length === 1 ? "pool" : "pools"} with 0% commission. You will not earn rewards from ${zeroCommissionPoolAddresses.length === 1 ? "this pool" : "these pools"}. Consider withdrawing your funds.`;
+  const count = zeroCommissionPoolAddresses.length;
+  const message =
+    count === 1
+      ? t("staking.zeroCommissionOne", {count})
+      : t("staking.zeroCommissionMany", {count});
 
   return (
-    <Banner pillText="WARNING" pillColor="error" sx={{marginBottom: 2}}>
+    <Banner
+      pillText={t("common.warning")}
+      pillColor="error"
+      sx={{marginBottom: 2}}
+    >
       {message}
     </Banner>
   );

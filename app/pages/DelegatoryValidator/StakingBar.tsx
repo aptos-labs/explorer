@@ -30,6 +30,7 @@ import {OCTA} from "../../constants";
 import {useAptosClient} from "../../global-config/GlobalConfig";
 import {addressFromWallet} from "../../utils";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
+import {useTranslation} from "../../i18n";
 import {MINIMUM_APT_IN_POOL_FOR_EXPLORER} from "./constants";
 import {DelegationStateContext} from "./context/DelegationContext";
 import StakeOperationDialog from "./StakeOperationDialog";
@@ -67,6 +68,7 @@ function StakingBarContent({
 }: ValidatorStakingBarProps & {
   validator: ValidatorData;
 }) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const logEvent = useLogEventWithBasic();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
@@ -119,9 +121,9 @@ function StakingBarContent({
         }}
       >
         <Typography variant="body2" color={theme.palette.text.secondary}>
-          Delegated Stake Amount
+          {t("staking.delegatedStakeAmount")}
         </Typography>
-        <StyledLearnMoreTooltip text="The total amount of delegated stake in this stake pool" />
+        <StyledLearnMoreTooltip text={t("staking.delegatedStakeTip")} />
       </Stack>
     </Stack>
   );
@@ -130,7 +132,7 @@ function StakingBarContent({
     <Stack direction="column" spacing={0.5}>
       <Typography sx={{fontWeight: 600}}>{networkPercentage}%</Typography>
       <Typography variant="body2" color={theme.palette.text.secondary}>
-        Of Network
+        {t("staking.ofNetwork")}
       </Typography>
     </Stack>
   );
@@ -151,9 +153,9 @@ function StakingBarContent({
         }}
       >
         <Typography variant="body2" color={theme.palette.text.secondary}>
-          Rewards Earned So Far
+          {t("staking.rewardsEarnedSoFar")}
         </Typography>
-        <StyledLearnMoreTooltip text="Amount of rewards earned by this stake pool to date" />
+        <StyledLearnMoreTooltip text={t("staking.rewardsEarnedTip")} />
       </Stack>
     </Stack>
   );
@@ -190,7 +192,7 @@ function StakingBarContent({
 
   const stakeButton = (fullWidth: boolean) => (
     <StyledTooltip
-      title={`You can't stake because minimum 11 APT requirement is not met`}
+      title={t("staking.cannotStakeMin")}
       disableHoverListener={!buttonDisabled}
     >
       <Box component="span" sx={{width: fullWidth ? "100%" : "auto"}}>
@@ -205,7 +207,7 @@ function StakingBarContent({
           disabled={buttonDisabled}
         >
           <ArrowCircleUpIcon sx={{marginRight: 1}} />
-          <Typography>Stake</Typography>
+          <Typography>{t("staking.stake")}</Typography>
         </Button>
       </Box>
     </StyledTooltip>

@@ -11,9 +11,11 @@ import {
 import {defaultNetworkName} from "../constants";
 import {useNetworkSelector} from "../global-config";
 import {useLocalnetDetection} from "../hooks/useLocalnetDetection";
+import {InlineMarkup, useTranslation} from "../i18n";
 
 export default function LocalnetUnavailableModal() {
   const [networkName, setNetworkName] = useNetworkSelector();
+  const {t} = useTranslation();
   // Only check for localnet availability when local network is explicitly selected
   // This prevents prompting users about local device connections unless they choose localnet
   const {isAvailable, isChecked} = useLocalnetDetection({
@@ -51,13 +53,12 @@ export default function LocalnetUnavailableModal() {
     >
       <DialogTitle sx={{display: "flex", alignItems: "center", gap: 1}}>
         <WarningAmberIcon color="warning" />
-        Localnet Not Running
+        {t("network.unavailableTitle")}
       </DialogTitle>
       <DialogContent>
         <Box sx={{mb: 2}}>
           <Typography variant="body1" gutterBottom>
-            Unable to connect to a local Aptos node at{" "}
-            <code>http://127.0.0.1:8080</code>.
+            <InlineMarkup text={t("network.unavailableBody")} />
           </Typography>
           <Typography
             variant="body2"
@@ -66,7 +67,7 @@ export default function LocalnetUnavailableModal() {
               mt: 2,
             }}
           >
-            To use localnet, start a local Aptos node with:
+            {t("network.unavailableHint")}
           </Typography>
           <Box
             component="pre"
@@ -88,13 +89,13 @@ export default function LocalnetUnavailableModal() {
               mt: 2,
             }}
           >
-            Or switch to a different network below.
+            {t("network.unavailableSwitch")}
           </Typography>
         </Box>
       </DialogContent>
       <DialogActions sx={{px: 3, pb: 2}}>
         <Button onClick={handleSwitchToMainnet} variant="contained">
-          Switch to Mainnet
+          {t("network.switchToMainnet")}
         </Button>
       </DialogActions>
     </Dialog>

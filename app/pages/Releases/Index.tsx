@@ -1,6 +1,7 @@
 import {Box, Typography} from "@mui/material";
 import {useParams} from "@tanstack/react-router";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
+import {useTranslation} from "../../i18n";
 import PageHeader from "../layout/PageHeader";
 import ReleasesPageTabs, {
   DEFAULT_RELEASES_TAB,
@@ -8,24 +9,24 @@ import ReleasesPageTabs, {
   releasesTabHeadTitle,
 } from "./Tabs";
 
-const TAB_DESCRIPTIONS: Record<string, string> = {
-  networks:
-    "Live on-chain status for Aptos mainnet, testnet, and devnet — epoch, block height, framework release (from gas schedule), max bytecode format, node release, and feature-flag comparison.",
-  aips: "Track all Aptos Improvement Proposals (AIPs) — status, authors, and links to source.",
-  sdks: "Latest release versions for the Aptos CLI, node software, and all official SDKs — TypeScript, Python, Rust, and Go.",
-};
-
 export default function ReleasesPage() {
+  const {t} = useTranslation();
   const params = useParams({strict: false}) as {tab?: string};
   const tab =
     params.tab && isReleasesTab(params.tab) ? params.tab : DEFAULT_RELEASES_TAB;
   const tabTitle = releasesTabHeadTitle(tab);
+  const description =
+    tab === "aips"
+      ? t("pages.releases.aipsDescription")
+      : tab === "sdks"
+        ? t("pages.releases.sdksDescription")
+        : t("pages.releases.networksDescription");
 
   return (
     <Box>
       <PageMetadata
-        title={`${tabTitle} | Releases`}
-        description={TAB_DESCRIPTIONS[tab] ?? TAB_DESCRIPTIONS.networks}
+        title={t("pages.releases.metaTitle", {tab: tabTitle})}
+        description={description}
         type="website"
         keywords={[
           "releases",
@@ -48,7 +49,7 @@ export default function ReleasesPage() {
           marginBottom: 2,
         }}
       >
-        Releases
+        {t("pages.releases.title")}
       </Typography>
       <ReleasesPageTabs />
     </Box>

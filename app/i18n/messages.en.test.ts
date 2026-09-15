@@ -1,9 +1,18 @@
 import {describe, expect, it} from "vitest";
 import {createTranslator} from "./I18nProvider";
-import {LOCALE_META, SUPPORTED_LOCALES} from "./locales";
+import {isFullUiLocale, LOCALE_META, SUPPORTED_LOCALES} from "./locales";
 import {en} from "./messages/en";
 import {messageCatalogs} from "./messages";
-import type {MessageTree, MessageValue} from "./translate";
+import {
+  getMessage,
+  messagePlaceholders,
+  type MessageTree,
+  type MessageValue,
+} from "./translate";
+
+function isMessageList(value: MessageValue): value is readonly string[] {
+  return Array.isArray(value);
+}
 
 function collectKeys(
   tree: MessageTree,
@@ -14,7 +23,7 @@ function collectKeys(
     const key = prefix ? `${prefix}.${part}` : part;
     if (typeof value === "string") {
       keys.set(key, "string");
-    } else if (Array.isArray(value)) {
+    } else if (isMessageList(value)) {
       keys.set(key, "list");
     } else {
       for (const [nestedKey, nestedKind] of collectKeys(value, key)) {
@@ -25,35 +34,43 @@ function collectKeys(
   return keys;
 }
 
-function placeholders(value: string): string[] {
-  return [...value.matchAll(/\{(\w+)\}/g)].map((match) => match[1]).sort();
-}
-
-function visitLeaves(
-  tree: MessageTree,
-  visit: (key: string, value: string | string[]) => void,
-  prefix = "",
-): void {
-  for (const [part, value] of Object.entries(tree) as [
-    string,
-    MessageValue,
-  ][]) {
-    const key = prefix ? `${prefix}.${part}` : part;
-    if (typeof value === "string" || Array.isArray(value)) {
-      visit(key, value);
-    } else {
-      visitLeaves(value, visit, key);
-    }
-  }
-}
-
 describe("FEAT-I18N-001 — English catalog", () => {
   it("translates chrome and guide titles", () => {
     const {t} = createTranslator("en");
     expect(t("chrome.appName")).toBe("Aptos Explorer");
     expect(t("chrome.nav.blocks")).toBe("Blocks");
     expect(t("guide.meta.title")).toBe("User Guide");
-    expect(t("settings.language.auto")).toBe("Browser default");
+    expect(t("tabs.transaction.overview")).toBe("Overview");
+    expect(t("fields.status")).toBe("Status:");
+    expect(t("common.noDataFound")).toBe("No Data Found");
+    expect(t("notFound.accountTitle")).toBe("Account Not Found");
+    expect(t("pages.analytics.title")).toBe("Network Analytics");
+    expect(t("verificationPage.heading")).toBe(
+      "Token & Address Verification Instructions",
+    );
+  });
+
+  it("keeps remaining explorer UI copy in the English catalog", () => {
+    const {t} = createTranslator("en");
+    expect(t("contract.execute")).toBe("Execute");
+    expect(t("script.advancedTitle")).toBeDefined();
+    expect(t("payments.kind.p2p")).toBe("Peer-to-peer");
+    expect(t("staking.op.unstake")).toBeDefined();
+    expect(t("payload.encrypted")).toBe("Encrypted");
+    expect(t("decibel.buy")).toBe("Buy");
+    expect(t("modules.copyCode")).toBe("copy code");
+    expect(t("modules.selectModule")).toBe("Select a module");
+    expect(t("multisig.executionSucceeded")).toBe("Execution Succeeded");
+    expect(t("aips.filter.lastCall")).toBeDefined();
+    expect(t("accountUi.showZeroBalance")).toBe("Show Zero Balance");
+    expect(t("common.collapseHash")).toBe("collapse hash");
+    expect(t("pages.coins.searchPlaceholder")).toBe(
+      "Search by name, symbol, or address...",
+    );
+    expect(t("signature.scheme")).toBe("Scheme");
+    expect(t("trace.openSentio")).toBe(
+      "Open Sentio’s interactive trace viewer",
+    );
   });
 
   it("keeps search tokens aligned with the catalog", () => {
@@ -87,9 +104,9 @@ describe("FEAT-I18N-001 — shipped locale catalogs", () => {
     expect(LOCALE_META.ur.dir).toBe("rtl");
   });
 
-  it("keeps the same message keys as English", () => {
+  it("keeps full-UI catalogs on the same message keys as English", () => {
     for (const locale of SUPPORTED_LOCALES) {
-      if (locale === "en") {
+      if (locale === "en" || !isFullUiLocale(locale)) {
         continue;
       }
       const localeKeys = collectKeys(messageCatalogs[locale]);
@@ -102,28 +119,42 @@ describe("FEAT-I18N-001 — shipped locale catalogs", () => {
     }
   });
 
-  it("preserves interpolation placeholders from English", () => {
-    visitLeaves(en, (key, englishValue) => {
-      const englishStrings = Array.isArray(englishValue)
-        ? englishValue
-        : [englishValue];
-      for (const locale of SUPPORTED_LOCALES) {
-        if (locale === "en") {
+  it("keeps other shipped catalogs as a subset of English keys", () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      if (locale === "en" || isFullUiLocale(locale)) {
+        continue;
+      }
+      const localeKeys = collectKeys(messageCatalogs[locale]);
+      expect(localeKeys.size, locale).toBeGreaterThan(0);
+      for (const [key, kind] of localeKeys) {
+        expect(englishKeys.get(key), `${locale} extra ${key}`).toBe(kind);
+      }
+    }
+  });
+
+  it("preserves interpolation placeholders from English for keys each catalog defines", () => {
+    const localeKeySets = new Map(
+      SUPPORTED_LOCALES.filter((locale) => locale !== "en").map((locale) => [
+        locale,
+        collectKeys(messageCatalogs[locale]),
+      ]),
+    );
+    for (const [key] of englishKeys) {
+      const englishValue = getMessage(en, key);
+      expect(englishValue, key).toBeDefined();
+      const englishPlaceholders = messagePlaceholders(englishValue ?? "");
+      for (const [locale, localeKeys] of localeKeySets) {
+        if (!localeKeys.has(key)) {
           continue;
         }
-        const {t, tList} = createTranslator(locale);
-        const localized = Array.isArray(englishValue) ? tList(key) : [t(key)];
-        expect(localized.length, `${locale}:${key}`).toBe(
-          englishStrings.length,
-        );
-        englishStrings.forEach((source, index) => {
-          expect(
-            placeholders(localized[index]),
-            `${locale}:${key}[${index}]`,
-          ).toEqual(placeholders(source));
-        });
+        const localeValue = getMessage(messageCatalogs[locale], key);
+        expect(localeValue, `${locale}:${key}`).toBeDefined();
+        expect(
+          messagePlaceholders(localeValue ?? ""),
+          `${locale}:${key}`,
+        ).toEqual(englishPlaceholders);
       }
-    });
+    }
   });
 
   it("translates chrome titles away from English for non-English locales", () => {

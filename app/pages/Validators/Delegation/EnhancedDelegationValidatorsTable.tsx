@@ -20,6 +20,7 @@ import {
   useTheme,
 } from "@mui/material";
 import React, {useMemo, useState} from "react";
+import {useTranslation} from "../../../i18n";
 import type {Types} from "~/types/aptos";
 import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
 import HashButton, {HashType} from "../../../components/HashButton";
@@ -188,7 +189,7 @@ function ValidatorHeaderCell({
     case "addr":
       return (
         <GeneralTableHeaderCell
-          header="Staking Pool Address"
+          headerKey="table.stakingPoolAddress"
           sortable={true}
           direction={direction}
           selectAndSetDirection={handleSort}
@@ -197,7 +198,7 @@ function ValidatorHeaderCell({
     case "operatorAddr":
       return (
         <GeneralTableHeaderCell
-          header="Operator Address"
+          headerKey="table.operatorAddress"
           sortable={true}
           direction={direction}
           selectAndSetDirection={handleSort}
@@ -206,7 +207,7 @@ function ValidatorHeaderCell({
     case "delegatedAmount":
       return (
         <GeneralTableHeaderCell
-          header="Delegated Amount"
+          headerKey="table.delegatedAmount"
           tooltip={
             <StyledLearnMoreTooltip text="The total amount of delegated stake in this stake pool" />
           }
@@ -219,7 +220,7 @@ function ValidatorHeaderCell({
     case "delegator":
       return (
         <GeneralTableHeaderCell
-          header="Delegators"
+          headerKey="table.delegators"
           tooltip={
             <StyledLearnMoreTooltip text="Number of owner accounts who have delegated stake to this stake pool + reward account(s)" />
           }
@@ -232,7 +233,7 @@ function ValidatorHeaderCell({
     case "rewardsEarned":
       return (
         <GeneralTableHeaderCell
-          header="Rewards Earned"
+          headerKey="table.rewardsEarned"
           tooltip={
             <StyledLearnMoreTooltip text="Amount of rewards earned by this stake pool to date" />
           }
@@ -246,7 +247,7 @@ function ValidatorHeaderCell({
     case "commission":
       return (
         <GeneralTableHeaderCell
-          header="Commission"
+          headerKey="table.commission"
           tooltip={
             <StyledLearnMoreTooltip text="% of staking reward paid out to operator as commission" />
           }
@@ -259,7 +260,7 @@ function ValidatorHeaderCell({
     case "myDeposit":
       return (
         <GeneralTableHeaderCell
-          header="My Deposit"
+          headerKey="table.myDeposit"
           isTableTooltip={false}
           sortable={true}
           direction={direction}
@@ -269,7 +270,7 @@ function ValidatorHeaderCell({
     case "status":
       return (
         <GeneralTableHeaderCell
-          header="Status"
+          headerKey="table.status"
           isTableTooltip={false}
           sortable={true}
           direction={direction}
@@ -784,6 +785,7 @@ function EnhancedDelegationValidatorCard({
 
 // Main component
 export function EnhancedDelegationValidatorsTable() {
+  const {t} = useTranslation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const {connected} = useWallet();
@@ -906,7 +908,7 @@ export function EnhancedDelegationValidatorsTable() {
                 color: "text.secondary",
               }}
             >
-              Loading validators...
+              {t("common.loadingValidatorsEllipsis")}
             </Typography>
           </Box>
         </Box>
@@ -918,7 +920,7 @@ export function EnhancedDelegationValidatorsTable() {
       <Box>
         <Box sx={{overflowX: "auto"}}>
           <Table
-            aria-label="Delegation validators"
+            aria-label={t("common.delegationValidatorsAria")}
             data-entity-type="validator"
           >
             <TableHead>
@@ -1019,7 +1021,7 @@ export function EnhancedDelegationValidatorsTable() {
                 color: "text.secondary",
               }}
             >
-              No validators found
+              {t("common.noValidatorsFound")}
             </Typography>
           </Box>
         </Box>
@@ -1046,7 +1048,10 @@ export function EnhancedDelegationValidatorsTable() {
     <Box>
       {InactiveValidatorsToggle}
       <Box sx={{overflowX: "auto"}}>
-        <Table aria-label="Delegation validators" data-entity-type="validator">
+        <Table
+          aria-label={t("common.delegationValidatorsAria")}
+          data-entity-type="validator"
+        >
           <TableHead>
             <TableRow sx={{verticalAlign: "bottom"}}>
               {columns.map((column) => (
@@ -1081,7 +1086,7 @@ export function EnhancedDelegationValidatorsTable() {
                       color: "text.secondary",
                     }}
                   >
-                    No validators found
+                    {t("common.noValidatorsFound")}
                   </Typography>
                 </GeneralTableCell>
               </TableRow>

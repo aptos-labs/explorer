@@ -11,6 +11,7 @@ import {useGetModulePublishHistory} from "../../../../api/hooks/useGetModulePubl
 import StyledTab from "../../../../components/StyledTab";
 import StyledTabs from "../../../../components/StyledTabs";
 import {useNavigate} from "../../../../routing";
+import {useTranslation} from "../../../../i18n";
 import {assertNever} from "../../../../utils";
 import {pathSplatToSegments} from "../../../../utils/routerParams";
 import {useLogEventWithBasic} from "../../hooks/useLogEventWithBasic";
@@ -30,16 +31,16 @@ const TabComponents = Object.freeze({
 
 type TabValue = keyof typeof TabComponents;
 
-function getTabLabel(value: TabValue): string {
+function getTabLabel(value: TabValue, t: (key: string) => string): string {
   switch (value) {
     case "packages":
-      return "Packages";
+      return t("tabs.modules.packages");
     case "code":
-      return "Code";
+      return t("tabs.modules.code");
     case "run":
-      return "Run";
+      return t("tabs.modules.run");
     case "view":
-      return "View";
+      return t("tabs.modules.view");
     default:
       return assertNever(value);
   }
@@ -130,6 +131,7 @@ function ModulesTabs({
   isObject: boolean;
 }) {
   const theme = useTheme();
+  const {t} = useTranslation();
   const tabValues = Object.keys(TabComponents) as TabValue[];
   const [ledgerVersion, setLedgerVersion] = useState<number | undefined>(
     undefined,
@@ -356,7 +358,7 @@ function ModulesTabs({
                   key={tabKey}
                   value={tabKey}
                   icon={getTabIcon(tabKey)}
-                  label={getTabLabel(tabKey)}
+                  label={getTabLabel(tabKey, t)}
                   isFirst={i === 0}
                   isLast={i === tabValues.length - 1}
                   disabled={isDisabled}
@@ -366,7 +368,7 @@ function ModulesTabs({
                 return (
                   <Tooltip
                     key={tabKey}
-                    title="Run and View are not available for historical versions"
+                    title={t("tabs.modules.historicalUnavailable")}
                     arrow
                   >
                     <span>{tab}</span>

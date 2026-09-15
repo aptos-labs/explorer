@@ -27,6 +27,7 @@ import {
   WITHDRAW_READY_TEXT_COLOR_DARK,
   WITHDRAW_READY_TEXT_COLOR_LIGHT,
 } from "../constants";
+import {useTranslation} from "../../../i18n";
 
 export enum StakingStatus {
   STAKED,
@@ -99,13 +100,20 @@ type StakingStatusIconProps = {
 };
 
 export function StakingStatusChip({status}: StakingStatusIconProps) {
+  const {t} = useTranslation();
   const theme = useTheme();
 
   const step = STAKING_STATUS_STEPS[status];
+  const label =
+    status === StakingStatus.STAKED
+      ? t("staking.status.staked")
+      : status === StakingStatus.WITHDRAW_PENDING
+        ? t("staking.status.withdrawPending")
+        : t("staking.status.withdrawReady");
   return (
     <Chip
       icon={step.icon}
-      label={step.label}
+      label={label}
       sx={theme.palette.mode === "dark" ? step.sxDark : step.sxLight}
       color="primary"
     />

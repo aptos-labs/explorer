@@ -20,6 +20,7 @@ import {
   useTheme,
 } from "@mui/material";
 import {useCallback, useState} from "react";
+import {useTranslation} from "../../../../i18n";
 import type {Types} from "~/types/aptos";
 import {useGetAccountModule} from "../../../../api/hooks/useGetAccountModule";
 import {
@@ -107,6 +108,7 @@ const cellSx = {
 export default function TransactionArguments({
   transaction,
 }: TransactionArgumentsProps) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const isMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const [expanded, setExpanded] = useState(false);
@@ -216,7 +218,7 @@ export default function TransactionArguments({
                 variant="subtitle2"
                 sx={{color: theme.palette.text.secondary, mb: 1}}
               >
-                Type Arguments
+                {t("multisig.typeArguments")}
               </Typography>
               {isMobile ? (
                 <Box>
@@ -255,7 +257,9 @@ export default function TransactionArguments({
                             width: showTypeArgNames ? undefined : "1%",
                           }}
                         >
-                          {showTypeArgNames ? "Name" : "#"}
+                          {showTypeArgNames
+                            ? t("payload.name")
+                            : t("table.hash")}
                         </TableCell>
                         {moveFunction &&
                           moveFunction.generic_type_params.length > 0 && (
@@ -269,7 +273,7 @@ export default function TransactionArguments({
                                 whiteSpace: "nowrap",
                               }}
                             >
-                              Constraint
+                              {t("payload.constraint")}
                             </TableCell>
                           )}
                         <TableCell
@@ -281,7 +285,7 @@ export default function TransactionArguments({
                             borderBottom: `1px solid ${theme.palette.divider}`,
                           }}
                         >
-                          Value
+                          {t("payload.value")}
                         </TableCell>
                       </TableRow>
                     </TableHead>
@@ -344,7 +348,7 @@ export default function TransactionArguments({
                 variant="subtitle2"
                 sx={{color: theme.palette.text.secondary, mb: 1}}
               >
-                Function Arguments
+                {t("payload.functionArguments")}
               </Typography>
               {isMobile ? (
                 <Box>
@@ -379,7 +383,9 @@ export default function TransactionArguments({
                             width: showFunctionArgNames ? undefined : "1%",
                           }}
                         >
-                          {showFunctionArgNames ? "Name" : "#"}
+                          {showFunctionArgNames
+                            ? t("payload.name")
+                            : t("table.hash")}
                         </TableCell>
                         {filteredParams && (
                           <TableCell
@@ -404,7 +410,7 @@ export default function TransactionArguments({
                             borderBottom: `1px solid ${theme.palette.divider}`,
                           }}
                         >
-                          Value
+                          {t("payload.value")}
                         </TableCell>
                       </TableRow>
                     </TableHead>
@@ -480,14 +486,18 @@ export default function TransactionArguments({
                     variant="subtitle2"
                     sx={{color: theme.palette.text.secondary}}
                   >
-                    CLI Command
+                    {t("payload.cliCommand")}
                   </Typography>
                 </Stack>
-                <Tooltip title={copied ? "Copied!" : "Copy CLI command"}>
+                <Tooltip
+                  title={
+                    copied ? t("common.copiedExclaim") : t("common.copyCliAria")
+                  }
+                >
                   <IconButton
                     size="small"
                     onClick={handleCopy}
-                    aria-label="Copy CLI command"
+                    aria-label={t("common.copyCliAria")}
                   >
                     {copied ? (
                       <CheckIcon sx={{fontSize: 16}} color="success" />

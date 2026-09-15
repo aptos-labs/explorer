@@ -19,23 +19,29 @@ vi.mock("../../../../components/IndividualPageContent/JsonViewCard", () => ({
 // The real ResponsiveKeyValueRow renders GeneralTableRow, which depends on the
 // router context and app theme. Stub it to a simple label/value layout so this
 // test stays focused on MultisigEventView's field mapping.
-vi.mock("../../../../components/Table/ResponsiveKeyValueTable", () => ({
-  ResponsiveKeyValueTable: ({children}: {children: ReactNode}) => (
-    <div>{children}</div>
-  ),
-  ResponsiveKeyValueRow: ({
-    label,
-    children,
-  }: {
-    label: ReactNode;
-    children: ReactNode;
-  }) => (
-    <div>
-      <span>{label}</span>
-      <span>{children}</span>
-    </div>
-  ),
-}));
+vi.mock("../../../../components/Table/ResponsiveKeyValueTable", async () => {
+  const {createTranslator} = await import("../../../../i18n/I18nProvider");
+  const {t} = createTranslator("en");
+  return {
+    ResponsiveKeyValueTable: ({children}: {children: ReactNode}) => (
+      <div>{children}</div>
+    ),
+    ResponsiveKeyValueRow: ({
+      label,
+      labelKey,
+      children,
+    }: {
+      label?: ReactNode;
+      labelKey?: string;
+      children: ReactNode;
+    }) => (
+      <div>
+        <span>{labelKey ? t(labelKey) : label}</span>
+        <span>{children}</span>
+      </div>
+    ),
+  };
+});
 
 vi.mock("../../../../routing", () => ({
   Link: function LinkStub({children}: {children: ReactNode}) {

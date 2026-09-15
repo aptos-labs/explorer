@@ -2,10 +2,12 @@ import {Box, Typography} from "@mui/material";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import {defaultNetworkName} from "../../constants";
 import {useNetworkName} from "../../global-config/GlobalConfig";
+import {useTranslation} from "../../i18n";
 import PageHeader from "../layout/PageHeader";
 import MainnetAnalytics from "./MainnetAnalytics";
 
 export default function AnalyticsPage() {
+  const {t} = useTranslation();
   const networkName = useNetworkName();
 
   const titleComponent = (
@@ -16,15 +18,15 @@ export default function AnalyticsPage() {
         marginBottom: 2,
       }}
     >
-      Network Analytics
+      {t("pages.analytics.title")}
     </Typography>
   );
 
   return (
     <Box>
       <PageMetadata
-        title="Network Analytics"
-        description="View Aptos network analytics including daily active users, transaction volumes, TPS, gas fees, staking stats, and blockchain metrics. Interactive charts and real-time data."
+        title={t("pages.analytics.title")}
+        description={t("pages.analytics.metaDescription")}
         type="website"
         keywords={[
           "analytics",
@@ -46,7 +48,7 @@ export default function AnalyticsPage() {
       ) : (
         <>
           {titleComponent}
-          <Typography>Analytics are available for Mainnet only.</Typography>
+          <Typography>{t("pages.analytics.mainnetOnly")}</Typography>
         </>
       )}
     </Box>

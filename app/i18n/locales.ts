@@ -34,6 +34,45 @@ export const SUPPORTED_LOCALES = [
 
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
+/** Locales that translate remaining explorer UI copy, not only chrome/settings/guide. */
+export const FULL_UI_LOCALES = [
+  "zh",
+  "fil",
+  "es",
+  "fr",
+  "de",
+  "ja",
+  "ko",
+  "ru",
+  "pt",
+  "ar",
+  "hi",
+  "th",
+  "id",
+  "vi",
+  "tr",
+  "bn",
+  "sw",
+  "zh-Hant",
+  "it",
+  "ms",
+  "ta",
+  "pl",
+  "ur",
+  "pt-PT",
+  "ha",
+  "zu",
+  "am",
+] as const satisfies readonly SupportedLocale[];
+
+export type FullUiLocale = (typeof FULL_UI_LOCALES)[number];
+
+export function isFullUiLocale(
+  locale: SupportedLocale,
+): locale is FullUiLocale {
+  return (FULL_UI_LOCALES as readonly SupportedLocale[]).includes(locale);
+}
+
 export type LocalePreference = "auto" | SupportedLocale;
 
 export const DEFAULT_LOCALE: SupportedLocale = "en";

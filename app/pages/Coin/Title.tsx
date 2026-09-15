@@ -8,6 +8,7 @@ import {
 } from "../../components/Table/VerifiedCell";
 import TitleHashButton, {HashType} from "../../components/TitleHashButton";
 import {useNetworkName} from "../../global-config/GlobalConfig";
+import {useTranslation} from "../../i18n";
 import {getAssetSymbol} from "../../utils";
 import {getCoinTabHeadLabel} from "./coinTabMeta";
 
@@ -24,6 +25,7 @@ export default function CoinTitle({
   symbol,
   pathTab,
 }: CoinTitleProps) {
+  const {t} = useTranslation();
   const assetSymbol = getAssetSymbol(
     coinData?.panoraSymbol,
     coinData?.bridge,
@@ -42,7 +44,7 @@ export default function CoinTitle({
   );
 
   function title() {
-    return `Coin`;
+    return t("pages.coins.entity");
   }
 
   // Truncate struct for title readability
@@ -54,14 +56,18 @@ export default function CoinTitle({
   const tab = pathTab ?? "info";
   const hasStruct = Boolean(struct.trim());
   const canonicalPath = hasStruct ? `/coin/${struct}/${tab}` : "/coins";
-  const tabHead = getCoinTabHeadLabel(pathTab);
+  const tabHead = getCoinTabHeadLabel(pathTab, t);
   const baseMetaTitle = assetSymbol
-    ? `${assetSymbol} - Aptos Coin`
-    : `Coin ${shortStruct}`;
-  const metadataTitle = struct ? `${tabHead} | Coin ${struct}` : baseMetaTitle;
+    ? t("pages.coins.metaTitleSymbol", {symbol: assetSymbol})
+    : t("pages.coins.metaTitleShort", {struct: shortStruct});
+  const metadataTitle = struct
+    ? t("pages.coins.metaTitle", {tab: tabHead, struct})
+    : baseMetaTitle;
   const metadataDescription = struct
-    ? `View ${tabHead.toLowerCase()} for coin ${struct} on the Aptos blockchain.`
-    : `View ${assetSymbol || "coin"} on Aptos. ${coinData?.name ? `${coinData.name}. ` : ""}See token supply, holders, price, transactions, and market information.`;
+    ? t("pages.coins.metaDescription", {tab: tabHead, struct})
+    : t("pages.coins.metaDescriptionFallback", {
+        symbol: assetSymbol || t("pages.coins.entity").toLowerCase(),
+      });
 
   return (
     <Stack

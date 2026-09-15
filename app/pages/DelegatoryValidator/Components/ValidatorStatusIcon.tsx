@@ -5,6 +5,7 @@ import PendingIcon from "@mui/icons-material/Pending";
 import {Chip, useTheme} from "@mui/material";
 import type React from "react";
 import {getValidatorStatusColors} from "../../../themes/colors/aptosBrandColors";
+import {useTranslation} from "../../../i18n";
 import type {ValidatorStatus} from "../utils";
 
 export default function ValidatorStatusIcon({
@@ -12,6 +13,7 @@ export default function ValidatorStatusIcon({
 }: {
   validatorStatus: ValidatorStatus | undefined;
 }): React.JSX.Element | null {
+  const {t} = useTranslation();
   const theme = useTheme();
   const statusColors = getValidatorStatusColors(theme.palette.mode);
 
@@ -21,7 +23,7 @@ export default function ValidatorStatusIcon({
         case "Pending Active":
           return (
             <Chip
-              label={"Pending Active"}
+              label={t("staking.status.pendingActive")}
               color={"warning"}
               icon={<PendingIcon />}
               sx={{
@@ -33,7 +35,7 @@ export default function ValidatorStatusIcon({
         case "Active":
           return (
             <Chip
-              label={"Active"}
+              label={t("staking.status.active")}
               color={"primary"}
               icon={<CheckCircleIcon />}
               sx={{
@@ -45,7 +47,7 @@ export default function ValidatorStatusIcon({
         case "Pending Inactive":
           return (
             <Chip
-              label={"Pending Inactive"}
+              label={t("staking.status.pendingInactive")}
               color={"warning"}
               icon={<MoreHorizIcon />}
               sx={{
@@ -57,7 +59,7 @@ export default function ValidatorStatusIcon({
         case "Inactive":
           return (
             <Chip
-              label={"Inactive"}
+              label={t("staking.status.inactive")}
               color={"error"}
               icon={<DangerousIcon />}
               sx={{

@@ -5,16 +5,24 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import type * as React from "react";
 import {useState} from "react";
+import {useTranslation} from "../../i18n";
 import TooltipTypography from "../TooltipTypography";
 
 type TableTooltipProps = {
   children: React.ReactNode;
-  title: React.ReactNode;
+  title?: React.ReactNode;
+  titleKey?: string;
 };
 
-export default function TableTooltip({children, title}: TableTooltipProps) {
+export default function TableTooltip({
+  children,
+  title,
+  titleKey,
+}: TableTooltipProps) {
   const theme = useTheme();
+  const {t} = useTranslation();
   const [open, setOpen] = useState(false);
+  const displayTitle = titleKey ? t(titleKey) : title;
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -54,7 +62,7 @@ export default function TableTooltip({children, title}: TableTooltipProps) {
                 alignItems: "center",
               }}
             >
-              <TooltipTypography variant="h6">{title}</TooltipTypography>
+              <TooltipTypography variant="h6">{displayTitle}</TooltipTypography>
               <IconButton onClick={handleClose} sx={{padding: 0.5}}>
                 <CloseOutlinedIcon color="secondary" />
               </IconButton>

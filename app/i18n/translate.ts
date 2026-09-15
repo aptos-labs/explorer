@@ -1,4 +1,4 @@
-export type MessageValue = string | string[] | MessageTree;
+export type MessageValue = string | readonly string[] | MessageTree;
 
 export type MessageTree = {
   [key: string]: MessageValue;
@@ -10,6 +10,10 @@ export type MessageCatalog = {
 };
 
 const PLACEHOLDER_RE = /\{(\w+)\}/g;
+
+function isMessageList(value: MessageValue): value is readonly string[] {
+  return Array.isArray(value);
+}
 
 export function interpolate(
   template: string,
@@ -26,7 +30,7 @@ export function interpolate(
 export function getMessage(
   tree: MessageTree,
   key: string,
-): string | string[] | undefined {
+): string | readonly string[] | undefined {
   const parts = key.split(".").filter(Boolean);
   let current: MessageValue | undefined = tree;
 
@@ -34,21 +38,21 @@ export function getMessage(
     if (
       current === undefined ||
       typeof current === "string" ||
-      Array.isArray(current)
+      isMessageList(current)
     ) {
       return undefined;
     }
     current = current[part];
   }
 
-  if (typeof current === "string" || Array.isArray(current)) {
+  if (typeof current === "string" || isMessageList(current)) {
     return current;
   }
   return undefined;
 }
 
 function interpolateValue(
-  value: string | string[],
+  value: string | readonly string[],
   vars?: Record<string, string | number>,
 ): string | string[] {
   if (typeof value === "string") {
@@ -85,4 +89,30 @@ export function translateList(
     return typeof interpolated === "string" ? [interpolated] : interpolated;
   }
   return [];
+}
+
+export function collectMessageKeys(tree: MessageTree, prefix = ""): string[] {
+  const keys: string[] = [];
+  for (const [part, value] of Object.entries(tree)) {
+    const key = prefix ? `${prefix}.${part}` : part;
+    if (typeof value === "string" || isMessageList(value)) {
+      keys.push(key);
+    } else {
+      keys.push(...collectMessageKeys(value, key));
+    }
+  }
+  return keys;
+}
+
+export function messagePlaceholders(
+  value: string | readonly string[],
+): string[] {
+  const texts = typeof value === "string" ? [value] : [...value];
+  const names = new Set<string>();
+  for (const text of texts) {
+    for (const match of text.matchAll(PLACEHOLDER_RE)) {
+      names.add(match[1]);
+    }
+  }
+  return [...names].sort();
 }

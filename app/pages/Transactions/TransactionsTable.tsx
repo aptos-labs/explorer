@@ -20,6 +20,7 @@ import {useMemo} from "react";
 import type {Types} from "~/types/aptos";
 import {useGetTransaction} from "../../api/hooks/useGetTransaction";
 import HashButton, {HashType} from "../../components/HashButton";
+import {useTranslation} from "../../i18n";
 import GasFeeValue from "../../components/IndividualPageContent/ContentValue/GasFeeValue";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
@@ -121,6 +122,7 @@ function TransactionSenderCell({transaction}: TransactionCellProps) {
 function TransactionReceiverOrCounterPartyCell({
   transaction,
 }: TransactionCellProps) {
+  const {t} = useTranslation();
   const counterparty = getTransactionCounterparty(transaction);
   // TODO: Look into adding a different column for smart contract, so it doesn't get confused with the receiver.
   return (
@@ -130,11 +132,11 @@ function TransactionReceiverOrCounterPartyCell({
           sx={{display: "flex", fontSize: "inherit", alignItems: "row", gap: 1}}
         >
           {counterparty.role === "smartContract" ? (
-            <Tooltip title={"Smart Contract"} placement="top">
+            <Tooltip title={t("table.smartContract")} placement="top">
               <TextSnippetOutlined sx={{position: "relative", top: 2}} />
             </Tooltip>
           ) : (
-            <Tooltip title={"Receiver"} placement="top">
+            <Tooltip title={t("table.receiver")} placement="top">
               <ArrowForwardOutlined sx={{position: "relative", top: 2}} />
             </Tooltip>
           )}
@@ -179,6 +181,7 @@ function TransactionAmountGasCell({
   address,
 }: TransactionCellProps) {
   const theme = useTheme();
+  const {t} = useTranslation();
 
   return (
     <GeneralTableCell sx={{paddingY: 1}}>
@@ -187,7 +190,7 @@ function TransactionAmountGasCell({
         <Box sx={{fontSize: 11, color: theme.palette.text.secondary}}>
           {"gas_used" in transaction && "gas_unit_price" in transaction ? (
             <span>
-              Gas{" "}
+              {t("common.gas")}{" "}
               <GasFeeValue
                 gasUsed={transaction.gas_used}
                 gasUnitPrice={transaction.gas_unit_price}
@@ -227,6 +230,7 @@ function TransactionDetailDialog({
   transaction,
   address,
 }: TransactionDetailDialogProps) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
   const augmentTo = useAugmentToWithGlobalSearchParams();
@@ -284,7 +288,7 @@ function TransactionDetailDialog({
           }}
         >
           <Typography variant="h6" component="span">
-            Transaction
+            {t("txn.entity")}
           </Typography>
           <Link to={`/txn/${version}`} color="primary" sx={{fontWeight: 600}}>
             {version}
@@ -294,7 +298,7 @@ function TransactionDetailDialog({
           )}
         </Stack>
         <IconButton
-          aria-label="Close dialog"
+          aria-label={t("common.closeDialogAria")}
           onClick={onClose}
           sx={{
             position: "absolute",
@@ -329,7 +333,7 @@ function TransactionDetailDialog({
                   color: "text.secondary",
                 }}
               >
-                Type:
+                {t("fields.type")}
               </Typography>
               <TableTransactionType type={transaction.type} />
             </Stack>
@@ -353,7 +357,7 @@ function TransactionDetailDialog({
                   mb: 0.5,
                 }}
               >
-                Function
+                {t("table.function")}
               </Typography>
               <Box
                 sx={{
@@ -378,7 +382,7 @@ function TransactionDetailDialog({
                   mb: 0.5,
                 }}
               >
-                Sender
+                {t("table.sender")}
               </Typography>
               <Stack
                 direction="row"
@@ -389,10 +393,14 @@ function TransactionDetailDialog({
               >
                 <HashButton hash={sender} type={HashType.ACCOUNT} />
                 <Tooltip
-                  title={copiedField === "sender" ? "Copied!" : "Copy address"}
+                  title={
+                    copiedField === "sender"
+                      ? t("common.copiedExclaim")
+                      : t("common.copyAddressHint")
+                  }
                 >
                   <IconButton
-                    aria-label="Copy sender address"
+                    aria-label={t("common.copySenderAria")}
                     size="small"
                     onClick={() => handleCopy(sender, "sender")}
                   >
@@ -414,8 +422,8 @@ function TransactionDetailDialog({
                 }}
               >
                 {counterparty.role === "smartContract"
-                  ? "Contract"
-                  : "Receiver"}
+                  ? t("table.contract")
+                  : t("table.receiver")}
               </Typography>
               <Stack
                 direction="row"
@@ -439,11 +447,13 @@ function TransactionDetailDialog({
                 />
                 <Tooltip
                   title={
-                    copiedField === "counterparty" ? "Copied!" : "Copy address"
+                    copiedField === "counterparty"
+                      ? t("common.copiedExclaim")
+                      : t("common.copyAddressHint")
                   }
                 >
                   <IconButton
-                    aria-label="Copy counterparty address"
+                    aria-label={t("common.copyCounterpartyAria")}
                     size="small"
                     onClick={() =>
                       handleCopy(counterparty.address, "counterparty")
@@ -465,7 +475,7 @@ function TransactionDetailDialog({
                 mb: 0.5,
               }}
             >
-              Amount
+              {t("table.amount")}
             </Typography>
             <Box sx={{fontWeight: 500}}>
               <TransactionTokenTransfer
@@ -507,7 +517,7 @@ function TransactionDetailDialog({
           endIcon={<OpenInNew />}
           sx={{borderRadius: 2}}
         >
-          View Full Details
+          {t("table.viewFullDetails")}
         </Button>
       </DialogActions>
     </Dialog>
@@ -521,6 +531,7 @@ type TransactionCardProps = {
 };
 
 function TransactionCard({transaction, address}: TransactionCardProps) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
@@ -626,13 +637,13 @@ function TransactionCard({transaction, address}: TransactionCardProps) {
                 }}
               >
                 {counterparty.role === "smartContract" ? (
-                  <Tooltip title="Smart Contract" placement="top">
+                  <Tooltip title={t("table.smartContract")} placement="top">
                     <TextSnippetOutlined
                       sx={{fontSize: 14, color: theme.palette.text.secondary}}
                     />
                   </Tooltip>
                 ) : (
-                  <Tooltip title="Receiver" placement="top">
+                  <Tooltip title={t("table.receiver")} placement="top">
                     <ArrowForwardOutlined
                       sx={{fontSize: 14, color: theme.palette.text.secondary}}
                     />
@@ -768,27 +779,27 @@ type TransactionHeaderCellProps = {
 function TransactionHeaderCell({column}: TransactionHeaderCellProps) {
   switch (column) {
     case "sequenceNum":
-      return <GeneralTableHeaderCell header="#" />;
+      return <GeneralTableHeaderCell headerKey="table.hash" />;
     case "versionStatus":
-      return <GeneralTableHeaderCell header="Version" />;
+      return <GeneralTableHeaderCell headerKey="table.version" />;
     case "type":
       return (
         <GeneralTableHeaderCell
-          header="Type"
+          headerKey="table.type"
           tooltip={<TransactionTypeTooltip />}
           sx={{textAlign: "center"}}
         />
       );
     case "timestamp":
-      return <GeneralTableHeaderCell header="Timestamp" />;
+      return <GeneralTableHeaderCell headerKey="table.timestamp" />;
     case "sender":
-      return <GeneralTableHeaderCell header="Sender" />;
+      return <GeneralTableHeaderCell headerKey="table.sender" />;
     case "receiverOrCounterParty":
-      return <GeneralTableHeaderCell header="Sent To" />;
+      return <GeneralTableHeaderCell headerKey="table.sentTo" />;
     case "function":
-      return <GeneralTableHeaderCell header="Function" />;
+      return <GeneralTableHeaderCell headerKey="table.function" />;
     case "amountGas":
-      return <GeneralTableHeaderCell header="Amount" textAlignRight />;
+      return <GeneralTableHeaderCell headerKey="table.amount" textAlignRight />;
     default:
       return assertNever(column);
   }
@@ -805,6 +816,7 @@ export default function TransactionsTable({
   columns = DEFAULT_COLUMNS,
   address,
 }: TransactionsTableProps) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -841,7 +853,10 @@ export default function TransactionsTable({
   return (
     <TokenTransferModalProvider>
       <Box sx={{overflowX: "auto"}}>
-        <Table aria-label="Transactions" data-entity-type="transaction">
+        <Table
+          aria-label={t("common.transactions")}
+          data-entity-type="transaction"
+        >
           <TableHead>
             <TableRow>
               {columns.map((column) => (
@@ -901,13 +916,14 @@ export function UserTransactionsTable({
   address,
   isLoading = false,
 }: UserTransactionsTableProps) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   if (isLoading && versions.length === 0) {
     if (isMobile) {
       return (
-        <Box aria-busy="true" aria-label="Loading transactions">
+        <Box aria-busy="true" aria-label={t("common.loadingTransactions")}>
           {Array.from({length: 8}, (_, i) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholders
             <TransactionCardSkeleton key={i} />
@@ -917,7 +933,10 @@ export function UserTransactionsTable({
     }
     return (
       <TokenTransferModalProvider>
-        <Table aria-label="Loading transactions" data-entity-type="transaction">
+        <Table
+          aria-label={t("common.loadingTransactions")}
+          data-entity-type="transaction"
+        >
           <TableHead>
             <TableRow>
               {columns.map((column) => (
@@ -956,7 +975,10 @@ export function UserTransactionsTable({
   // Desktop table view
   return (
     <TokenTransferModalProvider>
-      <Table aria-label="Transactions" data-entity-type="transaction">
+      <Table
+        aria-label={t("common.transactions")}
+        data-entity-type="transaction"
+      >
         <TableHead>
           <TableRow>
             {columns.map((column) => (

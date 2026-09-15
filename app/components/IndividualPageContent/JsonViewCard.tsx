@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import type {CSSProperties, MouseEvent as ReactMouseEvent} from "react";
 import {lazy, Suspense, useEffect, useRef, useState} from "react";
+import {useTranslation} from "../../i18n";
 import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
 import EmptyValue from "./ContentValue/EmptyValue";
 
@@ -92,19 +93,20 @@ function CopyValueButton({
   fullWidth?: boolean;
 }) {
   const theme = useTheme();
+  const {t} = useTranslation();
   const isTouch = useMediaQuery("(hover: none), (pointer: coarse)");
   const [status, setStatus] = useState<CopyStatus>("idle");
   const feedbackTimer = useRef<number | null>(null);
   const idleLabel =
     label ??
     (keyName === undefined
-      ? "Copy JSON value"
-      : `Copy ${String(keyName)} value`);
+      ? t("common.copyJsonValue")
+      : t("common.copyNamedValue", {name: String(keyName)}));
   const buttonLabel =
     status === "copied"
-      ? "Copied"
+      ? t("common.copied")
       : status === "error"
-        ? "Copy failed"
+        ? t("common.copyFailed")
         : idleLabel;
 
   useEffect(() => {
@@ -223,6 +225,7 @@ export default function JsonViewCard({
   collapsedByDefault,
 }: JsonViewCardProps) {
   const theme = useTheme();
+  const {t} = useTranslation();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const semanticColors = getSemanticColors(theme.palette.mode);
 
@@ -274,7 +277,7 @@ export default function JsonViewCard({
       >
         <CopyValueButton
           value={copyData ?? data}
-          label="Copy JSON"
+          label={t("common.copyJson")}
           showLabel={!isMobile}
         />
       </Box>

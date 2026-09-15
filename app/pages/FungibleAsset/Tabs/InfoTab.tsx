@@ -30,7 +30,7 @@ function ExtraInfo({address}: {address: string}) {
   if (extraInfo[address]) {
     return (
       <ContentRow
-        title={"Additional Information:"}
+        titleKey="fields.additionalInformation"
         value={extraInfo[address]}
       />
     );
@@ -82,9 +82,9 @@ export default function InfoTab({address, data}: InfoTabProps) {
     >
       {data && (
         <ContentBox>
-          <ContentRow title={"Name:"} value={data?.metadata?.name} />
+          <ContentRow titleKey="fields.name" value={data?.metadata?.name} />
           <ContentRow
-            title={"Symbol:"}
+            titleKey="fields.symbol"
             value={getAssetSymbol(
               data?.coinData?.panoraSymbol,
               data?.coinData?.bridge,
@@ -92,11 +92,11 @@ export default function InfoTab({address, data}: InfoTabProps) {
             )}
           />
           <ContentRow
-            title={"Decimals:"}
+            titleKey="fields.decimals"
             value={data?.metadata?.decimals?.toString()}
           />
           <ContentRow
-            title={"Total supply:"}
+            titleKey="fields.totalSupply"
             value={
               <>
                 {`${formattedSupply} `}
@@ -105,7 +105,7 @@ export default function InfoTab({address, data}: InfoTabProps) {
             }
           />
           <ContentRow
-            title={"Confidential supply (pool):"}
+            titleKey="fields.confidentialSupply"
             value={
               confidentialSupplyError ? (
                 "—"
@@ -132,7 +132,7 @@ export default function InfoTab({address, data}: InfoTabProps) {
           />
           {marketCap ? (
             <ContentRow
-              title={"Current Market Cap (supply * price):"}
+              titleKey="fields.marketCap"
               value={
                 <>
                   $
@@ -146,7 +146,7 @@ export default function InfoTab({address, data}: InfoTabProps) {
             />
           ) : null}
           <ContentRow
-            title={"Icon:"}
+            titleKey="fields.icon"
             value={
               icon_uri && (
                 <img
@@ -159,7 +159,7 @@ export default function InfoTab({address, data}: InfoTabProps) {
           />
           <ExtraInfo address={address} />
           <ContentRow
-            title={"Project URL:"}
+            titleKey="fields.projectUrl"
             value={
               data?.coinData?.websiteUrl
                 ? data?.coinData.websiteUrl
@@ -167,14 +167,14 @@ export default function InfoTab({address, data}: InfoTabProps) {
             }
           />
           <ContentRow
-            title={"Object Details:"}
+            titleKey="fields.objectDetails"
             value={
               <HashButton size="large" hash={address} type={HashType.OBJECT} />
             }
           />
           {data.pairedCoin && (
             <ContentRow
-              title={"Paired Coin:"}
+              titleKey="fields.pairedCoin"
               value={
                 <HashButton
                   size="large"
@@ -186,13 +186,13 @@ export default function InfoTab({address, data}: InfoTabProps) {
           )}
           {dispatchInfo?.isDispatchable && (
             <ContentRow
-              title={"Properties:"}
+              titleKey="fields.properties"
               value={<DispatchablePropertiesValue info={dispatchInfo} />}
             />
           )}
           {firstActivity && (
             <ContentRow
-              title={"First Activity:"}
+              titleKey="fields.firstActivity"
               value={
                 <HashButton
                   size="large"

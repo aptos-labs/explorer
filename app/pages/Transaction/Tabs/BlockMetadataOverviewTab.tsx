@@ -26,17 +26,17 @@ export default function BlockMetadataOverviewTab({
     >
       <ContentBox sx={{padding: 4}}>
         <ContentRow
-          title={"Version:"}
+          titleKey="fields.version"
           value={<Box sx={{fontWeight: 600}}>{transactionData.version}</Box>}
           tooltip={getLearnMoreTooltip("version")}
         />
         <ContentRow
-          title="Status:"
+          titleKey="fields.status"
           value={<TransactionStatus success={transactionData.success} />}
           tooltip={getLearnMoreTooltip("status")}
         />
         <ContentRow
-          title="Proposer:"
+          titleKey="fields.proposer"
           value={
             <HashButton
               hash={transactionData.proposer}
@@ -46,7 +46,7 @@ export default function BlockMetadataOverviewTab({
           tooltip={getLearnMoreTooltip("proposer")}
         />
         <ContentRow
-          title="ID:"
+          titleKey="fields.id"
           value={transactionData.id}
           tooltip={getLearnMoreTooltip("id")}
         />
@@ -54,17 +54,17 @@ export default function BlockMetadataOverviewTab({
       <ContentBox>
         <TransactionBlockRow version={transactionData.version} />
         <ContentRow
-          title="Epoch:"
+          titleKey="fields.epoch"
           value={transactionData.epoch}
           tooltip={getLearnMoreTooltip("epoch")}
         />
         <ContentRow
-          title="Round:"
+          titleKey="fields.round"
           value={transactionData.round}
           tooltip={getLearnMoreTooltip("round")}
         />
         <ContentRow
-          title="Timestamp:"
+          titleKey="fields.timestamp"
           value={
             <TimestampValue
               timestamp={transactionData.timestamp}
@@ -74,24 +74,24 @@ export default function BlockMetadataOverviewTab({
           tooltip={getLearnMoreTooltip("timestamp")}
         />
         <ContentRow
-          title="VM Status:"
+          titleKey="fields.vmStatus"
           value={transactionData.vm_status}
           tooltip={getLearnMoreTooltip("vm_status")}
         />
       </ContentBox>
       <ContentBox>
         <ContentRow
-          title="State Change Hash:"
+          titleKey="fields.stateChangeHash"
           value={transactionData.state_change_hash}
           tooltip={getLearnMoreTooltip("state_change_hash")}
         />
         <ContentRow
-          title="Event Root Hash:"
+          titleKey="fields.eventRootHash"
           value={transactionData.event_root_hash}
           tooltip={getLearnMoreTooltip("event_root_hash")}
         />
         <ContentRow
-          title="Accumulator Root Hash:"
+          titleKey="fields.accumulatorRootHash"
           value={transactionData.accumulator_root_hash}
           tooltip={getLearnMoreTooltip("accumulator_root_hash")}
         />

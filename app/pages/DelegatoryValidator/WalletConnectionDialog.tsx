@@ -12,6 +12,7 @@ import {WalletConnector} from "../../components/WalletConnector";
 import {useNetworkName} from "../../global-config/GlobalConfig";
 import {useNavigate} from "../../routing";
 import {sortPetraFirst} from "../../utils";
+import {useTranslation} from "../../i18n";
 
 type WalletConnectionDialogProps = {
   handleDialogClose: () => void;
@@ -22,6 +23,7 @@ export default function WalletConnectionDialog({
   handleDialogClose,
   isDialogOpen,
 }: WalletConnectionDialogProps) {
+  const {t} = useTranslation();
   const networkName = useNetworkName();
   const navigate = useNavigate();
   const {account} = useWallet();
@@ -32,14 +34,14 @@ export default function WalletConnectionDialog({
         <ConnectWalletModalIcon />
       </Box>
       <DialogTitle sx={{textAlign: "center"}}>
-        <div>Please connect your wallet</div>
+        <div>{t("staking.connectTitle")}</div>
         <Typography
           variant="caption"
           sx={{
             textAlign: "center",
           }}
         >
-          You need to connect your wallet to be able to stake
+          {t("staking.connectBody")}
         </Typography>
       </DialogTitle>
       <DialogActions>

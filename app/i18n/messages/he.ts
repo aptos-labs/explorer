@@ -1,4 +1,4 @@
-import type {EnglishMessages} from "./en";
+import type {MessageTree} from "../translate";
 
 export const he = {
   chrome: {
@@ -336,4 +336,4 @@ export const he = {
       ],
     },
   },
-} as const satisfies EnglishMessages;
+} as const satisfies MessageTree;

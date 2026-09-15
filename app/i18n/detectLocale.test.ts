@@ -120,6 +120,13 @@ describe("resolveLocale", () => {
     expect(resolveLocale("auto", ["EN-us"])).toBe("en");
     expect(resolveLocale("auto", ["fr-FR", "de"])).toBe("fr");
     expect(resolveLocale("auto", ["zh-CN"])).toBe("zh");
+    expect(resolveLocale("auto", ["ko-KR"])).toBe("ko");
+    expect(resolveLocale("auto", ["ja-JP"])).toBe("ja");
+    expect(resolveLocale("auto", ["es-419"])).toBe("es");
+    expect(resolveLocale("auto", ["de-DE"])).toBe("de");
+    expect(resolveLocale("auto", ["ar"])).toBe("ar");
+    expect(resolveLocale("auto", ["vi-VN"])).toBe("vi");
+    expect(resolveLocale("auto", ["pt-BR"])).toBe("pt");
   });
 
   it("falls back to English when no browser language is supported", () => {

@@ -2,12 +2,14 @@ import {Box, Button, Stack, Typography} from "@mui/material";
 import {useEffect} from "react";
 import {useGetIsGraphqlClientSupported} from "../../api/hooks/useGraphqlClient";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
+import {useTranslation} from "../../i18n";
 import {useSearchParams} from "../../routing";
 import PageHeader from "../layout/PageHeader";
 import AllTransactions from "./AllTransactions";
 import UserTransactions from "./UserTransactions";
 
 export default function TransactionsPage() {
+  const {t} = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const isGraphqlClientSupported = useGetIsGraphqlClientSupported();
   const allTxnOnly = searchParams.get("type") === "all";
@@ -35,8 +37,8 @@ export default function TransactionsPage() {
   return (
     <Box>
       <PageMetadata
-        title="Transactions"
-        description="Browse recent transactions on the Aptos blockchain. View transaction details, type, gas fees, sender and receiver addresses, events, and status. Real-time transaction monitoring."
+        title={t("pages.transactions.title")}
+        description={t("pages.transactions.metaDescription")}
         type="website"
         keywords={[
           "transactions",
@@ -63,11 +65,15 @@ export default function TransactionsPage() {
             marginBottom: 2,
           }}
         >
-          {allTxnOnly ? "All Transactions" : "User Transactions"}
+          {allTxnOnly
+            ? t("pages.transactions.all")
+            : t("pages.transactions.user")}
         </Typography>
         {isGraphqlClientSupported && (
           <Button onClick={toggleUserTxnOnly} variant="text">
-            {allTxnOnly ? `View User Transactions` : `View All Transactions`}
+            {allTxnOnly
+              ? t("pages.transactions.viewUser")
+              : t("pages.transactions.viewAll")}
           </Button>
         )}
       </Stack>

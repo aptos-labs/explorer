@@ -1,4 +1,5 @@
 import {Box, Chip, Link, Paper, Typography} from "@mui/material";
+import {useTranslation} from "../../i18n";
 import HashButton, {HashType} from "../HashButton";
 import {
   ResponsiveKeyValueRow,
@@ -20,15 +21,14 @@ export default function ConfidentialAssetGlobalConfigView({
   parsed,
   rawData,
 }: ConfidentialAssetGlobalConfigViewProps) {
+  const {t} = useTranslation();
   const auditorEpoch = BigInt(parsed.globalAuditor.epoch);
   const hasAuditorKey = parsed.globalAuditor.encryptionKeyHex != null;
 
   return (
     <Box>
       <Typography variant="body2" color="text.secondary" sx={{mb: 2}}>
-        Protocol-wide confidential asset settings on the Aptos framework account
-        (allow list, global auditor, pool object). Asset-specific auditors
-        override the global auditor when set. See{" "}
+        {t("confidential.introGlobal")}
         <Link
           href={CONFIDENTIAL_ASSET_DOCS}
           target="_blank"
@@ -42,11 +42,15 @@ export default function ConfidentialAssetGlobalConfigView({
       <Paper variant="outlined" sx={{overflow: "hidden", maxWidth: "100%"}}>
         <ResponsiveKeyValueTable size="small" tableLayout="fixed">
           <ResponsiveKeyValueRow
-            label="Allow list"
-            description="When enabled, only allow-listed asset types can use confidential transfers."
+            labelKey="confidential.allowList"
+            description={t("confidential.allowListDesc")}
           >
             <Chip
-              label={parsed.allowListEnabled ? "Enabled" : "Disabled"}
+              label={
+                parsed.allowListEnabled
+                  ? t("flags.enabled")
+                  : t("flags.disabled")
+              }
               size="small"
               color={parsed.allowListEnabled ? "warning" : "default"}
               variant={parsed.allowListEnabled ? "filled" : "outlined"}
@@ -54,11 +58,13 @@ export default function ConfidentialAssetGlobalConfigView({
           </ResponsiveKeyValueRow>
 
           <ResponsiveKeyValueRow
-            label="Global auditor key"
-            description="Optional auditor encryption key; asset-specific auditors take precedence."
+            labelKey="confidential.globalAuditorKey"
+            description={t("confidential.globalAuditorKeyDesc")}
           >
             <Chip
-              label={hasAuditorKey ? "Set" : "Not set"}
+              label={
+                hasAuditorKey ? t("confidential.set") : t("confidential.notSet")
+              }
               size="small"
               color={hasAuditorKey ? "success" : "default"}
               variant={hasAuditorKey ? "filled" : "outlined"}
@@ -66,17 +72,17 @@ export default function ConfidentialAssetGlobalConfigView({
           </ResponsiveKeyValueRow>
 
           {hasAuditorKey && parsed.globalAuditor.encryptionKeyHex && (
-            <ResponsiveKeyValueRow label="Auditor key bytes (hex)">
+            <ResponsiveKeyValueRow labelKey="confidential.auditorKeyBytes">
               <HexBytesValue
                 hex={parsed.globalAuditor.encryptionKeyHex}
-                copyAriaLabel="Copy auditor encryption key bytes"
+                copyAriaLabel={t("confidential.copyAuditorKey")}
               />
             </ResponsiveKeyValueRow>
           )}
 
           <ResponsiveKeyValueRow
-            label="Global auditor epoch"
-            description="Increments when the global auditor key is installed or rotated."
+            labelKey="confidential.globalAuditorEpoch"
+            description={t("confidential.globalAuditorEpochDesc")}
           >
             <Typography variant="body1" component="span" sx={{fontWeight: 600}}>
               {auditorEpoch.toLocaleString()}
@@ -84,8 +90,8 @@ export default function ConfidentialAssetGlobalConfigView({
           </ResponsiveKeyValueRow>
 
           <ResponsiveKeyValueRow
-            label="Pool extend ref"
-            description="Object used to derive the signer that owns confidential-asset pools."
+            labelKey="confidential.poolExtendRef"
+            description={t("confidential.poolExtendRefDesc")}
           >
             {parsed.extendRefObjectAddress ? (
               <HashButton
@@ -103,7 +109,7 @@ export default function ConfidentialAssetGlobalConfigView({
 
       <Box sx={{mt: 3}}>
         <Typography variant="subtitle2" color="text.secondary" sx={{mb: 1}}>
-          Raw resource data
+          {t("confidential.rawResourceData")}
         </Typography>
         <JsonViewCard data={rawData} collapsedByDefault />
       </Box>

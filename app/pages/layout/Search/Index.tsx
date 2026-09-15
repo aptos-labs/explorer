@@ -491,7 +491,10 @@ export default function HeaderSearch({initialSearch}: HeaderSearchProps) {
                 cursor: "default",
               }}
             >
-              <SearchResultGroupHeader label={option.label} />
+              <SearchResultGroupHeader
+                label={option.label}
+                labelKey={option.labelKey}
+              />
             </li>
           );
         }

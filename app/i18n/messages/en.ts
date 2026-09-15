@@ -1,4 +1,49 @@
 import type {MessageTree} from "../translate";
+import {
+  common,
+  copyHints,
+  errors,
+  feature,
+  interval,
+  network,
+  rateLimit,
+  share,
+  wallet,
+} from "./en/common";
+import {fields} from "./en/fields";
+import {contract, script} from "./en/contract";
+import {
+  activity,
+  hexBytes,
+  payload,
+  payments,
+  snackbar,
+  txnModules,
+} from "./en/payments";
+import {
+  aips,
+  analytics,
+  deployments,
+  filter,
+  flags,
+  searchExtra,
+  staking,
+  verified,
+} from "./en/verified";
+import {
+  accountUi,
+  confidential,
+  modules,
+  releasesUi,
+  signature,
+  trace,
+} from "./en/modules";
+import {decibel, multisig} from "./en/decibel";
+import {pages, notFound, verificationPage} from "./en/pages";
+import {table} from "./en/table";
+import {tabs} from "./en/tabs";
+import {tooltips} from "./en/tooltips";
+import {txn} from "./en/txn";
 
 /**
  * English is the source catalog. Add another file (e.g. `es.ts`) and register
@@ -60,6 +105,9 @@ export const en = {
       object: "Object",
       result: "Result",
     },
+    noResults: searchExtra.noResults,
+    group: searchExtra.group,
+    resultLabel: searchExtra.result,
   },
   settings: {
     title: "Settings",
@@ -343,6 +391,46 @@ export const en = {
       ],
     },
   },
+  common,
+  network,
+  errors,
+  wallet,
+  share,
+  rateLimit,
+  feature,
+  copyHints,
+  interval,
+  tabs,
+  fields,
+  table,
+  txn,
+  pages,
+  notFound,
+  verificationPage,
+  tooltips,
+  verified,
+  staking,
+  analytics,
+  filter,
+  flags,
+  deployments,
+  aips,
+  contract,
+  script,
+  payments,
+  payload,
+  txnModules,
+  activity,
+  snackbar,
+  hexBytes,
+  modules,
+  accountUi,
+  confidential,
+  releasesUi,
+  signature,
+  trace,
+  decibel,
+  multisig,
 } as const satisfies MessageTree;
 
 type DeepStringLeaves<T> = T extends string

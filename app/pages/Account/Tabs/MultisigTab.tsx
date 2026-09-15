@@ -132,7 +132,7 @@ function MultisigContent({
   return (
     <ContentBox>
       <ContentRow
-        title="Resource Type:"
+        titleKey="fields.resourceType"
         value={
           <Typography variant="body1" sx={{fontFamily: "monospace"}}>
             {multisigResource.type}
@@ -140,11 +140,11 @@ function MultisigContent({
         }
       />
       <ContentRow
-        title="Required Signatures:"
+        titleKey="fields.requiredSignatures"
         value={safeGet(multisigData, "num_signatures_required")}
       />
       <ContentRow
-        title="Next Sequence Number:"
+        titleKey="fields.nextSequenceNumber"
         value={safeGet(multisigData, "next_sequence_number")}
       />
       {multisigData.owners && Array.isArray(multisigData.owners) && (
@@ -299,34 +299,34 @@ function MultisigContent({
           }}
         >
           <ContentRow
-            title="Transactions Created:"
+            titleKey="fields.transactionsCreated"
             value={safeGet(multisigData, "create_transaction_events.counter")}
           />
           <ContentRow
-            title="Transactions Executed:"
+            titleKey="fields.transactionsExecuted"
             value={safeGet(multisigData, "execute_transaction_events.counter")}
           />
           <ContentRow
-            title="Rejected Transactions Executed:"
+            titleKey="fields.rejectedTransactionsExecuted"
             value={safeGet(
               multisigData,
               "execute_rejected_transaction_events.counter",
             )}
           />
           <ContentRow
-            title="Votes Cast:"
+            titleKey="fields.votesCast"
             value={safeGet(multisigData, "vote_events.counter")}
           />
           <ContentRow
-            title="Owners Added:"
+            titleKey="fields.ownersAdded"
             value={safeGet(multisigData, "add_owners_events.counter")}
           />
           <ContentRow
-            title="Owners Removed:"
+            titleKey="fields.ownersRemoved"
             value={safeGet(multisigData, "remove_owners_events.counter")}
           />
           <ContentRow
-            title="Signatures Required Updated:"
+            titleKey="fields.signaturesRequiredUpdated"
             value={safeGet(
               multisigData,
               "update_signatures_required_events.counter",

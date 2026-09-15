@@ -13,6 +13,7 @@ import {useGetValidatorPageSkeletonLoading} from "../../api/hooks/useGetValidato
 import {useGetValidators} from "../../api/hooks/useGetValidators";
 import {moveResourceData, toMoveResource} from "../../api/moveResource";
 import {Banner} from "../../components/Banner";
+import {useTranslation} from "../../i18n";
 import {tryStandardizeAddress} from "../../utils";
 import AccountError from "../Account/Error";
 import PageHeader from "../layout/PageHeader";
@@ -27,6 +28,7 @@ import ValidatorStakingBar from "./StakingBar";
 import ValidatorTitle from "./Title";
 
 export default function ValidatorPage() {
+  const {t} = useTranslation();
   const params = useParams({strict: false}) as {address?: string};
   const address = params?.address ?? "";
   const addressHex = useMemo(() => tryStandardizeAddress(address), [address]);
@@ -71,7 +73,7 @@ export default function ValidatorPage() {
       <AccountError
         error={{
           type: ResponseErrorType.INVALID_INPUT,
-          message: "Invalid validator address.",
+          message: t("staking.invalidAddress"),
         }}
       />
     );
@@ -101,11 +103,10 @@ export default function ValidatorPage() {
       <AccountError
         error={{
           type: ResponseErrorType.NOT_FOUND,
-          message:
-            "This address does not have a 0x1::stake::StakePool resource.",
+          message: t("notFound.validatorBody"),
         }}
-        notFoundTitle="Validator Not Found"
-        notFoundMessage="This address does not have a 0x1::stake::StakePool resource."
+        notFoundTitle={t("notFound.validatorTitle")}
+        notFoundMessage={t("notFound.validatorBody")}
       />
     );
   }
@@ -130,13 +131,14 @@ export default function ValidatorPage() {
             />
             {nextCommission && commission !== nextCommission && (
               <Banner
-                pillText="INFO"
+                pillText={t("accountUi.pill.info")}
                 pillColor="warning"
                 sx={{marginBottom: 2}}
               >
-                The current commission rate is {commission}%. The commission
-                rate will be updated to {nextCommission}% at the current lockup
-                period.
+                {t("staking.commissionUpdate", {
+                  current: commission ?? "",
+                  next: nextCommission ?? "",
+                })}
               </Banner>
             )}
 
