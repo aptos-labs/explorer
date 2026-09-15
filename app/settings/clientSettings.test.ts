@@ -130,7 +130,7 @@ describe("clientSettings", () => {
       ).toBe("en");
       expect(
         sanitizeExplorerClientSettings({
-          localePreference: "fr",
+          localePreference: "zz",
         }).localePreference,
       ).toBe("auto");
     });

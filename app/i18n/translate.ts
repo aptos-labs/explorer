@@ -90,3 +90,29 @@ export function translateList(
   }
   return [];
 }
+
+export function collectMessageKeys(tree: MessageTree, prefix = ""): string[] {
+  const keys: string[] = [];
+  for (const [part, value] of Object.entries(tree)) {
+    const key = prefix ? `${prefix}.${part}` : part;
+    if (typeof value === "string" || isMessageList(value)) {
+      keys.push(key);
+    } else {
+      keys.push(...collectMessageKeys(value, key));
+    }
+  }
+  return keys;
+}
+
+export function messagePlaceholders(
+  value: string | readonly string[],
+): string[] {
+  const texts = typeof value === "string" ? [value] : [...value];
+  const names = new Set<string>();
+  for (const text of texts) {
+    for (const match of text.matchAll(PLACEHOLDER_RE)) {
+      names.add(match[1]);
+    }
+  }
+  return [...names].sort();
+}

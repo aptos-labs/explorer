@@ -8,6 +8,7 @@ import {
 describe("isSupportedLocale", () => {
   it("accepts registered locales", () => {
     expect(isSupportedLocale("en")).toBe(true);
+    expect(isSupportedLocale("zh")).toBe(true);
   });
 
   it("rejects unknown tags", () => {
@@ -23,7 +24,7 @@ describe("normalizeLocalePreference", () => {
   });
 
   it("falls back to auto for invalid values", () => {
-    expect(normalizeLocalePreference("fr")).toBe("auto");
+    expect(normalizeLocalePreference("zz")).toBe("auto");
     expect(normalizeLocalePreference(undefined)).toBe("auto");
     expect(normalizeLocalePreference(1)).toBe("auto");
   });
@@ -37,10 +38,11 @@ describe("resolveLocale", () => {
   it("matches a browser language primary subtag when preference is auto", () => {
     expect(resolveLocale("auto", ["en-GB", "fr"])).toBe("en");
     expect(resolveLocale("auto", ["EN-us"])).toBe("en");
+    expect(resolveLocale("auto", ["zh-CN", "en"])).toBe("zh");
   });
 
   it("falls back to English when no browser language is supported", () => {
-    expect(resolveLocale("auto", ["fr-FR", "de"])).toBe("en");
+    expect(resolveLocale("auto", ["zz-ZZ", "xx"])).toBe("en");
     expect(resolveLocale("auto", [])).toBe("en");
   });
 });

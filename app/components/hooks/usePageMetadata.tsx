@@ -20,7 +20,7 @@ const Helmet = ((ReactHelmetAsync as {Helmet?: typeof ReactHelmetAsync.Helmet})
     ?.Helmet) as typeof ReactHelmetAsync.Helmet;
 
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../../lib/constants";
-import {englishT, useTranslation} from "../../i18n";
+import {englishT, LOCALE_META, useTranslation} from "../../i18n";
 
 const SITE_NAME = englishT("chrome.appName");
 const TWITTER_HANDLE = "@aptaboratories";
@@ -550,7 +550,7 @@ function getKeywords(props: PageMetadataProps): string {
  * Includes SEO meta tags, Open Graph, Twitter Cards, and JSON-LD
  */
 export function PageMetadata(props: PageMetadataProps) {
-  const {t} = useTranslation();
+  const {t, locale} = useTranslation();
   const siteName = t("chrome.appName");
   const {
     title,
@@ -626,7 +626,7 @@ export function PageMetadata(props: PageMetadataProps) {
       <meta property="og:image:height" content="630" />
       <meta property="og:image:alt" content={fullTitle} />
       <meta property="og:url" content={canonicalUrl} />
-      <meta property="og:locale" content="en_US" />
+      <meta property="og:locale" content={LOCALE_META[locale].ogLocale} />
 
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />

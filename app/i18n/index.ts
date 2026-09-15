@@ -29,4 +29,6 @@ export {
   interpolate,
   translate,
   translateList,
+  collectMessageKeys,
+  messagePlaceholders,
 } from "./translate";
