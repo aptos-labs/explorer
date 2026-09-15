@@ -58,8 +58,7 @@ export const he = {
   },
   settings: {
     title: "הגדרות",
-    description:
-      "נהל את העדפות הסייר. ההגדרות נשמרות מקומית בדפדפן שלך.",
+    description: "נהל את העדפות הסייר. ההגדרות נשמרות מקומית בדפדפן שלך.",
     language: {
       title: "שפה",
       description:
@@ -86,8 +85,7 @@ export const he = {
       whyAriaLabel: "למה להשתמש במפתח API משלך?",
       popover:
         "הסייר משתמש כברירת מחדל במפתח geomi.dev משותף. הוספת מפתח משלך מעניקה לך מגבלת קצב ייעודית, מה שעוזר אם אתה גולש הרבה או נתקל בתגובות HTTP 429.",
-      popoverManage:
-        "צור ונהל מפתחות ב-[geomi.dev](https://geomi.dev).",
+      popoverManage: "צור ונהל מפתחות ב-[geomi.dev](https://geomi.dev).",
       description:
         "מפתחות geomi.dev אופציונליים לכל רשת. משמשים רק בדפדפן שלך. השאר רשת ריקה כדי להשתמש במפתח ברירת המחדל מה-build (אם קיים). כברירת מחדל, עקיפות נשמרות לסשן הדפדפן הנוכחי ונמחקות כשהסשן מסתיים.",
       fieldLabel: "מפתח API של {network}",

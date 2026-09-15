@@ -7,6 +7,7 @@ import {en} from "./en";
 import {es} from "./es";
 import {fil} from "./fil";
 import {fr} from "./fr";
+import {ha} from "./ha";
 import {he} from "./he";
 import {hi} from "./hi";
 import {id} from "./id";
@@ -28,6 +29,7 @@ import {ur} from "./ur";
 import {vi} from "./vi";
 import {zh} from "./zh";
 import {zhHant} from "./zh-Hant";
+import {zu} from "./zu";
 
 export const messageCatalogs: Record<SupportedLocale, MessageTree> = {
   en,
@@ -58,6 +60,8 @@ export const messageCatalogs: Record<SupportedLocale, MessageTree> = {
   he,
   ur,
   "pt-PT": ptPT,
+  ha,
+  zu,
 };
 
 export {
@@ -68,6 +72,7 @@ export {
   es,
   fil,
   fr,
+  ha,
   he,
   hi,
   id,
@@ -89,4 +94,5 @@ export {
   vi,
   zh,
   zhHant,
+  zu,
 };

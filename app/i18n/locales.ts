@@ -27,6 +27,8 @@ export const SUPPORTED_LOCALES = [
   "he",
   "ur",
   "pt-PT",
+  "ha",
+  "zu",
 ] as const;
 
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
@@ -210,6 +212,18 @@ export const LOCALE_META: Record<
     nativeName: "Português (Portugal)",
     ogLocale: "pt_PT",
     htmlLang: "pt-PT",
+    dir: "ltr",
+  },
+  ha: {
+    nativeName: "Hausa",
+    ogLocale: "ha_NG",
+    htmlLang: "ha",
+    dir: "ltr",
+  },
+  zu: {
+    nativeName: "isiZulu",
+    ogLocale: "zu_ZA",
+    htmlLang: "zu",
     dir: "ltr",
   },
 };

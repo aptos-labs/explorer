@@ -35,6 +35,8 @@ describe("formatNumber", () => {
     ["tr", "1.234,5"],
     ["bn", "১,২৩৪.৫"],
     ["sw", "1,234.5"],
+    ["ha", "1,234.5"],
+    ["zu", "1,234.5"],
   ])("formats decimals for %s", (locale, expected) => {
     expect(formatNumber(1_234.5, locale, {minimumFractionDigits: 1})).toBe(
       expected,
