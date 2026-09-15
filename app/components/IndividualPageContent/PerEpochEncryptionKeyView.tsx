@@ -1,4 +1,5 @@
 import {Box, Chip, Link, Paper, Typography} from "@mui/material";
+import {useTranslation} from "../../i18n";
 import {
   ResponsiveKeyValueRow,
   ResponsiveKeyValueTable,
@@ -19,15 +20,14 @@ export default function PerEpochEncryptionKeyView({
   parsed,
   rawData,
 }: PerEpochEncryptionKeyViewProps) {
+  const {t} = useTranslation();
   const epochNumber = BigInt(parsed.epoch);
   const hasKey = parsed.encryptionKeyHex != null;
 
   return (
     <Box>
       <Typography variant="body2" color="text.secondary" sx={{mb: 2}}>
-        Epoch-scoped encryption key from Chunky DKG, used for encrypted
-        transactions during that epoch. Stored on the Aptos framework account;
-        see{" "}
+        {t("confidential.introEpoch")}
         <Link
           href={FRAMEWORK_DECRYPTION_DOCS}
           target="_blank"
@@ -41,8 +41,8 @@ export default function PerEpochEncryptionKeyView({
       <Paper variant="outlined" sx={{overflow: "hidden", maxWidth: "100%"}}>
         <ResponsiveKeyValueTable size="small" tableLayout="fixed">
           <ResponsiveKeyValueRow
-            label="Epoch"
-            description="Epoch this key is valid for."
+            labelKey="confidential.epoch"
+            description={t("confidential.epochDescEnc")}
           >
             <Typography variant="body1" component="span" sx={{fontWeight: 600}}>
               {epochNumber.toLocaleString()}
@@ -50,11 +50,11 @@ export default function PerEpochEncryptionKeyView({
           </ResponsiveKeyValueRow>
 
           <ResponsiveKeyValueRow
-            label="Encryption key"
-            description="Derived from the DKG result; None until the epoch key is installed."
+            labelKey="confidential.encryptionKey"
+            description={t("confidential.encryptionKeyDesc")}
           >
             <Chip
-              label={hasKey ? "Set" : "Not set"}
+              label={hasKey ? t("confidential.set") : t("confidential.notSet")}
               size="small"
               color={hasKey ? "success" : "default"}
               variant={hasKey ? "filled" : "outlined"}
@@ -62,10 +62,10 @@ export default function PerEpochEncryptionKeyView({
           </ResponsiveKeyValueRow>
 
           {hasKey && parsed.encryptionKeyHex && (
-            <ResponsiveKeyValueRow label="Key bytes (hex)">
+            <ResponsiveKeyValueRow labelKey="confidential.keyBytes">
               <HexBytesValue
                 hex={parsed.encryptionKeyHex}
-                copyAriaLabel="Copy encryption key bytes"
+                copyAriaLabel={t("confidential.copyEncryptionKey")}
               />
             </ResponsiveKeyValueRow>
           )}
@@ -74,7 +74,7 @@ export default function PerEpochEncryptionKeyView({
 
       <Box sx={{mt: 3}}>
         <Typography variant="subtitle2" color="text.secondary" sx={{mb: 1}}>
-          Raw resource data
+          {t("confidential.rawResourceData")}
         </Typography>
         <JsonViewCard data={rawData} collapsedByDefault />
       </Box>

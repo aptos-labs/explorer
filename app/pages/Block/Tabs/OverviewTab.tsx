@@ -44,22 +44,22 @@ function BlockMetadataRows({
   return (
     <>
       <ContentRow
-        title="Proposer:"
+        titleKey="fields.proposer"
         value={<HashButton hash={txn.proposer} type={HashType.ACCOUNT} />}
         tooltip={getLearnMoreTooltip("proposer")}
       />
       <ContentRow
-        title="Epoch:"
+        titleKey="fields.epoch"
         value={txn.epoch}
         tooltip={getLearnMoreTooltip("epoch")}
       />
       <ContentRow
-        title="Round:"
+        titleKey="fields.round"
         value={txn.round}
         tooltip={getLearnMoreTooltip("round")}
       />
       <ContentRow
-        title="Previous Block:"
+        titleKey="fields.previousBlock"
         value={
           <Link to={`/block/${previousBlock}`} underline="none">
             {previousBlock}
@@ -68,7 +68,7 @@ function BlockMetadataRows({
         tooltip={getLearnMoreTooltip("block")}
       />
       <ContentRow
-        title="Next Block:"
+        titleKey="fields.nextBlock"
         value={
           <Link to={`/block/${nextBlock}`} underline="none">
             {nextBlock}
@@ -98,7 +98,7 @@ export default function OverviewTab({data}: OverviewTabProps) {
       >
         <ContentBox>
           <ContentRow
-            title={"Block Height:"}
+            titleKey="fields.blockHeight"
             value={data.block_height}
             tooltip={getLearnMoreTooltip("block_height")}
           />
@@ -108,7 +108,7 @@ export default function OverviewTab({data}: OverviewTabProps) {
             tooltip={getLearnMoreTooltip("version")}
           />
           <ContentRow
-            title={"Timestamp:"}
+            titleKey="fields.timestamp"
             value={
               <TimestampValue
                 timestamp={data.block_timestamp}

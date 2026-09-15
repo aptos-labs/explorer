@@ -1,5 +1,6 @@
 import {Box, Paper, Table, TableRow, Typography, useTheme} from "@mui/material";
 import type React from "react";
+import {type TranslateVars, useTranslation} from "../../../../i18n";
 import HashButton, {HashType} from "../../../../components/HashButton";
 import EmptyValue from "../../../../components/IndividualPageContent/ContentValue/EmptyValue";
 import JsonViewCard from "../../../../components/IndividualPageContent/JsonViewCard";
@@ -24,17 +25,26 @@ const signatureValueCellSx = {
 } as const;
 
 type SignatureFieldRowProps = {
-  label: string;
+  label?: string;
+  labelKey?: string;
+  labelVars?: TranslateVars;
   children: React.ReactNode;
   description?: string;
+  descriptionKey?: string;
 };
 
 function SignatureFieldRow({
   label,
+  labelKey,
+  labelVars,
   children,
   description,
+  descriptionKey,
 }: SignatureFieldRowProps) {
   const theme = useTheme();
+  const {t} = useTranslation();
+  const displayLabel = labelKey ? t(labelKey, labelVars) : label;
+  const displayDescription = descriptionKey ? t(descriptionKey) : description;
   return (
     <TableRow
       sx={{
@@ -56,8 +66,8 @@ function SignatureFieldRow({
           pb: {xs: 0, sm: undefined},
         }}
       >
-        {label}
-        {description ? (
+        {displayLabel}
+        {displayDescription ? (
           <Typography
             component="div"
             variant="caption"
@@ -67,7 +77,7 @@ function SignatureFieldRow({
               mt: 0.5,
             }}
           >
-            {description}
+            {displayDescription}
           </Typography>
         ) : null}
       </GeneralTableCell>
@@ -133,9 +143,10 @@ function humanizeSignatureType(type: string): string {
 }
 
 function AccountSignatureRows({sig}: {sig: unknown}): React.ReactNode {
+  const {t} = useTranslation();
   if (!sig || typeof sig !== "object" || Array.isArray(sig)) {
     return (
-      <SignatureFieldRow label="Signer">
+      <SignatureFieldRow labelKey="signature.signer">
         <Typography
           variant="body2"
           sx={{
@@ -149,36 +160,36 @@ function AccountSignatureRows({sig}: {sig: unknown}): React.ReactNode {
   }
 
   const o = sig as Record<string, unknown>;
-  const t = typeof o.type === "string" ? o.type : "";
+  const sigType = typeof o.type === "string" ? o.type : "";
 
   const isSecp256k1 =
-    t.includes("secp256k1") || t === "secp256k1_ecdsa_signature";
+    sigType.includes("secp256k1") || sigType === "secp256k1_ecdsa_signature";
   if (
-    (t === "ed25519_signature" || isSecp256k1) &&
+    (sigType === "ed25519_signature" || isSecp256k1) &&
     isHexString(o.public_key) &&
     isHexString(o.signature)
   ) {
     return (
       <>
-        <SignatureFieldRow label="Scheme">
-          {humanizeSignatureType(t)}
+        <SignatureFieldRow labelKey="signature.scheme">
+          {humanizeSignatureType(sigType)}
         </SignatureFieldRow>
         <SignatureFieldRow
-          label="Public key"
+          labelKey="signature.publicKey"
           description={
             isSecp256k1
-              ? "Uncompressed secp256k1 public key (hex)."
-              : "32-byte Ed25519 public key (hex)."
+              ? t("signature.secp256k1PubKeyDesc")
+              : t("signature.ed25519PubKeyDesc")
           }
         >
           <HashButton hash={o.public_key} type={HashType.OTHERS} />
         </SignatureFieldRow>
         <SignatureFieldRow
-          label="Signature"
+          labelKey="signature.signature"
           description={
             isSecp256k1
-              ? "ECDSA signature over the signing message (hex)."
-              : "64-byte Ed25519 signature over the signing message (hex)."
+              ? t("signature.secp256k1SigDesc")
+              : t("signature.ed25519SigDesc")
           }
         >
           <HashButton hash={o.signature} type={HashType.OTHERS} />
@@ -188,7 +199,7 @@ function AccountSignatureRows({sig}: {sig: unknown}): React.ReactNode {
   }
 
   if (
-    t === "multi_ed25519_signature" &&
+    sigType === "multi_ed25519_signature" &&
     Array.isArray(o.public_keys) &&
     Array.isArray(o.signatures)
   ) {
@@ -196,32 +207,40 @@ function AccountSignatureRows({sig}: {sig: unknown}): React.ReactNode {
     const signatures = o.signatures.filter(isHexString);
     return (
       <>
-        <SignatureFieldRow label="Scheme">
-          {humanizeSignatureType(t)}
+        <SignatureFieldRow labelKey="signature.scheme">
+          {humanizeSignatureType(sigType)}
         </SignatureFieldRow>
         {typeof o.threshold === "string" || typeof o.threshold === "number" ? (
           <SignatureFieldRow
-            label="Threshold"
-            description="Minimum number of signatures required."
+            labelKey="signature.threshold"
+            descriptionKey="signature.thresholdDesc"
           >
             {String(o.threshold)}
           </SignatureFieldRow>
         ) : null}
         {isHexString(o.bitmap) ? (
           <SignatureFieldRow
-            label="Bitmap"
-            description="Bitmask of which keys signed."
+            labelKey="signature.bitmap"
+            descriptionKey="signature.bitmapDesc"
           >
             <HashButton hash={o.bitmap} type={HashType.OTHERS} />
           </SignatureFieldRow>
         ) : null}
         {publicKeys.map((pk, i) => (
-          <SignatureFieldRow key={pk} label={`Public key ${i + 1}`}>
+          <SignatureFieldRow
+            key={pk}
+            labelKey="signature.publicKeyN"
+            labelVars={{n: i + 1}}
+          >
             <HashButton hash={pk} type={HashType.OTHERS} />
           </SignatureFieldRow>
         ))}
         {signatures.map((sigHex, i) => (
-          <SignatureFieldRow key={sigHex} label={`Signature ${i + 1}`}>
+          <SignatureFieldRow
+            key={sigHex}
+            labelKey="signature.signatureN"
+            labelVars={{n: i + 1}}
+          >
             <HashButton hash={sigHex} type={HashType.OTHERS} />
           </SignatureFieldRow>
         ))}
@@ -229,7 +248,7 @@ function AccountSignatureRows({sig}: {sig: unknown}): React.ReactNode {
     );
   }
 
-  if (t === "single_sender") {
+  if (sigType === "single_sender") {
     const pk = o.public_key;
     const signaturePayload = o.signature;
     if (
@@ -244,26 +263,26 @@ function AccountSignatureRows({sig}: {sig: unknown}): React.ReactNode {
       const sigRec = signaturePayload as Record<string, unknown>;
       return (
         <>
-          <SignatureFieldRow label="Scheme">
-            {humanizeSignatureType(t)}
+          <SignatureFieldRow labelKey="signature.scheme">
+            {humanizeSignatureType(sigType)}
           </SignatureFieldRow>
           {typeof pkRec.type === "string" ? (
-            <SignatureFieldRow label="Public key type">
+            <SignatureFieldRow labelKey="signature.publicKeyType">
               {pkRec.type}
             </SignatureFieldRow>
           ) : null}
           {isHexString(pkRec.value) ? (
-            <SignatureFieldRow label="Public key">
+            <SignatureFieldRow labelKey="signature.publicKey">
               <HashButton hash={pkRec.value} type={HashType.OTHERS} />
             </SignatureFieldRow>
           ) : null}
           {typeof sigRec.type === "string" ? (
-            <SignatureFieldRow label="Signature type">
+            <SignatureFieldRow labelKey="signature.signatureType">
               {sigRec.type}
             </SignatureFieldRow>
           ) : null}
           {isHexString(sigRec.value) ? (
-            <SignatureFieldRow label="Signature">
+            <SignatureFieldRow labelKey="signature.signature">
               <HashButton hash={sigRec.value} type={HashType.OTHERS} />
             </SignatureFieldRow>
           ) : null}
@@ -273,7 +292,7 @@ function AccountSignatureRows({sig}: {sig: unknown}): React.ReactNode {
   }
 
   return (
-    <SignatureFieldRow label="Signer data">
+    <SignatureFieldRow labelKey="signature.signerData">
       <JsonViewCard data={sig} collapsedByDefault />
     </SignatureFieldRow>
   );
@@ -289,6 +308,7 @@ export type SignatureOverviewTableProps = {
 export default function SignatureOverviewTable({
   signature,
 }: SignatureOverviewTableProps) {
+  const {t} = useTranslation();
   if (signature === undefined || signature === null) {
     return (
       <Paper
@@ -313,7 +333,7 @@ export default function SignatureOverviewTable({
             }}
           >
             <GeneralTableBody>
-              <SignatureFieldRow label="Raw">
+              <SignatureFieldRow labelKey="signature.raw">
                 <JsonViewCard data={signature} collapsedByDefault />
               </SignatureFieldRow>
             </GeneralTableBody>
@@ -341,12 +361,12 @@ export default function SignatureOverviewTable({
   } else if (typeField === "multi_agent_signature") {
     body = (
       <>
-        <SignatureFieldRow label="Top-level scheme">
+        <SignatureFieldRow labelKey="signature.topLevelScheme">
           {humanizeSignatureType(typeField)}
         </SignatureFieldRow>
         <SignatureFieldRow
-          label="Sender"
-          description="Primary signer authenticator."
+          labelKey="signature.sender"
+          descriptionKey="signature.senderDesc"
         >
           <Paper
             variant="outlined"
@@ -369,7 +389,8 @@ export default function SignatureOverviewTable({
                     // biome-ignore lint/suspicious/noArrayIndexKey: same address may appear twice; index disambiguates list position
                     `secondary-address-${addr}-${i}`
                   }
-                  label={`Secondary signer ${i + 1} (address)`}
+                  labelKey="signature.secondarySignerAddressN"
+                  labelVars={{n: i + 1}}
                 >
                   <HashButton hash={addr} type={HashType.ACCOUNT} />
                 </SignatureFieldRow>
@@ -381,8 +402,9 @@ export default function SignatureOverviewTable({
                   s.secondary_signer_addresses as unknown[] | undefined,
                   i,
                 )}
-                label={`Secondary signer ${i + 1}`}
-                description="Authenticator for this secondary address."
+                labelKey="signature.secondarySignerN"
+                labelVars={{n: i + 1}}
+                descriptionKey="signature.secondarySignerDesc"
               >
                 <Paper
                   variant="outlined"
@@ -403,17 +425,17 @@ export default function SignatureOverviewTable({
   } else if (typeField === "fee_payer_signature") {
     body = (
       <>
-        <SignatureFieldRow label="Top-level scheme">
+        <SignatureFieldRow labelKey="signature.topLevelScheme">
           {humanizeSignatureType(typeField)}
         </SignatureFieldRow>
         {typeof s.fee_payer_address === "string" ? (
-          <SignatureFieldRow label="Fee payer address">
+          <SignatureFieldRow labelKey="signature.feePayerAddress">
             <HashButton hash={s.fee_payer_address} type={HashType.ACCOUNT} />
           </SignatureFieldRow>
         ) : null}
         <SignatureFieldRow
-          label="Sender"
-          description="Primary signer authenticator."
+          labelKey="signature.sender"
+          descriptionKey="signature.senderDesc"
         >
           <Paper
             variant="outlined"
@@ -436,7 +458,8 @@ export default function SignatureOverviewTable({
                     // biome-ignore lint/suspicious/noArrayIndexKey: same address may appear twice; index disambiguates list position
                     `secondary-address-${addr}-${i}`
                   }
-                  label={`Secondary signer ${i + 1} (address)`}
+                  labelKey="signature.secondarySignerAddressN"
+                  labelVars={{n: i + 1}}
                 >
                   <HashButton hash={addr} type={HashType.ACCOUNT} />
                 </SignatureFieldRow>
@@ -448,7 +471,8 @@ export default function SignatureOverviewTable({
                   s.secondary_signer_addresses as unknown[] | undefined,
                   i,
                 )}
-                label={`Secondary signer ${i + 1}`}
+                labelKey="signature.secondarySignerN"
+                labelVars={{n: i + 1}}
               >
                 <Paper
                   variant="outlined"
@@ -465,8 +489,8 @@ export default function SignatureOverviewTable({
           </>
         ) : null}
         <SignatureFieldRow
-          label="Fee payer signer"
-          description="Authenticator used by the fee payer."
+          labelKey="signature.feePayerSigner"
+          descriptionKey="signature.feePayerSignerDesc"
         >
           <Paper
             variant="outlined"
@@ -498,7 +522,9 @@ export default function SignatureOverviewTable({
     body = (
       <>
         {typeField ? (
-          <SignatureFieldRow label="Type">{typeField}</SignatureFieldRow>
+          <SignatureFieldRow labelKey="signature.type">
+            {typeField}
+          </SignatureFieldRow>
         ) : null}
         {simpleObject ? (
           restEntries.map(([key, value]) => (
@@ -511,7 +537,7 @@ export default function SignatureOverviewTable({
             </SignatureFieldRow>
           ))
         ) : (
-          <SignatureFieldRow label="Raw">
+          <SignatureFieldRow labelKey="signature.raw">
             <JsonViewCard data={signature} collapsedByDefault />
           </SignatureFieldRow>
         )}

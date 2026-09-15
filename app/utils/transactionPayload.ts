@@ -1,4 +1,5 @@
 import type {Types} from "~/types/aptos";
+import {englishT, type TFunction} from "../i18n";
 
 function isEntryFunctionPayload(
   payload: unknown,
@@ -35,10 +36,11 @@ export function formatClaimedEntryFunction(
 
 export function encryptedStateLabel(
   state: Types.TransactionPayload_EncryptedTransactionPayload["encrypted_state"],
+  t: TFunction = englishT,
 ): string {
-  if (state === "decrypted") return "Decrypted";
-  if (state === "failed_decryption") return "Decryption failed";
-  return "Encrypted";
+  if (state === "decrypted") return t("payload.decrypted");
+  if (state === "failed_decryption") return t("payload.decryptionFailed");
+  return t("payload.encrypted");
 }
 
 /**

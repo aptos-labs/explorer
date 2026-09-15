@@ -42,6 +42,9 @@ vi.mock("@aptos-labs/wallet-adapter-react", () => ({
 
 vi.mock("@tanstack/react-router", () => ({
   useParams: () => routeParams,
+  Link: ({children}: {children?: ReactNode}) => children ?? null,
+  useSearch: () => ({}),
+  useNavigate: () => vi.fn(),
 }));
 
 vi.mock("../../api/hooks/useGetValidators", async (importOriginal) => {

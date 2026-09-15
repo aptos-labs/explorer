@@ -2,6 +2,7 @@ import {ErrorOutlineOutlined as ErrorOutline} from "@mui/icons-material";
 import {Stack, Typography, useTheme} from "@mui/material";
 import {type ResponseError, ResponseErrorType} from "../../api/client";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
+import {useTranslation} from "../../i18n";
 
 type ErrorProps = {
   error: ResponseError;
@@ -13,6 +14,7 @@ export default function TransactionError({
   txnHashOrVersion,
 }: ErrorProps) {
   const theme = useTheme();
+  const {t} = useTranslation();
 
   if (error.type === ResponseErrorType.NOT_FOUND) {
     return (
@@ -33,7 +35,7 @@ export default function TransactionError({
           />
           <Stack spacing={1} sx={{flex: 1}}>
             <Typography variant="h6" color="error">
-              Transaction Not Found
+              {t("notFound.transactionTitle")}
             </Typography>
             <Typography
               variant="body1"
@@ -42,8 +44,7 @@ export default function TransactionError({
               }}
             >
               {error.message && `${error.message} `}
-              Could not find a transaction with version or hash{" "}
-              {txnHashOrVersion}
+              {t("notFound.transactionBody", {id: txnHashOrVersion})}
             </Typography>
           </Stack>
         </Stack>
@@ -68,7 +69,7 @@ export default function TransactionError({
           />
           <Stack spacing={1} sx={{flex: 1}}>
             <Typography variant="h6" color="error">
-              Error Loading Transaction
+              {t("notFound.transactionLoad")}
             </Typography>
             <Typography
               variant="body1"
@@ -76,13 +77,12 @@ export default function TransactionError({
                 color: "text.secondary",
               }}
             >
-              Unknown error fetching transaction with version or hash{" "}
-              {txnHashOrVersion}:
+              {t("notFound.transactionLoadBody", {id: txnHashOrVersion})}
               <br />
               {error.message}
               <br />
               <br />
-              Try again later
+              {t("common.tryAgainLater")}
             </Typography>
           </Stack>
         </Stack>

@@ -2,6 +2,7 @@ import {Box, Typography} from "@mui/material";
 import {useGetMostRecentBlocks} from "../../api/hooks/useGetMostRecentBlocks";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import LoadingModal from "../../components/LoadingModal";
+import {useTranslation} from "../../i18n";
 import {useSearchParams} from "../../routing";
 import PageHeader from "../layout/PageHeader";
 import BlocksTable from "./Table";
@@ -10,6 +11,7 @@ import BlocksTable from "./Table";
 const BLOCKS_COUNT = 20;
 
 export default function BlocksPage() {
+  const {t} = useTranslation();
   const [params] = useSearchParams();
   const start = params.get("start");
   const actualStart = start ? start : undefined;
@@ -21,8 +23,8 @@ export default function BlocksPage() {
   return (
     <>
       <PageMetadata
-        title="Latest Blocks"
-        description="View the latest blocks produced on the Aptos blockchain. Monitor block height, epoch, round, timestamps, proposers, and included transactions. Real-time block explorer."
+        title={t("pages.blocks.title")}
+        description={t("pages.blocks.listDescription")}
         type="website"
         keywords={[
           "blocks",
@@ -44,7 +46,7 @@ export default function BlocksPage() {
             marginBottom: 2,
           }}
         >
-          Latest Blocks
+          {t("pages.blocks.title")}
         </Typography>
         <BlocksTable blocks={recentBlocks} />
       </Box>

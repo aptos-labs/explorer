@@ -2,6 +2,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import {IconButton, Stack, Typography, useTheme} from "@mui/material";
 import {useState} from "react";
 import {parseTimestampString} from "../../../pages/utils";
+import {useTranslation} from "../../../i18n";
 import StyledTooltip from "../../StyledTooltip";
 import EmptyValue from "./EmptyValue";
 
@@ -17,6 +18,7 @@ export default function TimestampValue({
   timestamp,
 }: TimestampValueProps) {
   const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
+  const {t} = useTranslation();
   const theme = useTheme();
   const color = theme.palette.text.secondary;
 
@@ -52,7 +54,7 @@ export default function TimestampValue({
         {timestamp_display}
       </Typography>
       <StyledTooltip
-        title="Timestamp copied"
+        title={t("common.timestampCopied")}
         placement="right"
         open={tooltipOpen}
         disableFocusListener

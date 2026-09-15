@@ -1,17 +1,19 @@
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import {Button} from "@mui/material";
 import {Banner} from "../../../components/Banner";
+import {useTranslation} from "../../../i18n";
 
 interface PetraVaultBannerProps {
   address: string;
 }
 
 export function PetraVaultBanner({address}: PetraVaultBannerProps) {
+  const {t} = useTranslation();
   const petraVaultUrl = `https://vault.petra.app/onboarding?address=${address}`;
 
   return (
     <Banner
-      pillText="MULTISIG"
+      pillText={t("accountUi.pill.multisig")}
       pillColor="info"
       action={
         <Button
@@ -27,12 +29,12 @@ export function PetraVaultBanner({address}: PetraVaultBannerProps) {
             whiteSpace: {xs: "normal", sm: "nowrap"},
           }}
         >
-          Open in Petra Vault
+          {t("accountUi.openPetraVault")}
         </Button>
       }
       sx={{marginBottom: 2}}
     >
-      Manage this multisig account with Petra Vault
+      {t("accountUi.manageMultisig")}
     </Banner>
   );
 }

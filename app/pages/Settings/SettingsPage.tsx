@@ -12,7 +12,6 @@ import {
   FormControlLabel,
   IconButton,
   InputAdornment,
-  Link as MuiLink,
   Paper,
   Popover,
   Stack,
@@ -23,9 +22,11 @@ import {
 } from "@mui/material";
 import {useQueryClient} from "@tanstack/react-query";
 import {useRouter} from "@tanstack/react-router";
-import {useEffect, useMemo, useRef, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {clearCachedSearchClients} from "../../api/createClient";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
+import LanguageSelect from "../../components/layout/LanguageSelect";
+import {InlineMarkup, translateNetworkName, useTranslation} from "../../i18n";
 import {emitApiKeySaved} from "../../context/rate-limit";
 import {clearCachedV2Clients} from "../../global-config";
 import {type NetworkName, networks} from "../../lib/constants";
@@ -39,13 +40,6 @@ import {
 import PageHeader from "../layout/PageHeader";
 
 const SETTINGS_NETWORKS = Object.keys(networks) as NetworkName[];
-
-function networkLabel(name: NetworkName): string {
-  if (name === "local") {
-    return "Local";
-  }
-  return name.charAt(0).toUpperCase() + name.slice(1);
-}
 
 function settingsEqual(
   a: ExplorerClientSettings,
@@ -67,6 +61,7 @@ function hasAnyOverride(settings: ExplorerClientSettings): boolean {
 
 export default function SettingsPage() {
   const theme = useTheme();
+  const {t, tList} = useTranslation();
   const queryClient = useQueryClient();
   const router = useRouter();
   const {settings, setExplorerSettings} = useExplorerSettings();
@@ -77,11 +72,20 @@ export default function SettingsPage() {
   const [apiKeyInfoAnchor, setApiKeyInfoAnchor] = useState<HTMLElement | null>(
     null,
   );
-  const initialSettingsRef = useRef(settings);
 
   useEffect(() => {
-    initialSettingsRef.current = settings;
-    setDraftSettings(settings);
+    setDraftSettings((current) => {
+      if (settingsEqual(current, settings)) {
+        return settings;
+      }
+      if (current.localePreference === settings.localePreference) {
+        return current;
+      }
+      return {
+        ...current,
+        localePreference: settings.localePreference,
+      };
+    });
   }, [settings]);
 
   const hasChanges = useMemo(
@@ -131,8 +135,8 @@ export default function SettingsPage() {
   return (
     <Box>
       <PageMetadata
-        title="Settings"
-        description="Configure Aptos Explorer settings including API keys, decompilation preferences, and other options."
+        title={t("settings.title")}
+        description={t("settings.metaDescription")}
         type="website"
       />
       <PageHeader />
@@ -144,7 +148,7 @@ export default function SettingsPage() {
             fontWeight: 700,
           }}
         >
-          Settings
+          {t("settings.title")}
         </Typography>
         <Typography
           variant="body1"
@@ -153,11 +157,36 @@ export default function SettingsPage() {
             mb: 4,
           }}
         >
-          Manage your explorer preferences. Settings are stored locally in your
-          browser.
+          {t("settings.description")}
         </Typography>
 
         <Stack spacing={4}>
+          <Paper variant="outlined" sx={{p: 3}}>
+            <Stack spacing={2}>
+              <Box>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontWeight: 600,
+                  }}
+                >
+                  {t("settings.language.title")}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "text.secondary",
+                    mt: 0.5,
+                    mb: 2,
+                  }}
+                >
+                  <InlineMarkup text={t("settings.language.description")} />
+                </Typography>
+                <LanguageSelect variant="settings" />
+              </Box>
+            </Stack>
+          </Paper>
+
           {/* Decompilation Section */}
           <Paper
             variant="outlined"
@@ -183,7 +212,7 @@ export default function SettingsPage() {
                       fontWeight: 600,
                     }}
                   >
-                    Move Bytecode Decompilation
+                    {t("settings.decompilation.title")}
                   </Typography>
                   <Typography
                     variant="body2"
@@ -192,9 +221,7 @@ export default function SettingsPage() {
                       mt: 0.5,
                     }}
                   >
-                    Enable client-side decompilation of on-chain Move bytecode
-                    into human-readable source. Runs entirely in your browser
-                    via WebAssembly.
+                    {t("settings.decompilation.description")}
                   </Typography>
                 </Box>
                 <Switch
@@ -207,7 +234,7 @@ export default function SettingsPage() {
                   }
                   slotProps={{
                     input: {
-                      "aria-label": "Enable Move bytecode decompilation",
+                      "aria-label": t("settings.decompilation.ariaLabel"),
                     },
                   }}
                 />
@@ -224,34 +251,21 @@ export default function SettingsPage() {
                     fontWeight: 600,
                   }}
                 >
-                  Disclaimer — Please read before enabling
+                  {t("settings.decompilation.disclaimerTitle")}
                 </Typography>
                 <Typography variant="body2">
-                  Decompiled output is generated mechanically from on-chain
-                  bytecode and <strong>may not match</strong> the original
-                  source code. Variable names, comments, and some structural
-                  details are lost during compilation and cannot be recovered.
-                  By enabling this feature you acknowledge that:
+                  <InlineMarkup
+                    text={t("settings.decompilation.disclaimerIntro")}
+                  />
                 </Typography>
                 <Box component="ul" sx={{mt: 1, mb: 0, pl: 2}}>
-                  <li>
-                    <Typography variant="body2">
-                      The decompiled output is provided{" "}
-                      <strong>as-is for informational purposes only</strong>.
-                    </Typography>
-                  </li>
-                  <li>
-                    <Typography variant="body2">
-                      You accept responsibility for how you use the decompiled
-                      output.
-                    </Typography>
-                  </li>
-                  <li>
-                    <Typography variant="body2">
-                      The output should not be treated as the definitive or
-                      authoritative source code for any on-chain module.
-                    </Typography>
-                  </li>
+                  {tList("settings.decompilation.bullets").map((item) => (
+                    <li key={item}>
+                      <Typography variant="body2">
+                        <InlineMarkup text={item} />
+                      </Typography>
+                    </li>
+                  ))}
                 </Box>
               </Alert>
             </Stack>
@@ -275,11 +289,11 @@ export default function SettingsPage() {
                       fontWeight: 600,
                     }}
                   >
-                    API Key Overrides
+                    {t("settings.apiKeys.title")}
                   </Typography>
                   <IconButton
                     size="small"
-                    aria-label="Why use your own API key?"
+                    aria-label={t("settings.apiKeys.whyAriaLabel")}
                     aria-expanded={Boolean(apiKeyInfoAnchor)}
                     aria-haspopup="true"
                     onClick={(event) =>
@@ -305,9 +319,7 @@ export default function SettingsPage() {
                   }}
                 >
                   <Typography variant="body2" sx={{mb: 1.5}}>
-                    The explorer uses a shared geomi.dev API key by default.
-                    Adding your own key gives you a dedicated rate limit, which
-                    helps if you browse heavily or hit HTTP 429 responses.
+                    {t("settings.apiKeys.popover")}
                   </Typography>
                   <Typography
                     variant="body2"
@@ -315,15 +327,7 @@ export default function SettingsPage() {
                       color: "text.secondary",
                     }}
                   >
-                    Create and manage keys at{" "}
-                    <MuiLink
-                      href="https://geomi.dev"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      geomi.dev
-                    </MuiLink>
-                    .
+                    <InlineMarkup text={t("settings.apiKeys.popoverManage")} />
                   </Typography>
                 </Popover>
                 <Typography
@@ -333,10 +337,7 @@ export default function SettingsPage() {
                     mt: 0.5,
                   }}
                 >
-                  Optional geomi.dev API keys per network. Used only in your
-                  browser. Leave a network empty to use the default key from the
-                  build (if any). By default, overrides are stored for the
-                  current browser session and cleared when the session ends.
+                  {t("settings.apiKeys.description")}
                 </Typography>
               </Box>
 
@@ -345,18 +346,24 @@ export default function SettingsPage() {
                   key={network}
                   autoComplete="off"
                   fullWidth
-                  label={`${networkLabel(network)} API key`}
+                  label={t("settings.apiKeys.fieldLabel", {
+                    network: translateNetworkName(network, t),
+                  })}
                   onChange={(event) =>
                     updateOverride(network, event.target.value)
                   }
-                  placeholder={`Paste key for ${networkLabel(network)} (optional)`}
+                  placeholder={t("settings.apiKeys.fieldPlaceholder", {
+                    network: translateNetworkName(network, t),
+                  })}
                   slotProps={{
                     input: {
                       endAdornment: (
                         <InputAdornment position="end">
                           <IconButton
                             aria-label={
-                              showApiKeys ? "Hide API keys" : "Show API keys"
+                              showApiKeys
+                                ? t("settings.apiKeys.hideKeys")
+                                : t("settings.apiKeys.showKeys")
                             }
                             edge="end"
                             onClick={() => setShowApiKeys((v) => !v)}
@@ -388,14 +395,7 @@ export default function SettingsPage() {
                   color: "text.secondary",
                 }}
               >
-                Don&apos;t have a key?{" "}
-                <MuiLink
-                  href="https://geomi.dev"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Get one at geomi.dev
-                </MuiLink>
+                <InlineMarkup text={t("settings.apiKeys.getKey")} />
               </Typography>
 
               <FormControlLabel
@@ -410,26 +410,18 @@ export default function SettingsPage() {
                     }
                   />
                 }
-                label="Remember API keys on this device"
+                label={t("settings.apiKeys.remember")}
               />
 
               <Alert severity="warning">
-                Remembering keys stores them in this browser&apos;s local
-                storage. Avoid enabling this on shared or untrusted devices.
+                {t("settings.apiKeys.rememberWarning")}
               </Alert>
 
               <Alert severity="info">
-                Keys are not stored by the explorer application server. Your
-                browser uses them only for client-side API requests. For best
-                security, use client keys with only the origin{" "}
-                <code>https://explorer.aptoslabs.com</code> enabled and
-                enforced.
+                <InlineMarkup text={t("settings.apiKeys.notStored")} />
               </Alert>
 
-              <Alert severity="info">
-                Existing data will refresh after save so new requests use the
-                updated keys immediately.
-              </Alert>
+              <Alert severity="info">{t("settings.apiKeys.refreshNote")}</Alert>
             </Stack>
           </Paper>
 
@@ -448,7 +440,7 @@ export default function SettingsPage() {
               disabled={isSaving || !hasChanges}
               variant="outlined"
             >
-              Reset
+              {t("settings.actions.reset")}
             </Button>
             <Button
               onClick={() =>
@@ -460,14 +452,14 @@ export default function SettingsPage() {
               variant="outlined"
               color="warning"
             >
-              Restore Defaults
+              {t("settings.actions.restoreDefaults")}
             </Button>
             <Button
               onClick={handleSave}
               variant="contained"
               disabled={isSaving || !hasChanges}
             >
-              Save
+              {t("settings.actions.save")}
             </Button>
           </Stack>
         </Stack>

@@ -15,6 +15,7 @@ import {useGetValidatorSet} from "../../api/hooks/useGetValidatorSet";
 import type {ValidatorGeoGroup} from "../../api/hooks/useGetValidatorsGeoData";
 import {useGetValidatorSetGeoData} from "../../api/hooks/useGetValidatorsGeoData";
 import MapMetrics from "./Components/MapMetrics";
+import {useTranslation} from "../../i18n";
 import type {MapGroupBy} from "./types";
 
 // Loading placeholder for the map
@@ -48,6 +49,7 @@ function ClientOnlyMap({
   }> | null>(null);
   const [isClient, setIsClient] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const {t} = useTranslation();
 
   useEffect(() => {
     setIsClient(true);
@@ -87,7 +89,7 @@ function ClientOnlyMap({
             color: "text.secondary",
           }}
         >
-          Failed to load map component
+          {t("common.failedToLoadMap")}
         </Typography>
       </Box>
     );
@@ -103,6 +105,7 @@ function ClientOnlyMap({
 }
 
 export default function ValidatorsMap() {
+  const {t} = useTranslation();
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const backgroundColor = theme.palette.background.paper;
@@ -152,8 +155,8 @@ export default function ValidatorsMap() {
           },
         }}
       >
-        <ToggleButton value="city">By City</ToggleButton>
-        <ToggleButton value="country">By Country</ToggleButton>
+        <ToggleButton value="city">{t("common.byCity")}</ToggleButton>
+        <ToggleButton value="country">{t("common.byCountry")}</ToggleButton>
       </ToggleButtonGroup>
     </Box>
   );

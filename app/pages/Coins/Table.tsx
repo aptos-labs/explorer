@@ -38,6 +38,7 @@ import {
   verifiedLevel,
 } from "../../components/Table/VerifiedCell";
 import VirtualizedTableBody from "../../components/Table/VirtualizedTableBody";
+import {useTranslation} from "../../i18n";
 import {useNetworkName} from "../../global-config/GlobalConfig";
 import {useAugmentToWithGlobalSearchParams, useNavigate} from "../../routing";
 import {getAssetSymbol} from "../../utils";
@@ -125,10 +126,11 @@ function CoinSearchField({
   onChange: (value: string) => void;
   width?: number;
 }) {
+  const {t} = useTranslation();
   return (
     <TextField
       size="small"
-      placeholder="Search by name, symbol, or address..."
+      placeholder={t("pages.coins.searchPlaceholder")}
       value={value}
       onChange={(e) => onChange(e.target.value)}
       slotProps={{
@@ -158,6 +160,7 @@ function CoinCard({
   coin: CoinWithMarketData;
   networkName: string;
 }) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
   const augmentTo = useAugmentToWithGlobalSearchParams();
@@ -278,7 +281,7 @@ function CoinCard({
               fontSize: "0.7rem",
             }}
           >
-            {isFA ? "FA" : "Coin"}
+            {isFA ? t("accountUi.fa") : t("accountUi.coin")}
           </Typography>
           {getVerifiedMessageAndIcon(verification.level).icon}
         </Stack>
@@ -392,6 +395,7 @@ const CoinTypeCell = React.memo(function CoinTypeCell({
 }: {
   coin: CoinDescription;
 }) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const isFA = coin.faAddress && !coin.tokenAddress;
 
@@ -407,7 +411,7 @@ const CoinTypeCell = React.memo(function CoinTypeCell({
           fontSize: "0.75rem",
         }}
       >
-        {isFA ? "Fungible Asset" : "Coin"}
+        {isFA ? t("accountUi.fungibleAsset") : t("accountUi.coin")}
       </Typography>
     </GeneralTableCell>
   );
@@ -474,6 +478,7 @@ export default function CoinsListTable({
   coins,
   isLoading,
 }: CoinsListTableProps) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const networkName = useNetworkName();
   const inMainnet = useGetInMainnet();
@@ -664,7 +669,7 @@ export default function CoinsListTable({
           },
         }}
       >
-        Verified
+        {t("verified.level.labs")}
       </Button>
       <Typography
         variant="subtitle1"
@@ -694,7 +699,7 @@ export default function CoinsListTable({
           },
         }}
       >
-        Recognized
+        {t("verified.level.recognized")}
       </Button>
       <Typography
         variant="subtitle1"
@@ -722,7 +727,7 @@ export default function CoinsListTable({
           },
         }}
       >
-        All
+        {t("common.all")}
       </Button>
     </Stack>
   );
@@ -736,7 +741,7 @@ export default function CoinsListTable({
           onChange={(e) => setShowEmojicoins(e.target.checked)}
         />
       }
-      label="Show Emojicoins"
+      label={t("accountUi.showEmojicoins")}
       slotProps={{
         typography: {
           sx: {fontSize: 12, fontWeight: 600, color: unselectedTextColor},
@@ -825,8 +830,8 @@ export default function CoinsListTable({
             mb: 2,
           }}
         >
-          {filteredCoins.length} coins found
-          {isMarketDataLoading && " (loading market data...)"}
+          {t("accountUi.coinsFound", {count: filteredCoins.length})}
+          {isMarketDataLoading && t("accountUi.loadingMarketData")}
         </Typography>
         <Box>
           {filteredCoins.length > 0 ? (
@@ -846,7 +851,7 @@ export default function CoinsListTable({
                 py: 3,
               }}
             >
-              No coins found
+              {t("accountUi.noCoinsFound")}
             </Typography>
           )}
         </Box>
@@ -893,8 +898,8 @@ export default function CoinsListTable({
           mb: 2,
         }}
       >
-        {filteredCoins.length} coins found
-        {isMarketDataLoading && " (loading market data...)"}
+        {t("accountUi.coinsFound", {count: filteredCoins.length})}
+        {isMarketDataLoading && t("accountUi.loadingMarketData")}
       </Typography>
       <Box
         ref={coinsTableScrollRef}
@@ -904,21 +909,27 @@ export default function CoinsListTable({
           maxHeight: "min(70vh, 720px)",
         }}
       >
-        <Table aria-label="Coins" data-entity-type="coin">
+        <Table aria-label={t("common.coinsAria")} data-entity-type="coin">
           <TableHead>
             <TableRow>
-              <GeneralTableHeaderCell header="Asset" />
-              <GeneralTableHeaderCell header="Name" />
-              <GeneralTableHeaderCell header="Type" />
+              <GeneralTableHeaderCell headerKey="table.asset" />
+              <GeneralTableHeaderCell headerKey="table.name" />
+              <GeneralTableHeaderCell headerKey="table.type" />
               <GeneralTableHeaderCell
-                header="Status"
+                headerKey="table.status"
                 tooltip={getLearnMoreTooltip("coin_verification")}
                 isTableTooltip={true}
               />
               {inMainnet && (
                 <>
-                  <GeneralTableHeaderCell header="Price" textAlignRight />
-                  <GeneralTableHeaderCell header="Market Cap" textAlignRight />
+                  <GeneralTableHeaderCell
+                    headerKey="table.price"
+                    textAlignRight
+                  />
+                  <GeneralTableHeaderCell
+                    headerKey="table.marketCap"
+                    textAlignRight
+                  />
                 </>
               )}
             </TableRow>
@@ -946,7 +957,7 @@ export default function CoinsListTable({
                       color: "text.secondary",
                     }}
                   >
-                    No coins found
+                    {t("accountUi.noCoinsFound")}
                   </Typography>
                 </GeneralTableCell>
               </TableRow>

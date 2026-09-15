@@ -17,6 +17,7 @@ import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import VirtualizedTableBody from "../../components/Table/VirtualizedTableBody";
+import {englishT, useTranslation, type TFunction} from "../../i18n";
 import {
   Link,
   useAugmentToWithGlobalSearchParams,
@@ -62,27 +63,31 @@ function useNow(): Date {
   );
 }
 
-function formatAge(seconds: number): string {
+function formatAge(seconds: number, t: TFunction = englishT): string {
   if (seconds < 60) {
-    return `${seconds}s ago`;
+    return t("common.secondsAgo", {count: seconds});
   } else if (seconds < 3600) {
     const mins = Math.floor(seconds / 60);
-    return `${mins}min ago`;
+    return t("common.minutesAgo", {count: mins});
   } else if (seconds < 86400) {
     const hrs = Math.floor(seconds / 3600);
-    return `${hrs}h ago`;
+    return t("common.hoursAgo", {count: hrs});
   } else {
     const days = Math.floor(seconds / 86400);
-    return `${days}d ago`;
+    return t("common.daysAgo", {count: days});
   }
 }
 
-function calcAge(blockTimestamp: Date, now: Date): string {
+function calcAge(
+  blockTimestamp: Date,
+  now: Date,
+  t: TFunction = englishT,
+): string {
   const durationInSec = Math.max(
     0,
     Math.floor(getTimeDiffInSeconds(blockTimestamp, now)),
   );
-  return formatAge(durationInSec);
+  return formatAge(durationInSec, t);
 }
 
 type BlockCellProps = {
@@ -100,6 +105,7 @@ function BlockHeightCell({block}: BlockCellProps) {
 }
 
 function BlockAgeCell({block}: BlockCellProps) {
+  const {t} = useTranslation();
   const now = useNow();
   const blockTimestamp = useMemo(
     () => parseTimestamp(block.block_timestamp),
@@ -107,7 +113,7 @@ function BlockAgeCell({block}: BlockCellProps) {
   );
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
-      {calcAge(blockTimestamp, now)}
+      {calcAge(blockTimestamp, now, t)}
     </GeneralTableCell>
   );
 }
@@ -196,6 +202,7 @@ type BlockCardProps = {
 };
 
 const BlockCard = React.memo(function BlockCard({block}: BlockCardProps) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
   const augmentTo = useAugmentToWithGlobalSearchParams();
@@ -204,7 +211,7 @@ const BlockCard = React.memo(function BlockCard({block}: BlockCardProps) {
     () => parseTimestamp(block.block_timestamp),
     [block.block_timestamp],
   );
-  const age = calcAge(blockTimestamp, now);
+  const age = calcAge(blockTimestamp, now, t);
 
   const numTransactions = (
     BigInt(block.last_version) -
@@ -250,7 +257,7 @@ const BlockCard = React.memo(function BlockCard({block}: BlockCardProps) {
         <Typography
           sx={{fontWeight: 600, fontSize: "0.95rem", color: "primary.main"}}
         >
-          Block {block.block_height}
+          {t("table.blockHeight", {height: block.block_height})}
         </Typography>
         <Typography
           variant="caption"
@@ -267,7 +274,7 @@ const BlockCard = React.memo(function BlockCard({block}: BlockCardProps) {
           variant="caption"
           sx={{color: "text.secondary", display: "block"}}
         >
-          Hash
+          {t("table.hashCol")}
         </Typography>
         <HashButton hash={block.block_hash} type={HashType.OTHERS} />
       </Box>
@@ -283,7 +290,7 @@ const BlockCard = React.memo(function BlockCard({block}: BlockCardProps) {
       >
         <Box>
           <Typography variant="caption" sx={{color: "text.secondary"}}>
-            Transactions
+            {t("common.transactions")}
           </Typography>
           <Typography sx={{fontSize: "0.85rem", fontWeight: 600}}>
             {numTransactions}
@@ -291,7 +298,7 @@ const BlockCard = React.memo(function BlockCard({block}: BlockCardProps) {
         </Box>
         <Box sx={{textAlign: "center"}}>
           <Typography variant="caption" sx={{color: "text.secondary"}}>
-            First Version
+            {t("table.firstVersion")}
           </Typography>
           <Typography
             sx={{fontSize: "0.85rem", fontWeight: 500, color: "primary.main"}}
@@ -301,7 +308,7 @@ const BlockCard = React.memo(function BlockCard({block}: BlockCardProps) {
         </Box>
         <Box sx={{textAlign: "right"}}>
           <Typography variant="caption" sx={{color: "text.secondary"}}>
-            Last Version
+            {t("table.lastVersion")}
           </Typography>
           <Typography
             sx={{fontSize: "0.85rem", fontWeight: 500, color: "primary.main"}}
@@ -321,19 +328,26 @@ type BlockHeaderCellProps = {
 function BlockHeaderCell({column}: BlockHeaderCellProps) {
   switch (column) {
     case "height":
-      return <GeneralTableHeaderCell header="Block" />;
+      return <GeneralTableHeaderCell headerKey="table.block" />;
     case "age":
-      return <GeneralTableHeaderCell header="Age" />;
+      return <GeneralTableHeaderCell headerKey="table.age" />;
     case "hash":
-      return <GeneralTableHeaderCell header="Hash" />;
+      return <GeneralTableHeaderCell headerKey="table.hashCol" />;
     case "numVersions":
       return (
-        <GeneralTableHeaderCell header="Num Transactions" textAlignRight />
+        <GeneralTableHeaderCell
+          headerKey="table.numTransactions"
+          textAlignRight
+        />
       );
     case "firstVersion":
-      return <GeneralTableHeaderCell header="First Version" textAlignRight />;
+      return (
+        <GeneralTableHeaderCell headerKey="table.firstVersion" textAlignRight />
+      );
     case "lastVersion":
-      return <GeneralTableHeaderCell header="Last Version" textAlignRight />;
+      return (
+        <GeneralTableHeaderCell headerKey="table.lastVersion" textAlignRight />
+      );
     default:
       return assertNever(column);
   }
@@ -348,6 +362,7 @@ export default function BlocksTable({
   blocks,
   columns = DEFAULT_COLUMNS,
 }: BlocksTableProps) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -381,7 +396,7 @@ export default function BlocksTable({
   // Desktop table view
   return (
     <Box sx={{overflowX: "auto"}}>
-      <Table aria-label="Blocks" data-entity-type="block">
+      <Table aria-label={t("common.blocksAria")} data-entity-type="block">
         <TableHead>
           <TableRow>
             {columns.map((column) => (

@@ -27,19 +27,19 @@ export default function PendingTransactionOverviewTab({
     >
       <ContentBox>
         <ContentRow
-          title="Sender:"
+          titleKey="fields.sender"
           value={
             <HashButton hash={transactionData.sender} type={HashType.ACCOUNT} />
           }
           tooltip={getLearnMoreTooltip("sender")}
         />
         <ContentRow
-          title="Sequence Number:"
+          titleKey="fields.sequenceNumber"
           value={transactionData.sequence_number}
           tooltip={getLearnMoreTooltip("sequence_number")}
         />
         <ContentRow
-          title="Expiration Timestamp:"
+          titleKey="fields.expirationTimestamp"
           value={
             <TimestampValue
               timestamp={parseExpirationTimestamp(
@@ -51,17 +51,17 @@ export default function PendingTransactionOverviewTab({
           tooltip={getLearnMoreTooltip("expiration_timestamp_secs")}
         />
         <ContentRow
-          title="Gas Unit Price:"
+          titleKey="fields.gasUnitPrice"
           value={<APTCurrencyValue amount={transactionData.gas_unit_price} />}
           tooltip={getLearnMoreTooltip("gas_unit_price")}
         />
         <ContentRow
-          title="Max Gas Limit:"
+          titleKey="fields.maxGasLimit"
           value={<GasValue gas={transactionData.max_gas_amount} />}
           tooltip={getLearnMoreTooltip("max_gas_amount")}
         />
         <ContentRow
-          title="Signature:"
+          titleKey="fields.signature"
           value={
             <SignatureOverviewTable signature={transactionData.signature} />
           }

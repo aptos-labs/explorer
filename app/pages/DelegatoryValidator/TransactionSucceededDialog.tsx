@@ -16,6 +16,7 @@ import {useState} from "react";
 import {StakeOperation} from "../../api/hooks/delegations";
 import StyledDialog from "../../components/StyledDialog";
 import {addressFromWallet} from "../../utils";
+import {InlineMarkup, useTranslation} from "../../i18n";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 
 type TransactionSucceededDialogProps = {
@@ -33,6 +34,7 @@ export default function TransactionSucceededDialog({
   transactionHash,
   stakeOperation,
 }: TransactionSucceededDialogProps) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const {account, wallet} = useWallet();
   const [copyTooltipOpen, setCopyTooltipOpen] = useState<boolean>(false);
@@ -60,9 +62,7 @@ export default function TransactionSucceededDialog({
         return (
           <Box>
             <Typography variant="body2" sx={{fontSize: 12}}>
-              {"You've successfully unlocked "}
-              <span style={{fontWeight: 600}}>{amount}</span>
-              {" APT"}
+              <InlineMarkup text={t("staking.unlockedAmount", {amount})} />
             </Typography>
           </Box>
         );
@@ -70,9 +70,7 @@ export default function TransactionSucceededDialog({
         return (
           <Box>
             <Typography variant="body2" sx={{fontSize: 12}}>
-              {"You've successfully withdrawn "}
-              <span style={{fontWeight: 600}}>{amount}</span>
-              {" APT"}
+              <InlineMarkup text={t("staking.withdrawnAmount", {amount})} />
             </Typography>
           </Box>
         );
@@ -81,12 +79,10 @@ export default function TransactionSucceededDialog({
         return (
           <Box>
             <Typography variant="body2" sx={{fontSize: 12}}>
-              Transaction is in progress.
+              {t("staking.txnInProgress")}
             </Typography>
             <Typography variant="body2" sx={{fontSize: 12}}>
-              {"Soon you will see your deposit of "}
-              <span style={{fontWeight: 600}}>{amount}</span>
-              {" APT in the staking pool."}
+              <InlineMarkup text={t("staking.soonDeposit", {amount})} />
             </Typography>
           </Box>
         );
@@ -97,7 +93,7 @@ export default function TransactionSucceededDialog({
     <StyledDialog handleDialogClose={handleDialogClose} open={isDialogOpen}>
       <DialogTitle variant="h5" sx={{textAlign: "center"}}>
         <Stack spacing={2}>
-          <div>Congratulations!</div>
+          <div>{t("staking.congratulations")}</div>
           {getDialogSubtext()}
         </Stack>
       </DialogTitle>
@@ -113,12 +109,12 @@ export default function TransactionSucceededDialog({
           }}
         >
           <Grid size="grow">
-            <Typography variant="caption">Transaction Address</Typography>
+            <Typography variant="caption">{t("staking.txnAddress")}</Typography>
             <Typography variant="body2" style={{overflowWrap: "break-word"}}>
               {transactionHash}
             </Typography>
           </Grid>
-          <Tooltip title="Copied" open={copyTooltipOpen}>
+          <Tooltip title={t("common.copied")} open={copyTooltipOpen}>
             <Button
               sx={{
                 color: "inherit",
@@ -145,7 +141,7 @@ export default function TransactionSucceededDialog({
           variant="primary"
           fullWidth
         >
-          View Transaction
+          {t("staking.viewTransaction")}
         </Button>
       </DialogActions>
     </StyledDialog>

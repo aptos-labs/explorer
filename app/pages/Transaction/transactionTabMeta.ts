@@ -1,25 +1,30 @@
+import {englishT, type TFunction} from "../../i18n";
+
 /**
  * Transaction detail tab titles (aligned with former route `head` metadata).
  */
-export function getTransactionTabHeadLabel(tab: string | undefined): string {
+export function getTransactionTabHeadLabel(
+  tab: string | undefined,
+  t: TFunction = englishT,
+): string {
   switch (tab) {
     case "decibelDetail":
-      return "Decibel";
+      return t("tabs.transaction.decibelDetail");
     case "payments":
-      return "Payments";
+      return t("tabs.transaction.payments");
     case "balanceChange":
-      return "Balance Change";
+      return t("tabs.transaction.balanceChange");
     case "trace":
-      return "Trace";
+      return t("tabs.transaction.trace");
     case "events":
-      return "Events";
+      return t("tabs.transaction.events");
     case "payload":
-      return "Payload";
+      return t("tabs.transaction.payload");
     case "modules":
-      return "Modules";
+      return t("tabs.transaction.modules");
     case "changes":
-      return "Changes";
+      return t("tabs.transaction.changes");
     default:
-      return "Overview";
+      return t("tabs.transaction.overview");
   }
 }

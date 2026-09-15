@@ -19,6 +19,7 @@ import type {
   PaymentFlowGraph,
   PaymentKind,
 } from "../../payments/types";
+import {useTranslation} from "../../../../i18n";
 import {paymentFlowToMermaid} from "../../payments/mermaid";
 
 function edgeColor(
@@ -137,6 +138,7 @@ type PaymentFlowDiagramProps = {
 export default function PaymentFlowDiagram({
   flow,
 }: PaymentFlowDiagramProps): React.JSX.Element | null {
+  const {t} = useTranslation();
   const [copied, setCopied] = useState(false);
   const mermaid = paymentFlowToMermaid(flow);
 
@@ -151,13 +153,12 @@ export default function PaymentFlowDiagram({
   return (
     <Stack spacing={2}>
       <Typography variant="h6" component="h3">
-        Payment flow
+        {t("payments.flowTitle")}
       </Typography>
       <Typography variant="body2" sx={{color: "text.secondary"}}>
-        Each arrow is one step in this transaction. Copy the Mermaid source if
-        you want the same diagram in docs or another renderer.
+        {t("payments.flowIntro")}
       </Typography>
-      <Stack spacing={2} aria-label="Payment flow diagram">
+      <Stack spacing={2} aria-label={t("payments.flowAria")}>
         {flow.edges.map((edge, i) => (
           <FlowEdgeRow
             key={`${edge.from}-${edge.to}-${edge.label}-${i}`}
@@ -174,16 +175,18 @@ export default function PaymentFlowDiagram({
       >
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="body2" sx={{fontWeight: 600}}>
-            Mermaid source
+            {t("payments.mermaidSource")}
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Box sx={{position: "relative"}}>
-            <Tooltip title={copied ? "Copied" : "Copy Mermaid"}>
+            <Tooltip
+              title={copied ? t("common.copied") : t("payments.copyMermaid")}
+            >
               <IconButton
                 size="small"
                 onClick={copy}
-                aria-label="Copy Mermaid source"
+                aria-label={t("payments.copyMermaidAria")}
                 sx={{position: "absolute", top: 0, right: 0}}
               >
                 <ContentCopyIcon fontSize="small" />
@@ -191,7 +194,7 @@ export default function PaymentFlowDiagram({
             </Tooltip>
             <Box
               component="pre"
-              aria-label="Mermaid source"
+              aria-label={t("payments.mermaidAria")}
               sx={{
                 m: 0,
                 pr: 5,

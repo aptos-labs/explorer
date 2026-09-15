@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import type React from "react";
 import {useState} from "react";
+import {useTranslation} from "../i18n";
 import {brandColors} from "../themes/colors/aptosBrandColors";
 
 type PillColor =
@@ -62,6 +63,7 @@ export function Banner({
 }: BannerProps) {
   const [open, setOpen] = useState(true);
   const theme = useTheme();
+  const {t} = useTranslation();
   const accent = useAccentColor(pillColor);
   const isSmall = !useMediaQuery(theme.breakpoints.up("sm"));
 
@@ -141,7 +143,7 @@ export function Banner({
           >
             {action}
             <IconButton
-              aria-label="Dismiss"
+              aria-label={t("common.dismiss")}
               size="small"
               onClick={() => setOpen(false)}
               sx={{

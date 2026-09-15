@@ -10,6 +10,7 @@ import {
   formatClaimedEntryFunction,
   isEncryptedTransactionPayload,
 } from "../../../utils/transactionPayload";
+import {useTranslation} from "../../../i18n";
 import ScriptBytecodeDecompiler from "./Components/ScriptBytecodeDecompiler";
 
 type PayloadTabProps = {
@@ -21,6 +22,7 @@ function EncryptedPayloadSummary({
 }: {
   payload: Types.TransactionPayload_EncryptedTransactionPayload;
 }) {
+  const {t} = useTranslation();
   const claimed = formatClaimedEntryFunction(payload.claimed_entry_fun);
   const stateColor =
     payload.encrypted_state === "decrypted"
@@ -34,39 +36,45 @@ function EncryptedPayloadSummary({
       <Stack direction="row" spacing={1} useFlexGap sx={{flexWrap: "wrap"}}>
         <Chip
           icon={<LockOutlined />}
-          label="Encrypted transaction"
+          label={t("payload.encryptedTxn")}
           size="small"
         />
         <Chip
           color={stateColor}
-          label={encryptedStateLabel(payload.encrypted_state)}
+          label={encryptedStateLabel(payload.encrypted_state, t)}
           size="small"
           variant="outlined"
         />
       </Stack>
       {payload.encryption_epoch != null && payload.encryption_epoch !== "" && (
         <Typography variant="body2" color="text.secondary">
-          Encryption epoch: {payload.encryption_epoch}
+          {t("payload.encryptionEpoch", {epoch: payload.encryption_epoch})}
         </Typography>
       )}
       {claimed && (
         <Typography variant="body2" color="text.secondary">
-          Claimed entry function: {claimed}
+          {t("payload.claimedEntry", {fn: claimed})}
         </Typography>
       )}
       {payload.encrypted_state === "failed_decryption" &&
         payload.decryption_failure_reason && (
           <Typography variant="body2" color="text.secondary">
-            Failure reason: {payload.decryption_failure_reason}
+            {t("payload.failureReason", {
+              reason: payload.decryption_failure_reason,
+            })}
           </Typography>
         )}
       {payload.decrypted_payload && (
         <>
-          <Typography variant="subtitle2">Decrypted payload</Typography>
+          <Typography variant="subtitle2">
+            {t("payload.decryptedPayload")}
+          </Typography>
           <JsonViewCard data={payload.decrypted_payload} />
         </>
       )}
-      <Typography variant="subtitle2">Encrypted payload</Typography>
+      <Typography variant="subtitle2">
+        {t("payload.encryptedPayload")}
+      </Typography>
     </Stack>
   );
 }

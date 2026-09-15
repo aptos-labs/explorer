@@ -6,7 +6,7 @@
 > code. Tests (unit, integration, E2E) should reference the feature IDs defined
 > here (e.g. `// Covers FEAT-SEARCH-001`).
 >
-> **Last updated**: 2026-09-11
+> **Last updated**: 2026-09-14
 
 ---
 
@@ -44,6 +44,8 @@
 30. [Releases Hub](#30-releases-hub)
 31. [Run Script (Advanced)](#31-run-script-advanced)
 32. [Security Headers](#32-security-headers)
+33. [Internationalization](#33-internationalization)
+34. [User Guide](#34-user-guide)
 
 ---
 
@@ -56,20 +58,23 @@ The app shell that wraps every page.
 | Aspect | Detail |
 |--------|--------|
 | **Logo** | Aptos logo links to `/`, scrolls to top. |
-| **Desktop Nav** | Links: Transactions, Analytics (mainnet only), Validators, Blocks, Coins. Active link highlighted via `useLocation`. |
-| **Mobile Nav** | Hamburger opens `NavMobile` drawer with same links, plus Settings and Wallet. |
+| **Desktop Nav** | Links: Transactions, Analytics (mainnet only), Validators, Blocks, Coins, Releases, Run Script. Active link highlighted via `useLocation`. |
+| **Mobile Nav** | Hamburger opens `HeaderOverflowMenu` with the same links, plus User Guide, Settings, language, theme toggle, and Wallet. |
 | **Search** | Header autocomplete search (see FEAT-SEARCH). |
 | **Network selector** | Dropdown to switch `?network=` param (see FEAT-NETWORK). |
+| **Language selector** | On wide viewports (`lg+`), a globe `IconButton` (`LanguageSelect`) in the header toolbar next to Settings. On compact viewports (`xs`–`md`), the same action is a Language `MenuItem` inside `HeaderOverflowMenu` that opens the catalog list. Applies immediately (see FEAT-SETTINGS-003). |
 | **Theme toggle** | Light/dark icon button (see FEAT-THEME). |
+| **User guide** | Help icon (desktop) and overflow-menu item (compact) link to `/guide` (see FEAT-GUIDE-001). |
 | **Settings** | Gear icon links to `/settings` page (see FEAT-SETTINGS-001). Rate Limit Drawer also links to `/settings`. |
 | **Wallet connector** | Connect/disconnect wallet button (see FEAT-WALLET). |
 | **Feature bar** | Colored banner when running on a non-production feature branch (see FEAT-FLAGS-004). |
+| **No horizontal page scroll** | The `lg+` toolbar (nav, network, help, settings, language, theme, wallet) fits the viewport so the document does not scroll sideways into empty space. |
 
 ### FEAT-CHROME-002 — Footer
 
 | Aspect | Detail |
 |--------|--------|
-| **Links** | Privacy, Terms, Verification page. |
+| **Links** | Privacy, Terms, Verification page, User Guide. |
 | **Social** | GitHub, Discord, X, Medium, LinkedIn — all `rel="noopener noreferrer"`. |
 | **Clear Cache** | Button clears search cache in localStorage. |
 | **Copyright** | Aptos Labs attribution. |
@@ -894,7 +899,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **Navigation** | Header gear icon and mobile nav "Settings" item link to `/settings`. Rate Limit Drawer "Set API key override" button also links there. |
 | **API key overrides** | One optional masked geomi.dev API key field per network (mainnet, testnet, devnet, decibel, shelbynet, local); shared show/hide toggle for all fields. Empty network uses the build default key (if any). Keys are sent as `Authorization: Bearer <key>` (Geomi + TS SDK `API_KEY`). A custom `api-key` header is ignored by the gateway. Geomi `AG-*` client keys also require a matching browser Origin. An info icon next to the section title opens a popover explaining that a personal key provides a dedicated rate limit (useful for heavy use or after HTTP 429) and links to geomi.dev. |
 | **Migration** | Previously saved single-key settings load as the same key applied to every network until the user saves again. |
-| **Persistence** | "Remember on this device" → localStorage, cross-tab sync via `storage` events. Non-API-key preferences (e.g. decompilation) persist to localStorage. |
+| **Persistence** | "Remember on this device" → localStorage, cross-tab sync via `storage` events. Non-API-key preferences (decompilation, language) persist to dedicated localStorage keys. |
 | **On save** | Clears cached SDK clients (`clearCachedV2Clients`, `clearCachedSearchClients`), invalidates all React Query queries, invalidates router. If non-empty API key saved, fires `emitApiKeySaved()` to dismiss rate-limit drawer (see FEAT-RATELIMIT-001). |
 
 ### FEAT-SETTINGS-002 — Decompilation Opt-In
@@ -905,6 +910,16 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **Disclaimer** | Warning alert explaining decompiled output may not match original source; user must acknowledge that output is as-is and they accept responsibility for use. |
 | **Gating** | When disabled, "Decompiled" and "Disassembly" view buttons are hidden on module code pages, script bytecode decompiler, and module diff view. Only "Published Source" and "ABI" remain visible. |
 | **Persistence** | Stored in `enableDecompilation` field of `ExplorerClientSettings` in localStorage. |
+
+### FEAT-SETTINGS-003 — Language Preference
+
+| Aspect | Detail |
+|--------|--------|
+| **Control** | On wide viewports (`lg+`), a globe icon in the header toolbar (`LanguageSelect`) opens the catalog list. On compact viewports (`xs`–`md`), a Language item in `HeaderOverflowMenu` opens the same list. `/settings` keeps a labeled **Display language** select. All three apply immediately. Options: **Browser default** (`auto`) or a registered catalog. Shipped catalogs: English (`en`), Simplified Chinese (`zh`), Traditional Chinese (`zh-Hant`), Filipino (`fil`), Spanish (`es`), French (`fr`), German (`de`), Japanese (`ja`), Korean (`ko`), Russian (`ru`), Brazilian Portuguese (`pt`), European Portuguese (`pt-PT`), Arabic (`ar`, RTL), Hindi (`hi`), Thai (`th`), Indonesian (`id`), Vietnamese (`vi`), Turkish (`tr`), Bengali (`bn`), Swahili (`sw`), Italian (`it`), Malay (`ms`), Tamil (`ta`), Ukrainian (`uk`), Dutch (`nl`), Polish (`pl`), Hebrew (`he`, RTL), Urdu (`ur`, RTL), Hausa (`ha`), Zulu (`zu`), and Amharic (`am`). |
+| **Scope** | Chrome (header, nav, footer, skip link, search placeholder/helper/type chips), settings copy, and the in-app user guide are translated in every shipped catalog. Remaining explorer UI copy (tabs, field labels, tables, errors, entity titles, and related chrome) lives in the English catalogs; `zh`, `fil`, `es`, `fr`, `de`, `ja`, `ko`, `ru`, `pt`, `ar`, `hi`, `th`, `id`, `vi`, `tr`, `bn`, `sw`, `zh-Hant`, `it`, `ms`, `ta`, `pl`, `ur`, `pt-PT`, `ha`, `zu`, `am` include those keys, and other locales fall back to English. On-chain identifiers stay untranslated. |
+| **Resolution** | Explicit catalog wins (case-insensitive). `auto` maps `navigator.languages` tags onto `SUPPORTED_LOCALES`, including `tl`→`fil`, `iw`→`he`, `zh-CN`/`zh-Hans`→`zh`, `zh-Hant`/`zh-TW`/`zh-HK`/`zh-MO`→`zh-Hant`, `pt-BR`→`pt`, and `pt-PT` plus lusophone African regions (`pt-AO`, `pt-MZ`, `pt-CV`, `pt-GW`, `pt-ST`)→`pt-PT`. |
+| **Persistence** | `localePreference` on `ExplorerClientSettings`, stored in `aptos-explorer-locale` localStorage independently of API keys. The header icon, overflow-menu language item, and Settings language select write this immediately; they do not wait for Settings **Save**. |
+| **Document language** | SSR `html lang="en"`; after hydration `document.documentElement.lang` / `dir` follow the resolved locale. |
 
 ---
 
@@ -1090,7 +1105,7 @@ top of the HTML site.
 | **OAuth Protected Resource (RFC 9728)** | `public/.well-known/oauth-protected-resource` with `resource` = `https://explorer.aptoslabs.com/`, empty `authorization_servers`, and `resource_documentation` pointing at `/auth.md`. There is **no** `/.well-known/oauth-authorization-server` / OpenID configuration — inventing token endpoints would be misleading. |
 | **Content Signals** | `public/robots.txt` declares `Content-Signal: ai-train=no, search=yes, ai-input=yes` at the top of the file and inside every AI-crawler `User-agent` group (contentsignals.org / draft-romm-aipref-contentsignals). |
 | **Markdown negotiation** | The SSR **outer** `fetch` in `app/ssr.tsx` (via `negotiateMarkdownRequest`) runs **before** TanStack Start's HTML-only Accept gate, which otherwise returns HTTP 500 JSON for `Accept: text/markdown`. Homepage serves bundled `public/llms.txt`; other HTML routes serve a short path stub. Headers: `Content-Type: text/markdown`, `Vary: Accept`, `X-Markdown-Source`, `X-Markdown-Tokens`. Helper: `app/utils/acceptMarkdown.ts` (`prefersMarkdown`). |
-| **WebMCP** | `app/components/WebMCPProvider.tsx` registers read-only navigation tools (`search_explorer`, `open_transaction`, `open_account`, `open_block`, `open_releases`, `open_coin`) on `navigator.modelContext` when supported. Tool definitions live in `app/components/webMcpTools.ts`; registration is cleaned up via `AbortSignal` on unmount. |
+| **WebMCP** | `app/components/WebMCPProvider.tsx` registers read-only navigation tools (`search_explorer`, `open_transaction`, `open_account`, `open_block`, `open_releases`, `open_coin`, `open_guide`) on `navigator.modelContext` when supported. Tool definitions live in `app/components/webMcpTools.ts`; registration is cleaned up via `AbortSignal` on unmount. |
 | **Out of repo** | DNS-AID (`_index._agents.explorer.aptoslabs.com` SVCB/HTTPS) and Web Bot Auth (`/.well-known/http-message-signatures-directory`) require DNS / outbound-bot signing keys and are documented in `docs/LLM_ACCESS.md`, not implemented as fake records. |
 
 ---
@@ -1333,6 +1348,37 @@ top of the HTML site.
 
 ---
 
+## 33. Internationalization
+
+### FEAT-I18N-001 — Message catalogs and locale resolution
+
+| Aspect | Detail |
+|--------|--------|
+| **Library** | In-repo helpers in `app/i18n/` (no extra npm i18n dependency). Nested JSON-like catalogs, `{name}` interpolation, `t` / `tList`, and a small inline markup parser (`**bold**`, `` `code` ``, `[label](href)`). |
+| **English source** | `app/i18n/messages/en.ts` (and `app/i18n/messages/en/*.ts`) is the complete source catalog for chrome, settings, search, the user guide, and remaining explorer UI copy. |
+| **Shipped locales** | Every registered catalog in `SUPPORTED_LOCALES` (see FEAT-SETTINGS-003) is available in the language picker. `zh`, `fil`, `es`, `fr`, `de`, `ja`, `ko`, `ru`, `pt`, `ar`, `hi`, `th`, `id`, `vi`, `tr`, `bn`, `sw`, `zh-Hant`, `it`, `ms`, `ta`, `pl`, `ur`, `pt-PT`, `ha`, `zu`, `am` match the full English key tree. Other locales cover chrome, settings, search tokens, and the user guide; missing keys fall back to English. Automated tests enforce key/placeholder parity for the full-UI locales and subset/placeholder parity for the others. |
+| **Adding a locale** | Add a catalog file, register it in `SUPPORTED_LOCALES` / `messageCatalogs` / `LOCALE_META`, and update the shipped-locales table in `AGENTS.md` in the same PR (`app/i18n/agentsLocales.test.ts` fails if the list diverges). Also update FEAT-SETTINGS-003 and `CHANGELOG.md`. Generate TypeScript from JSON with `node scripts/i18n-json-to-catalog.mjs`. Missing keys fall back to English. |
+| **Provider** | `I18nProvider` (inside `ExplorerSettingsProvider`) resolves locale and updates `document.documentElement.lang` / `dir` (and `og:locale` when present) after hydration. `useTranslation()` falls back to English when no provider is mounted. |
+| **Formatting helpers** | Locale-bound `formatNumber`, `formatInteger`, and `formatDateTime` wrap `Intl`. Locale metadata selects intended regional tags (for example `pt-BR`) so decimal separators, grouping (including Indian grouping), date order, and 12/24-hour conventions follow the selected locale. Date/time output is pinned to UTC to remain deterministic between SSR and hydration. |
+
+---
+
+## 34. User Guide
+
+**Route**: `/guide` (legacy `/help` redirects here, preserving `?network=`)
+
+### FEAT-GUIDE-001 — In-app user guide
+
+| Aspect | Detail |
+|--------|--------|
+| **Content** | Article-style guide covering what the explorer is, chrome, search, networks, transactions, accounts/objects, modules, blocks, validators, assets, analytics, releases, Run Script, configuration, wallet, verification, URLs/agents, glossary, and troubleshooting. Copy lives in i18n catalogs (English source plus shipped translations). |
+| **TOC** | Sticky "On this page" nav with hash links to each section. |
+| **Layout** | The guide column is width-constrained (`min-width: 0`, wrapping long tokens) so it does not extend the page sideways. |
+| **Navigation** | Header help icon (desktop), overflow menu (compact), footer link. WebMCP `open_guide` tool. |
+| **Metadata** | `PageMetadata` type `article`, canonical `/guide`. |
+
+---
+
 ## Appendix A: URL Pattern Reference
 
 | URL Pattern | Feature ID |
@@ -1344,6 +1390,9 @@ top of the HTML site.
 | `/coins` | FEAT-COINS-001 |
 | `/analytics` | FEAT-ANALYTICS-001 |
 | `/verification` | FEAT-VERIFY-001 |
+| `/guide` | FEAT-GUIDE-001 |
+| `/help` | FEAT-GUIDE-001 (redirect to `/guide`) |
+| `/settings` | FEAT-SETTINGS-001 |
 | `/validators/$tab` | FEAT-VALIDATORS-001 |
 | `/account/$address/$tab` | FEAT-ACCOUNT-005 |
 | `/object/$address/$tab` | FEAT-ACCOUNT-005 |
@@ -1385,7 +1434,16 @@ top of the HTML site.
 | `app/utils/agentDiscoveryHeaders.test.ts` | FEAT-SEO-004 (SSR `Link` / `Vary: Accept` attachment, relative request URLs) |
 | `app/utils/agentCard.test.ts` | FEAT-SEO-004 (A2A Agent Card fields and WebMCP-aligned skills) |
 | `app/utils/authDiscovery.test.ts` | FEAT-SEO-004 (`/auth.md` H1 + public RFC 9728 PRM) |
-| `app/components/webMcpTools.test.ts` | FEAT-SEO-004 (WebMCP navigation tools: routing, validation) |
+| `app/components/webMcpTools.test.ts` | FEAT-SEO-004 (WebMCP navigation tools: routing, validation), FEAT-GUIDE-001 (`open_guide`) |
+| `app/i18n/translate.test.ts` | FEAT-I18N-001 (interpolation, nested keys, catalog fallback) |
+| `app/i18n/detectLocale.test.ts` | FEAT-I18N-001 (locale preference and browser-language resolution) |
+| `app/i18n/format.test.ts` | FEAT-I18N-001 (`Intl` number/date helpers) |
+| `app/i18n/inlineMarkup.test.ts` | FEAT-I18N-001 (bold/code/link markup and internal vs external hrefs) |
+| `app/i18n/messages.en.test.ts` | FEAT-I18N-001 / FEAT-GUIDE-001 (English chrome, guide, tabs, fields, errors, verification titles; shipped locale key/placeholder parity) |
+| `app/i18n/messages.catalogs.test.ts` | FEAT-I18N-001 (locale metadata; full-UI locales match English keys; other locales are an English-key subset) |
+| `app/i18n/agentsLocales.test.ts` | FEAT-I18N-001 (`AGENTS.md` shipped-locales table matches `SUPPORTED_LOCALES` / `LOCALE_META`) |
+| `app/components/layout/LanguageSelect.test.tsx` | FEAT-SETTINGS-003 / FEAT-CHROME-001 (header language icon menu lists catalogs and persists `aptos-explorer-locale`) |
+| `app/pages/Guide/guideSections.test.ts` | FEAT-GUIDE-001 (section ids, titles, body copy) |
 | `app/utils/routerParams.test.ts` | FEAT-ROUTING-003 (`pathSplatToSegments` normalization) |
 | `app/api/hooks/aptosFeatureFlagsUpstream.test.ts` | FEAT-RELEASES-001 (upstream Rust enum parse for unlisted feature flag names) |
 | `app/api/hooks/useGetNetworkStatus.test.ts` | FEAT-RELEASES-001 (`fetchNetworkStatus`) |
@@ -1420,7 +1478,7 @@ top of the HTML site.
 | `app/data/defunctProtocols.test.ts` | FEAT-ACCOUNT-003 (defunct protocol registry shape, uniqueness, known-address `// defunct` / `// winding_down` comment drift) |
 | `app/data/functionArgumentNameOverrides/lookup.test.ts` | FEAT-DATA-003 / FEAT-MODULES-006 (argument name override lookup) |
 | `app/types/defunctProtocol.test.ts` | FEAT-ACCOUNT-003 (withdrawal plugin validation) |
-| `app/settings/clientSettings.test.ts` | FEAT-SETTINGS-001 (settings persistence, sanitization) |
+| `app/settings/clientSettings.test.ts` | FEAT-SETTINGS-001 (settings persistence, sanitization), FEAT-I18N-001 (locale preference) |
 | `app/themes/colors/aptosBrandColors.a11y.test.ts` | FEAT-THEME-001 (WCAG contrast regression) |
 | `app/components/hooks/usePageMetadata.structuredData.test.ts` | FEAT-SEO-001 (JSON-LD generation) |
 | `app/components/IndividualPageContent/ContentValue/CurrencyValue.test.tsx` | Currency formatting (octa → APT) |
@@ -1438,6 +1496,7 @@ top of the HTML site.
 | `app/pages/Transaction/Tabs/Components/decodeMultisigPayload.test.ts` | FEAT-TXN-004 (BCS decoding of multisig payload bytes into an entry function; empty/invalid fallbacks) |
 | `app/pages/Transaction/Tabs/Components/decodeMoveArgument.test.ts` | FEAT-TXN-011 / FEAT-TXN-004 (ABI-typed BCS argument decoding: address, ints, bool, String, vector, Object, Option; positional alignment and invalid/leftover fallbacks) |
 | `app/pages/Transaction/Tabs/Components/useEntryFunctionArgNames.test.ts` | FEAT-TXN-011 (entry function arg / type-param name resolution from Move source, signer-slot dropping, no-source fallback) |
+| `e2e/smoke.spec.ts` | FEAT-GUIDE-001 / FEAT-CHROME-001 / FEAT-SETTINGS-003 (Playwright: `/guide` loads; document does not overflow horizontally on desktop and a 375px viewport; desktop header language icon is present) |
 | `e2e/transaction-balance-change.spec.ts` | FEAT-TXN-003 (Playwright: testnet Balance Change tab loads indexer FA activities; asserts gas-fee row; skips outside CI when testnet gateway returns 401 for local preview origin) |
 | `e2e/transaction-payments.spec.ts` | FEAT-TXN-016 (Playwright: Payments tab hidden on fees-only testnet txn; shown and explains a live P2P transfer) |
 | `e2e/encrypted-transaction-localnet.spec.ts` | FEAT-TXN-002 / FEAT-TXN-005 (Playwright: submit encrypted transfer on localnet, assert overview Encryption chips + Coin Transfer + Payload tab; gated by `APTOS_LOCALNET=1`) |

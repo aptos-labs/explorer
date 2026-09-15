@@ -14,6 +14,7 @@ import {
 import type {KeyboardEvent} from "react";
 import {useCallback, useRef, useState} from "react";
 import type {FunctionFilterParams} from "../../../api/hooks/useFunctionFilter";
+import {useTranslation} from "../../../i18n";
 
 type FunctionFilterProps = {
   value: FunctionFilterParams;
@@ -24,36 +25,35 @@ type FunctionFilterProps = {
 
 type FieldConfig = {
   key: keyof FunctionFilterParams;
-  label: string;
+  labelKey: string;
   placeholder: string;
-  ariaLabel: string;
-  disabledHint: string;
+  ariaKey: string;
+  disabledKey?: string;
   flex: number;
 };
 
 const FIELDS: FieldConfig[] = [
   {
     key: "address",
-    label: "Contract Address",
+    labelKey: "filter.contractAddress",
     placeholder: "0x1",
-    ariaLabel: "Filter by contract address",
-    disabledHint: "",
+    ariaKey: "filter.addressAria",
     flex: 2,
   },
   {
     key: "module",
-    label: "Module",
+    labelKey: "filter.module",
     placeholder: "coin",
-    ariaLabel: "Filter by module name",
-    disabledHint: "Set a contract address first",
+    ariaKey: "filter.moduleAria",
+    disabledKey: "filter.moduleDisabled",
     flex: 1,
   },
   {
     key: "functionName",
-    label: "Function",
+    labelKey: "filter.function",
     placeholder: "transfer",
-    ariaLabel: "Filter by function name",
-    disabledHint: "Set a module name first",
+    ariaKey: "filter.functionAria",
+    disabledKey: "filter.functionDisabled",
     flex: 1,
   },
 ];
@@ -72,7 +72,9 @@ function FilterField({
   onSubmit: (key: keyof FunctionFilterParams) => void;
 }) {
   const theme = useTheme();
+  const {t} = useTranslation();
   const isClearing = useRef(false);
+  const label = t(config.labelKey);
 
   const handleCommit = useCallback(() => {
     if (disabled) return;
@@ -110,8 +112,8 @@ function FilterField({
       size="small"
       fullWidth
       disabled={disabled}
-      label={config.label}
-      aria-label={config.ariaLabel}
+      label={label}
+      aria-label={t(config.ariaKey)}
       placeholder={disabled ? "" : config.placeholder}
       value={displayValue}
       onChange={(e) => onInputChange(config.key, e.target.value)}
@@ -123,7 +125,7 @@ function FilterField({
           endAdornment: displayValue ? (
             <InputAdornment position="end">
               <IconButton
-                aria-label={`Clear ${config.label.toLowerCase()}`}
+                aria-label={t("filter.clear", {name: label.toLowerCase()})}
                 tabIndex={-1}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={handleClear}
@@ -156,9 +158,9 @@ function FilterField({
     />
   );
 
-  if (disabled && config.disabledHint) {
+  if (disabled && config.disabledKey) {
     return (
-      <Tooltip title={config.disabledHint}>
+      <Tooltip title={t(config.disabledKey)}>
         <Box sx={{flex: config.flex, minWidth: 120}}>{field}</Box>
       </Tooltip>
     );
@@ -174,6 +176,7 @@ export default function FunctionFilter({
   isFilterActive,
 }: FunctionFilterProps) {
   const theme = useTheme();
+  const {t} = useTranslation();
 
   const [localValues, setLocalValues] = useState<FunctionFilterParams>({
     address: value.address,
@@ -248,7 +251,7 @@ export default function FunctionFilter({
           mb: 1,
         }}
       >
-        <Tooltip title="Filter transactions by entry function fields (press Enter or Tab to apply each field)">
+        <Tooltip title={t("tooltips.functionFilter")}>
           <FilterListIcon
             sx={{fontSize: 20, color: theme.palette.text.secondary}}
           />
@@ -260,11 +263,11 @@ export default function FunctionFilter({
             fontWeight: 500,
           }}
         >
-          Filter by Entry Function
+          {t("filter.entryFunction")}
         </Typography>
         {isFilterActive && (
           <Chip
-            label="Clear all"
+            label={t("filter.clearAll")}
             size="small"
             onDelete={onClear}
             deleteIcon={<ClearIcon />}

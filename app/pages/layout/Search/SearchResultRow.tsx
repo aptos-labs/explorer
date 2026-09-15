@@ -2,11 +2,12 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import {Box, Chip, Typography, useTheme} from "@mui/material";
 import type React from "react";
 import {memo} from "react";
+import {useTranslation} from "../../../i18n";
 import {Link} from "../../../routing";
 import {SearchResultAvatar} from "./SearchResultAvatar";
 import {
   searchResultTypeChipColor,
-  searchResultTypeLabel,
+  searchResultTypeMessageKey,
 } from "./searchConstants";
 import type {SearchResult} from "./searchUtils";
 
@@ -17,9 +18,13 @@ import type {SearchResult} from "./searchUtils";
  */
 export const SearchResultGroupHeader = memo(function SearchResultGroupHeader({
   label,
+  labelKey,
 }: {
   label: string;
+  labelKey?: string;
 }): React.JSX.Element {
+  const {t} = useTranslation();
+  const displayLabel = labelKey ? t(labelKey) : label;
   return (
     <Box sx={{px: 2, py: 0.75, backgroundColor: "action.hover"}}>
       <Typography
@@ -33,7 +38,7 @@ export const SearchResultGroupHeader = memo(function SearchResultGroupHeader({
           color: "text.secondary",
         }}
       >
-        {label}
+        {displayLabel}
       </Typography>
     </Box>
   );
@@ -56,11 +61,16 @@ export const SearchResultRow = memo(function SearchResultRow({
   showChevron = false,
 }: SearchResultRowProps): React.JSX.Element {
   const theme = useTheme();
+  const {t} = useTranslation();
 
   if (!result.to) {
     return (
       <Box sx={{px: 2, py: 1.5}}>
-        <Typography sx={{color: "text.secondary"}}>{result.label}</Typography>
+        <Typography sx={{color: "text.secondary"}}>
+          {result.labelKey
+            ? t(result.labelKey, result.labelVars)
+            : result.label}
+        </Typography>
       </Box>
     );
   }
@@ -90,7 +100,7 @@ export const SearchResultRow = memo(function SearchResultRow({
         sizePx={24}
       />
       <Chip
-        label={searchResultTypeLabel(result.type)}
+        label={t(searchResultTypeMessageKey(result.type))}
         color={searchResultTypeChipColor(result.type)}
         size="small"
         sx={{flexShrink: 0, fontWeight: 600, fontSize: "0.7rem"}}
@@ -105,7 +115,7 @@ export const SearchResultRow = memo(function SearchResultRow({
           fontSize: "0.9rem",
         }}
       >
-        {result.label}
+        {result.labelKey ? t(result.labelKey, result.labelVars) : result.label}
       </Typography>
       {showChevron && (
         <ArrowForwardIosIcon

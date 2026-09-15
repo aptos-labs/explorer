@@ -2,11 +2,13 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import {Box, Button, Tooltip, useTheme} from "@mui/material";
 import {useCallback, useState} from "react";
 import HashButton, {HashType} from "../../../components/HashButton";
+import {useTranslation} from "../../../i18n";
 import {truncateAddress} from "../../../utils/utils";
 import type {FormattedCctpRecipient} from "./formatRecipient";
 
 function CopyableAddress({value}: {value: string}) {
   const theme = useTheme();
+  const {t} = useTranslation();
   const [copied, setCopied] = useState(false);
 
   const copy = useCallback(
@@ -21,7 +23,7 @@ function CopyableAddress({value}: {value: string}) {
   );
 
   return (
-    <Tooltip title={copied ? "Copied" : value} enterDelay={500}>
+    <Tooltip title={copied ? t("common.copied") : value} enterDelay={500}>
       <Button
         onClick={copy}
         size="small"

@@ -26,8 +26,8 @@ export default function DailyActiveUserChart({
   return (
     <CardOutline>
       <ChartTitle
-        label="Daily Active Accounts"
-        tooltip="Daily count of distinct addresses with signed transactions."
+        labelKey="analytics.dailyActiveAccounts"
+        tooltipKey="analytics.dailyActiveAccountsTip"
       />
       <BarChart labels={labels} dataset={dataset} />
     </CardOutline>

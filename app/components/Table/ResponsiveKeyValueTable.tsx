@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import type {SxProps, Theme} from "@mui/material/styles";
 import * as React from "react";
+import {type TranslateVars, useTranslation} from "../../i18n";
 import GeneralTableBody from "./GeneralTableBody";
 import GeneralTableCell from "./GeneralTableCell";
 import GeneralTableRow from "./GeneralTableRow";
@@ -98,7 +99,9 @@ export function ResponsiveKeyValueTable({
 }
 
 export type ResponsiveKeyValueRowProps = {
-  label: React.ReactNode;
+  label?: React.ReactNode;
+  labelKey?: string;
+  labelVars?: TranslateVars;
   /** Shown under the label (both stacked and table layouts). */
   description?: React.ReactNode;
   children?: React.ReactNode;
@@ -106,11 +109,15 @@ export type ResponsiveKeyValueRowProps = {
 
 export function ResponsiveKeyValueRow({
   label,
+  labelKey,
+  labelVars,
   description,
   children,
 }: ResponsiveKeyValueRowProps) {
   const {isStacked} = useKeyValueLayoutContext();
   const theme = useTheme();
+  const {t} = useTranslation();
+  const displayLabel = labelKey ? t(labelKey, labelVars) : label;
   const hasDescription =
     description != null &&
     description !== false &&
@@ -132,7 +139,7 @@ export function ResponsiveKeyValueRow({
             color: "text.primary",
           }}
         >
-          {label}
+          {displayLabel}
         </Typography>
         {hasDescription ? (
           <Typography
@@ -171,7 +178,7 @@ export function ResponsiveKeyValueRow({
           width: "38%",
         }}
       >
-        {label}
+        {displayLabel}
         {hasDescription ? (
           <Typography
             component="div"

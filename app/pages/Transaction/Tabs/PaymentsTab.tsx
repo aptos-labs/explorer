@@ -29,6 +29,7 @@ import HashButton, {HashType} from "../../../components/HashButton";
 import {TransactionTypeName} from "../../../components/TransactionType";
 import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
 import {addressFromWallet} from "../../../utils";
+import {useTranslation, type TFunction} from "../../../i18n";
 import {CLIENT_SIDE_PAYMENT_TRACKER} from "../payments/clientTrace";
 import {
   formatPaymentAmount,
@@ -74,24 +75,113 @@ function kindChipColor(
   }
 }
 
-function kindLabel(kind: PaymentIdentification["primaryKind"]): string {
+function kindLabel(
+  kind: PaymentIdentification["primaryKind"],
+  t: TFunction,
+): string {
   switch (kind) {
     case "p2p":
-      return "Peer-to-peer";
+      return t("payments.kind.p2p");
     case "controlled":
-      return "Controlled (partner)";
+      return t("payments.kind.controlled");
     case "confidential":
-      return "Confidential";
+      return t("payments.kind.confidential");
     case "confidential_to_public":
-      return "Confidential → public";
+      return t("payments.kind.confidentialToPublic");
     case "public_to_confidential":
-      return "Public → confidential";
+      return t("payments.kind.publicToConfidential");
     case "exchange":
-      return "Exchange";
+      return t("payments.kind.exchange");
     case "fees_only":
-      return "Fees only";
+      return t("payments.kind.feesOnly");
     default:
-      return "No payment";
+      return t("payments.kind.none");
+  }
+}
+
+function stepTitle(step: PaymentStep, t: TFunction): string {
+  switch (step.kind) {
+    case "p2p":
+      return t("payments.kind.p2pTransfer");
+    case "controlled":
+      return t("payments.kind.controlledTransfer");
+    case "confidential":
+      return t("payments.kind.confidential");
+    case "confidential_to_public":
+      return t("payments.kind.confidentialToPublic");
+    case "public_to_confidential":
+      return t("payments.kind.publicToConfidential");
+    case "exchange":
+      return t("payments.kind.exchange");
+    default:
+      return step.title;
+  }
+}
+
+function translatePartnerLabel(
+  label: string | undefined,
+  t: TFunction,
+): string | undefined {
+  if (!label) return undefined;
+  switch (label) {
+    case "TransferRef / dispatchable partner":
+      return t("payments.partner.transferRef");
+    case "partner module":
+      return t("payments.partner.module");
+    case "intermediary":
+      return t("payments.partner.intermediary");
+    default:
+      return label;
+  }
+}
+
+function feeCopy(
+  fee: PaymentFeeLine,
+  t: TFunction,
+): {label: string; explanation: string} {
+  switch (fee.kind) {
+    case "execution":
+      return {
+        label: t("payments.fee.execution"),
+        explanation: t("payments.fee.executionTip"),
+      };
+    case "io":
+      return {
+        label: t("payments.fee.io"),
+        explanation: t("payments.fee.ioTip"),
+      };
+    case "storage":
+      return {
+        label: t("payments.fee.storage"),
+        explanation: t("payments.fee.storageTip"),
+      };
+    case "storage_refund":
+      return {
+        label: t("payments.fee.storageRefund"),
+        explanation: t("payments.fee.storageRefundTip"),
+      };
+    case "gas":
+      return {
+        label: t("payments.fee.gas"),
+        explanation: t("payments.fee.gasTip"),
+      };
+    case "net":
+      return {
+        label: t("payments.fee.net"),
+        explanation: fee.explanation,
+      };
+    case "partner": {
+      const symbol = fee.label.replace(
+        /^Partner \/ protocol fee \((.+)\)$/,
+        "$1",
+      );
+      return {
+        label: t("payments.fee.partner", {symbol}),
+        explanation: t("payments.fee.partnerTip"),
+      };
+    }
+    default:
+      return {label: fee.label, explanation: fee.explanation};
   }
 }
 
@@ -104,6 +194,7 @@ function AmountView({
   amount: PaymentAmount;
   coinData: CoinList;
 }) {
+  const {t} = useTranslation();
   if (amount.visibility === "encrypted") {
     return (
       <Stack
@@ -113,7 +204,7 @@ function AmountView({
       >
         <LockOutlinedIcon fontSize="small" aria-hidden />
         <Typography component="span" sx={{fontWeight: 700}}>
-          Amount encrypted
+          {t("payments.amountEncrypted")}
         </Typography>
         <FungibleAssetChip metadata={amount.assetId} coinData={coinData} />
       </Stack>
@@ -159,6 +250,7 @@ function StepCard({
   coinData: CoinList;
   index: number;
 }) {
+  const {t} = useTranslation();
   const theme = useTheme();
   return (
     <Paper
@@ -174,16 +266,16 @@ function StepCard({
         >
           <Chip
             size="small"
-            label={`Step ${index + 1}`}
+            label={t("payments.step", {n: index + 1})}
             sx={{fontWeight: 700}}
           />
           <Chip
             size="small"
             color={kindChipColor(step.kind)}
-            label={kindLabel(step.kind)}
+            label={kindLabel(step.kind, t)}
           />
           <Typography variant="h6" component="h3">
-            {step.title}
+            {stepTitle(step, t)}
           </Typography>
         </Stack>
         <Typography variant="body1">{step.explanation}</Typography>
@@ -192,29 +284,38 @@ function StepCard({
           spacing={3}
           sx={{alignItems: {md: "flex-start"}}}
         >
-          <Party label="From" address={step.from} />
-          <Party label="To" address={step.to} />
+          <Party label={t("payments.from")} address={step.from} />
+          <Party label={t("payments.to")} address={step.to} />
           {step.partner && step.partner !== "voluntary auditor" ? (
             <Party
-              label={step.partnerLabel ?? "Partner"}
+              label={
+                translatePartnerLabel(step.partnerLabel, t) ??
+                t("payments.partner.default")
+              }
               address={step.partner}
             />
           ) : step.partnerLabel ? (
             <Stack spacing={0.5}>
               <Typography variant="caption" sx={{color: "text.secondary"}}>
-                Partner
+                {t("payments.partner.default")}
               </Typography>
-              <Typography variant="body2">{step.partnerLabel}</Typography>
+              <Typography variant="body2">
+                {translatePartnerLabel(step.partnerLabel, t)}
+              </Typography>
             </Stack>
           ) : null}
         </Stack>
         {step.kind === "exchange" ? (
           <Stack spacing={1}>
-            <Typography variant="subtitle2">Exchange input</Typography>
+            <Typography variant="subtitle2">
+              {t("payments.exchangeInput")}
+            </Typography>
             {step.amount ? (
               <AmountView amount={step.amount} coinData={coinData} />
             ) : null}
-            <Typography variant="subtitle2">Exchange output</Typography>
+            <Typography variant="subtitle2">
+              {t("payments.exchangeOutput")}
+            </Typography>
             {step.amountOut ? (
               <AmountView amount={step.amountOut} coinData={coinData} />
             ) : null}
@@ -222,28 +323,30 @@ function StepCard({
         ) : step.amount ? (
           <Box>
             <Typography variant="subtitle2" sx={{mb: 0.5}}>
-              Amount
+              {t("payments.amount")}
             </Typography>
             <AmountView amount={step.amount} coinData={coinData} />
             {step.amount.visibility === "encrypted" ? (
               <Typography variant="body2" sx={{color: "text.secondary", mt: 1}}>
-                {formatPaymentAmount(step.amount)} — ciphertext is not decrypted
-                in the explorer.
+                {t("payments.ciphertextNote", {
+                  amount: formatPaymentAmount(step.amount),
+                })}
               </Typography>
             ) : null}
           </Box>
         ) : null}
         {step.partnerFee ? (
           <Alert severity="warning">
-            Partner / protocol fee: {formatPaymentAmount(step.partnerFee)}
+            {t("payments.partnerFee", {
+              amount: formatPaymentAmount(step.partnerFee),
+            })}
           </Alert>
         ) : null}
         <Typography
           variant="caption"
           sx={{color: theme.palette.text.secondary}}
         >
-          Identified from this transaction body (events, payload, write-set). No
-          extra API calls.
+          {t("payments.identifiedFromBody")}
         </Typography>
       </Stack>
     </Paper>
@@ -251,6 +354,7 @@ function StepCard({
 }
 
 function FeesPanel({fees}: {fees: PaymentFeeLine[]}) {
+  const {t} = useTranslation();
   const net = fees.find((fee) => fee.kind === "net");
   const partner = fees.filter((fee) => fee.kind === "partner");
   const breakdown = fees.filter(
@@ -260,20 +364,18 @@ function FeesPanel({fees}: {fees: PaymentFeeLine[]}) {
     <Paper
       variant="outlined"
       sx={{p: {xs: 2, sm: 3}}}
-      aria-label="Payment fees"
+      aria-label={t("payments.feesAria")}
     >
       <Stack spacing={2}>
         <Typography variant="h6" component="h3">
-          Fees
+          {t("payments.fees")}
         </Typography>
-        <Typography variant="body1">
-          Every user transaction pays network fees in APT. Storage refunds
-          reduce the net cost. Partner or protocol skims (if any) are listed
-          separately from gas.
-        </Typography>
+        <Typography variant="body1">{t("payments.feesIntro")}</Typography>
         {net ? (
           <Box>
-            <Typography variant="subtitle2">Net network fee</Typography>
+            <Typography variant="subtitle2">
+              {t("payments.netNetworkFee")}
+            </Typography>
             <Typography variant="h5" component="p" sx={{fontWeight: 700}}>
               <APTCurrencyValue amount={net.amountOctas} />
             </Typography>
@@ -282,29 +384,35 @@ function FeesPanel({fees}: {fees: PaymentFeeLine[]}) {
             </Typography>
             {net.payer ? (
               <Box sx={{mt: 1}}>
-                <Party label="Paid by" address={net.payer} />
+                <Party label={t("payments.paidBy")} address={net.payer} />
               </Box>
             ) : null}
           </Box>
         ) : null}
         {breakdown.length > 0 ? (
-          <Stack spacing={1.5} aria-label="Fee breakdown">
-            {breakdown.map((fee) => (
-              <Box key={fee.id}>
-                <Typography variant="subtitle2">{fee.label}</Typography>
-                <Typography variant="body2">
-                  <APTCurrencyValue amount={fee.amountOctas} /> —{" "}
-                  {fee.explanation}
-                </Typography>
-              </Box>
-            ))}
+          <Stack spacing={1.5} aria-label={t("payments.feeBreakdown")}>
+            {breakdown.map((fee) => {
+              const copy = feeCopy(fee, t);
+              return (
+                <Box key={fee.id}>
+                  <Typography variant="subtitle2">{copy.label}</Typography>
+                  <Typography variant="body2">
+                    <APTCurrencyValue amount={fee.amountOctas} /> —{" "}
+                    {copy.explanation}
+                  </Typography>
+                </Box>
+              );
+            })}
           </Stack>
         ) : null}
-        {partner.map((fee) => (
-          <Alert key={fee.id} severity="warning">
-            {fee.label}: {fee.explanation}
-          </Alert>
-        ))}
+        {partner.map((fee) => {
+          const copy = feeCopy(fee, t);
+          return (
+            <Alert key={fee.id} severity="warning">
+              {copy.label}: {copy.explanation}
+            </Alert>
+          );
+        })}
       </Stack>
     </Paper>
   );
@@ -313,6 +421,7 @@ function FeesPanel({fees}: {fees: PaymentFeeLine[]}) {
 export default function PaymentsTab({
   transaction,
 }: PaymentsTabProps): React.JSX.Element {
+  const {t} = useTranslation();
   const theme = useTheme();
   const colors = getSemanticColors(theme.palette.mode);
   const {account} = useWallet();
@@ -334,9 +443,7 @@ export default function PaymentsTab({
   );
 
   if (transaction.type !== TransactionTypeName.User) {
-    return (
-      <EmptyTabContent message="Payments are identified for user transactions." />
-    );
+    return <EmptyTabContent message={t("payments.userOnly")} />;
   }
 
   const showMermaid = shouldRenderPaymentMermaid(
@@ -361,22 +468,22 @@ export default function PaymentsTab({
           >
             <Chip
               color={kindChipColor(identification.primaryKind)}
-              label={kindLabel(identification.primaryKind)}
+              label={kindLabel(identification.primaryKind, t)}
               sx={{fontWeight: 700}}
             />
             {identification.involvesConnectedWallet ? (
-              <Chip color="success" label="Involves your connected wallet" />
+              <Chip color="success" label={t("payments.involvesWallet")} />
             ) : connectedWallet ? (
-              <Chip label="Your wallet is not a party" variant="outlined" />
+              <Chip label={t("payments.walletNotParty")} variant="outlined" />
             ) : (
               <Chip
                 icon={<LockOutlinedIcon />}
-                label="Connect a wallet to highlight your payments"
+                label={t("payments.connectToHighlight")}
                 variant="outlined"
               />
             )}
             {!identification.success ? (
-              <Chip color="error" label="Transaction failed" />
+              <Chip color="error" label={t("payments.txnFailed")} />
             ) : null}
           </Stack>
           <Typography
@@ -387,8 +494,7 @@ export default function PaymentsTab({
           </Typography>
           {identification.primaryKind === "none" ? (
             <Alert severity="info" icon={<InfoOutlinedIcon />}>
-              Nothing here looks like a payment. Check Events and Balance Change
-              for raw activity.
+              {t("payments.noneAlert")}
             </Alert>
           ) : null}
         </Stack>
@@ -420,20 +526,17 @@ export default function PaymentsTab({
         >
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography variant="body2" sx={{fontWeight: 600}}>
-              How payments are identified
+              {t("payments.howTitle")}
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Typography variant="body2" sx={{color: "text.secondary", mb: 1}}>
-              This tab reads the transaction payload, events, write-set, and the
-              indexer fungible-asset activities already used by Balance Change.
-              It does not walk nested Move calls, so it does not issue extra
-              REST or view requests.
+              {t("payments.howBody")}
             </Typography>
             <Typography variant="body2" sx={{color: "text.secondary"}}>
-              A future client-side call-graph tracker could reconstruct deeper
-              hops in the browser. That path is disabled (
-              {CLIENT_SIDE_PAYMENT_TRACKER.reason}).
+              {t("payments.howFuture", {
+                reason: CLIENT_SIDE_PAYMENT_TRACKER.reason,
+              })}
             </Typography>
           </AccordionDetails>
         </Accordion>
@@ -442,9 +545,7 @@ export default function PaymentsTab({
         variant="caption"
         sx={{display: "block", mt: 2, color: colors.text.secondary}}
       >
-        Confidential transfer amounts stay encrypted unless they were deposited
-        or withdrawn as plaintext. Connecting a wallet highlights whether you
-        are a party; it does not decrypt ciphertexts.
+        {t("payments.confidentialNote")}
       </Typography>
     </Box>
   );

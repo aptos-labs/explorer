@@ -8,6 +8,7 @@ import type {SupplyType} from "../../api/hooks/useGetCoinSupplyLimit";
 import StyledTab from "../../components/StyledTab";
 import StyledTabs from "../../components/StyledTabs";
 import {useNavigate} from "../../routing";
+import {useTranslation} from "../../i18n";
 import {assertNever} from "../../utils";
 import type {CoinData} from "./Components/CoinData";
 import HoldersTab from "./Tabs/HoldersTab";
@@ -24,14 +25,14 @@ const TabComponents = Object.freeze({
 
 export type TabValue = keyof typeof TabComponents;
 
-function getTabLabel(value: TabValue): string {
+function getTabLabel(value: TabValue, t: (key: string) => string): string {
   switch (value) {
     case "info":
-      return "Info";
+      return t("tabs.coin.info");
     case "transactions":
-      return "Beta - Transactions";
+      return t("tabs.coin.transactions");
     case "holders":
-      return "Beta - Holders";
+      return t("tabs.coin.holders");
     default:
       return assertNever(value);
   }
@@ -99,6 +100,7 @@ export default function CoinTabs({
 }: CoinTabsProps) {
   const params = useParams({strict: false}) as {struct?: string; tab?: string};
   const navigate = useNavigate();
+  const {t} = useTranslation();
 
   let effectiveTab: TabValue;
   if (params?.tab !== undefined && tabValues.includes(params.tab as TabValue)) {
@@ -124,7 +126,7 @@ export default function CoinTabs({
               key={value}
               value={value}
               icon={getTabIcon(value)}
-              label={getTabLabel(value)}
+              label={getTabLabel(value, t)}
               isFirst={i === 0}
               isLast={i === tabValues.length - 1}
             />

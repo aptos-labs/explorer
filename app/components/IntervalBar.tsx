@@ -1,6 +1,7 @@
 import {alpha, Stack, Typography, useTheme} from "@mui/material";
 import {memo, useCallback, useEffect, useRef, useState} from "react";
 import StyledTooltip from "./StyledTooltip";
+import {useTranslation} from "../i18n";
 
 export enum IntervalType {
   EPOCH = "EPOCH",
@@ -53,6 +54,7 @@ const IntervalBar = memo(function IntervalBar({
   timestamp,
   intervalType,
 }: IntervalBarProps) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const {days, hours, minutes, seconds, completed} = useCountdown(timestamp);
   const displayTooltip = completed;
@@ -142,10 +144,7 @@ const IntervalBar = memo(function IntervalBar({
   );
 
   return displayTooltip ? (
-    <StyledTooltip
-      title="Please refresh the page to view the updated time remaining."
-      placement="right"
-    >
+    <StyledTooltip title={t("interval.refreshHint")} placement="right">
       {intervalBar}
     </StyledTooltip>
   ) : (

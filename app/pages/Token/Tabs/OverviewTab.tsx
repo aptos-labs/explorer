@@ -21,7 +21,7 @@ function OwnersRow() {
 
   return (
     <ContentRow
-      title={"Owner(s):"}
+      titleKey="fields.owners"
       value={
         <Stack direction="row" spacing={1}>
           {(owners ?? []).map((owner: {owner_address: string}) => (
@@ -169,14 +169,14 @@ export default function OverviewTab({data}: OverviewTabProps) {
       }}
     >
       <ContentBox>
-        <ContentRow title={"Token Name:"} value={data?.token_name} />
+        <ContentRow titleKey="fields.tokenName" value={data?.token_name} />
         <OwnersRow />
         <ContentRow
-          title={"Collection Name:"}
+          titleKey="fields.collectionName"
           value={data?.current_collection?.collection_name}
         />
         <ContentRow
-          title={"Creator:"}
+          titleKey="fields.creator"
           value={
             <HashButton
               hash={data?.current_collection?.creator_address ?? ""}
@@ -185,7 +185,7 @@ export default function OverviewTab({data}: OverviewTabProps) {
           }
         />
         <ContentRow
-          title={"Metadata:"}
+          titleKey="fields.metadata"
           value={
             <Stack spacing={1}>
               {/* Always show the display URL first (ipfs:// for IPFS links) */}
@@ -257,7 +257,7 @@ export default function OverviewTab({data}: OverviewTabProps) {
         {data.token_standard === "v2" ? (
           <Fragment>
             <ContentRow
-              title={"Collection id:"}
+              titleKey="fields.collectionId"
               value={
                 <HashButton
                   hash={data?.current_collection?.collection_id ?? ""}
@@ -267,7 +267,7 @@ export default function OverviewTab({data}: OverviewTabProps) {
             />
 
             <ContentRow
-              title={"Token id:"}
+              titleKey="fields.tokenId"
               value={
                 <HashButton
                   hash={data?.token_data_id ?? ""}
@@ -279,27 +279,27 @@ export default function OverviewTab({data}: OverviewTabProps) {
         ) : null}
         {data?.largest_property_version_v1 != null && (
           <ContentRow
-            title={"Largest Property Version:"}
+            titleKey="fields.largestPropertyVersion"
             value={data?.largest_property_version_v1}
           />
         )}
         <ContentRow
-          title={"Supply:"}
+          titleKey="fields.supply"
           value={data?.current_collection?.current_supply}
         />
         <ContentRow
-          title={"Maximum:"}
+          titleKey="fields.maximum"
           value={data?.current_collection?.max_supply}
         />
         <ContentRow
-          title={"Token Properties:"}
+          titleKey="fields.tokenProperties"
           value={
             <JsonViewCard data={data?.token_properties} collapsedByDefault />
           }
         />
         {data?.last_transaction_version && (
           <ContentRow
-            title={"Last transaction:"}
+            titleKey="fields.lastTransaction"
             value={
               <HashButton
                 hash={data?.last_transaction_version.toString()}

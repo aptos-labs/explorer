@@ -1,5 +1,6 @@
 import type {GetTokenActivityResponse} from "@aptos-labs/ts-sdk";
 import {Table, TableHead, TableRow} from "@mui/material";
+import {useTranslation} from "../../../i18n";
 import HashButton, {HashType} from "../../../components/HashButton";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
@@ -118,22 +119,27 @@ type ActivityHeaderCellProps = {
 function ActivityHeaderCell({column}: ActivityHeaderCellProps) {
   switch (column) {
     case "txn":
-      return <GeneralTableHeaderCell header="Transaction" />;
+      return <GeneralTableHeaderCell headerKey="table.transaction" />;
     case "type":
-      return <GeneralTableHeaderCell header="Transfer Type" />;
+      return <GeneralTableHeaderCell headerKey="table.transferType" />;
     case "from":
-      return <GeneralTableHeaderCell header="From" />;
+      return <GeneralTableHeaderCell headerKey="table.from" />;
     case "to":
-      return <GeneralTableHeaderCell header="To" />;
+      return <GeneralTableHeaderCell headerKey="table.to" />;
     case "propertyVersion":
       return (
         <GeneralTableHeaderCell
-          header="Property Version"
+          headerKey="table.propertyVersion"
           textAlignRight={true}
         />
       );
     case "amount":
-      return <GeneralTableHeaderCell header="Amount" textAlignRight={true} />;
+      return (
+        <GeneralTableHeaderCell
+          headerKey="table.amount"
+          textAlignRight={true}
+        />
+      );
     default:
       return assertNever(column);
   }
@@ -148,8 +154,12 @@ export function ActivitiesTable({
   activities,
   columns = DEFAULT_COLUMNS,
 }: ActivitiesTableProps) {
+  const {t} = useTranslation();
   return (
-    <Table aria-label="Token activities" data-entity-type="token-activity">
+    <Table
+      aria-label={t("common.tokenActivitiesAria")}
+      data-entity-type="token-activity"
+    >
       <TableHead>
         <TableRow>
           {columns.map((column) => (

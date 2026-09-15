@@ -9,6 +9,8 @@ import {
 } from "@mui/material";
 import TableTooltip from "../../../components/Table/TableTooltip";
 import TooltipTypography from "../../../components/TooltipTypography";
+import {useTranslation} from "../../../i18n";
+import {StakingStatus} from "./StakingStatusIcon";
 import type {StakingStatusInterface} from "./StakingStatusIcon";
 
 type MyDepositsSectionProps = {
@@ -19,12 +21,25 @@ type MyDepositsSectionProps = {
 export default function MyDepositsStatusTooltip({
   steps,
 }: MyDepositsSectionProps) {
+  const {t} = useTranslation();
   const theme = useTheme();
 
   return (
-    <TableTooltip title="Deposit Status">
+    <TableTooltip titleKey="staking.depositStatus">
       <Stepper orientation="vertical">
-        {steps.map((step) => {
+        {steps.map((step, index) => {
+          const label =
+            index === StakingStatus.STAKED
+              ? t("staking.status.staked")
+              : index === StakingStatus.WITHDRAW_PENDING
+                ? t("staking.status.withdrawPending")
+                : t("staking.status.withdrawReady");
+          const description =
+            index === StakingStatus.STAKED
+              ? t("staking.status.stakedTip")
+              : index === StakingStatus.WITHDRAW_PENDING
+                ? t("staking.status.withdrawPendingTip")
+                : t("staking.status.withdrawReadyTip");
           return (
             <Step key={step.label} active={false} expanded={true}>
               <StepLabel
@@ -35,7 +50,7 @@ export default function MyDepositsStatusTooltip({
               >
                 <Chip
                   icon={step.icon}
-                  label={step.label}
+                  label={label}
                   sx={
                     theme.palette.mode === "dark" ? step.sxDark : step.sxLight
                   }
@@ -43,7 +58,7 @@ export default function MyDepositsStatusTooltip({
                 />
               </StepLabel>
               <StepContent>
-                <TooltipTypography>{step.description}</TooltipTypography>
+                <TooltipTypography>{description}</TooltipTypography>
               </StepContent>
             </Step>
           );

@@ -3,6 +3,7 @@ import {Stack, Typography, useTheme} from "@mui/material";
 import type React from "react";
 import {type ResponseError, ResponseErrorType} from "../../api/client";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
+import {useTranslation} from "../../i18n";
 
 type ErrorProps = {
   error: ResponseError;
@@ -11,6 +12,7 @@ type ErrorProps = {
 
 export default function TokenError({error, tokenId}: ErrorProps) {
   const theme = useTheme();
+  const {t} = useTranslation();
 
   const renderErrorContent = (title: string, message: React.ReactNode) => (
     <ContentBox>
@@ -48,29 +50,32 @@ export default function TokenError({error, tokenId}: ErrorProps) {
   switch (error.type) {
     case ResponseErrorType.NOT_FOUND:
       return renderErrorContent(
-        "Token Not Found",
+        t("notFound.tokenTitle"),
         <>
-          {error.message || "Token not found."}
-          {tokenId && ` Token ID: ${tokenId}`}
+          {error.message || t("notFound.tokenBody")}
+          {tokenId && t("notFound.tokenIdSuffix", {id: tokenId})}
         </>,
       );
     case ResponseErrorType.INVALID_INPUT:
       return renderErrorContent(
-        "Invalid Token ID",
+        t("notFound.tokenInvalid"),
         <>
-          Invalid token ID ({error.type}): {error.message}
+          {t("notFound.tokenInvalidBody", {
+            type: error.type,
+            message: error.message ?? "",
+          })}
         </>,
       );
     case ResponseErrorType.TOO_MANY_REQUESTS:
       return renderErrorContent(
-        "Too Many Requests",
-        <>Too many requests. Please try again in a few moments.</>,
+        t("errors.tooManyRequests"),
+        <>{t("errors.tooManyRequestsMoments")}</>,
       );
     default:
       return renderErrorContent(
-        "Error Loading Token",
+        t("notFound.tokenLoad"),
         <>
-          Unable to load token information.
+          {t("notFound.tokenLoadBody")}
           {error.message && (
             <>
               <br />
@@ -79,7 +84,7 @@ export default function TokenError({error, tokenId}: ErrorProps) {
           )}
           <br />
           <br />
-          Please try again later.
+          {t("common.pleaseTryAgainLater")}
         </>,
       );
   }

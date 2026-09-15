@@ -1,4 +1,4 @@
-import {Box, Link, Stack} from "@mui/material";
+import {Box, Stack} from "@mui/material";
 import type React from "react";
 import {
   LearnMoreTooltip,
@@ -8,51 +8,57 @@ import TableTooltip from "../../components/Table/TableTooltip";
 import {
   getVerifiedMessageAndIcon,
   VerifiedType,
+  verifiedLevelMessageKey,
 } from "../../components/Table/VerifiedCell";
 import TooltipTypography from "../../components/TooltipTypography";
+import {InlineMarkup, useTranslation} from "../../i18n";
 
 export function getLearnMoreTooltip(
   txnField: string,
 ): React.JSX.Element | null {
-  switch (txnField) {
+  return <LearnMoreTooltipField field={txnField} />;
+}
+
+function LearnMoreTooltipField({field}: {field: string}): React.JSX.Element {
+  const {t} = useTranslation();
+
+  switch (field) {
     case "accumulator_root_hash":
       return (
         <LearnMoreTooltip
-          text="An accumulator root hash is the root hash of a Merkle accumulator."
+          text={t("tooltips.accumulatorRootHash")}
           link="https://aptos.dev/en/network/glossary#merkle-accumulator"
         />
       );
     case "amount":
       return <LearnMoreTooltipPlaceholder />;
     case "authentication_key":
-      return (
-        <LearnMoreTooltip text="The authentication key is a hash of the public key for an account" />
-      );
+      return <LearnMoreTooltip text={t("tooltips.authenticationKey")} />;
     case "key_type":
       return (
         <LearnMoreTooltip
-          text="Authentication scheme inferred from the latest transaction submitted by this account. For MultiKey accounts the constituent sub-key types are listed in order."
+          text={t("tooltips.keyType")}
           link="https://aptos.dev/en/build/sdks/ts-sdk/account#multikey"
         />
       );
     case "block_height":
       return (
         <LearnMoreTooltip
-          text="The block height is the number block in the blockchain."
+          text={t("tooltips.blockHeight")}
           link="https://aptos.dev/en/network/glossary#blocks"
         />
       );
     case "epoch":
       return (
         <LearnMoreTooltip
-          text="The period of time between validator set changes and other administrative actions."
+          text={t("tooltips.epoch")}
           link="https://aptos.dev/en/network/glossary#epoch"
         />
       );
     case "event_root_hash":
       return (
         <LearnMoreTooltip
-          text="Hash of the merkle tree root of the events emitted in the block."
+          text={t("tooltips.eventRootHash")}
           link="https://aptos.dev/en/network/glossary#event"
           linkToText
         />
@@ -60,33 +66,27 @@ export function getLearnMoreTooltip(
     case "expiration_timestamp_secs":
       return (
         <LearnMoreTooltip
-          text="A transaction ceases to be valid after its expiration time."
+          text={t("tooltips.expirationTimestampSecs")}
           link="https://aptos.dev/en/network/glossary#expiration-time"
         />
       );
     case "fee_payer":
-      return (
-        <LearnMoreTooltip text="Account that paid for the gas fee of the transaction, separate of the sender." />
-      );
+      return <LearnMoreTooltip text={t("tooltips.feePayer")} />;
     case "function":
-      return (
-        <LearnMoreTooltip text="Move function executed in the transaction." />
-      );
+      return <LearnMoreTooltip text={t("tooltips.function")} />;
     case "encrypted_payload":
       return (
         <LearnMoreTooltip
-          text="This transaction was submitted with an encrypted mempool payload (AIP-144). The explorer shows the decrypted entry function only when the fullnode has already decrypted it; ciphertext is never decrypted in the browser."
+          text={t("tooltips.encryptedPayload")}
           link="https://aptos.dev/build/guides/encrypted-pending-transactions"
         />
       );
     case "arguments":
-      return (
-        <LearnMoreTooltip text="Type and function arguments passed to the entry function. Includes a copyable CLI command." />
-      );
+      return <LearnMoreTooltip text={t("tooltips.arguments")} />;
     case "gas_fee":
       return (
         <LearnMoreTooltip
-          text="The gas fee is the network's cost to run the transaction."
+          text={t("tooltips.gasFee")}
           link="https://aptos.dev/en/network/glossary#gas"
           linkToText
         />
@@ -94,7 +94,7 @@ export function getLearnMoreTooltip(
     case "gas_unit_price":
       return (
         <LearnMoreTooltip
-          text="Gas unit price is the amount the user is willing to pay for the transaction per gas unit."
+          text={t("tooltips.gasUnitPrice")}
           link="https://aptos.dev/en/network/glossary#gas-unit-price"
           linkToText
         />
@@ -102,7 +102,7 @@ export function getLearnMoreTooltip(
     case "gas_used":
       return (
         <LearnMoreTooltip
-          text="The total number of gas units used in the transaction."
+          text={t("tooltips.gasUsed")}
           link="https://aptos.dev/en/network/glossary#gas"
         />
       );
@@ -111,7 +111,7 @@ export function getLearnMoreTooltip(
     case "max_gas_amount":
       return (
         <LearnMoreTooltip
-          text="The Maximum Gas Amount of a transaction is the maximum amount of gas units the sender is willing to pay for the transaction."
+          text={t("tooltips.maxGasAmount")}
           link="https://aptos.dev/en/network/glossary#maximum-gas-amount"
         />
       );
@@ -122,28 +122,28 @@ export function getLearnMoreTooltip(
     case "round":
       return (
         <LearnMoreTooltip
-          text="A round consists of achieving consensus on a block of transactions and their execution results."
+          text={t("tooltips.round")}
           link="https://aptos.dev/en/network/glossary#round"
         />
       );
     case "sender":
       return (
         <LearnMoreTooltip
-          text="Sender is the address of the originator account for a transaction."
+          text={t("tooltips.sender")}
           link="https://aptos.dev/en/network/glossary#sender"
         />
       );
     case "sequence_number":
       return (
         <LearnMoreTooltip
-          text="The sequence number for an account indicates the number of transactions that have been submitted and committed on chain from that account."
+          text={t("tooltips.sequenceNumber")}
           link="https://aptos.dev/en/network/glossary#sequence-number"
         />
       );
     case "replay_protection_nonce":
       return (
         <LearnMoreTooltip
-          text="The replay protection nonce is a number that prevents replay attacks by ensuring that a transaction can only be executed once in a 60 second period."
+          text={t("tooltips.replayProtectionNonce")}
           link="https://aptos.dev/en/network/glossary#replay-protection-nonce"
         />
       );
@@ -154,43 +154,35 @@ export function getLearnMoreTooltip(
     case "status":
       return <LearnMoreTooltipPlaceholder />;
     case "timestamp":
-      return (
-        <LearnMoreTooltip text="Timestamp is the machine timestamp of when leader creates and proposes a block for consensus." />
-      );
+      return <LearnMoreTooltip text={t("tooltips.timestamp")} />;
     case "version":
       return (
         <LearnMoreTooltip
-          text="A version is also called “height” in blockchain literature."
+          text={t("tooltips.version")}
           link="https://aptos.dev/en/network/glossary/#version"
         />
       );
     case "vm_status":
       return (
         <LearnMoreTooltip
-          text="Learn more about VM"
+          text={t("tooltips.vmStatus")}
           link="https://aptos.dev/en/network/glossary#move-virtual-machine-mvm"
           linkToText
         />
       );
     case "coin_verification":
       return (
-        <TableTooltip title="Transaction Types">
+        <TableTooltip title={t("tooltips.transactionTypes")}>
           <Stack spacing={2}>
             <TooltipTypography variant="inherit">
-              The explorer uses the{" "}
-              <Link
-                href="https://github.com/PanoraExchange/Aptos-Tokens"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Panora token list
-              </Link>{" "}
-              to verify authenticity of known assets on-chain. It does not
-              guarantee anything else about the asset and is not financial
-              advice. The following levels of verification are below:
+              <InlineMarkup text={t("tooltips.coinVerificationIntro")} />
             </TooltipTypography>
             {Object.values(VerifiedType).map((level) => {
-              const {tooltipMessage, icon} = getVerifiedMessageAndIcon(level);
+              const {tooltipMessage, icon} = getVerifiedMessageAndIcon(
+                level,
+                undefined,
+                t,
+              );
 
               return (
                 <Box
@@ -203,7 +195,7 @@ export function getLearnMoreTooltip(
                       variant="subtitle2"
                       sx={{fontWeight: 600}}
                     >
-                      {level}
+                      {t(verifiedLevelMessageKey(level))}
                     </TooltipTypography>
                     <TooltipTypography variant="body2">
                       {tooltipMessage}
@@ -214,33 +206,19 @@ export function getLearnMoreTooltip(
             })}
           </Stack>
         </TableTooltip>
-        /*     <LearnMoreTooltip
-               text=""
-               link="https://github.com/PanoraExchange/Aptos-Tokens"
-             />;*/
       );
     case "transfer_ref":
-      return (
-        <LearnMoreTooltip text="A TransferRef allows the holder to transfer the object even when ungated transfer is disabled. Can only be created during object construction." />
-      );
+      return <LearnMoreTooltip text={t("tooltips.transferRef")} />;
     case "delete_ref":
-      return (
-        <LearnMoreTooltip text="A DeleteRef allows the holder to delete the object. Can only be created during object construction." />
-      );
+      return <LearnMoreTooltip text={t("tooltips.deleteRef")} />;
     case "extend_ref":
-      return (
-        <LearnMoreTooltip text="An ExtendRef allows the holder to generate a signer for the object, enabling adding new resources. Can only be created during object construction." />
-      );
+      return <LearnMoreTooltip text={t("tooltips.extendRef")} />;
     case "creation_transaction":
-      return (
-        <LearnMoreTooltip text="The transaction in which this object was first created." />
-      );
+      return <LearnMoreTooltip text={t("tooltips.creationTransaction")} />;
     case "owner":
-      return <LearnMoreTooltip text="The current owner of the object." />;
+      return <LearnMoreTooltip text={t("tooltips.owner")} />;
     case "allow_ungated_transfer":
-      return (
-        <LearnMoreTooltip text="Whether the object can be transferred by anyone without requiring a TransferRef." />
-      );
+      return <LearnMoreTooltip text={t("tooltips.allowUngatedTransfer")} />;
     default:
       return <LearnMoreTooltipPlaceholder />;
   }

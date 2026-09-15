@@ -3,6 +3,7 @@ import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 import PriorityHighOutlinedIcon from "@mui/icons-material/PriorityHighOutlined";
 import {alpha, Box, Stack, Typography, useTheme} from "@mui/material";
 import {memo} from "react";
+import {useTranslation} from "../i18n";
 
 type TransactionStatusProps = {
   success: boolean;
@@ -16,6 +17,7 @@ export const TransactionStatus = memo(function TransactionStatus({
   success,
 }: TransactionStatusProps) {
   const theme = useTheme();
+  const {t} = useTranslation();
   const successColor = theme.palette.success.main;
   const errorColor = theme.palette.error.main;
   const successBackgroundColor = alpha(successColor, 0.1);
@@ -36,11 +38,11 @@ export const TransactionStatus = memo(function TransactionStatus({
     >
       <CheckCircleIcon
         fontSize="small"
-        titleAccess="Executed successfully"
+        titleAccess={t("txn.status.executedSuccessfully")}
         sx={{color: successColor}}
       />
       <Typography variant="body2" sx={{color: successColor}}>
-        Success
+        {t("txn.status.success")}
       </Typography>
     </Stack>
   ) : (
@@ -58,11 +60,11 @@ export const TransactionStatus = memo(function TransactionStatus({
     >
       <ErrorOutlinedIcon
         fontSize="small"
-        titleAccess="Failed to Execute"
+        titleAccess={t("txn.status.failedToExecute")}
         sx={{color: errorColor}}
       />
       <Typography variant="body2" sx={{color: errorColor}}>
-        Fail
+        {t("txn.status.fail")}
       </Typography>
     </Stack>
   );
@@ -72,12 +74,13 @@ export const TransactionStatus = memo(function TransactionStatus({
 export const TableTransactionStatus = memo(function TableTransactionStatus({
   success,
 }: TransactionStatusProps) {
+  const {t} = useTranslation();
   return success ? null : (
     <Box sx={tableStatusStyle}>
       <PriorityHighOutlinedIcon
         sx={iconStyle}
         color="error"
-        titleAccess="Failed to Execute"
+        titleAccess={t("txn.status.failedToExecute")}
       />
     </Box>
   );

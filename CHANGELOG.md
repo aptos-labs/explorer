@@ -9,6 +9,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **In-app user guide (`/guide`)**: A User Guide in the explorer covers how to search, switch networks, read transactions/accounts/modules, configure language / decompilation / API keys, and what common terms mean. Reach it from the header help icon, the overflow menu, the footer, or `/help` (redirects to `/guide`).
+- **Internationalization foundation**: Chrome, settings, search tokens, and the user guide read from English message catalogs with `{name}` interpolation, list messages, and lightweight inline markup. Settings include a language select (browser default or a registered catalog). Additional locales can be registered without a third-party i18n library.
+- **Internationalization locales and regional formatting**: Settings language select and `auto` browser matching cover Simplified and Traditional Chinese, Filipino, Spanish, French, German, Japanese, Korean, Russian, Brazilian and European Portuguese, Arabic (RTL), Hindi, Thai, Indonesian, Vietnamese, Turkish, Bengali, Swahili, Italian, Malay, Tamil, Ukrainian, Dutch, Polish, Hebrew (RTL), Urdu (RTL), Hausa, Zulu, and Amharic in addition to English. Chrome, settings, search tokens, and the user guide are translated; missing keys still fall back to English. Locale-bound formatters apply regional digit grouping, decimal separators, and UTC date/time presentation. A header globe icon (`lg+`) and a hamburger Language item (compact) switch catalogs immediately; `/settings` exposes a labeled select. `AGENTS.md` lists these locales and must stay in lockstep when the set changes.
+- **Full UI catalogs (`zh`, `ko`, `ja`, `es`, `pt`, `vi`, `ar`, `fr`, `de`)**: Those nine locales also translate the remaining explorer UI copy (tabs, field labels, tables, errors, entity titles, and related chrome). Ukrainian (`uk`), Dutch (`nl`), and Hebrew (`he`) still keep chrome/settings/search/guide coverage and fall back to English for the newer keys.
+- **Filipino (`fil`)**: Remaining explorer UI copy (tabs, fields, tables, errors, entity titles) is translated. Browser `tl` still maps here.
+- **Hausa (`ha`)**: Remaining explorer UI copy is translated.
+- **Swahili (`sw`)**: Remaining explorer UI copy is translated.
+- **Thai (`th`)**: Remaining explorer UI copy is translated.
+- **Turkish (`tr`)**: Remaining explorer UI copy is translated.
+- **Russian (`ru`)**: Remaining explorer UI copy is translated.
+- **Traditional Chinese (`zh-Hant`)**: Remaining explorer UI copy is translated.
+- **Hindi (`hi`)**: Remaining explorer UI copy is translated.
+- **Indonesian (`id`)**: Remaining explorer UI copy is translated.
+- **Amharic (`am`)**: Remaining explorer UI copy is translated.
+- **Zulu (`zu`)**: Remaining explorer UI copy is translated.
+- **Tamil (`ta`)**: Remaining explorer UI copy is translated.
+- **Malay (`ms`)**: Remaining explorer UI copy is translated.
+- **Polish (`pl`)**: Remaining explorer UI copy is translated.
+- **Urdu (`ur`)**: Remaining explorer UI copy is translated (RTL).
+- **Bengali (`bn`)**: Remaining explorer UI copy is translated.
+- **Italian (`it`)**: Remaining explorer UI copy is translated.
+- **European Portuguese (`pt-PT`)**: Remaining explorer UI copy is translated.
+
 - **Transaction Payments tab**: User-transaction detail has a **Payments** tab (`/txn/{id}/payments`) when a payment is identified from the transaction body: peer-to-peer, partner-controlled (TransferRef / dispatchable FA / intermediary hops), confidential (encrypted amounts stay hidden even if you connect a wallet — connecting only highlights that you are a party), public↔confidential wraps/unwraps, and exchange inputs/outputs. The tab is hidden when nothing beyond network fees matches. When shown, fees (gas, storage, refunds, partner skims) are spelled out, and multi-step transactions include a flow diagram with copyable Mermaid source. Identification uses the transaction body plus indexer FA activities already loaded for Balance Change (a deeper client-side call-graph walk is stubbed and left off to avoid extra API usage).
 - **Known address — Hotcoin Hot Wallet 01**: Mainnet CEX hot wallet `0xf88e…3d9b` (verification request #1735) with explorer label and branding icon (`public/address-icons/cex-hotcoin.png`).
 - **Pruned transaction pages load from archive nodes, then the indexer**: `/txn/{version}` (and per-row transaction tables / CSV export) no longer die with "not found" when the fullnode has pruned that ledger version. After REST 410/404, the explorer retries the archive REST API without credentials (full REST body), and reconstructs from indexer GraphQL (`user_transactions`, signatures, FA gas-fee activity, table items) only if the archive also misses. Indexer-sourced pages show an info alert because payload arguments, events, and hashes may be missing; Balance Change still uses the existing indexer query.
@@ -23,8 +46,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Per-network fullnode URL overrides**: Every network in `app/lib/constants.ts` can now have its REST endpoint overridden at build time via `VITE_APTOS_<NETWORK>_URL` (`MAINNET`, `TESTNET`, `DEVNET`, `DECIBEL`, `SHELBYNET`, `LOCAL`). Previously only devnet was overridable. Trailing slashes are stripped as before.
 
+### Changed
+
+- **English UI copy in message catalogs**: Remaining explorer chrome — tabs, field labels, table headers, error pages, entity titles, search result templates, verification copy, analytics chart labels, and related tooltips — now reads from the English i18n catalogs. Visible English is unchanged; other locales can be added later without rewriting components.
+
 ### Fixed
 
+- **Horizontal scroll into empty space**: The desktop header’s min-content was wider than typical `lg`/`xl` viewports (nav gaps plus the new help icon), so pages — including `/guide` — could pan sideways into blank area. The toolbar now packs nav, network, help, settings, theme, and wallet so they stay on-screen, and the guide column wraps instead of extending the page.
 - **Desktop header theme toggle**: On wide viewports (`lg+`), the sun/moon color-mode button is back in the header toolbar next to Settings instead of hiding behind the hamburger menu (which only contained the theme switch). Compact viewports still use `HeaderOverflowMenu` for navigation, settings, theme toggle, and wallet connect.
 - **Petra Vault iframe (“refused to connect”)**: Production sent `X-Frame-Options: DENY`, so `https://vault.petra.app` could not embed explorer pages. That header is gone (it cannot allowlist a third-party origin; Safari can still honor `DENY` even when CSP allows an ancestor). Responses now send `Content-Security-Policy: frame-ancestors 'self' https://vault.petra.app` from `vercel.json` and from SSR (`attachFrameAncestorsHeader`), so Vault can iframe explorer while other sites remain blocked.
 - **Transaction Changes/Events JSON copy**: `JsonViewCard` now always shows a **Copy JSON** button (not only on touch devices). The clipboard payload uses the original API value via an optional `copyData` prop — e.g. Events no longer copy the `__PLACEHOLDER__` wrapper, and decoded table-item values copy the raw indexer string instead of the parsed display object. On mobile, the copy control sits in a fixed toolbar above the JSON scroll area (only the JSON body scrolls), with a compact icon button and 44px touch targets for per-field copy. JSON panels fill the standard value column width on desktop (aligned with other row values) instead of shrinking to shallow object content.

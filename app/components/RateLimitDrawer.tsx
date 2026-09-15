@@ -6,20 +6,19 @@ import {
   Button,
   Drawer,
   IconButton,
-  Link as MuiLink,
   Stack,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import {useRateLimit} from "../context/rate-limit";
+import {InlineMarkup, useTranslation} from "../i18n";
 import {Link} from "../routing";
-
-const GEOMI_DEV_URL = "https://geomi.dev";
 
 export default function RateLimitDrawer() {
   const {isRateLimited, dismissRateLimit} = useRateLimit();
   const theme = useTheme();
+  const {t} = useTranslation();
   const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
@@ -65,13 +64,13 @@ export default function RateLimitDrawer() {
                 fontWeight: 600,
               }}
             >
-              Rate limited
+              {t("rateLimit.title")}
             </Typography>
           </Stack>
           <IconButton
             size="small"
             onClick={dismissRateLimit}
-            aria-label="Dismiss rate limit notice"
+            aria-label={t("rateLimit.dismissAria")}
           >
             <CloseIcon fontSize="small" />
           </IconButton>
@@ -83,11 +82,7 @@ export default function RateLimitDrawer() {
             color: "text.secondary",
           }}
         >
-          The API returned HTTP 429. That can mean requests used the shared
-          anonymous bucket (no API key attached) or that a configured key hit
-          its own limit. Geomi&apos;s 429 body distinguishes those cases:{" "}
-          <em>Per anonymous IP rate limit exceeded</em> vs{" "}
-          <em>Per application per IP rate limit exceeded</em>.
+          <InlineMarkup text={t("rateLimit.body")} />
         </Typography>
 
         <Stack
@@ -105,7 +100,7 @@ export default function RateLimitDrawer() {
             startIcon={<SettingsOutlinedIcon />}
             onClick={dismissRateLimit}
           >
-            Set API key override
+            {t("rateLimit.setOverride")}
           </Button>
           <Box>
             <Typography
@@ -114,7 +109,7 @@ export default function RateLimitDrawer() {
                 color: "text.secondary",
               }}
             >
-              or wait ~5 minutes for the rate limit to reset.
+              {t("rateLimit.orWait")}
             </Typography>
           </Box>
         </Stack>
@@ -125,14 +120,7 @@ export default function RateLimitDrawer() {
             color: "text.secondary",
           }}
         >
-          Don&apos;t have a key?{" "}
-          <MuiLink
-            href={GEOMI_DEV_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Get one at geomi.dev
-          </MuiLink>
+          <InlineMarkup text={t("rateLimit.getKey")} />
         </Typography>
       </Stack>
     </Drawer>

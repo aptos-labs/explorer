@@ -33,6 +33,7 @@ import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import StyledTooltip from "../../components/StyledTooltip";
 import {WalletConnector} from "../../components/WalletConnector";
 import {useNetworkName, useSdkV2Client} from "../../global-config/GlobalConfig";
+import {InlineMarkup, useTranslation} from "../../i18n";
 import {Link} from "../../routing";
 import {sortPetraFirst} from "../../utils";
 import PageHeader from "../layout/PageHeader";
@@ -80,6 +81,7 @@ function ResultCard({
 }
 
 function SimulationResultDisplay({result}: {result: unknown[]}) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const [expanded, setExpanded] = useState(true);
   const [tooltipOpen, setTooltipOpen] = useState(false);
@@ -126,7 +128,11 @@ function SimulationResultDisplay({result}: {result: unknown[]}) {
               variant="subtitle2"
               color={isSuccess ? "success.main" : "error"}
             >
-              Simulation {isSuccess ? "Successful" : "Failed"}
+              {t(
+                isSuccess
+                  ? "contract.simulationSuccessful"
+                  : "contract.simulationFailedTitle",
+              )}
             </Typography>
             {vmStatus && (
               <Typography
@@ -138,7 +144,11 @@ function SimulationResultDisplay({result}: {result: unknown[]}) {
             )}
           </Box>
           <StyledTooltip
-            title={tooltipOpen ? "Copied!" : "Copy full response"}
+            title={
+              tooltipOpen
+                ? t("common.copiedExclaim")
+                : t("common.copyFullResponse")
+            }
             placement="top"
             open={tooltipOpen || undefined}
             disableFocusListener={tooltipOpen}
@@ -155,7 +165,7 @@ function SimulationResultDisplay({result}: {result: unknown[]}) {
           {gasUsed && (
             <Box>
               <Typography variant="caption" sx={{color: "text.secondary"}}>
-                Gas Used
+                {t("contract.gasUsed")}
               </Typography>
               <Typography variant="body2" sx={{fontWeight: 600}}>
                 {gasUsed}
@@ -164,7 +174,7 @@ function SimulationResultDisplay({result}: {result: unknown[]}) {
           )}
           <Box>
             <Typography variant="caption" sx={{color: "text.secondary"}}>
-              Events
+              {t("contract.events")}
             </Typography>
             <Typography variant="body2" sx={{fontWeight: 600}}>
               {events.length}
@@ -172,7 +182,7 @@ function SimulationResultDisplay({result}: {result: unknown[]}) {
           </Box>
           <Box>
             <Typography variant="caption" sx={{color: "text.secondary"}}>
-              Changes
+              {t("contract.changes")}
             </Typography>
             <Typography variant="body2" sx={{fontWeight: 600}}>
               {changes.length}
@@ -186,7 +196,9 @@ function SimulationResultDisplay({result}: {result: unknown[]}) {
           endIcon={expanded ? <ExpandLess /> : <ExpandMore />}
           sx={{textTransform: "none", mb: expanded ? 1 : 0}}
         >
-          {expanded ? "Hide" : "Show"} Full Response
+          {expanded
+            ? t("contract.hideFullResponse")
+            : t("contract.showFullResponse")}
         </Button>
 
         <Collapse in={expanded}>
@@ -217,6 +229,7 @@ function SimulationResultDisplay({result}: {result: unknown[]}) {
 }
 
 function ScriptForm() {
+  const {t} = useTranslation();
   const theme = useTheme();
   const networkName = useNetworkName();
   const sdkV2Client = useSdkV2Client();
@@ -265,7 +278,7 @@ function ScriptForm() {
     resetResults();
 
     if (!account?.address || !account?.publicKey) {
-      setSimulationError("Wallet account not available for simulation");
+      setSimulationError(t("contract.walletUnavailable"));
       return;
     }
 
@@ -273,7 +286,9 @@ function ScriptForm() {
     try {
       scriptData = buildScriptData();
     } catch (e: unknown) {
-      setInputError(e instanceof Error ? e.message : "Invalid input");
+      setInputError(
+        e instanceof Error ? e.message : t("script.invalidInputFallback"),
+      );
       return;
     }
 
@@ -290,7 +305,7 @@ function ScriptForm() {
       setSimulationResult(result as unknown[]);
     } catch (error) {
       setSimulationError(
-        error instanceof Error ? error.message : "Simulation failed",
+        error instanceof Error ? error.message : t("contract.simulationFailed"),
       );
     }
     setSimulationInProcess(false);
@@ -303,7 +318,9 @@ function ScriptForm() {
     try {
       scriptData = buildScriptData();
     } catch (e: unknown) {
-      setInputError(e instanceof Error ? e.message : "Invalid input");
+      setInputError(
+        e instanceof Error ? e.message : t("script.invalidInputFallback"),
+      );
       return;
     }
 
@@ -328,15 +345,13 @@ function ScriptForm() {
         {/* Script bytecode */}
         <Box>
           <Typography variant="subtitle2" gutterBottom sx={{fontWeight: 600}}>
-            Script Bytecode
+            {t("script.bytecode")}
           </Typography>
           <Typography
             variant="caption"
             sx={{color: "text.secondary", display: "block", mb: 1}}
           >
-            Paste the compiled Move script bytecode as a hex string (for
-            example, the contents of a compiled <code>.mv</code> file). You can
-            produce this with <code>aptos move compile-script</code>.
+            <InlineMarkup text={t("script.bytecodeHint")} />
           </Typography>
           <TextField
             value={bytecode}
@@ -362,7 +377,7 @@ function ScriptForm() {
             sx={{alignItems: "center", justifyContent: "space-between", mb: 1}}
           >
             <Typography variant="subtitle2" sx={{fontWeight: 600}}>
-              Type Arguments
+              {t("script.typeArguments")}
             </Typography>
             <Button
               size="small"
@@ -370,13 +385,12 @@ function ScriptForm() {
               onClick={() => setTypeArgs((prev) => [...prev, ""])}
               sx={{textTransform: "none"}}
             >
-              Add type argument
+              {t("script.addTypeArgument")}
             </Button>
           </Stack>
           {typeArgs.length === 0 ? (
             <Typography variant="caption" sx={{color: "text.secondary"}}>
-              No type arguments. Add one for each generic type parameter of the
-              script.
+              {t("script.noTypeArguments")}
             </Typography>
           ) : (
             <Stack spacing={2}>
@@ -395,7 +409,7 @@ function ScriptForm() {
                         prev.map((t, idx) => (idx === i ? e.target.value : t)),
                       )
                     }
-                    label={`Type argument ${i + 1}`}
+                    label={t("script.typeArgumentN", {n: i + 1})}
                     placeholder="0x1::aptos_coin::AptosCoin"
                     fullWidth
                     size="small"
@@ -404,7 +418,7 @@ function ScriptForm() {
                     }}
                   />
                   <IconButton
-                    aria-label="Remove type argument"
+                    aria-label={t("script.removeTypeArgument")}
                     onClick={() =>
                       setTypeArgs((prev) => prev.filter((_, idx) => idx !== i))
                     }
@@ -428,7 +442,7 @@ function ScriptForm() {
             sx={{alignItems: "center", justifyContent: "space-between", mb: 1}}
           >
             <Typography variant="subtitle2" sx={{fontWeight: 600}}>
-              Arguments
+              {t("script.arguments")}
             </Typography>
             <Button
               size="small"
@@ -441,21 +455,18 @@ function ScriptForm() {
               }
               sx={{textTransform: "none"}}
             >
-              Add argument
+              {t("script.addArgument")}
             </Button>
           </Stack>
           <Typography
             variant="caption"
             sx={{color: "text.secondary", display: "block", mb: 2}}
           >
-            A script has no on-chain ABI, so you must declare the type of each
-            argument in the order the script expects them. Do not add the
-            leading <code>&amp;signer</code> / <code>signer</code> parameters —
-            they are supplied automatically by your wallet.
+            <InlineMarkup text={t("script.argumentsHint")} />
           </Typography>
           {args.length === 0 ? (
             <Typography variant="caption" sx={{color: "text.secondary"}}>
-              No arguments.
+              {t("script.noArguments")}
             </Typography>
           ) : (
             <Stack spacing={2}>
@@ -469,7 +480,7 @@ function ScriptForm() {
                 >
                   <TextField
                     select
-                    label="Type"
+                    label={t("script.type")}
                     value={arg.type}
                     onChange={(e) =>
                       setArgs((prev) =>
@@ -497,7 +508,7 @@ function ScriptForm() {
                           ),
                         )
                       }
-                      label="Custom type"
+                      label={t("script.customType")}
                       placeholder="vector<vector<u8>>"
                       size="small"
                       sx={{minWidth: 180}}
@@ -515,7 +526,7 @@ function ScriptForm() {
                         ),
                       )
                     }
-                    label={`Argument ${i + 1}`}
+                    label={t("script.argumentN", {n: i + 1})}
                     placeholder={getScriptArgPlaceholder(
                       arg.type === "custom" ? (arg.customType ?? "") : arg.type,
                     )}
@@ -523,7 +534,7 @@ function ScriptForm() {
                     size="small"
                   />
                   <IconButton
-                    aria-label="Remove argument"
+                    aria-label={t("script.removeArgument")}
                     onClick={() =>
                       setArgs((prev) => prev.filter((_, idx) => idx !== i))
                     }
@@ -554,7 +565,7 @@ function ScriptForm() {
                 {transactionInProcess ? (
                   <CircularProgress size={24} color="inherit" />
                 ) : (
-                  "Execute"
+                  t("script.execute")
                 )}
               </Button>
               <Button
@@ -567,7 +578,7 @@ function ScriptForm() {
                 {simulationInProcess ? (
                   <CircularProgress size={24} color="inherit" />
                 ) : (
-                  "Simulate"
+                  t("script.simulate")
                 )}
               </Button>
             </Stack>
@@ -575,8 +586,7 @@ function ScriptForm() {
               variant="caption"
               sx={{color: "text.secondary", display: "block", mt: 1}}
             >
-              Always <strong>Simulate</strong> first and review the output
-              before you Execute.
+              <InlineMarkup text={t("script.alwaysSimulate")} />
             </Typography>
 
             {inputError && (
@@ -589,7 +599,7 @@ function ScriptForm() {
                   <ErrorIcon color="error" fontSize="small" />
                   <Box>
                     <Typography variant="subtitle2" color="error">
-                      Invalid Input
+                      {t("script.invalidInput")}
                     </Typography>
                     <Typography variant="body2" sx={{color: "text.secondary"}}>
                       {inputError}
@@ -617,8 +627,8 @@ function ScriptForm() {
                       color={isFunctionSuccess ? "success.main" : "error"}
                     >
                       {isFunctionSuccess
-                        ? "Transaction Successful"
-                        : "Transaction Failed"}
+                        ? t("contract.transactionSuccessful")
+                        : t("contract.transactionFailed")}
                     </Typography>
                     {transactionResponse.message && (
                       <Typography
@@ -655,7 +665,7 @@ function ScriptForm() {
                               variant="outlined"
                               endIcon={<OpenInNew fontSize="small" />}
                             >
-                              View
+                              {t("common.view")}
                             </Button>
                           </Link>
                         </Stack>
@@ -679,7 +689,7 @@ function ScriptForm() {
                   <ErrorIcon color="error" fontSize="small" />
                   <Box>
                     <Typography variant="subtitle2" color="error">
-                      Simulation Failed
+                      {t("contract.simulationFailedTitle")}
                     </Typography>
                     <Typography variant="body2" sx={{color: "text.secondary"}}>
                       {simulationError}
@@ -697,7 +707,7 @@ function ScriptForm() {
               modalMaxWidth="sm"
             />
             <Typography variant="body2" sx={{color: "text.secondary"}}>
-              Connect wallet to simulate or execute a script
+              {t("script.connectHint")}
             </Typography>
           </Stack>
         )}
@@ -707,47 +717,31 @@ function ScriptForm() {
 }
 
 export default function RunScriptPage() {
+  const {t, tList} = useTranslation();
   return (
     <>
       <PageMetadata
-        title="Run a Move Script"
-        description="Advanced tool to build, simulate, and execute a raw Move script transaction on Aptos by pasting compiled script bytecode and supplying typed arguments."
+        title={t("pages.script.title")}
+        description={t("pages.script.metaDescription")}
         type="website"
-        keywords={[
-          "Move script",
-          "run script",
-          "script transaction",
-          "bytecode",
-          "simulate transaction",
-          "advanced",
-        ]}
+        keywords={tList("script.keywords")}
         canonicalPath="/run-script"
         noIndex
       />
       <Box>
         <PageHeader />
         <Typography variant="h3" component="h1" sx={{mb: 2}}>
-          Run a Move Script
+          {t("pages.script.title")}
         </Typography>
 
         <Stack spacing={2} sx={{mb: 3}}>
           <Alert severity="error" icon={<WarningAmberIcon />}>
-            <AlertTitle>Advanced action — proceed with caution</AlertTitle>
-            Executing a raw Move script signs and submits a transaction from
-            your connected wallet. A malicious or incorrect script can{" "}
-            <strong>
-              transfer your assets, revoke permissions, or take other
-              irreversible actions
-            </strong>
-            . Only run bytecode from a source you fully trust and understand.
+            <AlertTitle>{t("script.advancedTitle")}</AlertTitle>
+            <InlineMarkup text={t("script.advancedBody")} />
           </Alert>
           <Alert severity="warning">
-            <AlertTitle>Always simulate first</AlertTitle>
-            Use <strong>Simulate</strong> before executing and{" "}
-            <strong>read the simulation output carefully</strong> — check the
-            status, gas used, emitted events, and especially the balance and
-            resource <em>changes</em> to confirm the script does exactly what
-            you expect.
+            <AlertTitle>{t("script.simulateFirstTitle")}</AlertTitle>
+            <InlineMarkup text={t("script.simulateFirstBody")} />
           </Alert>
         </Stack>
 

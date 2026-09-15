@@ -3,6 +3,7 @@ import {Stack, Typography, useTheme} from "@mui/material";
 import type React from "react";
 import {type ResponseError, ResponseErrorType} from "../../api/client";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
+import {useTranslation} from "../../i18n";
 
 type ErrorProps = {
   error: ResponseError;
@@ -11,6 +12,7 @@ type ErrorProps = {
 
 export default function FungibleAssetError({error, address}: ErrorProps) {
   const theme = useTheme();
+  const {t} = useTranslation();
 
   const renderErrorContent = (title: string, message: React.ReactNode) => (
     <ContentBox>
@@ -48,7 +50,7 @@ export default function FungibleAssetError({error, address}: ErrorProps) {
   switch (error.type) {
     case ResponseErrorType.NOT_FOUND:
       return renderErrorContent(
-        "Fungible Asset Not Found",
+        t("notFound.faTitle"),
         <>
           {error.message && (
             <>
@@ -56,39 +58,42 @@ export default function FungibleAssetError({error, address}: ErrorProps) {
               <br />
             </>
           )}
-          Fungible asset not found: {address}.
+          {t("notFound.faBody", {address: address ?? ""})}
         </>,
       );
     case ResponseErrorType.INVALID_INPUT:
       return renderErrorContent(
-        "Invalid Input",
+        t("errors.invalidInput"),
         <>
-          ({error.type}): {error.message}
+          {t("errors.typeAndMessage", {
+            type: error.type,
+            message: error.message ?? "",
+          })}
         </>,
       );
     case ResponseErrorType.UNHANDLED:
       if (address) {
         return renderErrorContent(
-          "Error Loading Fungible Asset",
+          t("notFound.faLoad"),
           <>
-            Unknown error ({error.type}) fetching a fungible asset {address}:
+            {t("notFound.faLoadBody", {type: error.type, address})}
             <br />
             {error.message}
             <br />
             <br />
-            Try again later
+            {t("common.tryAgainLater")}
           </>,
         );
       } else {
         return renderErrorContent(
-          "Too Many Requests",
-          <>Too many requests. Please try again 5 minutes later.</>,
+          t("errors.tooManyRequests"),
+          <>{t("errors.tooManyRequests5min")}</>,
         );
       }
     case ResponseErrorType.TOO_MANY_REQUESTS:
       return renderErrorContent(
-        "Too Many Requests",
-        <>Too many requests. Please try again 5 minutes later.</>,
+        t("errors.tooManyRequests"),
+        <>{t("errors.tooManyRequests5min")}</>,
       );
   }
 }

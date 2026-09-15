@@ -58,6 +58,7 @@ describe("buildWebMcpTools", () => {
       "open_block",
       "open_releases",
       "open_coin",
+      "open_guide",
     ]);
   });
 
@@ -299,6 +300,25 @@ describe("buildWebMcpTools", () => {
           coinType: "0x1::aptos_coin::AptosCoin trailing",
         }),
       ).rejects.toThrow();
+    });
+  });
+
+  describe("open_guide", () => {
+    it("opens /guide and preserves network when omitted", async () => {
+      const {navigate, byName} = setup();
+      const result = await byName.open_guide.execute({});
+      expect(navigate).toHaveBeenCalledWith({to: "/guide", search: {}});
+      expect(result.path).toBe("/guide");
+    });
+
+    it("forwards an explicit network", async () => {
+      const {navigate, byName} = setup();
+      const result = await byName.open_guide.execute({network: "testnet"});
+      expect(navigate).toHaveBeenCalledWith({
+        to: "/guide",
+        search: {network: "testnet"},
+      });
+      expect(result.path).toBe("/guide?network=testnet");
     });
   });
 });

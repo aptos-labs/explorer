@@ -17,6 +17,7 @@ import {
 import * as React from "react";
 import {useCallback, useMemo} from "react";
 import type {ConfidentialStoreQueryState} from "../../../api/hooks/useAccountHasConfidentialStores";
+import {useTranslation} from "../../../i18n";
 import type {CoinDescription} from "../../../api/hooks/useGetCoinList";
 import {useGetInMainnet} from "../../../api/hooks/useGetInMainnet";
 import HashButton, {HashType} from "../../../components/HashButton";
@@ -88,9 +89,10 @@ const USDCell = React.memo(function USDCell({
   amount: number | null | undefined;
 }) {
   const theme = useTheme();
+  const {t} = useTranslation();
   const inMainnet = useGetInMainnet();
   if (amount === null || amount === undefined || !inMainnet) {
-    return <GeneralTableCell>N/A</GeneralTableCell>;
+    return <GeneralTableCell>{t("common.na")}</GeneralTableCell>;
   }
 
   return (
@@ -109,15 +111,13 @@ const USDCell = React.memo(function USDCell({
   );
 });
 
-const CONFIDENTIAL_TOOLTIP_MESSAGE =
-  "This account also holds a confidential (encrypted) balance for this asset. The amount is hidden on-chain and is not included in the values shown.";
-
 const ConfidentialIndicatorCell = React.memo(
   function ConfidentialIndicatorCell({
     confidential,
   }: {
     confidential: ConfidentialStoreQueryState;
   }) {
+    const {t} = useTranslation();
     const theme = useTheme();
     if (confidential.pending) {
       return (
@@ -131,11 +131,11 @@ const ConfidentialIndicatorCell = React.memo(
     }
     return (
       <GeneralTableCell sx={{textAlign: "center", width: 56}}>
-        <StyledTooltip title={CONFIDENTIAL_TOOLTIP_MESSAGE}>
+        <StyledTooltip title={t("accountUi.confidentialBalanceTip")}>
           <VisibilityOffOutlined
             fontSize="small"
             htmlColor={theme.palette.text.secondary}
-            aria-label="Has confidential balance"
+            aria-label={t("common.hasConfidentialBalance")}
           />
         </StyledTooltip>
       </GeneralTableCell>
@@ -216,6 +216,7 @@ function CoinCard({
     key: string | null | undefined,
   ) => ConfidentialStoreQueryState;
 }) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
   const augmentTo = useAugmentToWithGlobalSearchParams();
@@ -322,7 +323,7 @@ function CoinCard({
               fontSize: "0.7rem",
             }}
           >
-            {isFA ? "FA" : "Coin"}
+            {isFA ? t("accountUi.fa") : t("accountUi.coin")}
           </Typography>
         </Stack>
         <Stack
@@ -333,11 +334,11 @@ function CoinCard({
           }}
         >
           {confidential.hasStore === true && (
-            <StyledTooltip title={CONFIDENTIAL_TOOLTIP_MESSAGE}>
+            <StyledTooltip title={t("accountUi.confidentialBalanceTip")}>
               <VisibilityOffOutlined
                 fontSize="small"
                 htmlColor={theme.palette.text.secondary}
-                aria-label="Has confidential balance"
+                aria-label={t("common.hasConfidentialBalance")}
               />
             </StyledTooltip>
           )}
@@ -391,6 +392,7 @@ export function CoinsTable({
   ) => ConfidentialStoreQueryState;
   coinDataLoading?: boolean;
 }) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const networkName = useNetworkName();
   const [verificationFilter, setVerificationFilter] = React.useState(
@@ -567,7 +569,7 @@ export function CoinsTable({
               },
             }}
           >
-            Verified
+            {t("verified.level.labs")}
           </Button>
           <Typography
             variant="subtitle1"
@@ -597,7 +599,7 @@ export function CoinsTable({
               },
             }}
           >
-            Recognized
+            {t("verified.level.recognized")}
           </Button>
           <Typography
             variant="subtitle1"
@@ -627,7 +629,7 @@ export function CoinsTable({
               },
             }}
           >
-            All
+            {t("common.all")}
           </Button>
         </Stack>
       )}
@@ -640,7 +642,7 @@ export function CoinsTable({
             onChange={(e) => setShowZeroBalance(e.target.checked)}
           />
         }
-        label="Show Zero Balance"
+        label={t("accountUi.showZeroBalance")}
         slotProps={{typography: {variant: "body2"}}}
         sx={{margin: 0}}
       />
@@ -653,10 +655,10 @@ export function CoinsTable({
       let friendlyType = coinDesc.tokenStandard;
       switch (friendlyType) {
         case "v1":
-          friendlyType = "Coin";
+          friendlyType = t("accountUi.coin");
           break;
         case "v2":
-          friendlyType = "Fungible Asset";
+          friendlyType = t("accountUi.fungibleAsset");
           break;
       }
       return (
@@ -685,7 +687,7 @@ export function CoinsTable({
         </GeneralTableRow>
       );
     });
-  }, [filteredCoins, getConfidentialStore]);
+  }, [filteredCoins, getConfidentialStore, t]);
 
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -713,7 +715,7 @@ export function CoinsTable({
                 py: 3,
               }}
             >
-              No coins found
+              {t("accountUi.noCoinsFound")}
             </Typography>
           )}
         </Box>
@@ -726,26 +728,31 @@ export function CoinsTable({
     <>
       {filterSelector}
       <Box sx={{overflowX: "auto"}}>
-        <Table aria-label="Account coins" data-entity-type="coin">
+        <Table
+          aria-label={t("common.accountCoinsAria")}
+          data-entity-type="coin"
+        >
           <TableHead>
             <TableRow>
-              <GeneralTableHeaderCell header="Name" />
-              <GeneralTableHeaderCell header="Asset Type" />
-              <GeneralTableHeaderCell header="Asset" />
+              <GeneralTableHeaderCell headerKey="table.name" />
+              <GeneralTableHeaderCell headerKey="table.assetType" />
+              <GeneralTableHeaderCell headerKey="table.asset" />
               <GeneralTableHeaderCell
-                header="Verified"
+                headerKey="table.verified"
                 tooltip={getLearnMoreTooltip("coin_verification")}
                 isTableTooltip={true}
               />
               <GeneralTableHeaderCell
-                header="Confidential"
+                headerKey="table.confidential"
                 tooltip={
-                  <StyledLearnMoreTooltip text={CONFIDENTIAL_TOOLTIP_MESSAGE} />
+                  <StyledLearnMoreTooltip
+                    text={t("accountUi.confidentialBalanceTip")}
+                  />
                 }
                 isTableTooltip={false}
               />
-              <GeneralTableHeaderCell header="Amount" />
-              <GeneralTableHeaderCell header="USD Value" />
+              <GeneralTableHeaderCell headerKey="table.amount" />
+              <GeneralTableHeaderCell headerKey="table.usdValue" />
             </TableRow>
           </TableHead>
           {filteredCoins.length > 0 ? (
@@ -765,7 +772,7 @@ export function CoinsTable({
                       color: "text.secondary",
                     }}
                   >
-                    No coins found
+                    {t("accountUi.noCoinsFound")}
                   </Typography>
                 </GeneralTableCell>
               </TableRow>

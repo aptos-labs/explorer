@@ -20,8 +20,9 @@ const Helmet = ((ReactHelmetAsync as {Helmet?: typeof ReactHelmetAsync.Helmet})
     ?.Helmet) as typeof ReactHelmetAsync.Helmet;
 
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../../lib/constants";
+import {englishT, LOCALE_META, useTranslation} from "../../i18n";
 
-const SITE_NAME = "Aptos Explorer";
+const SITE_NAME = englishT("chrome.appName");
 const TWITTER_HANDLE = "@aptaboratories";
 
 // Page types for OG and structured data
@@ -76,13 +77,15 @@ export function usePageMetadata({
   image,
   url,
 }: PageMetadataProps) {
+  const {t} = useTranslation();
+  const siteName = t("chrome.appName");
   useEffect(() => {
     if (title && typeof document !== "undefined") {
-      document.title = title.includes(SITE_NAME)
+      document.title = title.includes(siteName)
         ? title
-        : `${title} | ${SITE_NAME}`;
+        : `${title} | ${siteName}`;
     }
-  }, [title]);
+  }, [title, siteName]);
 
   return {title, description, image, url};
 }
@@ -102,7 +105,7 @@ function generateBreadcrumbList(
     {
       "@type": "ListItem",
       position: 1,
-      name: "Explorer",
+      name: englishT("chrome.appNameShort"),
       item: BASE_URL,
     },
   ];
@@ -170,11 +173,11 @@ function validatorsHubCollectionName(tab: string): string {
   switch (tab) {
     case "delegation":
     case "enhanced_delegation":
-      return "Delegation Nodes";
+      return englishT("tabs.validators.delegation");
     case "all":
-      return "Validators";
+      return englishT("pages.validators.title");
     default:
-      return "Validators";
+      return englishT("pages.validators.title");
   }
 }
 
@@ -206,10 +209,10 @@ function hubCollectionPageSchema(
   }
 
   const hubs: Record<string, {name: string}> = {
-    "/transactions": {name: "Transactions"},
-    "/blocks": {name: "Latest Blocks"},
-    "/coins": {name: "Coins & Fungible Assets"},
-    "/analytics": {name: "Network Analytics"},
+    "/transactions": {name: englishT("pages.collection.transactions")},
+    "/blocks": {name: englishT("pages.collection.latestBlocks")},
+    "/coins": {name: englishT("pages.collection.coins")},
+    "/analytics": {name: englishT("pages.collection.analytics")},
   };
   const config = hubs[normalized];
   if (!config) return null;
@@ -245,8 +248,7 @@ export function generateStructuredData(
     "@type": "WebSite",
     name: SITE_NAME,
     url: BASE_URL,
-    description:
-      "Explore transactions, accounts, blocks, and activity on the Aptos blockchain.",
+    description: englishT("pages.home.websiteSchema"),
     potentialAction: {
       "@type": "SearchAction",
       target: {
@@ -280,7 +282,7 @@ export function generateStructuredData(
   ) {
     webPageSchema.about = {
       "@type": "Thing",
-      name: "Aptos Explorer search",
+      name: englishT("pages.home.searchSchemaName"),
       description: trimmedSearch,
     };
   }
@@ -548,6 +550,8 @@ function getKeywords(props: PageMetadataProps): string {
  * Includes SEO meta tags, Open Graph, Twitter Cards, and JSON-LD
  */
 export function PageMetadata(props: PageMetadataProps) {
+  const {t, locale} = useTranslation();
+  const siteName = t("chrome.appName");
   const {
     title,
     description,
@@ -558,9 +562,9 @@ export function PageMetadata(props: PageMetadataProps) {
   } = props;
 
   const fullTitle = useMemo(() => {
-    if (!title) return SITE_NAME;
-    return title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
-  }, [title]);
+    if (!title) return siteName;
+    return title.includes(siteName) ? title : `${title} | ${siteName}`;
+  }, [title, siteName]);
 
   const canonicalUrl = useMemo(() => {
     if (url) return url;
@@ -600,7 +604,7 @@ export function PageMetadata(props: PageMetadataProps) {
       <title>{fullTitle}</title>
       {description && <meta name="description" content={description} />}
       {keywords && <meta name="keywords" content={keywords} />}
-      <meta name="author" content="Aptos Labs" />
+      <meta name="author" content={t("footer.copyrightOwner")} />
 
       {/* Canonical URL */}
       <link rel="canonical" href={canonicalUrl} />
@@ -614,7 +618,7 @@ export function PageMetadata(props: PageMetadataProps) {
 
       {/* Open Graph / Facebook */}
       <meta property="og:type" content={ogType} />
-      <meta property="og:site_name" content={SITE_NAME} />
+      <meta property="og:site_name" content={siteName} />
       <meta property="og:title" content={fullTitle} />
       {description && <meta property="og:description" content={description} />}
       <meta property="og:image" content={ogImage} />
@@ -622,7 +626,7 @@ export function PageMetadata(props: PageMetadataProps) {
       <meta property="og:image:height" content="630" />
       <meta property="og:image:alt" content={fullTitle} />
       <meta property="og:url" content={canonicalUrl} />
-      <meta property="og:locale" content="en_US" />
+      <meta property="og:locale" content={LOCALE_META[locale].ogLocale} />
 
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />
@@ -650,10 +654,11 @@ export function PageMetadata(props: PageMetadataProps) {
  * Default metadata for pages that don't set their own
  */
 export function DefaultPageMetadata() {
+  const {t} = useTranslation();
   return (
     <PageMetadata
-      title="Aptos Explorer"
-      description="Explore transactions, accounts, blocks, validators, and activity on the Aptos blockchain. The official block explorer for the Aptos network."
+      title={t("chrome.appName")}
+      description={t("pages.home.metaDescription")}
       type="website"
     />
   );

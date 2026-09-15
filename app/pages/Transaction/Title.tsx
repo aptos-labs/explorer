@@ -4,6 +4,7 @@ import type {Types} from "~/types/aptos";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import TitleHashButton, {HashType} from "../../components/TitleHashButton";
 import {TransactionType} from "../../components/TransactionType";
+import {useTranslation} from "../../i18n";
 import {truncateAddress} from "../../utils";
 import {rewriteTxnTab} from "../../utils/routeRedirects";
 import {getTransactionTabHeadLabel} from "./transactionTabMeta";
@@ -22,17 +23,25 @@ export default function TransactionTitle({
   urlTxnHashOrVersion,
   pathTab = "overview",
 }: TransactionTitleProps) {
+  const {t} = useTranslation();
   const version = "version" in transaction ? transaction.version : undefined;
   const isMultisig = isMultisigTransaction(transaction);
 
-  const titleLabel = isMultisig ? "Multisig Transaction" : "Transaction";
+  const titleLabel = isMultisig ? t("txn.multisigEntity") : t("txn.entity");
   const tab = rewriteTxnTab(pathTab);
-  const tabHead = getTransactionTabHeadLabel(tab);
+  const tabHead = getTransactionTabHeadLabel(tab, t);
   const displayId = truncateAddress(urlTxnHashOrVersion);
-  const metadataTitle = `${tabHead} | ${titleLabel} ${displayId}`;
+  const metadataTitle = t("txn.metaTitle", {
+    tab: tabHead,
+    entity: titleLabel,
+    id: displayId,
+  });
   const metadataDescription = isMultisig
-    ? `View ${tabHead.toLowerCase()} for multisig transaction ${urlTxnHashOrVersion} on the Aptos blockchain.`
-    : `View ${tabHead.toLowerCase()} for transaction ${urlTxnHashOrVersion} on the Aptos blockchain.`;
+    ? t("txn.metaDescriptionMultisig", {
+        tab: tabHead,
+        id: urlTxnHashOrVersion,
+      })
+    : t("txn.metaDescription", {tab: tabHead, id: urlTxnHashOrVersion});
 
   return (
     <Stack
@@ -67,7 +76,7 @@ export default function TransactionTitle({
         {isMultisig && (
           <Chip
             icon={<GroupsOutlinedIcon />}
-            label="Multisig"
+            label={t("txn.multisigChip")}
             color="primary"
             variant="outlined"
             sx={{fontWeight: 600}}
@@ -78,7 +87,7 @@ export default function TransactionTitle({
         <TitleHashButton hash={transaction.hash} type={HashType.TRANSACTION} />
       ) : (
         <Typography variant="body2" sx={{color: "text.secondary"}}>
-          Transaction hash unavailable from indexer
+          {t("txn.hashUnavailable")}
         </Typography>
       )}
       <TransactionType type={transaction.type} />

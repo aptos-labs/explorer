@@ -1,9 +1,12 @@
 import {Box, Stack, Typography, useTheme} from "@mui/material";
 import type React from "react";
+import {type TranslateVars, useTranslation} from "../../i18n";
 import EmptyValue from "./ContentValue/EmptyValue";
 
 type ContentRowSmallProps = {
-  title: string;
+  title?: string;
+  titleKey?: string;
+  titleVars?: TranslateVars;
   value: React.ReactNode;
   tooltip?: React.ReactNode;
   i?: string | number;
@@ -11,10 +14,14 @@ type ContentRowSmallProps = {
 
 export default function ContentRowSpaceBetween({
   title,
+  titleKey,
+  titleVars,
   value,
   tooltip,
 }: ContentRowSmallProps) {
   const theme = useTheme();
+  const {t} = useTranslation();
+  const displayTitle = titleKey ? t(titleKey, titleVars) : (title ?? "");
   return (
     <Stack
       direction="row"
@@ -32,7 +39,7 @@ export default function ContentRowSpaceBetween({
         <Typography
           sx={{fontSize: "0.875rem", color: theme.palette.text.secondary}}
         >
-          {title}
+          {displayTitle}
         </Typography>
         {tooltip}
       </Stack>

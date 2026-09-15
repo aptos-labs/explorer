@@ -17,6 +17,7 @@ import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {tryStandardizeAddress} from "../../../utils";
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
+import {useTranslation} from "../../../i18n";
 
 type InfoTabProps = {
   address: string;
@@ -41,6 +42,7 @@ export default function InfoTab({
   accountData,
   objectData,
 }: InfoTabProps) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const {
     data: objectRefs,
@@ -208,13 +210,13 @@ export default function InfoTab({
       >
         <ContentBox>
           <ContentRow
-            title={"Sequence Number:"}
+            titleKey="fields.sequenceNumber"
             value={accountData.sequence_number}
             tooltip={getLearnMoreTooltip("sequence_number")}
           />
           {keyRotated ? (
             <ContentRow
-              title={"Authentication Key:"}
+              titleKey="fields.authenticationKey"
               value={
                 <>
                   {`${accountData.authentication_key} `}
@@ -229,13 +231,13 @@ export default function InfoTab({
             />
           ) : (
             <ContentRow
-              title={"Authentication Key:"}
+              titleKey="fields.authenticationKey"
               value={accountData.authentication_key}
               tooltip={getLearnMoreTooltip("authentication_key")}
             />
           )}
           <ContentRow
-            title={"Key Type:"}
+            titleKey="fields.keyType"
             value={keyTypeValue}
             tooltip={getLearnMoreTooltip("key_type")}
           />
@@ -258,12 +260,12 @@ export default function InfoTab({
       >
         <ContentBox>
           <ContentRow
-            title={"Owner:"}
+            titleKey="fields.owner"
             value={<HashButton hash={objData.owner} type={HashType.ACCOUNT} />}
             tooltip={getLearnMoreTooltip("owner")}
           />
           <ContentRow
-            title={"Transferrable:"}
+            titleKey="fields.transferrable"
             value={objData.allow_ungated_transfer ? "Yes" : "No"}
             tooltip={getLearnMoreTooltip("allow_ungated_transfer")}
           />
@@ -306,36 +308,48 @@ export default function InfoTab({
                   color: "text.secondary",
                 }}
               >
-                Scanning creation transaction...
+                {t("accountUi.scanningCreation")}
               </Typography>
             </Box>
           ) : objectRefs ? (
             <>
               <ContentRow
-                title={"Transfer Ref:"}
+                titleKey="fields.transferRef"
                 value={
                   <RefChip
-                    label={objectRefs.hasTransferRef ? "Exists" : "Not Created"}
+                    label={
+                      objectRefs.hasTransferRef
+                        ? t("accountUi.exists")
+                        : t("accountUi.notCreated")
+                    }
                     exists={objectRefs.hasTransferRef}
                   />
                 }
                 tooltip={getLearnMoreTooltip("transfer_ref")}
               />
               <ContentRow
-                title={"Delete Ref:"}
+                titleKey="fields.deleteRef"
                 value={
                   <RefChip
-                    label={objectRefs.hasDeleteRef ? "Exists" : "Not Created"}
+                    label={
+                      objectRefs.hasDeleteRef
+                        ? t("accountUi.exists")
+                        : t("accountUi.notCreated")
+                    }
                     exists={objectRefs.hasDeleteRef}
                   />
                 }
                 tooltip={getLearnMoreTooltip("delete_ref")}
               />
               <ContentRow
-                title={"Extend Ref:"}
+                titleKey="fields.extendRef"
                 value={
                   <RefChip
-                    label={objectRefs.hasExtendRef ? "Exists" : "Not Created"}
+                    label={
+                      objectRefs.hasExtendRef
+                        ? t("accountUi.exists")
+                        : t("accountUi.notCreated")
+                    }
                     exists={objectRefs.hasExtendRef}
                   />
                 }
@@ -343,7 +357,7 @@ export default function InfoTab({
               />
               {objectRefs.creationTransactionVersion !== null && (
                 <ContentRow
-                  title={"Creation Transaction:"}
+                  titleKey="fields.creationTransaction"
                   value={
                     <HashButton
                       hash={String(objectRefs.creationTransactionVersion)}

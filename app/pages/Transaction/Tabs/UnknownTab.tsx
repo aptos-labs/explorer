@@ -25,12 +25,12 @@ export default function UnknownTab({transaction}: UnknownTabProps) {
       <ContentBox sx={{padding: 4}}>
         <Alert severity="warning">{`Unknown transaction type: "${transaction.type}"`}</Alert>
         <ContentRow
-          title={"Version:"}
+          titleKey="fields.version"
           value={<Box sx={{fontWeight: 600}}>{transactionData.version}</Box>}
           tooltip={getLearnMoreTooltip("version")}
         />
         <ContentRow
-          title="Status:"
+          titleKey="fields.status"
           value={<TransactionStatus success={transactionData.success} />}
           tooltip={getLearnMoreTooltip("status")}
         />
@@ -38,7 +38,7 @@ export default function UnknownTab({transaction}: UnknownTabProps) {
       <ContentBox>
         <TransactionBlockRow version={transactionData.version} />
         <ContentRow
-          title="Timestamp:"
+          titleKey="fields.timestamp"
           value={
             <TimestampValue
               timestamp={transactionData.timestamp}
@@ -48,29 +48,29 @@ export default function UnknownTab({transaction}: UnknownTabProps) {
           tooltip={getLearnMoreTooltip("timestamp")}
         />
         <ContentRow
-          title="VM Status:"
+          titleKey="fields.vmStatus"
           value={transactionData.vm_status}
           tooltip={getLearnMoreTooltip("vm_status")}
         />
       </ContentBox>
       <ContentBox>
         <ContentRow
-          title="State Change Hash:"
+          titleKey="fields.stateChangeHash"
           value={transactionData.state_change_hash}
           tooltip={getLearnMoreTooltip("state_change_hash")}
         />
         <ContentRow
-          title="Event Root Hash:"
+          titleKey="fields.eventRootHash"
           value={transactionData.event_root_hash}
           tooltip={getLearnMoreTooltip("event_root_hash")}
         />
         <ContentRow
-          title="Accumulator Root Hash:"
+          titleKey="fields.accumulatorRootHash"
           value={transactionData.accumulator_root_hash}
           tooltip={getLearnMoreTooltip("accumulator_root_hash")}
         />
         <ContentRow
-          title="Full Transaction:"
+          titleKey="fields.fullTransaction"
           value={<JsonViewCard data={transaction} />}
         />
       </ContentBox>

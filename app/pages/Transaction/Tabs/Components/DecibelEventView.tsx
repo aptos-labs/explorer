@@ -28,6 +28,7 @@ import {
   ResponsiveKeyValueTable,
 } from "../../../../components/Table/ResponsiveKeyValueTable";
 import {DECIBEL_CONTRACTS} from "../../../../utils/decibel";
+import {useTranslation} from "../../../../i18n";
 
 // ---------------------------------------------------------------------------
 // Detection
@@ -86,6 +87,7 @@ function EventTable({
   rawData: Record<string, unknown>;
 }) {
   const [showRaw, setShowRaw] = React.useState(false);
+  const {t} = useTranslation();
 
   return (
     <Paper variant="outlined" sx={{overflow: "hidden", maxWidth: "100%"}}>
@@ -97,7 +99,9 @@ function EventTable({
           pt: 0.5,
         }}
       >
-        <Tooltip title={showRaw ? "Formatted view" : "Raw JSON"}>
+        <Tooltip
+          title={showRaw ? t("decibel.formattedView") : t("decibel.rawJson")}
+        >
           <IconButton size="small" onClick={() => setShowRaw((v) => !v)}>
             {showRaw ? (
               <TableChartOutlinedIcon fontSize="small" />
@@ -125,9 +129,10 @@ function EventTable({
 }
 
 function SideLabel({isBid}: {isBid: boolean}) {
+  const {t} = useTranslation();
   return (
     <Chip
-      label={isBid ? "Buy" : "Sell"}
+      label={isBid ? t("decibel.buy") : t("decibel.sell")}
       size="small"
       color={isBid ? "success" : "error"}
       sx={{fontWeight: 600}}
@@ -202,6 +207,7 @@ function MonoText({children}: {children: React.ReactNode}) {
 // ---------------------------------------------------------------------------
 
 function OrderEventView({data}: {data: Record<string, unknown>}) {
+  const {t} = useTranslation();
   const isBid = data.is_bid === true;
   const status = extractVariant(data.status);
   const tif = extractVariant(data.time_in_force);
@@ -214,51 +220,58 @@ function OrderEventView({data}: {data: Record<string, unknown>}) {
 
   return (
     <EventTable rawData={data}>
-      <Row label="Side">
+      <Row labelKey="decibel.side">
         <SideLabel isBid={isBid} />
         {data.is_taker === true && (
-          <Chip label="Taker" size="small" variant="outlined" sx={{ml: 1}} />
+          <Chip
+            label={t("decibel.taker")}
+            size="small"
+            variant="outlined"
+            sx={{ml: 1}}
+          />
         )}
       </Row>
-      <Row label="Market">
+      <Row labelKey="decibel.market">
         <MarketValue hash={String(data.market)} />
       </Row>
-      <Row label="Price">
+      <Row labelKey="decibel.price">
         <MonoText>{String(data.price)}</MonoText>
       </Row>
-      <Row label="Original Size">
+      <Row labelKey="decibel.originalSize">
         <MonoText>{String(data.orig_size)}</MonoText>
       </Row>
       {data.remaining_size !== undefined && (
-        <Row label="Remaining Size">
+        <Row labelKey="decibel.remainingSize">
           <MonoText>{String(data.remaining_size)}</MonoText>
         </Row>
       )}
       {data.size_delta !== undefined && (
-        <Row label="Size Delta">
+        <Row labelKey="decibel.sizeDelta">
           <MonoText>{String(data.size_delta)}</MonoText>
         </Row>
       )}
       {status && (
-        <Row label="Status">
+        <Row labelKey="decibel.status">
           <Chip label={status} size="small" variant="outlined" />
         </Row>
       )}
-      {tif && <Row label="Time in Force">{tif}</Row>}
-      {cancelReason && <Row label="Cancel Reason">{cancelReason}</Row>}
-      <Row label="Order ID">
+      {tif && <Row labelKey="decibel.timeInForce">{tif}</Row>}
+      {cancelReason && (
+        <Row labelKey="decibel.cancelReason">{cancelReason}</Row>
+      )}
+      <Row labelKey="decibel.orderId">
         <MonoText>{String(data.order_id)}</MonoText>
       </Row>
-      <Row label="User">
+      <Row labelKey="decibel.user">
         <AddressValue hash={String(data.user)} />
       </Row>
       {"parent" in data && data.parent ? (
-        <Row label="Parent">
+        <Row labelKey="decibel.parent">
           <AddressValue hash={String(data.parent)} />
         </Row>
       ) : null}
       {clientOrderId && (
-        <Row label="Client Order ID">
+        <Row labelKey="decibel.clientOrderId">
           <MonoText>{clientOrderId}</MonoText>
         </Row>
       )}
@@ -344,8 +357,8 @@ function PriceSizeTable({
         <Table size="small">
           <TableHead>
             <TableRow>
-              <GeneralTableHeaderCell header="Price" />
-              <GeneralTableHeaderCell header="Size" />
+              <GeneralTableHeaderCell headerKey="table.price" />
+              <GeneralTableHeaderCell headerKey="table.size" />
             </TableRow>
           </TableHead>
           <TableBody>
@@ -370,6 +383,7 @@ function PriceSizeTable({
 }
 
 function BulkOrderPlacedEventView({data}: {data: Record<string, unknown>}) {
+  const {t} = useTranslation();
   const bidPrices = (data.bid_prices as string[]) ?? [];
   const bidSizes = (data.bid_sizes as string[]) ?? [];
   const askPrices = (data.ask_prices as string[]) ?? [];
@@ -381,38 +395,38 @@ function BulkOrderPlacedEventView({data}: {data: Record<string, unknown>}) {
 
   return (
     <EventTable rawData={data}>
-      <Row label="Market">
+      <Row labelKey="decibel.market">
         <MarketValue hash={String(data.market)} />
       </Row>
-      <Row label="Order ID">
+      <Row labelKey="decibel.orderId">
         <MonoText>{String(data.order_id)}</MonoText>
       </Row>
-      <Row label="User">
+      <Row labelKey="decibel.user">
         <AddressValue hash={String(data.user)} />
       </Row>
-      <Row label="Sequence">
+      <Row labelKey="decibel.sequence">
         <MonoText>{String(data.sequence_number)}</MonoText>
       </Row>
-      <Row label="Bids">
+      <Row labelKey="decibel.bids">
         <PriceSizeTable
-          label="Bids"
+          label={t("decibel.bids")}
           prices={bidPrices}
           sizes={bidSizes}
           color="success"
         />
       </Row>
-      <Row label="Asks">
+      <Row labelKey="decibel.asks">
         <PriceSizeTable
-          label="Asks"
+          label={t("decibel.asks")}
           prices={askPrices}
           sizes={askSizes}
           color="error"
         />
       </Row>
       {cancelledBidPrices.length > 0 && (
-        <Row label="Cancelled Bids">
+        <Row labelKey="decibel.cancelledBids">
           <PriceSizeTable
-            label="Cancelled Bids"
+            label={t("decibel.cancelledBids")}
             prices={cancelledBidPrices}
             sizes={cancelledBidSizes}
             color="success"
@@ -420,9 +434,9 @@ function BulkOrderPlacedEventView({data}: {data: Record<string, unknown>}) {
         </Row>
       )}
       {cancelledAskPrices.length > 0 && (
-        <Row label="Cancelled Asks">
+        <Row labelKey="decibel.cancelledAsks">
           <PriceSizeTable
-            label="Cancelled Asks"
+            label={t("decibel.cancelledAsks")}
             prices={cancelledAskPrices}
             sizes={cancelledAskSizes}
             color="error"
@@ -442,30 +456,30 @@ function BulkOrderFilledEventView({data}: {data: Record<string, unknown>}) {
 
   return (
     <EventTable rawData={data}>
-      <Row label="Side">
+      <Row labelKey="decibel.side">
         <SideLabel isBid={isBid} />
       </Row>
-      <Row label="Market">
+      <Row labelKey="decibel.market">
         <MarketValue hash={String(data.market)} />
       </Row>
-      <Row label="Price">
+      <Row labelKey="decibel.price">
         <MonoText>{String(data.price)}</MonoText>
       </Row>
       {"orig_price" in data && data.orig_price ? (
-        <Row label="Original Price">
+        <Row labelKey="decibel.originalPrice">
           <MonoText>{String(data.orig_price)}</MonoText>
         </Row>
       ) : null}
-      <Row label="Filled Size">
+      <Row labelKey="decibel.filledSize">
         <MonoText>{String(data.filled_size)}</MonoText>
       </Row>
-      <Row label="Order ID">
+      <Row labelKey="decibel.orderId">
         <MonoText>{String(data.order_id)}</MonoText>
       </Row>
-      <Row label="Fill ID">
+      <Row labelKey="decibel.fillId">
         <MonoText>{String(data.fill_id)}</MonoText>
       </Row>
-      <Row label="User">
+      <Row labelKey="decibel.user">
         <AddressValue hash={String(data.user)} />
       </Row>
     </EventTable>
@@ -477,6 +491,7 @@ function BulkOrderFilledEventView({data}: {data: Record<string, unknown>}) {
 // ---------------------------------------------------------------------------
 
 function TradeEventView({data}: {data: Record<string, unknown>}) {
+  const {t} = useTranslation();
   const action = extractVariant(data.action);
   const market = extractInner(data.market);
   const source = extractVariant(data.source);
@@ -484,37 +499,42 @@ function TradeEventView({data}: {data: Record<string, unknown>}) {
   return (
     <EventTable rawData={data}>
       {action && (
-        <Row label="Action">
+        <Row labelKey="decibel.action">
           <Chip label={action} size="small" variant="outlined" />
           {data.is_taker === true && (
-            <Chip label="Taker" size="small" variant="outlined" sx={{ml: 1}} />
+            <Chip
+              label={t("decibel.taker")}
+              size="small"
+              variant="outlined"
+              sx={{ml: 1}}
+            />
           )}
         </Row>
       )}
       {market && (
-        <Row label="Market">
+        <Row labelKey="decibel.market">
           <MarketValue hash={market} />
         </Row>
       )}
-      <Row label="Price">
+      <Row labelKey="decibel.price">
         <MonoText>{String(data.price)}</MonoText>
       </Row>
-      <Row label="Size">
+      <Row labelKey="decibel.size">
         <MonoText>{String(data.size)}</MonoText>
       </Row>
-      <Row label="Fee">
+      <Row labelKey="decibel.fee">
         <MonoText>{String(data.fee)}</MonoText>
       </Row>
-      <Row label="Account">
+      <Row labelKey="decibel.account">
         <AddressValue hash={String(data.account)} />
       </Row>
       {data.realized_pnl !== undefined && String(data.realized_pnl) !== "0" && (
-        <Row label="Realized PnL">
+        <Row labelKey="decibel.realizedPnl">
           <MonoText>{String(data.realized_pnl)}</MonoText>
         </Row>
       )}
-      {source && <Row label="Source">{source}</Row>}
-      <Row label="Fill ID">
+      {source && <Row labelKey="decibel.source">{source}</Row>}
+      <Row labelKey="decibel.fillId">
         <MonoText>{String(data.fill_id)}</MonoText>
       </Row>
     </EventTable>
@@ -543,26 +563,26 @@ function CollateralBalanceChangeEventView({
   return (
     <EventTable rawData={data}>
       {changeType && (
-        <Row label="Change Type">
+        <Row labelKey="decibel.changeType">
           <Chip label={changeType} size="small" variant="outlined" />
         </Row>
       )}
-      <Row label="Delta">
+      <Row labelKey="decibel.delta">
         <MonoText>{String(data.delta)}</MonoText>
       </Row>
       {assetInner && (
-        <Row label="Asset">
+        <Row labelKey="decibel.asset">
           <ObjectValue hash={assetInner} />
         </Row>
       )}
-      {balVariant && <Row label="Balance Type">{balVariant}</Row>}
+      {balVariant && <Row labelKey="decibel.balanceType">{balVariant}</Row>}
       {account && (
-        <Row label="Account">
+        <Row labelKey="decibel.account">
           <AddressValue hash={account} />
         </Row>
       )}
       {balMarket && (
-        <Row label="Market">
+        <Row labelKey="decibel.market">
           <MarketValue hash={balMarket} />
         </Row>
       )}
@@ -575,28 +595,34 @@ function CollateralBalanceChangeEventView({
 // ---------------------------------------------------------------------------
 
 function PositionUpdateEventView({data}: {data: Record<string, unknown>}) {
+  const {t} = useTranslation();
   const market = extractInner(data.market);
 
   return (
     <EventTable rawData={data}>
-      <Row label="User">
+      <Row labelKey="decibel.user">
         <AddressValue hash={String(data.user)} />
       </Row>
       {market && (
-        <Row label="Market">
+        <Row labelKey="decibel.market">
           <MarketValue hash={market} />
         </Row>
       )}
-      <Row label="Side">
+      <Row labelKey="decibel.side">
         <SideLabel isBid={data.is_long === true} />
         {data.is_isolated === true && (
-          <Chip label="Isolated" size="small" variant="outlined" sx={{ml: 1}} />
+          <Chip
+            label={t("decibel.isolated")}
+            size="small"
+            variant="outlined"
+            sx={{ml: 1}}
+          />
         )}
       </Row>
-      <Row label="Size">
+      <Row labelKey="decibel.size">
         <MonoText>{String(data.size)}</MonoText>
       </Row>
-      <Row label="Leverage">
+      <Row labelKey="decibel.leverage">
         <MonoText>{String(data.user_leverage)}x</MonoText>
       </Row>
     </EventTable>
@@ -613,11 +639,11 @@ function OpenInterestUpdateEventView({data}: {data: Record<string, unknown>}) {
   return (
     <EventTable rawData={data}>
       {market && (
-        <Row label="Market">
+        <Row labelKey="decibel.market">
           <MarketValue hash={market} />
         </Row>
       )}
-      <Row label="Current Open Interest">
+      <Row labelKey="decibel.currentOpenInterest">
         <MonoText>{String(data.current_open_interest)}</MonoText>
       </Row>
     </EventTable>
@@ -629,15 +655,16 @@ function OpenInterestUpdateEventView({data}: {data: Record<string, unknown>}) {
 // ---------------------------------------------------------------------------
 
 const FUNDING_LABELS: Record<string, string> = {
-  funding_index: "Funding Index",
-  funding_period_us: "Funding Period",
-  funding_timestamp_us: "Funding Timestamp",
-  instant_daily_funding_rate: "Daily Funding Rate",
-  outstanding_funding: "Outstanding Funding",
-  outstanding_funding_timestamp_us: "Outstanding Timestamp",
+  funding_index: "decibel.fundingIndex",
+  funding_period_us: "decibel.fundingPeriod",
+  funding_timestamp_us: "decibel.fundingTimestamp",
+  instant_daily_funding_rate: "decibel.dailyFundingRate",
+  outstanding_funding: "decibel.outstandingFunding",
+  outstanding_funding_timestamp_us: "decibel.outstandingTimestamp",
 };
 
 function FundingView({funding}: {funding: Record<string, unknown>}) {
+  const {t} = useTranslation();
   const entries = Object.entries(funding).filter(
     ([key]) => key !== "__variant__",
   );
@@ -660,7 +687,7 @@ function FundingView({funding}: {funding: Record<string, unknown>}) {
               flexShrink: 0,
             }}
           >
-            {FUNDING_LABELS[key] ?? key}
+            {FUNDING_LABELS[key] ? t(FUNDING_LABELS[key]) : key}
           </Typography>
           <Box
             sx={{
@@ -684,34 +711,34 @@ function PriceUpdateEventView({data}: {data: Record<string, unknown>}) {
   return (
     <EventTable rawData={data}>
       {market && (
-        <Row label="Market">
+        <Row labelKey="decibel.market">
           <MarketValue hash={market} />
         </Row>
       )}
-      <Row label="Oracle Price">
+      <Row labelKey="decibel.oraclePrice">
         <MonoText>{String(data.oracle_px)}</MonoText>
       </Row>
-      <Row label="Mark Price">
+      <Row labelKey="decibel.markPrice">
         <MonoText>{String(data.mark_px)}</MonoText>
       </Row>
       {data.impact_bid_px !== undefined && (
-        <Row label="Impact Bid">
+        <Row labelKey="decibel.impactBid">
           <MonoText>{String(data.impact_bid_px)}</MonoText>
         </Row>
       )}
       {data.impact_ask_px !== undefined && (
-        <Row label="Impact Ask">
+        <Row labelKey="decibel.impactAsk">
           <MonoText>{String(data.impact_ask_px)}</MonoText>
         </Row>
       )}
       {data.funding !== undefined &&
       typeof data.funding === "object" &&
       data.funding !== null ? (
-        <Row label="Funding">
+        <Row labelKey="decibel.funding">
           <FundingView funding={data.funding as Record<string, unknown>} />
         </Row>
       ) : data.funding !== undefined ? (
-        <Row label="Funding">
+        <Row labelKey="decibel.funding">
           <MonoText>{String(data.funding)}</MonoText>
         </Row>
       ) : null}

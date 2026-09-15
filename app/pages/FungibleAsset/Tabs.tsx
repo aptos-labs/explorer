@@ -6,6 +6,7 @@ import type * as React from "react";
 import StyledTab from "../../components/StyledTab";
 import StyledTabs from "../../components/StyledTabs";
 import {useNavigate} from "../../routing";
+import {useTranslation} from "../../i18n";
 import {assertNever} from "../../utils";
 import type {FACombinedData} from "./Index";
 import HoldersTab from "./Tabs/HoldersTab";
@@ -22,14 +23,14 @@ const TabComponents = Object.freeze({
 
 export type TabValue = keyof typeof TabComponents;
 
-function getTabLabel(value: TabValue): string {
+function getTabLabel(value: TabValue, t: (key: string) => string): string {
   switch (value) {
     case "info":
-      return "Info";
+      return t("tabs.fa.info");
     case "holders":
-      return "Beta - Holders";
+      return t("tabs.fa.holders");
     case "transactions":
-      return "Beta - Transactions";
+      return t("tabs.fa.transactions");
     default:
       return assertNever(value);
   }
@@ -73,6 +74,7 @@ export default function FATabs({
 }: FATabsProps): React.JSX.Element {
   const params = useParams({strict: false}) as {address?: string; tab?: string};
   const navigate = useNavigate();
+  const {t} = useTranslation();
 
   let effectiveTab: TabValue;
   if (params?.tab !== undefined && tabValues.includes(params.tab as TabValue)) {
@@ -98,7 +100,7 @@ export default function FATabs({
               key={value}
               value={value}
               icon={getTabIcon(value)}
-              label={getTabLabel(value)}
+              label={getTabLabel(value, t)}
               isFirst={i === 0}
               isLast={i === tabValues.length - 1}
             />

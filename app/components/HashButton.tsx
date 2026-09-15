@@ -28,6 +28,7 @@ import {
   truncateAddressMiddle,
 } from "../pages/utils";
 import {Link} from "../routing";
+import {useTranslation} from "../i18n";
 import {getSemanticColors} from "../themes/colors/aptosBrandColors";
 import {assertNever, standardizeAddress} from "../utils";
 import IdenticonImg from "./IdenticonImg";
@@ -103,6 +104,7 @@ const AccountHashButtonInner = memo(function AccountHashButtonInner({
   isValidator,
   resolveName,
 }: AccountHashButtonInnerProps) {
+  const {t} = useTranslation();
   // Standardize address
   const address = standardizeAddress(hash);
 
@@ -163,7 +165,7 @@ const AccountHashButtonInner = memo(function AccountHashButtonInner({
         <Tooltip title={name ?? address} enterDelay={500} enterNextDelay={500}>
           <span>{name ? truncate(name, 9, 11, "…") : truncateHash}</span>
         </Tooltip>
-        <Tooltip title="Copied" open={copyTooltipOpen}>
+        <Tooltip title={t("common.copied")} open={copyTooltipOpen}>
           <Button
             sx={{
               color: "inherit",
@@ -204,6 +206,7 @@ const HashButtonInner = memo(function HashButtonInner({
   img,
   ...props
 }: HashButtonInnerProps) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -328,7 +331,7 @@ const HashButtonInner = memo(function HashButtonInner({
         >
           {HashLink(hash, type)}
           <IconButton
-            aria-label="collapse hash"
+            aria-label={t("common.collapseHash")}
             onClick={hashCollapse}
             sx={{
               ml: 1,
@@ -360,6 +363,7 @@ const AssetHashButtonInner = memo(function AssetHashButtonInner({
   size = "small",
   img,
 }: AssetHashButtonInnerProps) {
+  const {t} = useTranslation();
   const {data: coinData} = useGetCoinList();
   const [copyTooltipOpen, setCopyTooltipOpen] = useState(false);
   const theme = useTheme();
@@ -461,7 +465,7 @@ const AssetHashButtonInner = memo(function AssetHashButtonInner({
         <Tooltip title={displayName} enterDelay={500} enterNextDelay={500}>
           <span>{displayName}</span>
         </Tooltip>
-        <Tooltip title="Copied" open={copyTooltipOpen}>
+        <Tooltip title={t("common.copied")} open={copyTooltipOpen}>
           <Button
             sx={{
               color: "inherit",

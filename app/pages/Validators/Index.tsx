@@ -3,22 +3,24 @@ import {useParams} from "@tanstack/react-router";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import {OutOfCommissionPoolsBanner} from "../../components/OutOfCommissionPoolsBanner";
 import {useNetworkName} from "../../global-config/GlobalConfig";
+import {useTranslation} from "../../i18n";
 import PageHeader from "../layout/PageHeader";
 import ValidatorsPageTabs from "./Tabs";
 import ValidatorsMap from "./ValidatorsMap";
 import {validatorsTabHeadTitle} from "./validatorsTabMeta";
 
 export default function ValidatorsPage() {
+  const {t} = useTranslation();
   const networkName = useNetworkName();
   const params = useParams({strict: false}) as {tab?: string};
   const tab = params.tab ?? "all";
-  const tabTitle = validatorsTabHeadTitle(tab);
+  const tabTitle = validatorsTabHeadTitle(tab, t);
 
   return (
     <Box>
       <PageMetadata
-        title={`${tabTitle} | Validators`}
-        description="View all validators on the Aptos blockchain network. Monitor validator performance, stake amounts, commission rates, voting power, and delegation status. Stake your APT with trusted validators."
+        title={t("pages.validators.metaTitle", {tab: tabTitle})}
+        description={t("pages.validators.metaDescription")}
         type="website"
         keywords={[
           "validators",
@@ -40,7 +42,7 @@ export default function ValidatorsPage() {
           marginBottom: 2,
         }}
       >
-        Validators
+        {t("pages.validators.title")}
       </Typography>
       <OutOfCommissionPoolsBanner />
       {networkName === "mainnet" && <ValidatorsMap />}

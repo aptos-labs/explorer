@@ -8,7 +8,7 @@ import {
 export default function TransactionTypeTooltip() {
   // TODO: Re-evaluate what belongs in this one
   return (
-    <TableTooltip title="Transaction Types">
+    <TableTooltip titleKey="txn.typesTitle">
       <Stack spacing={2}>
         {Object.values(TransactionTypeName).map((type) => (
           <TooltipTransactionType type={type} key={`ttt-${type}`} />

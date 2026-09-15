@@ -2,14 +2,25 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {Stack, Typography, useTheme} from "@mui/material";
 import type * as React from "react";
 import StyledTooltip from "../../../components/StyledTooltip";
+import {useTranslation} from "../../../i18n";
 
 type ChartTitleProps = {
-  label: string;
-  tooltip: NonNullable<React.ReactNode>;
+  label?: string;
+  labelKey?: string;
+  tooltip?: NonNullable<React.ReactNode>;
+  tooltipKey?: string;
 };
 
-export default function ChartTitle({label, tooltip}: ChartTitleProps) {
+export default function ChartTitle({
+  label,
+  labelKey,
+  tooltip,
+  tooltipKey,
+}: ChartTitleProps) {
   const theme = useTheme();
+  const {t} = useTranslation();
+  const displayLabel = labelKey ? t(labelKey) : (label ?? "");
+  const displayTooltip = tooltipKey ? t(tooltipKey) : tooltip;
   return (
     <Stack
       direction="row"
@@ -27,13 +38,15 @@ export default function ChartTitle({label, tooltip}: ChartTitleProps) {
           fontSize: 12,
         }}
       >
-        {label}
+        {displayLabel}
       </Typography>
-      <StyledTooltip title={tooltip} placement="top">
-        <InfoOutlinedIcon
-          sx={{fontSize: 15, color: theme.palette.text.secondary}}
-        />
-      </StyledTooltip>
+      {displayTooltip != null ? (
+        <StyledTooltip title={displayTooltip} placement="top">
+          <InfoOutlinedIcon
+            sx={{fontSize: 15, color: theme.palette.text.secondary}}
+          />
+        </StyledTooltip>
+      ) : null}
     </Stack>
   );
 }

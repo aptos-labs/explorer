@@ -5,6 +5,7 @@ import type {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
 import ChartTitle from "../Components/ChartTitle";
 import LineChart from "../Components/LineChart";
 import {getLabels} from "../utils";
+import {englishT} from "../../../i18n";
 
 export function getDataset(data: DailyBlockGapData[], days: number): number[] {
   return data
@@ -27,8 +28,8 @@ export default function DailyBlockGapChart({
   return (
     <CardOutline>
       <ChartTitle
-        label="Median Block Time"
-        tooltip="P50 block time (gap between blocks) in milliseconds over 1 day. Changes based on network latency between validators and blockchain congestion (more txn per block vs faster blocks)."
+        labelKey="analytics.medianBlockTime"
+        tooltipKey="analytics.medianBlockTimeTip"
       />
       <LineChart
         labels={labels}
@@ -37,7 +38,7 @@ export default function DailyBlockGapChart({
         tooltipsLabelFunc={(context: TooltipItem<"line">) => {
           const yValue = context.parsed.y;
           if (yValue === null || yValue === undefined) {
-            return "N/A";
+            return englishT("common.na");
           }
           const milliseconds = Number(yValue.toFixed(1));
           return `${milliseconds} ms`;

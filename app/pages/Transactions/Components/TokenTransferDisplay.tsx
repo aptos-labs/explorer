@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import type * as React from "react";
 import {createContext, useCallback, useContext, useMemo, useState} from "react";
+import {useTranslation} from "../../../i18n";
 import type {Types} from "~/types/aptos";
 import {useGetCoinList} from "../../../api/hooks/useGetCoinList";
 import CurrencyValue from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
@@ -205,6 +206,7 @@ function VerifiedTokensModal({
   transfers,
   address,
 }: VerifiedTokensModalProps) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
 
@@ -237,10 +239,10 @@ function VerifiedTokensModal({
             fontWeight: 600,
           }}
         >
-          Token Transfers
+          {t("txn.tokenTransfers")}
         </Typography>
         <IconButton
-          aria-label="Close"
+          aria-label={t("common.close")}
           onClick={onClose}
           size="small"
           sx={{color: theme.palette.text.secondary}}

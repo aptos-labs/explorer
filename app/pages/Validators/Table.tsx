@@ -3,6 +3,7 @@ import {
   useGetValidatorSet,
   type Validator,
 } from "../../api/hooks/useGetValidatorSet";
+import {useTranslation} from "../../i18n";
 import HashButton, {HashType} from "../../components/HashButton";
 import {getFormattedBalanceStr} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
@@ -119,27 +120,41 @@ type ValidatorHeaderCellProps = {
 function ValidatorHeaderCell({column}: ValidatorHeaderCellProps) {
   switch (column) {
     case "idx":
-      return <GeneralTableHeaderCell header="#" />;
+      return <GeneralTableHeaderCell headerKey="table.hash" />;
     case "addr":
-      return <GeneralTableHeaderCell header="Address" />;
+      return <GeneralTableHeaderCell headerKey="table.address" />;
     case "votingPower":
-      return <GeneralTableHeaderCell header="Voting Power" textAlignRight />;
+      return (
+        <GeneralTableHeaderCell headerKey="table.votingPower" textAlignRight />
+      );
     case "consensusPK":
       return (
-        <GeneralTableHeaderCell header="Consensus Pubkey" textAlignRight />
+        <GeneralTableHeaderCell
+          headerKey="table.consensusPubkey"
+          textAlignRight
+        />
       );
     case "fullnodeAddr":
       return (
-        <GeneralTableHeaderCell header="Fullnode Address" textAlignRight />
+        <GeneralTableHeaderCell
+          headerKey="table.fullnodeAddress"
+          textAlignRight
+        />
       );
     case "networkAddr":
-      return <GeneralTableHeaderCell header="Network Address" textAlignRight />;
+      return (
+        <GeneralTableHeaderCell
+          headerKey="table.networkAddress"
+          textAlignRight
+        />
+      );
     default:
       return assertNever(column);
   }
 }
 
 export function ValidatorsTable() {
+  const {t} = useTranslation();
   const {activeValidators, isLoading} = useGetValidatorSet();
 
   if (isLoading) {
@@ -157,7 +172,7 @@ export function ValidatorsTable() {
   );
 
   return (
-    <Table aria-label="Validators" data-entity-type="validator">
+    <Table aria-label={t("common.validatorsAria")} data-entity-type="validator">
       <TableHead>
         <TableRow>
           {DEFAULT_COLUMNS.map((column) => (

@@ -7,7 +7,7 @@
   "name": "com.aptoslabs.explorer",
   "version": "1.1.0",
   "title": "Aptos Explorer",
-  "description": "Official Aptos blockchain explorer with read-only WebMCP navigation tools for opening transactions, accounts, blocks, releases, coins, and search results.",
+  "description": "Official Aptos blockchain explorer with read-only WebMCP navigation tools for opening transactions, accounts, blocks, releases, coins, the user guide, and search results.",
   "websiteUrl": "https://explorer.aptoslabs.com",
   "transport": {
     "type": "webmcp",
@@ -61,6 +61,11 @@
       "name": "open_coin",
       "title": "Open coin",
       "description": "Open the Aptos Explorer coin page for a fully-qualified Move coin type."
+    },
+    {
+      "name": "open_guide",
+      "title": "Open user guide",
+      "description": "Open the in-app user guide for how to use Aptos Explorer, read pages, and configure settings."
     }
   ],
   "_meta": {

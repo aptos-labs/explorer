@@ -14,6 +14,7 @@ import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import {useCallback, useState} from "react";
+import {englishT, useTranslation, type TFunction} from "../../../i18n";
 import {
   type ActivityTypeFilter,
   type FAActivity,
@@ -34,14 +35,14 @@ type TransactionsTabProps = {
 
 const LIMIT = 25;
 
-function getActivityLabel(type: string): string {
-  if (type.includes("GasFeeEvent")) return "Gas Fee";
-  if (type.includes("Deposit")) return "Deposit";
-  if (type.includes("Withdraw")) return "Withdraw";
-  if (type.includes("Mint")) return "Mint";
-  if (type.includes("Burn")) return "Burn";
-  if (type.includes("Freeze")) return "Freeze";
-  if (type.includes("Transfer")) return "Transfer";
+function getActivityLabel(type: string, t: TFunction = englishT): string {
+  if (type.includes("GasFeeEvent")) return t("activity.gasFee");
+  if (type.includes("Deposit")) return t("activity.deposit");
+  if (type.includes("Withdraw")) return t("activity.withdraw");
+  if (type.includes("Mint")) return t("activity.mint");
+  if (type.includes("Burn")) return t("activity.burn");
+  if (type.includes("Freeze")) return t("activity.freeze");
+  if (type.includes("Transfer")) return t("activity.transfer");
   const parts = type.split("::");
   return parts.length > 0 ? parts[parts.length - 1] : type;
 }
@@ -72,6 +73,7 @@ function matchesFilter(activity: FAActivity, filter: ActivityTypeFilter) {
 }
 
 export default function TransactionsTab({address, data}: TransactionsTabProps) {
+  const {t} = useTranslation();
   const [cursorStack, setCursorStack] = useState<number[]>([]);
   const [filter, setFilter] = useState<ActivityTypeFilter>("all");
   const [prevAddress, setPrevAddress] = useState(address);
@@ -130,18 +132,20 @@ export default function TransactionsTab({address, data}: TransactionsTabProps) {
         }}
       >
         <FormControl size="small" sx={{minWidth: 140}}>
-          <InputLabel id="fa-activity-filter-label">Activity Type</InputLabel>
+          <InputLabel id="fa-activity-filter-label">
+            {t("activity.type")}
+          </InputLabel>
           <Select
             labelId="fa-activity-filter-label"
             value={filter}
-            label="Activity Type"
+            label={t("activity.type")}
             onChange={handleFilterChange}
           >
-            <MenuItem value="all">All</MenuItem>
-            <MenuItem value="deposit">Deposit</MenuItem>
-            <MenuItem value="withdraw">Withdraw</MenuItem>
-            <MenuItem value="mint">Mint</MenuItem>
-            <MenuItem value="burn">Burn</MenuItem>
+            <MenuItem value="all">{t("activity.all")}</MenuItem>
+            <MenuItem value="deposit">{t("activity.deposit")}</MenuItem>
+            <MenuItem value="withdraw">{t("activity.withdraw")}</MenuItem>
+            <MenuItem value="mint">{t("activity.mint")}</MenuItem>
+            <MenuItem value="burn">{t("activity.burn")}</MenuItem>
           </Select>
         </FormControl>
       </Stack>
@@ -163,14 +167,14 @@ export default function TransactionsTab({address, data}: TransactionsTabProps) {
           onClick={handlePrevPage}
           disabled={isFirstPage}
         >
-          Previous
+          {t("common.previous")}
         </Button>
         <Button
           variant="outlined"
           onClick={handleNextPage}
           disabled={!activityData.hasNextPage}
         >
-          Next
+          {t("common.next")}
         </Button>
       </Stack>
     </Box>
@@ -178,8 +182,12 @@ export default function TransactionsTab({address, data}: TransactionsTabProps) {
 }
 
 export function FAActivityTable({activities}: {activities: FAActivity[]}) {
+  const {t} = useTranslation();
   return (
-    <Table aria-label="Asset transactions" data-entity-type="transaction">
+    <Table
+      aria-label={t("common.assetTransactionsAria")}
+      data-entity-type="transaction"
+    >
       <TableHead>
         <TableRow>
           <GeneralTableHeaderCell header="version" />
@@ -201,7 +209,7 @@ export function FAActivityTable({activities}: {activities: FAActivity[]}) {
               </GeneralTableCell>
               <GeneralTableCell>
                 <Chip
-                  label={getActivityLabel(activity.type)}
+                  label={getActivityLabel(activity.type, t)}
                   color={getActivityColor(activity.type)}
                   size="small"
                   variant="outlined"

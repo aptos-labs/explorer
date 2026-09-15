@@ -59,6 +59,7 @@ import {
   parseDecibelTransaction,
 } from "../../../utils/decibel";
 import {findCoinData} from "../utils";
+import {useTranslation} from "../../../i18n";
 
 const ORDER_TYPE_ICONS: Record<string, React.ReactElement> = {
   limit: <ListAltOutlinedIcon fontSize="small" />,
@@ -73,10 +74,11 @@ const ORDER_TYPE_ICONS: Record<string, React.ReactElement> = {
 // ---------------------------------------------------------------------------
 
 function SideChip({side}: {side: "buy" | "sell" | undefined}) {
+  const {t} = useTranslation();
   if (!side) return null;
   return (
     <Chip
-      label={side === "buy" ? "Buy" : "Sell"}
+      label={side === "buy" ? t("decibel.buy") : t("decibel.sell")}
       size="small"
       color={side === "buy" ? "success" : "error"}
       sx={{fontWeight: 600}}
@@ -85,6 +87,7 @@ function SideChip({side}: {side: "buy" | "sell" | undefined}) {
 }
 
 function TruncatedCopyId({value}: {value: string}) {
+  const {t} = useTranslation();
   const [copied, setCopied] = React.useState(false);
   const truncated =
     value.length > 8 ? `${value.slice(0, 4)}…${value.slice(-4)}` : value;
@@ -96,10 +99,10 @@ function TruncatedCopyId({value}: {value: string}) {
   };
 
   return (
-    <Tooltip title={copied ? "Copied!" : value} arrow>
+    <Tooltip title={copied ? t("common.copiedExclaim") : value} arrow>
       <ButtonBase
         onClick={handleCopy}
-        aria-label={`Copy ${value}`}
+        aria-label={t("common.copyValueAria", {value})}
         sx={{
           display: "inline-flex",
           alignItems: "center",
@@ -225,11 +228,15 @@ function MonoText({children}: {children: React.ReactNode}) {
 
 function KeyValue({
   label,
+  labelKey,
   children,
 }: {
-  label: string;
+  label?: string;
+  labelKey?: string;
   children: React.ReactNode;
 }) {
+  const {t} = useTranslation();
+  const display = labelKey ? t(labelKey) : label;
   return (
     <Stack
       direction="row"
@@ -247,7 +254,7 @@ function KeyValue({
           flexShrink: 0,
         }}
       >
-        {label}
+        {display}
       </Typography>
       <Box sx={{flex: 1, minWidth: 0}}>{children}</Box>
     </Stack>
@@ -261,17 +268,21 @@ function KeyValue({
 function LegTable({
   legs,
   label,
+  labelKey,
   color,
   isMobile,
   marketConfig,
 }: {
   legs: BulkOrderLeg[];
-  label: string;
+  label?: string;
+  labelKey?: string;
   color: "success" | "error";
   isMobile: boolean;
   marketConfig: DecibelMarketConfig | undefined;
 }) {
   const theme = useTheme();
+  const {t} = useTranslation();
+  const displayLabel = labelKey ? t(labelKey) : label;
   if (legs.length === 0) return null;
 
   const formattedLegs = legs.map((leg) => ({
@@ -307,7 +318,7 @@ function LegTable({
             variant="subtitle2"
             sx={{color: theme.palette[color].main}}
           >
-            {label} ({legs.length})
+            {displayLabel} ({legs.length})
           </Typography>
           {totalSize && (
             <Typography
@@ -316,7 +327,7 @@ function LegTable({
                 color: "text.secondary",
               }}
             >
-              Total: {totalSize}
+              {t("decibel.total", {size: totalSize})}
             </Typography>
           )}
         </Stack>
@@ -354,7 +365,7 @@ function LegTable({
         }}
       >
         <Typography variant="subtitle2" sx={{color: theme.palette[color].main}}>
-          {label} ({legs.length})
+          {displayLabel} ({legs.length})
         </Typography>
         {totalSize && (
           <Typography
@@ -370,7 +381,7 @@ function LegTable({
       <Table size="small">
         <TableHead>
           <TableRow>
-            <GeneralTableHeaderCell header="#" />
+            <GeneralTableHeaderCell headerKey="table.hash" />
             <GeneralTableHeaderCell
               header={
                 marketConfig?.quoteAsset
@@ -431,13 +442,15 @@ function FillsDesktopTable({
     <Table size="small">
       <TableHead>
         <TableRow>
-          <GeneralTableHeaderCell header="Side" />
-          <GeneralTableHeaderCell header="Price" />
-          <GeneralTableHeaderCell header="Filled Size" />
-          {hasOrigPrice && <GeneralTableHeaderCell header="Orig Price" />}
-          <GeneralTableHeaderCell header="Order ID" />
-          <GeneralTableHeaderCell header="Fill ID" />
-          <GeneralTableHeaderCell header="User" />
+          <GeneralTableHeaderCell headerKey="table.side" />
+          <GeneralTableHeaderCell headerKey="table.price" />
+          <GeneralTableHeaderCell headerKey="table.filledSize" />
+          {hasOrigPrice && (
+            <GeneralTableHeaderCell headerKey="table.origPrice" />
+          )}
+          <GeneralTableHeaderCell headerKey="table.orderId" />
+          <GeneralTableHeaderCell headerKey="table.fillId" />
+          <GeneralTableHeaderCell headerKey="table.user" />
         </TableRow>
       </TableHead>
       <TableBody>
@@ -497,6 +510,7 @@ function BulkOrderInlineDetail({
   filledEvents: DecibelBulkOrderFilledEvent[];
   marketConfig: DecibelMarketConfig | undefined;
 }) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const hasDetail = detail !== undefined;
@@ -520,9 +534,7 @@ function BulkOrderInlineDetail({
     >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
-        aria-label={
-          expanded ? "Hide bulk order details" : "Show bulk order details"
-        }
+        aria-label={expanded ? t("decibel.hideBulk") : t("decibel.showBulk")}
         sx={{
           minHeight: 36,
           px: 0,
@@ -530,7 +542,7 @@ function BulkOrderInlineDetail({
         }}
       >
         <Typography variant="body2" color="primary" sx={{fontWeight: 600}}>
-          {expanded ? "Hide details" : "Show details"}
+          {expanded ? t("decibel.hideDetails") : t("decibel.showDetails")}
         </Typography>
       </AccordionSummary>
       <AccordionDetails sx={{px: 0, pt: 0}}>
@@ -544,17 +556,17 @@ function BulkOrderInlineDetail({
               <Paper variant="outlined" sx={{p: 2}}>
                 <Stack spacing={1.5}>
                   {detail.sequenceNumber && (
-                    <KeyValue label="Sequence #">
+                    <KeyValue labelKey="decibel.sequenceHash">
                       <MonoText>{detail.sequenceNumber}</MonoText>
                     </KeyValue>
                   )}
                   {detail.builderAddress && (
-                    <KeyValue label="Builder">
+                    <KeyValue labelKey="decibel.builder">
                       <SafeAccountLink hash={detail.builderAddress} />
                     </KeyValue>
                   )}
                   {detail.builderFees && (
-                    <KeyValue label="Builder Fee">
+                    <KeyValue labelKey="decibel.builderFee">
                       <MonoText>{detail.builderFees}</MonoText>
                     </KeyValue>
                   )}
@@ -566,7 +578,7 @@ function BulkOrderInlineDetail({
                     <Box sx={{flex: 1}}>
                       <LegTable
                         legs={detail.bids}
-                        label="Bids"
+                        labelKey="decibel.bids"
                         color="success"
                         isMobile={isMobile}
                         marketConfig={marketConfig}
@@ -575,7 +587,7 @@ function BulkOrderInlineDetail({
                     <Box sx={{flex: 1}}>
                       <LegTable
                         legs={detail.asks}
-                        label="Asks"
+                        labelKey="decibel.asks"
                         color="error"
                         isMobile={isMobile}
                         marketConfig={marketConfig}
@@ -591,8 +603,9 @@ function BulkOrderInlineDetail({
           {hasPlaced && (
             <Box>
               <Typography variant="subtitle2" sx={{mb: 1}}>
-                Placed{" "}
-                {placedEvents.length > 1 ? `(${placedEvents.length})` : ""}
+                {placedEvents.length > 1
+                  ? t("decibel.placedCount", {count: placedEvents.length})
+                  : t("decibel.placed")}
               </Typography>
               <Stack spacing={1.5}>
                 {placedEvents.map((evt, idx) => (
@@ -603,13 +616,13 @@ function BulkOrderInlineDetail({
                     sx={{p: 2}}
                   >
                     <Stack spacing={1.5}>
-                      <KeyValue label="Order ID">
+                      <KeyValue labelKey="decibel.orderId">
                         <TruncatedCopyId value={evt.orderId} />
                       </KeyValue>
-                      <KeyValue label="User">
+                      <KeyValue labelKey="decibel.user">
                         <SafeAccountLink hash={evt.user} />
                       </KeyValue>
-                      <KeyValue label="Sequence #">
+                      <KeyValue labelKey="decibel.sequenceHash">
                         <MonoText>{evt.sequenceNumber}</MonoText>
                       </KeyValue>
                       <Stack
@@ -620,7 +633,7 @@ function BulkOrderInlineDetail({
                         <Box sx={{flex: 1}}>
                           <LegTable
                             legs={evt.bids}
-                            label="Bids"
+                            labelKey="decibel.bids"
                             color="success"
                             isMobile={isMobile}
                             marketConfig={marketConfig}
@@ -629,7 +642,7 @@ function BulkOrderInlineDetail({
                         <Box sx={{flex: 1}}>
                           <LegTable
                             legs={evt.asks}
-                            label="Asks"
+                            labelKey="decibel.asks"
                             color="error"
                             isMobile={isMobile}
                             marketConfig={marketConfig}
@@ -655,7 +668,7 @@ function BulkOrderInlineDetail({
                             <Box sx={{flex: 1}}>
                               <LegTable
                                 legs={evt.cancelledBids}
-                                label="Cancelled Bids"
+                                labelKey="decibel.cancelledBids"
                                 color="success"
                                 isMobile={isMobile}
                                 marketConfig={marketConfig}
@@ -664,7 +677,7 @@ function BulkOrderInlineDetail({
                             <Box sx={{flex: 1}}>
                               <LegTable
                                 legs={evt.cancelledAsks}
-                                label="Cancelled Asks"
+                                labelKey="decibel.cancelledAsks"
                                 color="error"
                                 isMobile={isMobile}
                                 marketConfig={marketConfig}
@@ -684,7 +697,7 @@ function BulkOrderInlineDetail({
           {hasFills && (
             <Box>
               <Typography variant="subtitle2" sx={{mb: 1}}>
-                Fills ({filledEvents.length})
+                {t("decibel.fills", {count: filledEvents.length})}
               </Typography>
               {isMobile ? (
                 <Stack spacing={1}>
@@ -713,30 +726,30 @@ function BulkOrderInlineDetail({
                           </Typography>
                           <SideChip side={fill.side} />
                         </Stack>
-                        <KeyValue label="Price">
+                        <KeyValue labelKey="decibel.price">
                           <MonoText>
                             {formatDecibelPrice(fill.price, marketConfig)}
                           </MonoText>
                         </KeyValue>
-                        <KeyValue label="Size">
+                        <KeyValue labelKey="decibel.size">
                           <MonoText>
                             {formatDecibelSize(fill.filledSize, marketConfig)}
                           </MonoText>
                         </KeyValue>
                         {fill.origPrice != null && (
-                          <KeyValue label="Orig Price">
+                          <KeyValue labelKey="decibel.origPrice">
                             <MonoText>
                               {formatDecibelPrice(fill.origPrice, marketConfig)}
                             </MonoText>
                           </KeyValue>
                         )}
-                        <KeyValue label="Order ID">
+                        <KeyValue labelKey="decibel.orderId">
                           <TruncatedCopyId value={fill.orderId} />
                         </KeyValue>
-                        <KeyValue label="Fill ID">
+                        <KeyValue labelKey="decibel.fillId">
                           <TruncatedCopyId value={fill.fillId} />
                         </KeyValue>
-                        <KeyValue label="User">
+                        <KeyValue labelKey="decibel.user">
                           <SafeAccountLink hash={fill.user} />
                         </KeyValue>
                       </Stack>
@@ -768,15 +781,20 @@ function OrderRow({
   order: DecibelOrder;
   marketConfig: DecibelMarketConfig | undefined;
 }) {
+  const {t} = useTranslation();
   const icon = ORDER_TYPE_ICONS[order.orderType] ?? null;
-  const label = ORDER_TYPE_LABELS[order.orderType] ?? order.orderType;
+  const label =
+    t(`decibel.orderType.${order.orderType}`) ===
+    `decibel.orderType.${order.orderType}`
+      ? (ORDER_TYPE_LABELS[order.orderType] ?? order.orderType)
+      : t(`decibel.orderType.${order.orderType}`);
   const formattedSize = order.size
     ? formatDecibelSize(order.size, marketConfig)
     : "—";
   const formattedPrice = order.price
     ? formatDecibelPrice(order.price, marketConfig)
     : order.orderType === "market"
-      ? "Market"
+      ? t("table.market")
       : "—";
 
   return (
@@ -822,15 +840,21 @@ function OrderCard({
   marketConfig: DecibelMarketConfig | undefined;
   children?: React.ReactNode;
 }) {
+  const {t} = useTranslation();
   const icon = ORDER_TYPE_ICONS[order.orderType] ?? null;
-  const label = ORDER_TYPE_LABELS[order.orderType] ?? order.orderType;
+  const orderTypeKey = `decibel.orderType.${order.orderType}`;
+  const translated = t(orderTypeKey);
+  const label =
+    translated === orderTypeKey
+      ? (ORDER_TYPE_LABELS[order.orderType] ?? order.orderType)
+      : translated;
   const formattedSize = order.size
     ? formatDecibelSize(order.size, marketConfig)
     : undefined;
   const formattedPrice = order.price
     ? formatDecibelPrice(order.price, marketConfig)
     : order.orderType === "market"
-      ? "Market"
+      ? t("table.market")
       : "—";
 
   return (
@@ -852,21 +876,25 @@ function OrderCard({
           </Typography>
           <SideChip side={order.side} />
         </Stack>
-        <KeyValue label="Market">
+        <KeyValue labelKey="decibel.market">
           <MarketValue hash={order.market} />
         </KeyValue>
-        {formattedSize && <KeyValue label="Size">{formattedSize}</KeyValue>}
-        <KeyValue label="Price">{formattedPrice}</KeyValue>
+        {formattedSize && (
+          <KeyValue labelKey="decibel.size">{formattedSize}</KeyValue>
+        )}
+        <KeyValue labelKey="decibel.price">{formattedPrice}</KeyValue>
         {order.status && (
-          <KeyValue label="Status">
+          <KeyValue labelKey="decibel.status">
             <Chip label={order.status} size="small" variant="outlined" />
           </KeyValue>
         )}
         {order.timeInForce && (
-          <KeyValue label="Time in Force">{order.timeInForce}</KeyValue>
+          <KeyValue labelKey="decibel.timeInForce">
+            {order.timeInForce}
+          </KeyValue>
         )}
         {order.subaccount && (
-          <KeyValue label="Subaccount">
+          <KeyValue labelKey="decibel.subaccount">
             <HashButton
               hash={order.subaccount}
               type={HashType.ACCOUNT}
@@ -875,7 +903,7 @@ function OrderCard({
           </KeyValue>
         )}
         {order.orderId && (
-          <KeyValue label="Order ID">
+          <KeyValue labelKey="decibel.orderId">
             <TruncatedCopyId value={order.orderId} />
           </KeyValue>
         )}
@@ -928,15 +956,15 @@ function OrdersSection({
           <Table>
             <TableHead>
               <TableRow>
-                <GeneralTableHeaderCell header="Type" />
-                <GeneralTableHeaderCell header="Side" />
-                <GeneralTableHeaderCell header="Market" />
-                <GeneralTableHeaderCell header="Size" />
-                <GeneralTableHeaderCell header="Price" />
-                <GeneralTableHeaderCell header="Status" />
-                <GeneralTableHeaderCell header="Time in Force" />
-                <GeneralTableHeaderCell header="Subaccount" />
-                <GeneralTableHeaderCell header="Order ID" />
+                <GeneralTableHeaderCell headerKey="table.type" />
+                <GeneralTableHeaderCell headerKey="table.side" />
+                <GeneralTableHeaderCell headerKey="table.market" />
+                <GeneralTableHeaderCell headerKey="table.size" />
+                <GeneralTableHeaderCell headerKey="table.price" />
+                <GeneralTableHeaderCell headerKey="table.status" />
+                <GeneralTableHeaderCell headerKey="table.timeInForce" />
+                <GeneralTableHeaderCell headerKey="table.subaccount" />
+                <GeneralTableHeaderCell headerKey="table.orderId" />
               </TableRow>
             </TableHead>
             <TableBody>
@@ -999,6 +1027,7 @@ function DepositCard({
   deposit: DecibelDeposit;
   coinData: CoinDescription[] | undefined;
 }) {
+  const {t} = useTranslation();
   return (
     <Paper sx={{p: 2, mb: 1.5}}>
       <Stack spacing={1}>
@@ -1010,23 +1039,23 @@ function DepositCard({
           }}
         >
           <DownloadOutlinedIcon fontSize="small" />
-          <Typography variant="subtitle2">Deposit</Typography>
+          <Typography variant="subtitle2">{t("decibel.deposit")}</Typography>
         </Stack>
-        <KeyValue label="Amount">
+        <KeyValue labelKey="decibel.amount">
           <AmountWithAsset
             asset={deposit.asset}
             amount={deposit.amount}
             coinData={coinData}
           />
         </KeyValue>
-        <KeyValue label="Subaccount">
+        <KeyValue labelKey="decibel.subaccount">
           <HashButton
             hash={deposit.subaccount}
             type={HashType.ACCOUNT}
             size="small"
           />
         </KeyValue>
-        <KeyValue label="Function">
+        <KeyValue labelKey="decibel.function">
           {humanizeFunctionName(deposit.functionName)}
         </KeyValue>
       </Stack>
@@ -1060,9 +1089,9 @@ function DepositsSection({
         <Table>
           <TableHead>
             <TableRow>
-              <GeneralTableHeaderCell header="Asset & Amount" />
-              <GeneralTableHeaderCell header="Subaccount" />
-              <GeneralTableHeaderCell header="Function" />
+              <GeneralTableHeaderCell headerKey="table.assetAndAmount" />
+              <GeneralTableHeaderCell headerKey="table.subaccount" />
+              <GeneralTableHeaderCell headerKey="table.function" />
             </TableRow>
           </TableHead>
           <TableBody>
@@ -1114,6 +1143,7 @@ function WithdrawCard({
   withdraw: DecibelWithdraw;
   coinData: CoinDescription[] | undefined;
 }) {
+  const {t} = useTranslation();
   return (
     <Paper sx={{p: 2, mb: 1.5}}>
       <Stack spacing={1}>
@@ -1125,23 +1155,23 @@ function WithdrawCard({
           }}
         >
           <UploadOutlinedIcon fontSize="small" />
-          <Typography variant="subtitle2">Withdraw</Typography>
+          <Typography variant="subtitle2">{t("decibel.withdraw")}</Typography>
         </Stack>
-        <KeyValue label="Amount">
+        <KeyValue labelKey="decibel.amount">
           <AmountWithAsset
             asset={withdraw.asset}
             amount={withdraw.amount}
             coinData={coinData}
           />
         </KeyValue>
-        <KeyValue label="Subaccount">
+        <KeyValue labelKey="decibel.subaccount">
           <HashButton
             hash={withdraw.subaccount}
             type={HashType.ACCOUNT}
             size="small"
           />
         </KeyValue>
-        <KeyValue label="Function">
+        <KeyValue labelKey="decibel.function">
           {humanizeFunctionName(withdraw.functionName)}
         </KeyValue>
       </Stack>
@@ -1175,9 +1205,9 @@ function WithdrawalsSection({
         <Table>
           <TableHead>
             <TableRow>
-              <GeneralTableHeaderCell header="Asset & Amount" />
-              <GeneralTableHeaderCell header="Subaccount" />
-              <GeneralTableHeaderCell header="Function" />
+              <GeneralTableHeaderCell headerKey="table.assetAndAmount" />
+              <GeneralTableHeaderCell headerKey="table.subaccount" />
+              <GeneralTableHeaderCell headerKey="table.function" />
             </TableRow>
           </TableHead>
           <TableBody>

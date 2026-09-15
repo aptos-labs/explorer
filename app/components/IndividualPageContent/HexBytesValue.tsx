@@ -3,6 +3,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import {Box, IconButton, Tooltip, Typography} from "@mui/material";
 import {useCallback, useState} from "react";
 import {truncate} from "../../utils/utils";
+import {useTranslation} from "../../i18n";
 
 const hexTypography = {
   m: 0,
@@ -19,8 +20,9 @@ type HexBytesValueProps = {
 
 export default function HexBytesValue({
   hex,
-  copyAriaLabel = "Copy hex bytes",
+  copyAriaLabel = undefined,
 }: HexBytesValueProps) {
+  const {t} = useTranslation();
   const [copied, setCopied] = useState(false);
   const display = hex.length > 72 ? truncate(hex, 18, 10, "…") : hex;
 
@@ -39,11 +41,11 @@ export default function HexBytesValue({
       <Typography component="pre" variant="body2" sx={hexTypography}>
         {display}
       </Typography>
-      <Tooltip title={copied ? "Copied!" : "Copy full value"}>
+      <Tooltip title={copied ? t("hexBytes.copied") : t("hexBytes.copyFull")}>
         <IconButton
           size="small"
           onClick={handleCopy}
-          aria-label={copyAriaLabel}
+          aria-label={copyAriaLabel ?? t("hexBytes.copyAria")}
           sx={{mt: -0.25}}
         >
           {copied ? (

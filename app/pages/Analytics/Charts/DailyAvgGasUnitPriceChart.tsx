@@ -6,6 +6,7 @@ import type {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
 import ChartTitle from "../Components/ChartTitle";
 import LineChart from "../Components/LineChart";
 import {getLabels} from "../utils";
+import {englishT} from "../../../i18n";
 
 export function getDataset(data: DailyAvgGasData[], days: number): number[] {
   return data
@@ -28,8 +29,8 @@ export default function DailyAvgGasUnitPriceChart({
   return (
     <CardOutline>
       <ChartTitle
-        label="Average Gas Unit Price"
-        tooltip="Daily average gas unit price on user transactions."
+        labelKey="analytics.avgGasUnitPrice"
+        tooltipKey="analytics.avgGasUnitPriceTip"
       />
       <LineChart
         labels={labels}
@@ -38,7 +39,7 @@ export default function DailyAvgGasUnitPriceChart({
         tooltipsLabelFunc={(context: TooltipItem<"line">) => {
           const yValue = context.parsed.y;
           if (yValue === null || yValue === undefined) {
-            return "N/A";
+            return englishT("common.na");
           }
           const priceInteger = Math.round(yValue).toString();
           const priceInAPT = getFormattedBalanceStr(priceInteger, 8);

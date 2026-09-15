@@ -1,5 +1,6 @@
 import {Alert, Snackbar} from "@mui/material";
 import {CloseAction} from "./TransactionResponseSnackbar";
+import {useTranslation} from "../../i18n";
 
 type ErrorSnackbarProps = {
   errorMessage: string;
@@ -10,6 +11,7 @@ export default function ErrorSnackbar({
   errorMessage,
   onCloseSnackbar,
 }: ErrorSnackbarProps) {
+  const {t} = useTranslation();
   return (
     <Snackbar
       open={true}
@@ -23,7 +25,7 @@ export default function ErrorSnackbar({
         severity="error"
         action={<CloseAction onCloseSnackbar={onCloseSnackbar} />}
       >
-        {`Failed with error message "${errorMessage}". Please try again.`}
+        {t("snackbar.failedWithMessage", {message: errorMessage})}
       </Alert>
     </Snackbar>
   );

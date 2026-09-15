@@ -9,6 +9,7 @@ import {
   SEARCH_PLACEHOLDER,
   searchResultTypeChipColor,
   searchResultTypeLabel,
+  searchResultTypeMessageKey,
 } from "./searchConstants";
 
 describe("FEAT-SEARCH-001 — shared search input tokens", () => {
@@ -43,5 +44,13 @@ describe("FEAT-SEARCH-003 — result type chips", () => {
     expect(searchResultTypeLabel("fungible-asset")).toBe("Fungible Asset");
     expect(searchResultTypeLabel("object")).toBe("Object");
     expect(searchResultTypeLabel(undefined)).toBe("Result");
+  });
+
+  it("maps result types to i18n message keys", () => {
+    expect(searchResultTypeMessageKey("account")).toBe("search.type.account");
+    expect(searchResultTypeMessageKey("fungible-asset")).toBe(
+      "search.type.fungibleAsset",
+    );
+    expect(searchResultTypeMessageKey(undefined)).toBe("search.type.result");
   });
 });

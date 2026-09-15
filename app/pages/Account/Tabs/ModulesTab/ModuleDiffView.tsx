@@ -15,6 +15,12 @@ import {useEffect, useMemo, useState} from "react";
 import {useGetAccountModule} from "../../../../api/hooks/useGetAccountModule";
 import {useGetAccountPackages} from "../../../../api/hooks/useGetAccountResource";
 import type {ModulePublishTransaction} from "../../../../api/hooks/useGetModulePublishHistory";
+import {
+  englishT,
+  InlineMarkup,
+  useTranslation,
+  type TFunction,
+} from "../../../../i18n";
 import {Link} from "../../../../routing";
 import {useDecompilationEnabled} from "../../../../settings";
 import {transformCode} from "../../../../utils";
@@ -50,6 +56,7 @@ function VersionSelect({
   onChange: (version: number | undefined) => void;
   options: ModulePublishTransaction[];
 }) {
+  const {t} = useTranslation();
   const theme = useTheme();
 
   const handleChange = (event: SelectChangeEvent<string>) => {
@@ -78,7 +85,7 @@ function VersionSelect({
         }}
       >
         <MenuItem value="latest">
-          <Typography variant="body2">Latest</Typography>
+          <Typography variant="body2">{t("modules.latest")}</Typography>
         </MenuItem>
         {options.map((txn) => (
           <MenuItem key={txn.version} value={txn.version.toString()}>
@@ -276,7 +283,9 @@ function useDecompiledCode(
           setCode(undefined);
           setIsLoading(false);
           setError(
-            e instanceof Error ? e.message : "Failed to decompile module",
+            e instanceof Error
+              ? e.message
+              : englishT("modules.failedDecompile"),
           );
         }
       }
@@ -290,14 +299,14 @@ function useDecompiledCode(
   return {code, isLoading, error};
 }
 
-function getViewLabel(view: DiffViewType): string {
+function getViewLabel(view: DiffViewType, t: TFunction): string {
   switch (view) {
     case "published-source":
-      return "Published Source";
+      return t("modules.publishedSource");
     case "decompiled-source":
-      return "Decompiled";
+      return t("modules.decompiled");
     case "bytecode-disassembly":
-      return "Disassembly";
+      return t("modules.disassembly");
   }
 }
 
@@ -310,6 +319,7 @@ export default function ModuleDiffView({
   onBaseVersionChange,
   onCompareVersionChange,
 }: ModuleDiffViewProps) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const decompilationEnabled = useDecompilationEnabled();
   const [activeView, setActiveView] =
@@ -393,7 +403,7 @@ export default function ModuleDiffView({
     moduleError =
       (baseModuleError as Error | null)?.message ||
       (compareModuleError as Error | null)?.message ||
-      "Failed to fetch module bytecode";
+      t("modules.failedFetchBytecode");
   } else {
     baseCode = baseDecompiled.code ?? "";
     compareCode = compareDecompiled.code ?? "";
@@ -405,10 +415,12 @@ export default function ModuleDiffView({
     decompError = baseDecompiled.error || compareDecompiled.error;
   }
 
-  const baseLabel = baseVersion ? `v${baseVersion.toLocaleString()}` : "Latest";
+  const baseLabel = baseVersion
+    ? `v${baseVersion.toLocaleString()}`
+    : t("modules.latest");
   const compareLabel = compareVersion
     ? `v${compareVersion.toLocaleString()}`
-    : "Latest";
+    : t("modules.latest");
 
   const diff = useMemo(
     () => computeDiffLines(baseCode, compareCode),
@@ -449,7 +461,7 @@ export default function ModuleDiffView({
         }}
       >
         <VersionSelect
-          label="Base (old)"
+          label={t("modules.baseOld")}
           value={baseVersion}
           onChange={onBaseVersionChange}
           options={publishHistory}
@@ -464,7 +476,7 @@ export default function ModuleDiffView({
           vs
         </Typography>
         <VersionSelect
-          label="Compare (new)"
+          label={t("modules.compareNew")}
           value={compareVersion}
           onChange={onCompareVersionChange}
           options={publishHistory}
@@ -486,7 +498,7 @@ export default function ModuleDiffView({
             onClick={() => setActiveView(vt)}
             sx={{textTransform: "none"}}
           >
-            {getViewLabel(vt)}
+            {getViewLabel(vt, t)}
           </Button>
         ))}
         {!decompilationEnabled && (
@@ -497,7 +509,7 @@ export default function ModuleDiffView({
             variant="text"
             sx={{textTransform: "none"}}
           >
-            Enable decompilation in Settings
+            {t("modules.enableDecompilation")}
           </Button>
         )}
       </Stack>
@@ -515,7 +527,7 @@ export default function ModuleDiffView({
               color: "text.secondary",
             }}
           >
-            Select a module from the sidebar to compare versions.
+            {t("modules.selectModuleToCompare")}
           </Typography>
         </Box>
       )}
@@ -536,9 +548,11 @@ export default function ModuleDiffView({
                 color: "text.secondary",
               }}
             >
-              Published source is not available for module{" "}
-              <strong>{moduleName}</strong> at these versions. Try the
-              Decompiled or Disassembly view instead.
+              <InlineMarkup
+                text={t("modules.publishedSourceUnavailableAtVersions", {
+                  name: moduleName,
+                })}
+              />
             </Typography>
           </Box>
         )}
@@ -601,8 +615,8 @@ export default function ModuleDiffView({
                 }}
               >
                 {baseModuleLoading || compareModuleLoading
-                  ? "Fetching module bytecode…"
-                  : "Decompiling…"}
+                  ? t("modules.fetchingBytecode")
+                  : t("modules.decompiling")}
               </Typography>
             )}
           </Stack>
@@ -621,11 +635,20 @@ export default function ModuleDiffView({
               color: "text.secondary",
             }}
           >
-            No differences between {baseLabel} and {compareLabel} for module{" "}
-            <strong>{moduleName}</strong>
-            {activeView !== "published-source" && (
-              <> ({getViewLabel(activeView)} view)</>
-            )}
+            <InlineMarkup
+              text={
+                t("modules.noDiff", {
+                  base: baseLabel,
+                  compare: compareLabel,
+                  name: moduleName,
+                }) +
+                (activeView !== "published-source"
+                  ? t("modules.viewInParens", {
+                      view: getViewLabel(activeView, t),
+                    })
+                  : "")
+              }
+            />
           </Typography>
         </Box>
       ) : (
@@ -672,7 +695,7 @@ export default function ModuleDiffView({
                 color: "text.secondary",
               }}
             >
-              {baseLabel} → {compareLabel} ({getViewLabel(activeView)})
+              {baseLabel} → {compareLabel} ({getViewLabel(activeView, t)})
             </Typography>
           </Stack>
           <DiffRenderer diffLines={diff} />

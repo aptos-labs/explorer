@@ -39,20 +39,24 @@ describe("FEAT-SEARCH-002 — parseNumericSearch", () => {
 describe("FEAT-SEARCH-002 — buildNumericSearchResults", () => {
   it("returns a transaction result for pruned versions still at or below ledger_version", () => {
     const results = buildNumericSearchResults("1", prunedMainnetLedger);
-    expect(results).toContainEqual({
-      label: "Transaction Version 1",
-      to: "/txn/1",
-      type: "transaction",
-    });
+    expect(results).toContainEqual(
+      expect.objectContaining({
+        label: "Transaction Version 1",
+        to: "/txn/1",
+        type: "transaction",
+      }),
+    );
   });
 
   it("returns a block result for pruned heights still at or below block_height", () => {
     const results = buildNumericSearchResults("0", prunedMainnetLedger);
-    expect(results).toContainEqual({
-      label: "Block 0",
-      to: "/block/0",
-      type: "block",
-    });
+    expect(results).toContainEqual(
+      expect.objectContaining({
+        label: "Block 0",
+        to: "/block/0",
+        type: "block",
+      }),
+    );
   });
 
   it("omits blocks whose height is above the current block_height", () => {
@@ -61,11 +65,13 @@ describe("FEAT-SEARCH-002 — buildNumericSearchResults", () => {
       prunedMainnetLedger,
     );
     expect(results.find((r) => r.type === "block")).toBeUndefined();
-    expect(results).toContainEqual({
-      label: "Transaction Version 6947679400",
-      to: "/txn/6947679400",
-      type: "transaction",
-    });
+    expect(results).toContainEqual(
+      expect.objectContaining({
+        label: "Transaction Version 6947679400",
+        to: "/txn/6947679400",
+        type: "transaction",
+      }),
+    );
   });
 
   it("returns no results when the number is beyond the ledger", () => {
@@ -81,11 +87,13 @@ describe("FEAT-SEARCH-002 — buildNumericSearchResults", () => {
 
 describe("FEAT-SEARCH-002 — buildContainingBlockSearchResult", () => {
   it("links to the block that contains the version", () => {
-    expect(buildContainingBlockSearchResult("685", 0n)).toEqual({
-      label: "Block with Txn Version 685",
-      to: "/block/0",
-      type: "block",
-    });
+    expect(buildContainingBlockSearchResult("685", 0n)).toEqual(
+      expect.objectContaining({
+        label: "Block with Txn Version 685",
+        to: "/block/0",
+        type: "block",
+      }),
+    );
   });
 });
 
@@ -130,16 +138,20 @@ describe("FEAT-SEARCH-002 — handleBlockHeightOrVersion", () => {
     const results = await handleBlockHeightOrVersion("1", client as never);
     expect(client.getBlockByVersion).not.toHaveBeenCalled();
     expect(client.queryIndexer).not.toHaveBeenCalled();
-    expect(results).toContainEqual({
-      label: "Transaction Version 1",
-      to: "/txn/1",
-      type: "transaction",
-    });
-    expect(results).toContainEqual({
-      label: "Block with Txn Version 1",
-      to: "/block/0",
-      type: "block",
-    });
+    expect(results).toContainEqual(
+      expect.objectContaining({
+        label: "Transaction Version 1",
+        to: "/txn/1",
+        type: "transaction",
+      }),
+    );
+    expect(results).toContainEqual(
+      expect.objectContaining({
+        label: "Block with Txn Version 1",
+        to: "/block/0",
+        type: "block",
+      }),
+    );
   });
 
   it("uses REST getBlockByVersion when the version is still on the node", async () => {
@@ -161,11 +173,13 @@ describe("FEAT-SEARCH-002 — handleBlockHeightOrVersion", () => {
     expect(results.find((r) => r.label.startsWith("Block with"))?.to).toBe(
       "/block/1001576200",
     );
-    expect(results).toContainEqual({
-      label: "Transaction Version 6900000000",
-      to: "/txn/6900000000",
-      type: "transaction",
-    });
+    expect(results).toContainEqual(
+      expect.objectContaining({
+        label: "Transaction Version 6900000000",
+        to: "/txn/6900000000",
+        type: "transaction",
+      }),
+    );
   });
 
   it("uses the indexer for containing-block height after archive miss", async () => {

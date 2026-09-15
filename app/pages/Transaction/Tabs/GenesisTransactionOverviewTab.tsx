@@ -23,35 +23,35 @@ export default function GenesisTransactionOverviewTab({
     >
       <ContentBox>
         <ContentRow
-          title={"Version:"}
+          titleKey="fields.version"
           value={<Box sx={{fontWeight: 600}}>{transactionData.version}</Box>}
           tooltip={getLearnMoreTooltip("version")}
         />
         <ContentRow
-          title="Status:"
+          titleKey="fields.status"
           value={<TransactionStatus success={transactionData.success} />}
           tooltip={getLearnMoreTooltip("status")}
         />
         <TransactionBlockRow version={transactionData.version} />
         <ContentRow
-          title="VM Status:"
+          titleKey="fields.vmStatus"
           value={transactionData.vm_status}
           tooltip={getLearnMoreTooltip("vm_status")}
         />
       </ContentBox>
       <ContentBox>
         <ContentRow
-          title="State Change Hash:"
+          titleKey="fields.stateChangeHash"
           value={transactionData.state_change_hash}
           tooltip={getLearnMoreTooltip("state_change_hash")}
         />
         <ContentRow
-          title="Event Root Hash:"
+          titleKey="fields.eventRootHash"
           value={transactionData.event_root_hash}
           tooltip={getLearnMoreTooltip("event_root_hash")}
         />
         <ContentRow
-          title="Accumulator Root Hash:"
+          titleKey="fields.accumulatorRootHash"
           value={transactionData.accumulator_root_hash}
           tooltip={getLearnMoreTooltip("accumulator_root_hash")}
         />

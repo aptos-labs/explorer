@@ -12,12 +12,10 @@ import ContentRowSpaceBetween from "../../components/IndividualPageContent/Conte
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
 import LastEpochPerformanceTooltip from "../Validators/Components/LastEpochPerformanceTooltip";
 import RewardsPerformanceTooltip from "../Validators/Components/RewardsPerformanceTooltip";
-import {
-  REWARDS_LEARN_MORE_LINK,
-  REWARDS_TOOLTIP_TEXT,
-} from "../Validators/Components/Staking";
+import {REWARDS_LEARN_MORE_LINK} from "../Validators/Components/Staking";
 import TimeDurationIntervalBar from "./Components/TimeDurationIntervalBar";
 import {DelegationStateContext} from "./context/DelegationContext";
+import {useTranslation} from "../../i18n";
 
 type ValidatorDetailProps = {
   isSkeletonLoading: boolean;
@@ -49,6 +47,7 @@ function ValidatorDetailCardContent({
   accountResource: Types.MoveResource;
   validator: ValidatorData;
 }) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const {commission} = useGetDelegationNodeInfo({
@@ -68,7 +67,7 @@ function ValidatorDetailCardContent({
         sx={{width: isOnMobile ? "100%" : "50%", marginTop: 0}}
       >
         <ContentRowSpaceBetween
-          title={"Operator"}
+          titleKey="fields.operator"
           value={
             operatorAddr && (
               <HashButton
@@ -80,35 +79,33 @@ function ValidatorDetailCardContent({
           }
         />
         <ContentRowSpaceBetween
-          title="Number of Delegators"
+          titleKey="fields.numberOfDelegators"
           value={delegatorBalance}
           tooltip={
-            <StyledLearnMoreTooltip text="Number of owner accounts who have delegated stake to this stake pool + reward account(s)" />
+            <StyledLearnMoreTooltip text={t("staking.operatorCountTip")} />
           }
         />
         <ContentRowSpaceBetween
-          title="Compound Rewards"
+          titleKey="fields.compoundRewards"
           value={`${rewardsRateYearly}% APR`}
           tooltip={
             <StyledLearnMoreTooltip
-              text={REWARDS_TOOLTIP_TEXT}
+              text={t("staking.rewardsAprTip")}
               link={REWARDS_LEARN_MORE_LINK}
             />
           }
         />
         <ContentRowSpaceBetween
-          title="Operator Commission"
+          titleKey="fields.operatorCommission"
           value={commission && `${commission}%`}
-          tooltip={
-            <StyledLearnMoreTooltip text="% of staking reward paid out to operator as commission" />
-          }
+          tooltip={<StyledLearnMoreTooltip text={t("staking.commissionTip")} />}
         />
       </ContentBoxSpaceBetween>
       <ContentBoxSpaceBetween
         sx={{width: isOnMobile ? "100%" : "50%", marginTop: 0}}
       >
         <ContentRowSpaceBetween
-          title={"Stake Pool Address"}
+          titleKey="fields.stakePoolAddress"
           value={
             stakePoolAddress && (
               <HashButton hash={stakePoolAddress} type={HashType.ACCOUNT} />
@@ -116,23 +113,21 @@ function ValidatorDetailCardContent({
           }
         />
         <ContentRowSpaceBetween
-          title="Rewards Performance"
+          titleKey="fields.rewardsPerformance"
           value={rewardGrowth ? `${rewardGrowth.toFixed(2)} %` : null}
           tooltip={<RewardsPerformanceTooltip />}
         />
         <ContentRowSpaceBetween
-          title="Last Epoch Performance"
+          titleKey="fields.lastEpochPerformance"
           value={validator ? validator.last_epoch_performance : null}
           tooltip={<LastEpochPerformanceTooltip />}
         />
         <ContentRowSpaceBetween
-          title="Next Unlock"
+          titleKey="fields.nextUnlock"
           value={
             <TimeDurationIntervalBar timestamp={Number(lockedUntilSecs)} />
           }
-          tooltip={
-            <StyledLearnMoreTooltip text="When tokens will be available for removal from the stake pool" />
-          }
+          tooltip={<StyledLearnMoreTooltip text={t("staking.nextUnlockTip")} />}
         />
       </ContentBoxSpaceBetween>
     </Stack>

@@ -1,17 +1,41 @@
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import Box from "@mui/material/Box";
-import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
+import {InlineMarkup, useTranslation} from "../../i18n";
+
+function MarkupParagraph({text, sx}: {text: string; sx?: object}) {
+  return (
+    <Typography variant="body1" sx={sx}>
+      <InlineMarkup text={text} />
+    </Typography>
+  );
+}
+
+function MarkupList({items}: {items: string[]}) {
+  return (
+    <Box component="ul" sx={{pl: 3, mb: 2}}>
+      {items.map((item) => (
+        <Box component="li" key={item} sx={{mb: 0.5}}>
+          <Typography variant="body1" component="span">
+            <InlineMarkup text={item} />
+          </Typography>
+        </Box>
+      ))}
+    </Box>
+  );
+}
 
 export default function VerificationPage() {
+  const {t, tList} = useTranslation();
+
   return (
     <>
       <PageMetadata
-        title="Token & Address Verification"
-        description="Learn how to verify tokens and addresses on Aptos Explorer. Get your project verified through the Panora token list. Protect users from scams with official verification."
+        title={t("verificationPage.metaTitle")}
+        description={t("verificationPage.metaDescription")}
         type="article"
         keywords={[
           "verification",
@@ -37,14 +61,12 @@ export default function VerificationPage() {
             mb: 4,
           }}
         >
-          Token & Address Verification Instructions
+          {t("verificationPage.heading")}
         </Typography>
 
         <Alert severity="info" sx={{mb: 4}}>
-          <AlertTitle>Verification Overview</AlertTitle>
-          The Aptos Explorer supports multiple verification levels to help users
-          identify legitimate tokens and addresses. This page explains how to
-          get your tokens and addresses verified through the official channels.
+          <AlertTitle>{t("verificationPage.overviewTitle")}</AlertTitle>
+          {t("verificationPage.overviewBody")}
         </Alert>
 
         <Paper sx={{p: 4, mb: 4}}>
@@ -55,31 +77,18 @@ export default function VerificationPage() {
               mb: 3,
             }}
           >
-            Token Verification
+            {t("verificationPage.tokenTitle")}
           </Typography>
 
           <Alert severity="warning" sx={{mb: 3}}>
-            <AlertTitle>Important Notice</AlertTitle>
-            Token verification requests are handled through the{" "}
-            <Link
-              href="https://github.com/PanoraExchange/Aptos-Tokens"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Panora token list
-            </Link>{" "}
-            repository, not through this explorer directly.
+            <AlertTitle>{t("verificationPage.importantTitle")}</AlertTitle>
+            <InlineMarkup text={t("verificationPage.importantBody")} />
           </Alert>
 
-          <Typography
-            variant="body1"
-            sx={{
-              mb: 2,
-            }}
-          >
-            To get your token verified on Aptos Explorer, you must be added to
-            the community-maintained Panora token list.
-          </Typography>
+          <MarkupParagraph
+            text={t("verificationPage.tokenIntro")}
+            sx={{mb: 2}}
+          />
 
           <Typography
             variant="h6"
@@ -89,24 +98,14 @@ export default function VerificationPage() {
               mb: 2,
             }}
           >
-            1. Community Verification (Panora Token List)
+            {t("verificationPage.communityTitle")}
           </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              mb: 2,
-            }}
-          >
-            Submit your token to the Panora community token list:
-          </Typography>
+          <MarkupParagraph
+            text={t("verificationPage.communityBody")}
+            sx={{mb: 2}}
+          />
           <Box sx={{pl: 2, mb: 2}}>
-            <Link
-              href="https://github.com/PanoraExchange/Aptos-Tokens"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              https://github.com/PanoraExchange/Aptos-Tokens
-            </Link>
+            <InlineMarkup text="[https://github.com/PanoraExchange/Aptos-Tokens](https://github.com/PanoraExchange/Aptos-Tokens)" />
           </Box>
 
           <Typography
@@ -117,23 +116,10 @@ export default function VerificationPage() {
               mb: 2,
             }}
           >
-            2. Labs Verification (Manual Process)
+            {t("verificationPage.labsTitle")}
           </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              mb: 2,
-            }}
-          >
-            For special cases, tokens can be manually verified by the Aptos Labs
-            team. This process is reserved for:
-          </Typography>
-          <Box component="ul" sx={{pl: 3, mb: 2}}>
-            <li>Native tokens (like APT)</li>
-            <li>Major stablecoins and established tokens</li>
-            <li>Verified Emojicoins (automatically verified)</li>
-            <li>Tokens with special significance to the Aptos ecosystem</li>
-          </Box>
+          <MarkupParagraph text={t("verificationPage.labsBody")} sx={{mb: 2}} />
+          <MarkupList items={tList("verificationPage.labsBullets")} />
 
           <Typography
             variant="h6"
@@ -143,30 +129,9 @@ export default function VerificationPage() {
               mb: 2,
             }}
           >
-            3. Verification Levels
+            {t("verificationPage.levelsTitle")}
           </Typography>
-          <Box component="ul" sx={{pl: 3, mb: 2}}>
-            <li>
-              <strong>Native Token:</strong> Blue verified badge - Native Aptos
-              tokens
-            </li>
-            <li>
-              <strong>Labs Verified:</strong> Blue verified badge - Manually
-              verified by Aptos Labs
-            </li>
-            <li>
-              <strong>Community Verified:</strong> Blue outlined badge -
-              Verified by Panora community
-            </li>
-            <li>
-              <strong>Recognized:</strong> Yellow warning badge - In Panora list
-              but not verified
-            </li>
-            <li>
-              <strong>Unverified:</strong> Orange warning badge - Not in any
-              verification list
-            </li>
-          </Box>
+          <MarkupList items={tList("verificationPage.levelsBullets")} />
         </Paper>
 
         <Paper sx={{p: 4, mb: 4}}>
@@ -177,18 +142,12 @@ export default function VerificationPage() {
               mb: 3,
             }}
           >
-            Address Verification
+            {t("verificationPage.addressTitle")}
           </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              mb: 2,
-            }}
-          >
-            Address verification helps users identify legitimate project
-            addresses and avoid scams. Address verification requests are handled
-            directly through the explorer's GitHub repository.
-          </Typography>
+          <MarkupParagraph
+            text={t("verificationPage.addressIntro")}
+            sx={{mb: 2}}
+          />
 
           <Typography
             variant="h6"
@@ -198,24 +157,16 @@ export default function VerificationPage() {
               mb: 2,
             }}
           >
-            1. Submission Process
+            {t("verificationPage.submitTitle")}
           </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              mb: 2,
-            }}
-          >
-            Create a verification request using the GitHub issue template:
-          </Typography>
+          <MarkupParagraph
+            text={t("verificationPage.submitBody")}
+            sx={{mb: 2}}
+          />
           <Box sx={{pl: 2, mb: 2}}>
-            <Link
-              href="https://github.com/aptos-labs/explorer/issues/new?assignees=&labels=&projects=&template=verification_request.md&title=%5Bverification%5D+%3CTitle%3E"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Submit Address Verification Request
-            </Link>
+            <InlineMarkup
+              text={`[${t("verificationPage.submitLink")}](https://github.com/aptos-labs/explorer/issues/new?assignees=&labels=&projects=&template=verification_request.md&title=%5Bverification%5D+%3CTitle%3E)`}
+            />
           </Box>
 
           <Typography
@@ -226,22 +177,9 @@ export default function VerificationPage() {
               mb: 2,
             }}
           >
-            2. Required Information
+            {t("verificationPage.requiredTitle")}
           </Typography>
-          <Box component="ul" sx={{pl: 3, mb: 2}}>
-            <li>
-              Full address to be verified (e.g.,
-              0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b)
-            </li>
-            <li>
-              Name to display (under 64 characters, may be truncated over 20
-              characters)
-            </li>
-            <li>
-              Verification documentation (source code, official documentation,
-              etc.)
-            </li>
-          </Box>
+          <MarkupList items={tList("verificationPage.requiredBullets")} />
 
           <Typography
             variant="h6"
@@ -251,16 +189,9 @@ export default function VerificationPage() {
               mb: 2,
             }}
           >
-            3. Eligible Addresses
+            {t("verificationPage.eligibleTitle")}
           </Typography>
-          <Box component="ul" sx={{pl: 3, mb: 2}}>
-            <li>Official project treasury addresses</li>
-            <li>Verified smart contract addresses</li>
-            <li>Known validator addresses</li>
-            <li>Official bridge or protocol addresses</li>
-            <li>Major exchange addresses</li>
-            <li>DeFi protocol addresses</li>
-          </Box>
+          <MarkupList items={tList("verificationPage.eligibleBullets")} />
 
           <Typography
             variant="h6"
@@ -270,23 +201,10 @@ export default function VerificationPage() {
               mb: 2,
             }}
           >
-            4. Verification Documentation
+            {t("verificationPage.docsTitle")}
           </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              mb: 2,
-            }}
-          >
-            Provide comprehensive documentation to verify the address:
-          </Typography>
-          <Box component="ul" sx={{pl: 3, mb: 2}}>
-            <li>Official documentation linking to the address</li>
-            <li>Verified social media announcements</li>
-            <li>Smart contract source code (if applicable)</li>
-            <li>Audit reports (highly recommended)</li>
-            <li>Any other proof of legitimacy</li>
-          </Box>
+          <MarkupParagraph text={t("verificationPage.docsBody")} sx={{mb: 2}} />
+          <MarkupList items={tList("verificationPage.docsBullets")} />
         </Paper>
 
         <Paper sx={{p: 4}}>
@@ -297,14 +215,14 @@ export default function VerificationPage() {
               mb: 3,
             }}
           >
-            Important Security Information
+            {t("verificationPage.securityTitle")}
           </Typography>
 
           <Alert severity="error" sx={{mb: 3}}>
-            <AlertTitle>Security Warning</AlertTitle>
-            Never share private keys, seed phrases, or pay fees during the
-            verification process. All verification processes are free and
-            handled through official GitHub repositories.
+            <AlertTitle>
+              {t("verificationPage.securityWarningTitle")}
+            </AlertTitle>
+            {t("verificationPage.securityWarningBody")}
           </Alert>
 
           <Typography
@@ -315,17 +233,12 @@ export default function VerificationPage() {
               mb: 2,
             }}
           >
-            Network Availability
+            {t("verificationPage.networkTitle")}
           </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              mb: 2,
-            }}
-          >
-            Verification badges are only displayed on Mainnet. Other networks
-            (testnet, devnet) show "No Verification" status.
-          </Typography>
+          <MarkupParagraph
+            text={t("verificationPage.networkBody")}
+            sx={{mb: 2}}
+          />
 
           <Typography
             variant="h6"
@@ -335,17 +248,12 @@ export default function VerificationPage() {
               mb: 2,
             }}
           >
-            Banned Assets
+            {t("verificationPage.bannedTitle")}
           </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              mb: 2,
-            }}
-          >
-            Assets can be marked as banned if they are identified as scams or
-            dangerous. Banned assets display red warning badges.
-          </Typography>
+          <MarkupParagraph
+            text={t("verificationPage.bannedBody")}
+            sx={{mb: 2}}
+          />
 
           <Typography
             variant="h6"
@@ -355,18 +263,12 @@ export default function VerificationPage() {
               mb: 2,
             }}
           >
-            Processing Time
+            {t("verificationPage.processingTitle")}
           </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              mb: 2,
-            }}
-          >
-            Address verification requests are typically reviewed within 1-2
-            weeks. Token verification through Panora follows their community
-            review process.
-          </Typography>
+          <MarkupParagraph
+            text={t("verificationPage.processingBody")}
+            sx={{mb: 2}}
+          />
 
           <Typography
             variant="h6"
@@ -376,47 +278,28 @@ export default function VerificationPage() {
               mb: 2,
             }}
           >
-            Support
+            {t("verificationPage.supportTitle")}
           </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              mb: 2,
-            }}
-          >
-            For questions about verification:
-          </Typography>
+          <MarkupParagraph
+            text={t("verificationPage.supportBody")}
+            sx={{mb: 2}}
+          />
           <Box component="ul" sx={{pl: 3}}>
-            <li>
-              <strong>Address Verification:</strong>{" "}
-              <Link
-                href="https://github.com/aptos-labs/explorer/issues"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Explorer GitHub Issues
-              </Link>
-            </li>
-            <li>
-              <strong>Token Verification:</strong>{" "}
-              <Link
-                href="https://github.com/PanoraExchange/Aptos-Tokens"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Panora Token List
-              </Link>
-            </li>
-            <li>
-              <strong>General Support:</strong>{" "}
-              <Link
-                href="https://discord.gg/aptoslabs"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Aptos Discord
-              </Link>
-            </li>
+            <Box component="li" sx={{mb: 0.5}}>
+              <Typography variant="body1" component="span">
+                <InlineMarkup text={t("verificationPage.supportAddress")} />
+              </Typography>
+            </Box>
+            <Box component="li" sx={{mb: 0.5}}>
+              <Typography variant="body1" component="span">
+                <InlineMarkup text={t("verificationPage.supportToken")} />
+              </Typography>
+            </Box>
+            <Box component="li">
+              <Typography variant="body1" component="span">
+                <InlineMarkup text={t("verificationPage.supportGeneral")} />
+              </Typography>
+            </Box>
           </Box>
         </Paper>
       </Box>

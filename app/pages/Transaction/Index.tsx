@@ -4,6 +4,7 @@ import {toResponseError} from "../../api/client";
 import {useGetTransaction} from "../../api/hooks/useGetTransaction";
 import {isIndexerSourced} from "../../api/indexerTransaction";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
+import {useTranslation} from "../../i18n";
 import {
   ContentRowsSkeleton,
   TabStripSkeleton,
@@ -24,8 +25,9 @@ function TransactionPageSkeleton({
   urlTxnHashOrVersion: string;
   pathTab?: string;
 }) {
+  const {t} = useTranslation();
   const tab = rewriteTxnTab(pathTab ?? "overview");
-  const tabHead = getTransactionTabHeadLabel(tab);
+  const tabHead = getTransactionTabHeadLabel(tab, t);
   const displayId = truncateAddress(urlTxnHashOrVersion);
 
   return (
@@ -34,18 +36,25 @@ function TransactionPageSkeleton({
       spacing={4}
       sx={{marginTop: 2}}
       aria-busy="true"
-      aria-label="Loading transaction"
+      aria-label={t("common.loadingTransaction")}
     >
       <Stack direction="column" spacing={2} sx={{marginX: 1}}>
         <PageMetadata
-          title={`${tabHead} | Transaction ${displayId}`}
-          description={`View ${tabHead.toLowerCase()} for transaction ${urlTxnHashOrVersion} on the Aptos blockchain.`}
+          title={t("txn.metaTitle", {
+            tab: tabHead,
+            entity: t("txn.entity"),
+            id: displayId,
+          })}
+          description={t("txn.metaDescription", {
+            tab: tabHead.toLowerCase(),
+            id: urlTxnHashOrVersion,
+          })}
           type="transaction"
           keywords={["transaction", "tx"]}
           canonicalPath={`/txn/${urlTxnHashOrVersion}/${tab}`}
         />
         <Typography variant="h3" component="h1">
-          Transaction
+          {t("txn.entity")}
         </Typography>
         {urlTxnHashOrVersion ? (
           <TitleHashButton

@@ -28,6 +28,7 @@ import {
   normalizeBytecodeHex,
 } from "../../../../utils/moveDecompiler";
 import {useLogEventWithBasic} from "../../../Account/hooks/useLogEventWithBasic";
+import {useTranslation} from "../../../../i18n";
 
 type ScriptBytecodeDecompilerProps = {
   bytecodeHex: string;
@@ -120,6 +121,7 @@ export default function ScriptBytecodeDecompiler({
   const semanticColors = getSemanticColors(theme.palette.mode);
   const styles = useHighlighterStyles();
   const logEvent = useLogEventWithBasic();
+  const {t} = useTranslation();
   const TOOLTIP_TIME = 2000;
 
   const decompilationEnabled = useDecompilationEnabled();
@@ -264,7 +266,7 @@ export default function ScriptBytecodeDecompiler({
                 fontWeight: 700,
               }}
             >
-              Script bytecode
+              {t("contract.decompiler.title")}
             </Typography>
           </Stack>
           <Button
@@ -274,7 +276,7 @@ export default function ScriptBytecodeDecompiler({
             variant="text"
             sx={{textTransform: "none"}}
           >
-            Enable decompilation in Settings
+            {t("modules.enableDecompilation")}
           </Button>
         </Box>
       );
@@ -311,14 +313,14 @@ export default function ScriptBytecodeDecompiler({
               fontWeight: 700,
             }}
           >
-            Script bytecode
+            {t("contract.decompiler.title")}
           </Typography>
-          <StyledLearnMoreTooltip text="Decompiled and disassembly views are generated from on-chain script bytecode using the Move decompiler WASM (same engine as module code pages)." />
+          <StyledLearnMoreTooltip text={t("contract.decompiler.tooltip")} />
         </Stack>
         {displayedCode && (
           <Stack direction="row" spacing={2}>
             <StyledTooltip
-              title="Code copied"
+              title={t("common.codeCopied")}
               placement="right"
               open={tooltipOpen}
               disableFocusListener
@@ -346,7 +348,7 @@ export default function ScriptBytecodeDecompiler({
                     whiteSpace: "nowrap",
                   }}
                 >
-                  copy code
+                  {t("contract.decompiler.copyCode")}
                 </Typography>
               </Button>
             </StyledTooltip>
@@ -371,7 +373,7 @@ export default function ScriptBytecodeDecompiler({
                   whiteSpace: "nowrap",
                 }}
               >
-                download
+                {t("contract.decompiler.download")}
               </Typography>
             </Button>
             <ExpandScriptCode codeToDisplay={displayedCode} />
@@ -392,7 +394,7 @@ export default function ScriptBytecodeDecompiler({
           }
           onClick={() => setActiveView("decompiled-source")}
         >
-          Decompiled
+          {t("modules.decompiled")}
         </Button>
         <Button
           size="small"
@@ -401,7 +403,7 @@ export default function ScriptBytecodeDecompiler({
           }
           onClick={() => setActiveView("bytecode-disassembly")}
         >
-          Disassembly
+          {t("modules.disassembly")}
         </Button>
       </Stack>
       <Typography
@@ -413,8 +415,7 @@ export default function ScriptBytecodeDecompiler({
           marginBottom: "16px",
         }}
       >
-        This view is generated from on-chain bytecode using the Move decompiler
-        WASM.
+        {t("contract.decompiler.generatedNote")}
       </Typography>
       {isDecompiling ? (
         <Stack
@@ -432,7 +433,7 @@ export default function ScriptBytecodeDecompiler({
               color: "text.secondary",
             }}
           >
-            Processing script bytecode...
+            {t("contract.decompiler.processing")}
           </Typography>
         </Stack>
       ) : decompilationError ? (
@@ -441,10 +442,10 @@ export default function ScriptBytecodeDecompiler({
             color: theme.palette.error.main,
           }}
         >
-          Failed to process script bytecode: {decompilationError}
+          {t("contract.decompiler.failed", {error: decompilationError})}
         </Box>
       ) : !displayedCode ? (
-        <Box>Script bytecode is not available.</Box>
+        <Box>{t("contract.decompiler.unavailable")}</Box>
       ) : (
         <Box
           sx={{

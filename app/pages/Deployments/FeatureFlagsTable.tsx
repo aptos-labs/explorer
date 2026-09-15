@@ -27,6 +27,7 @@ import {
 } from "../../api/hooks/aptosFeatureFlags";
 import {useAptosFeatureFlagUpstreamNames} from "../../api/hooks/useAptosFeatureFlagUpstreamNames";
 import {useGetNetworkStatus} from "../../api/hooks/useGetNetworkStatus";
+import {InlineMarkup, translateNetworkName, useTranslation} from "../../i18n";
 
 // The deployments page only ever shows the three production networks; we
 // narrow the type locally so we can index records by it without TS treating
@@ -39,49 +40,55 @@ const NETWORKS: readonly ComparedNetwork[] = [
   "devnet",
 ] as const;
 
-const NETWORK_LABEL: Record<ComparedNetwork, string> = {
-  mainnet: "Mainnet",
-  testnet: "Testnet",
-  devnet: "Devnet",
-};
-
 type FilterMode = "all" | "enabled" | "disabled" | "differences";
 
-const FILTERS: ReadonlyArray<{value: FilterMode; label: string}> = [
-  {value: "differences", label: "Differences"},
-  {value: "all", label: "All"},
-  {value: "enabled", label: "Enabled (anywhere)"},
-  {value: "disabled", label: "Disabled (everywhere)"},
+const FILTERS: ReadonlyArray<{value: FilterMode; labelKey: string}> = [
+  {value: "differences", labelKey: "flags.differences"},
+  {value: "all", labelKey: "flags.all"},
+  {value: "enabled", labelKey: "flags.enabledAnywhere"},
+  {value: "disabled", labelKey: "flags.disabledEverywhere"},
 ];
 
 type CellState = "loading" | "enabled" | "disabled" | "unknown";
 
 function FeatureCell({state}: {state: CellState}) {
+  const {t} = useTranslation();
   if (state === "loading") {
-    return <CircularProgress size={14} aria-label="Loading" />;
+    return <CircularProgress size={14} aria-label={t("common.loading")} />;
   }
   if (state === "enabled") {
     return (
-      <CheckCircleIcon color="success" fontSize="small" aria-label="Enabled" />
+      <CheckCircleIcon
+        color="success"
+        fontSize="small"
+        aria-label={t("flags.enabled")}
+      />
     );
   }
   if (state === "unknown") {
     // Distinct from the disabled "X" so a network outage doesn't masquerade
     // as a feature being explicitly off.
     return (
-      <Tooltip title="Network unreachable — value unknown">
+      <Tooltip title={t("tooltips.networkUnreachable")}>
         <HelpOutlineIcon
           color="warning"
           fontSize="small"
-          aria-label="Unknown — network unreachable"
+          aria-label={t("flags.unknownAria")}
         />
       </Tooltip>
     );
   }
-  return <CancelIcon color="disabled" fontSize="small" aria-label="Disabled" />;
+  return (
+    <CancelIcon
+      color="disabled"
+      fontSize="small"
+      aria-label={t("flags.disabled")}
+    />
+  );
 }
 
 export function FeatureFlagsTable() {
+  const {t} = useTranslation();
   const queryClient = useQueryClient();
   const upstreamNames = useAptosFeatureFlagUpstreamNames();
 
@@ -205,7 +212,7 @@ export function FeatureFlagsTable() {
       >
         <Box>
           <Typography variant="h5" component="h2">
-            Feature Flags by Network
+            {t("flags.heading")}
           </Typography>
           <Typography
             variant="body2"
@@ -213,21 +220,11 @@ export function FeatureFlagsTable() {
               color: "text.secondary",
             }}
           >
-            On-chain feature flags decoded from{" "}
-            <Box component="code" sx={{fontFamily: "monospace"}}>
-              0x1::features::Features
-            </Box>
-            . The "Differences" view highlights flags that are not in sync
-            across networks.
+            <InlineMarkup text={t("flags.intro")} />
             {showUpstreamHint ? (
               <>
                 {" "}
-                Names for flags not yet in this explorer&apos;s static list are
-                resolved from{" "}
-                <Box component="span" sx={{fontFamily: "monospace"}}>
-                  aptos-core
-                </Box>{" "}
-                when available.
+                <InlineMarkup text={t("flags.upstreamHint")} />
               </>
             ) : null}
           </Typography>
@@ -238,14 +235,14 @@ export function FeatureFlagsTable() {
           size="small"
           onClick={handleRefresh}
         >
-          Refresh
+          {t("common.refresh")}
         </Button>
       </Box>
       <Stack direction="row" sx={{flexWrap: "wrap", gap: 1, mb: 2}}>
-        {FILTERS.map(({value, label}) => (
+        {FILTERS.map(({value, labelKey}) => (
           <Chip
             key={value}
-            label={label}
+            label={t(labelKey)}
             onClick={() => setFilter(value)}
             color={filter === value ? "primary" : "default"}
             variant={filter === value ? "filled" : "outlined"}
@@ -256,14 +253,13 @@ export function FeatureFlagsTable() {
       </Stack>
       {anyError && (
         <Typography variant="body2" color="error" sx={{mb: 1}}>
-          One or more networks could not be reached. Cells for those networks
-          show as unknown.
+          {t("flags.networkError")}
         </Typography>
       )}
       <TableContainer component={Paper} variant="outlined">
         <Table
           size="small"
-          aria-label="Feature flags by network"
+          aria-label={t("flags.tableAria")}
           // Below `sm` we let the table scroll horizontally rather than
           // letting names crush together. The min-width keeps the network
           // columns at a tappable size while the name column stays readable.
@@ -271,15 +267,15 @@ export function FeatureFlagsTable() {
         >
           <TableHead>
             <TableRow>
-              <TableCell sx={{width: 64}}>ID</TableCell>
-              <TableCell sx={{minWidth: 200}}>Name</TableCell>
+              <TableCell sx={{width: 64}}>{t("flags.id")}</TableCell>
+              <TableCell sx={{minWidth: 200}}>{t("table.name")}</TableCell>
               {NETWORKS.map((network) => (
                 <TableCell
                   key={network}
                   align="center"
                   sx={{width: 88, minWidth: 72}}
                 >
-                  {NETWORK_LABEL[network] ?? network}
+                  {translateNetworkName(network, t)}
                 </TableCell>
               ))}
             </TableRow>
@@ -296,8 +292,8 @@ export function FeatureFlagsTable() {
                     }}
                   >
                     {filter === "differences"
-                      ? "All networks agree on every known feature flag."
-                      : "No features match this filter."}
+                      ? t("flags.allAgree")
+                      : t("flags.noMatch")}
                   </Typography>
                 </TableCell>
               </TableRow>
@@ -310,7 +306,10 @@ export function FeatureFlagsTable() {
                   >
                     {!hasStaticFeatureFlagLabel(id) &&
                     upstreamNames.isLoading ? (
-                      <CircularProgress size={14} aria-label="Loading name" />
+                      <CircularProgress
+                        size={14}
+                        aria-label={t("flags.loadingName")}
+                      />
                     ) : (
                       resolveFeatureDisplayName(id)
                     )}

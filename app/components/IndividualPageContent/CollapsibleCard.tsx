@@ -2,6 +2,12 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import {Box, Grid, Stack, Typography, useTheme} from "@mui/material";
 import type React from "react";
+import {useTranslation} from "../../i18n";
+
+const COLLAPSIBLE_TITLE_KEYS: Record<string, string> = {
+  "Index:": "fields.index",
+  "Type:": "fields.type",
+};
 
 type CollapsibleCardProps = {
   titleKey: string;
@@ -20,6 +26,10 @@ export default function CollapsibleCard({
   ...props
 }: CollapsibleCardProps) {
   const theme = useTheme();
+  const {t} = useTranslation();
+  const titleLabel = COLLAPSIBLE_TITLE_KEYS[titleKey]
+    ? t(COLLAPSIBLE_TITLE_KEYS[titleKey])
+    : titleKey;
   const titleBackgroundColor =
     theme.palette.mode === "dark"
       ? theme.palette.neutralShade.lighter
@@ -46,7 +56,7 @@ export default function CollapsibleCard({
         >
           <Grid size={{md: 3}}>
             <Typography variant="body2" color={theme.palette.text.secondary}>
-              {titleKey}
+              {titleLabel}
             </Typography>
           </Grid>
           <Grid

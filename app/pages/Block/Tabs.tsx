@@ -7,6 +7,7 @@ import type * as React from "react";
 import StyledTab from "../../components/StyledTab";
 import StyledTabs from "../../components/StyledTabs";
 import {useNavigate} from "../../routing";
+import {useTranslation} from "../../i18n";
 import {assertNever} from "../../utils";
 import OverviewTab from "./Tabs/OverviewTab";
 import TransactionsTab from "./Tabs/TransactionsTab";
@@ -20,12 +21,12 @@ const TabComponents = Object.freeze({
 
 type TabValue = keyof typeof TabComponents;
 
-function getTabLabel(value: TabValue): string {
+function getTabLabel(value: TabValue, t: (key: string) => string): string {
   switch (value) {
     case "overview":
-      return "Overview";
+      return t("tabs.block.overview");
     case "transactions":
-      return "Transactions";
+      return t("tabs.block.transactions");
     default:
       return assertNever(value);
   }
@@ -65,6 +66,7 @@ export default function BlockTabs({
   const height = params?.height;
   const tab = params?.tab;
   const navigate = useNavigate();
+  const {t} = useTranslation();
   const value = tab === undefined ? TAB_VALUES[0] : (tab as TabValue);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
@@ -84,7 +86,7 @@ export default function BlockTabs({
               key={value}
               value={value}
               icon={getTabIcon(value)}
-              label={getTabLabel(value)}
+              label={getTabLabel(value, t)}
               isFirst={i === 0}
               isLast={i === tabValues.length - 1}
             />
