@@ -54,6 +54,7 @@ export const FULL_UI_LOCALES = [
   "sw",
   "zh-Hant",
   "ha",
+  "am",
 ] as const satisfies readonly SupportedLocale[];
 
 export type FullUiLocale = (typeof FULL_UI_LOCALES)[number];
