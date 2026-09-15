@@ -9,15 +9,11 @@ import {
   Checkbox,
   Container,
   Divider,
-  FormControl,
   FormControlLabel,
   IconButton,
   InputAdornment,
-  InputLabel,
-  MenuItem,
   Paper,
   Popover,
-  Select,
   Stack,
   Switch,
   TextField,
@@ -26,17 +22,11 @@ import {
 } from "@mui/material";
 import {useQueryClient} from "@tanstack/react-query";
 import {useRouter} from "@tanstack/react-router";
-import {useEffect, useMemo, useRef, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {clearCachedSearchClients} from "../../api/createClient";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
-import {
-  InlineMarkup,
-  LOCALE_META,
-  normalizeLocalePreference,
-  SUPPORTED_LOCALES,
-  translateNetworkName,
-  useTranslation,
-} from "../../i18n";
+import LanguageSelect from "../../components/layout/LanguageSelect";
+import {InlineMarkup, translateNetworkName, useTranslation} from "../../i18n";
 import {emitApiKeySaved} from "../../context/rate-limit";
 import {clearCachedV2Clients} from "../../global-config";
 import {type NetworkName, networks} from "../../lib/constants";
@@ -82,11 +72,20 @@ export default function SettingsPage() {
   const [apiKeyInfoAnchor, setApiKeyInfoAnchor] = useState<HTMLElement | null>(
     null,
   );
-  const initialSettingsRef = useRef(settings);
 
   useEffect(() => {
-    initialSettingsRef.current = settings;
-    setDraftSettings(settings);
+    setDraftSettings((current) => {
+      if (settingsEqual(current, settings)) {
+        return settings;
+      }
+      if (current.localePreference === settings.localePreference) {
+        return current;
+      }
+      return {
+        ...current,
+        localePreference: settings.localePreference,
+      };
+    });
   }, [settings]);
 
   const hasChanges = useMemo(
@@ -183,33 +182,7 @@ export default function SettingsPage() {
                 >
                   <InlineMarkup text={t("settings.language.description")} />
                 </Typography>
-                <FormControl fullWidth>
-                  <InputLabel id="explorer-language-label">
-                    {t("settings.language.label")}
-                  </InputLabel>
-                  <Select
-                    labelId="explorer-language-label"
-                    label={t("settings.language.label")}
-                    value={draftSettings.localePreference}
-                    onChange={(event) =>
-                      setDraftSettings((current) => ({
-                        ...current,
-                        localePreference: normalizeLocalePreference(
-                          event.target.value,
-                        ),
-                      }))
-                    }
-                  >
-                    <MenuItem value="auto">
-                      {t("settings.language.auto")}
-                    </MenuItem>
-                    {SUPPORTED_LOCALES.map((locale) => (
-                      <MenuItem key={locale} value={locale}>
-                        {LOCALE_META[locale].nativeName}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                <LanguageSelect variant="settings" />
               </Box>
             </Stack>
           </Paper>

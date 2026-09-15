@@ -22,6 +22,21 @@ test.describe("smoke", () => {
     await expect(page).toHaveURL(/\/blocks/);
   });
 
+  test("header language icon is available on desktop", async ({page}) => {
+    await page.goto("/");
+    await expect(page.getByRole("button", {name: "Language"})).toBeVisible();
+  });
+
+  test("language control is in the overflow menu on a narrow viewport", async ({
+    page,
+  }) => {
+    await page.setViewportSize({width: 375, height: 812});
+    await page.goto("/");
+    await expect(page.getByRole("button", {name: "Language"})).toHaveCount(0);
+    await page.getByRole("button", {name: "Navigation menu"}).click();
+    await expect(page.getByRole("menuitem", {name: "Language"})).toBeVisible();
+  });
+
   test("user guide page is reachable", async ({page}) => {
     await page.goto("/guide");
     await expect(

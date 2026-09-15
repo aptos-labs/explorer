@@ -44,6 +44,7 @@ explorer/
 │   ├── utils/              # Utility functions (incl. drift tests)
 │   ├── types/              # Shared TypeScript types
 │   ├── themes/             # MUI theme configuration
+│   ├── i18n/               # Locale registry, message catalogs, translation helpers
 │   ├── wasm/               # Move decompiler / disassembler WASM bindings
 │   └── global-config/      # Static runtime configuration
 ├── src/                    # Legacy/compat code (prefer app/) — only `IndividualPageContent` remains
@@ -60,6 +61,60 @@ explorer/
 ├── .opencode/              # OpenCode agents
 └── dist/, build/           # Generated output (disposable)
 ```
+
+---
+
+## Internationalization
+
+Chrome (header, nav, footer, skip link), search tokens, settings copy, and the in-app user guide are translated in every shipped catalog. Remaining explorer UI copy lives in `app/i18n/messages/en.ts` and `app/i18n/messages/en/`. Full-UI locales (`zh`, `es`, `fr`, `de`, `ja`, `ko`, `pt`, `ar`, `vi`) include those keys; other locales omit them and fall back to English. On-chain identifiers stay untranslated.
+
+**Keep i18n working in future changes.** Do not land new user-visible chrome, settings, search, or guide strings as hardcoded English. Add those keys to `app/i18n/messages/en.ts` first, then the same keys in every shipped catalog. Remaining explorer UI keys go in `app/i18n/messages/en/` (and the English barrel) and must be added to every **full-UI** locale; other catalogs may omit them (English fallback). Use `useTranslation()` (`t` / `tList`) and locale-bound `formatNumber` / `formatInteger` / `formatDateTime` instead of ad-hoc `toLocaleString`. Language is selected from the header globe icon (`LanguageSelect`, `lg+`) or the hamburger Language item (compact), and from `/settings`; all write immediately to `aptos-explorer-locale`.
+
+**When the locale list changes** (add, remove, or rename a catalog), update this section in **`AGENTS.md` in the same PR** — including the shipped-locales table below. Also register the catalog in `SUPPORTED_LOCALES` / `LOCALE_META` (`app/i18n/locales.ts`) and `messageCatalogs` (`app/i18n/messages/index.ts`), add `app/i18n/messages/<id>.ts` (hyphenated ids: `zh-Hant.ts` exports `zhHant`, `pt-PT.ts` exports `ptPT`), extend browser-tag aliases in `app/i18n/detectLocale.ts` when needed, and update `docs/FEATURES_SPECIFICATION.md` (FEAT-I18N-001 / FEAT-SETTINGS-003) plus `CHANGELOG.md`. `app/i18n/agentsLocales.test.ts` fails if the table and `SUPPORTED_LOCALES` diverge.
+
+**RTL:** `ar`, `he`, and `ur` set `document.documentElement.dir` to `rtl`. Preserve that metadata.
+
+**Browser `auto` aliases:** `tl` → `fil`, `iw` → `he`, `zh-CN`/`zh-Hans` → `zh`, `zh-Hant`/`zh-TW`/`zh-HK`/`zh-MO` → `zh-Hant`, `pt-BR` / bare `pt` → `pt`, `pt-PT` and lusophone African regions (`pt-AO`, `pt-MZ`, `pt-CV`, `pt-GW`, `pt-ST`) → `pt-PT`.
+
+### Shipped locales
+
+IDs must match `SUPPORTED_LOCALES` in `app/i18n/locales.ts`. Native names match `LOCALE_META`.
+
+<!-- i18n-supported-locales -->
+| ID | Native name | Notes |
+| --- | --- | --- |
+| `en` | English | Source catalog |
+| `zh` | 简体中文 | Simplified Chinese; full UI catalog |
+| `fil` | Filipino | `tl` maps here |
+| `es` | Español | Full UI catalog |
+| `fr` | Français | Full UI catalog |
+| `de` | Deutsch | Full UI catalog |
+| `ja` | 日本語 | Full UI catalog |
+| `ko` | 한국어 | Full UI catalog |
+| `ru` | Русский | |
+| `pt` | Português (Brasil) | Brazilian Portuguese; full UI catalog |
+| `ar` | العربية | RTL; full UI catalog |
+| `hi` | हिन्दी | |
+| `th` | ไทย | |
+| `id` | Bahasa Indonesia | |
+| `vi` | Tiếng Việt | Full UI catalog |
+| `tr` | Türkçe | |
+| `bn` | বাংলা | |
+| `sw` | Kiswahili | |
+| `zh-Hant` | 繁體中文 | Traditional Chinese |
+| `it` | Italiano | |
+| `ms` | Bahasa Melayu | |
+| `ta` | தமிழ் | |
+| `uk` | Українська | |
+| `nl` | Nederlands | |
+| `pl` | Polski | |
+| `he` | עברית | RTL; `iw` maps here |
+| `ur` | اردو | RTL |
+| `pt-PT` | Português (Portugal) | European Portuguese |
+| `ha` | Hausa | |
+| `zu` | isiZulu | |
+| `am` | አማርኛ | Amharic |
+<!-- /i18n-supported-locales -->
 
 ---
 
@@ -173,6 +228,7 @@ The explorer maintains a **canonical Features Specification** at **`docs/FEATURE
 
 - Route, tab, or major behavior changes must stay aligned with **LLM/SEO** artifacts and any user-facing docs the project already maintains for that area (see checklist above).
 - Match **release visibility** in **`CHANGELOG.md`** (see bullet above): if users or deployers would care, document it there in the same PR when practical.
+- **Internationalization**: keep [Internationalization](#internationalization) in this file accurate. Adding, removing, or renaming a locale must update the shipped-locales table here in the same PR (`app/i18n/agentsLocales.test.ts` enforces id/native-name parity with `SUPPORTED_LOCALES`). New chrome, settings, search, or guide copy must go through `app/i18n/messages/` rather than hardcoded English.
 
 ---
 
@@ -229,6 +285,8 @@ This repository uses a multi-agent workflow with 7 specialized roles. Each role 
 
 > **CHANGELOG**: For **user-visible** or **release-note-worthy** work (features, fixes, notable behavior changes), add an entry under **`CHANGELOG.md` → [Unreleased]** in the same PR. Use judgment for internal-only churn; see [Quality expectations for AI-generated changes](#quality-expectations-for-ai-generated-changes).
 
+> **When adding, removing, or renaming a locale**: Update the shipped-locales table in this file (see [Internationalization](#internationalization)), plus `SUPPORTED_LOCALES` / `LOCALE_META` / `messageCatalogs`, the catalog file, FEAT-I18N-001 / FEAT-SETTINGS-003, and `CHANGELOG.md`.
+
 > **When adding a named address** (an entry in `app/data/{mainnet,testnet,devnet}/knownAddresses.ts`): Ask the user whether they also want **branding** for that address—specifically an **icon** (site-relative path under `public/address-icons/` or an absolute URL) and an optional **short description**—and add them to the matching network’s `knownAddressBranding.ts` (and `aptosFrameworkAddressBranding.ts` when the account is a shared framework address on all networks). Use `iconBadge` only when appropriate (e.g. framework accounts on the Aptos mark).
 
 ---
@@ -256,6 +314,7 @@ This repository uses a multi-agent workflow with 7 specialized roles. Each role 
 - [ ] If routes/tabs were added or changed: `llms.txt`, `llms-full.txt`, and `sitemap.xml` updated
 - [ ] If the PR is user-visible or release-worthy: `CHANGELOG.md` updated under **[Unreleased]**
 - [ ] If a feature was added, changed, or removed: `docs/FEATURES_SPECIFICATION.md` updated with the corresponding `FEAT-*` entry
+- [ ] If a locale was added, removed, or renamed: `AGENTS.md` shipped-locales table, `SUPPORTED_LOCALES` / catalogs, Features Specification, and CHANGELOG updated
 - [ ] If Vercel deployment files changed: no new Vercel Edge Functions or Edge Middleware without explicit approval (see [Vercel and Edge Functions](#vercel-and-edge-functions))
 - [ ] If dependencies or the lockfile changed: installs went through Aikido Safe Chain (48h age floor, no skip flag, only `@aptos-labs/*` excluded)
 
@@ -604,4 +663,5 @@ Machine-readable metadata for autonomous agents lives alongside the LLM docs. Ke
 - **LLM/AI discoverability**: See `docs/LLM_ACCESS.md`, `public/llms.txt`, `public/llms-full.txt`, and `public/robots.txt`
 - **Agent discovery surfaces**: See `FEAT-SEO-004` in `docs/FEATURES_SPECIFICATION.md`, `public/.well-known/api-catalog`, `public/.well-known/agent-skills/index.json`, `public/.well-known/agent-card.json`, `public/auth.md`, SSR `Link` headers (`app/utils/agentDiscoveryHeaders.ts`), markdown negotiation (`app/ssr.tsx` / `app/utils/markdownHomeNegotiation.ts`), and the WebMCP tools in `app/components/WebMCPProvider.tsx` / `webMcpTools.ts`
 - **Features & test coverage**: See `docs/FEATURES_SPECIFICATION.md` for the full feature catalog with `FEAT-*` IDs, existing test coverage (Appendix B), and coverage gaps (Appendix C)
+- **Internationalization**: See [Internationalization](#internationalization) above, then `app/i18n/`, FEAT-I18N-001, and FEAT-SETTINGS-003. Keep the shipped-locales table in this file in lockstep with `SUPPORTED_LOCALES`.
 - **Search URL for AI links**: `/?search={query}` — the home page search bar accepts this param and shows inline results
