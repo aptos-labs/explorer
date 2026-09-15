@@ -11,6 +11,12 @@ export const SUPPORTED_LOCALES = [
   "pt",
   "ar",
   "hi",
+  "th",
+  "id",
+  "vi",
+  "tr",
+  "bn",
+  "sw",
 ] as const;
 
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
@@ -98,6 +104,42 @@ export const LOCALE_META: Record<
     nativeName: "हिन्दी",
     ogLocale: "hi_IN",
     htmlLang: "hi",
+    dir: "ltr",
+  },
+  th: {
+    nativeName: "ไทย",
+    ogLocale: "th_TH",
+    htmlLang: "th",
+    dir: "ltr",
+  },
+  id: {
+    nativeName: "Bahasa Indonesia",
+    ogLocale: "id_ID",
+    htmlLang: "id",
+    dir: "ltr",
+  },
+  vi: {
+    nativeName: "Tiếng Việt",
+    ogLocale: "vi_VN",
+    htmlLang: "vi",
+    dir: "ltr",
+  },
+  tr: {
+    nativeName: "Türkçe",
+    ogLocale: "tr_TR",
+    htmlLang: "tr",
+    dir: "ltr",
+  },
+  bn: {
+    nativeName: "বাংলা",
+    ogLocale: "bn_BD",
+    htmlLang: "bn",
+    dir: "ltr",
+  },
+  sw: {
+    nativeName: "Kiswahili",
+    ogLocale: "sw_KE",
+    htmlLang: "sw",
     dir: "ltr",
   },
 };

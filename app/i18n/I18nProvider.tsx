@@ -9,6 +9,11 @@ import {
 import {useExplorerSettings} from "../settings/ExplorerSettings";
 import {resolveLocale} from "./detectLocale";
 import {
+  formatDateTime as formatDateTimeForLocale,
+  formatInteger as formatIntegerForLocale,
+  formatNumber as formatNumberForLocale,
+} from "./format";
+import {
   DEFAULT_LOCALE,
   LOCALE_META,
   type LocalePreference,
@@ -28,6 +33,9 @@ export interface I18nContextValue {
   localePreference: LocalePreference;
   t: TFunction;
   tList: TListFunction;
+  formatNumber: (value: number, options?: Intl.NumberFormatOptions) => string;
+  formatInteger: (value: number) => string;
+  formatDateTime: (date: Date) => string;
 }
 
 function catalogsFor(locale: SupportedLocale): MessageCatalog[] {
@@ -47,11 +55,18 @@ function catalogsFor(locale: SupportedLocale): MessageCatalog[] {
 export function createTranslator(locale: SupportedLocale): {
   t: TFunction;
   tList: TListFunction;
+  formatNumber: (value: number, options?: Intl.NumberFormatOptions) => string;
+  formatInteger: (value: number) => string;
+  formatDateTime: (date: Date) => string;
 } {
   const catalogs = catalogsFor(locale);
   return {
     t: (key, vars) => translate(catalogs, key, vars),
     tList: (key, vars) => translateList(catalogs, key, vars),
+    formatNumber: (value, options) =>
+      formatNumberForLocale(value, locale, options),
+    formatInteger: (value) => formatIntegerForLocale(value, locale),
+    formatDateTime: (date) => formatDateTimeForLocale(date, locale),
   };
 }
 
@@ -64,6 +79,9 @@ const fallbackValue: I18nContextValue = {
   localePreference: "auto",
   t: englishTranslator.t,
   tList: englishTranslator.tList,
+  formatNumber: englishTranslator.formatNumber,
+  formatInteger: englishTranslator.formatInteger,
+  formatDateTime: englishTranslator.formatDateTime,
 };
 
 function readBrowserLanguages(): string[] {
@@ -112,6 +130,9 @@ export function I18nProvider({children}: {children: ReactNode}) {
       localePreference: settings.localePreference,
       t: translator.t,
       tList: translator.tList,
+      formatNumber: translator.formatNumber,
+      formatInteger: translator.formatInteger,
+      formatDateTime: translator.formatDateTime,
     }),
     [locale, settings.localePreference, translator],
   );

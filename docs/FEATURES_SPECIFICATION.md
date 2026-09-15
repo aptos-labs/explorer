@@ -914,7 +914,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Control** | "Language" select on `/settings`: **Browser default** (`auto`) or a registered catalog. Shipped catalogs: English (`en`), Simplified Chinese (`zh`), Filipino (`fil`), Spanish (`es`), French (`fr`), German (`de`), Japanese (`ja`), Korean (`ko`), Russian (`ru`), Brazilian Portuguese (`pt`), Arabic (`ar`, RTL), Hindi (`hi`). |
+| **Control** | "Language" select on `/settings`: **Browser default** (`auto`) or a registered catalog. Shipped catalogs: English (`en`), Simplified Chinese (`zh`), Filipino (`fil`), Spanish (`es`), French (`fr`), German (`de`), Japanese (`ja`), Korean (`ko`), Russian (`ru`), Brazilian Portuguese (`pt`), Arabic (`ar`, RTL), Hindi (`hi`), Thai (`th`), Indonesian (`id`), Vietnamese (`vi`), Turkish (`tr`), Bengali (`bn`), and Swahili (`sw`). |
 | **Scope** | Translated chrome (header, nav, footer, skip link, search placeholder/helper/type chips), settings copy, and the in-app user guide. On-chain identifiers and most entity-page copy remain English until those surfaces are migrated onto the same catalogs. |
 | **Resolution** | Explicit catalog wins. `auto` maps `navigator.languages` tags (including `tl`→`fil`, `zh-CN`/`zh-Hans`→`zh`, `pt-BR`→`pt`) onto `SUPPORTED_LOCALES`. Traditional Chinese tags (`zh-Hant`, `zh-TW`, `zh-HK`, `zh-MO`) do not select Simplified Chinese; they fall through to the next browser language or English. |
 | **Persistence** | `localePreference` on `ExplorerClientSettings`, stored in `aptos-explorer-locale` localStorage independently of API keys. |
@@ -1354,10 +1354,10 @@ top of the HTML site.
 | Aspect | Detail |
 |--------|--------|
 | **Library** | In-repo helpers in `app/i18n/` (no extra npm i18n dependency). Nested JSON-like catalogs, `{name}` interpolation, `t` / `tList`, and a small inline markup parser (`**bold**`, `` `code` ``, `[label](href)`). |
-| **English source** | `app/i18n/messages/en.ts` is the complete catalog for chrome, settings, search tokens, and the user guide. Other locales live beside it (`zh.ts`, `fil.ts`, `es.ts`, `fr.ts`, `de.ts`, `ja.ts`, `ko.ts`, `ru.ts`, `pt.ts`, `ar.ts`, `hi.ts`) and must match the English key tree. |
+| **English source** | `app/i18n/messages/en.ts` is the complete catalog for chrome, settings, search tokens, and the user guide. Other locales live beside it and must match the English key tree; automated tests enforce key, list-length, and interpolation-placeholder parity for every registered catalog. |
 | **Adding a locale** | Add a catalog file, register it in `SUPPORTED_LOCALES` / `messageCatalogs` / `LOCALE_META`. Missing keys fall back to English. |
 | **Provider** | `I18nProvider` (inside `ExplorerSettingsProvider`) resolves locale and updates `document.documentElement.lang` / `dir` (and `og:locale` when present) after hydration. `useTranslation()` falls back to English when no provider is mounted. |
-| **Formatting helpers** | `formatInteger` / `formatDateTime` wrap `Intl` with the active locale for incremental migration of number/date UI. |
+| **Formatting helpers** | Locale-bound `formatNumber`, `formatInteger`, and `formatDateTime` wrap `Intl`. Locale metadata selects intended regional tags (for example `pt-BR`) so decimal separators, grouping (including Indian grouping), date order, and 12/24-hour conventions follow the selected locale. Date/time output is pinned to UTC to remain deterministic between SSR and hydration. |
 
 ---
 

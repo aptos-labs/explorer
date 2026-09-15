@@ -9,7 +9,7 @@ export {
   normalizeLocalePreference,
   resolveLocale,
 } from "./detectLocale";
-export {formatDateTime, formatInteger} from "./format";
+export {formatDateTime, formatInteger, formatNumber} from "./format";
 export {InlineMarkup} from "./InlineMarkup";
 export {isInternalHref, parseInlineMarkup} from "./inlineMarkup";
 export {

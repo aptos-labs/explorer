@@ -60,6 +60,17 @@ describe("FEAT-I18N-001 — English catalog", () => {
     expect(en.search.placeholder.length).toBeGreaterThan(0);
     expect(en.search.helper.length).toBeGreaterThan(0);
   });
+
+  it("binds number and UTC date formatting to the selected locale", () => {
+    const translator = createTranslator("de");
+    expect(translator.formatNumber(1_234.5, {minimumFractionDigits: 1})).toBe(
+      "1.234,5",
+    );
+    expect(translator.formatInteger(1_234_567)).toBe("1.234.567");
+    expect(
+      translator.formatDateTime(new Date("2026-09-14T12:00:00.000Z")),
+    ).toBe("14.09.2026, 12:00");
+  });
 });
 
 describe("FEAT-I18N-001 — shipped locale catalogs", () => {
