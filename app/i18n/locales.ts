@@ -1,4 +1,12 @@
-export const SUPPORTED_LOCALES = ["en", "zh", "ko", "ja", "es", "pt"] as const;
+export const SUPPORTED_LOCALES = [
+  "en",
+  "zh",
+  "ko",
+  "ja",
+  "es",
+  "pt",
+  "vi",
+] as const;
 
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 
@@ -16,4 +24,5 @@ export const LOCALE_META: Record<
   ja: {nativeName: "日本語", ogLocale: "ja_JP", dir: "ltr"},
   es: {nativeName: "Español", ogLocale: "es_ES", dir: "ltr"},
   pt: {nativeName: "Português", ogLocale: "pt_BR", dir: "ltr"},
+  vi: {nativeName: "Tiếng Việt", ogLocale: "vi_VN", dir: "ltr"},
 };
