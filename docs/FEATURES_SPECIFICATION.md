@@ -914,7 +914,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Control** | "Language" select on `/settings`: **Browser default** (`auto`) or a registered catalog (`en`, `zh`). |
+| **Control** | "Language" select on `/settings`: **Browser default** (`auto`) or a registered catalog (`en`, `zh`, `ko`). |
 | **Scope** | Translated chrome (header, nav, footer, skip link, search placeholder/helper/type chips), settings copy, and the in-app user guide. On-chain identifiers and most entity-page copy remain English until those surfaces are migrated onto the same catalogs. |
 | **Resolution** | Explicit catalog wins. `auto` matches `navigator.languages` primary subtags against `SUPPORTED_LOCALES`, then falls back to `en`. |
 | **Persistence** | `localePreference` on `ExplorerClientSettings`, stored in `aptos-explorer-locale` localStorage independently of API keys. |
@@ -1355,7 +1355,7 @@ top of the HTML site.
 |--------|--------|
 | **Library** | In-repo helpers in `app/i18n/` (no extra npm i18n dependency). Nested JSON-like catalogs, `{name}` interpolation, `t` / `tList`, and a small inline markup parser (`**bold**`, `` `code` ``, `[label](href)`). |
 | **English source** | `app/i18n/messages/en.ts` (and `app/i18n/messages/en/*.ts`) is the complete source catalog for chrome, settings, search, the user guide, and remaining explorer UI copy. |
-| **Shipped locales** | `en` (English), `zh` (简体中文). Missing keys fall back to English. |
+| **Shipped locales** | `en` (English), `zh` (简体中文), `ko` (한국어). Missing keys fall back to English. |
 | **Adding a locale** | Add a catalog file, register it in `SUPPORTED_LOCALES` / `messageCatalogs` / `LOCALE_META`. Generate TypeScript from JSON with `node scripts/i18n-json-to-catalog.mjs`. |
 | **Provider** | `I18nProvider` (inside `ExplorerSettingsProvider`) resolves locale and updates `document.documentElement.lang` / `dir` after hydration. `useTranslation()` falls back to English when no provider is mounted. |
 | **Formatting helpers** | `formatInteger` / `formatDateTime` wrap `Intl` with the active locale for incremental migration of number/date UI. |
