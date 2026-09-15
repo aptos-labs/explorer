@@ -10,6 +10,7 @@ describe("isSupportedLocale", () => {
     expect(isSupportedLocale("en")).toBe(true);
     expect(isSupportedLocale("zh")).toBe(true);
     expect(isSupportedLocale("ko")).toBe(true);
+    expect(isSupportedLocale("de")).toBe(true);
     expect(isSupportedLocale("fr")).toBe(true);
     expect(isSupportedLocale("ar")).toBe(true);
     expect(isSupportedLocale("vi")).toBe(true);
@@ -47,6 +48,7 @@ describe("resolveLocale", () => {
     expect(resolveLocale("auto", ["EN-us"])).toBe("en");
     expect(resolveLocale("auto", ["zh-CN", "en"])).toBe("zh");
     expect(resolveLocale("auto", ["ko-KR"])).toBe("ko");
+    expect(resolveLocale("auto", ["de-DE"])).toBe("de");
     expect(resolveLocale("auto", ["fr-FR"])).toBe("fr");
     expect(resolveLocale("auto", ["ar"])).toBe("ar");
     expect(resolveLocale("auto", ["vi-VN"])).toBe("vi");

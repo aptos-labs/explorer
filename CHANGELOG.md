@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Internationalization foundation**: Chrome, settings, search tokens, and the user guide read from English message catalogs with `{name}` interpolation, list messages, and lightweight inline markup. Settings include a language select (browser default or a registered catalog). Additional locales can be registered without a third-party i18n library.
 - **Simplified Chinese (`zh`)**: Full explorer UI and user-guide catalog. Settings language select and browser-default matching (`zh`, `zh-CN`, …) resolve to this catalog. Page `og:locale` follows the active locale.
 - **Korean (`ko`)**: Full explorer UI and user-guide catalog.
+- **German (`de`)**: Full explorer UI and user-guide catalog.
 - **French (`fr`)**: Full explorer UI and user-guide catalog.
 - **Arabic (`ar`)**: Full explorer UI and user-guide catalog.
 - **Vietnamese (`vi`)**: Full explorer UI and user-guide catalog.
