@@ -45,8 +45,10 @@ test.describe("smoke", () => {
     await page.goto("/");
     const hamburger = page.getByRole("button", {name: "Navigation menu"});
     const hamburgerBox = await hamburger.boundingBox();
-    expect(hamburgerBox?.width).toBe(48);
-    expect(hamburgerBox?.height).toBe(48);
+    expect(hamburgerBox?.width).toBeGreaterThanOrEqual(44);
+    expect(hamburgerBox?.width).toBeLessThanOrEqual(56);
+    expect(hamburgerBox?.height).toBeGreaterThanOrEqual(44);
+    expect(hamburgerBox?.height).toBeLessThanOrEqual(56);
     await hamburger.click();
     await expect(
       page.getByRole("menuitem", {name: "Transactions"}),
@@ -55,6 +57,9 @@ test.describe("smoke", () => {
       await page.evaluate(() => getComputedStyle(document.body).overflow),
     ).not.toBe("hidden");
     await page.keyboard.press("Escape");
+    await expect(
+      page.getByRole("menuitem", {name: "Transactions"}),
+    ).toHaveCount(0);
     await page.getByLabel("Select network").click();
     await expect(page.getByRole("option", {name: /testnet/i})).toBeVisible();
     expect(

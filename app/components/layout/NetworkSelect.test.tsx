@@ -50,6 +50,7 @@ describe("FEAT-NETWORK-001 — header network selector", () => {
     expect(screen.getByRole("option", {name: "testnet"})).toBeTruthy();
     expect(screen.getByRole("option", {name: "localnet"})).toBeTruthy();
     expect(document.body.style.overflow).not.toBe("hidden");
+    expect(document.documentElement.style.overflow).not.toBe("hidden");
   });
 
   it("updates the network and URL when an option is chosen", () => {

@@ -63,6 +63,7 @@ describe("FEAT-CHROME-001 — compact overflow menu on mobile", () => {
     // iOS Safari treats MUI's overflow:hidden scroll-lock as a broken overlay:
     // the menu appears to do nothing or immediately dismisses.
     expect(document.body.style.overflow).not.toBe("hidden");
+    expect(document.documentElement.style.overflow).not.toBe("hidden");
   });
 
   it("uses a 48px icon button with a 24px glyph so the hamburger is tappable", () => {
