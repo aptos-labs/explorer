@@ -1,6 +1,7 @@
 import type {SupportedLocale} from "../locales";
 import type {MessageTree} from "../translate";
 import {en} from "./en";
+import {ar} from "./ar";
 import {vi} from "./vi";
 import {pt} from "./pt";
 import {es} from "./es";
@@ -10,6 +11,7 @@ import {zh} from "./zh";
 
 export const messageCatalogs: Record<SupportedLocale, MessageTree> = {
   en,
+  ar,
   vi,
   pt,
   es,
@@ -18,4 +20,4 @@ export const messageCatalogs: Record<SupportedLocale, MessageTree> = {
   ko,
 };
 
-export {en, zh, ko, ja, es, pt, vi};
+export {en, zh, ko, ja, es, pt, vi, ar};
