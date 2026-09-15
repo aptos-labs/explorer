@@ -29,6 +29,7 @@ import {WalletConnector} from "../WalletConnector";
 import ColorModeToggleButton from "./ColorModeToggleButton";
 import FeatureBar from "./FeatureBar";
 import HeaderOverflowMenu from "./HeaderOverflowMenu";
+import LanguageSelect from "./LanguageSelect";
 import Nav from "./Nav";
 import NetworkSelect from "./NetworkSelect";
 import ShareButton from "./ShareButton";
@@ -206,6 +207,7 @@ export default function Header() {
                 <SettingsOutlinedIcon fontSize="small" />
               </IconButton>
             )}
+            {!isOnMobile && <LanguageSelect />}
             {!isOnMobile && <ColorModeToggleButton />}
 
             <HeaderOverflowMenu />

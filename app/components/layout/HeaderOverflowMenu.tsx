@@ -17,12 +17,14 @@ import {useTranslation} from "../../i18n";
 import {useNavigate} from "../../routing";
 import {sortPetraFirst} from "../../utils";
 import {WalletConnector} from "../WalletConnector";
+import {LanguageOverflowMenuItem} from "./LanguageSelect";
 
 /**
  * Compact-viewport header menu (`xs`–`md`, below the `lg` breakpoint).
- * Mirrors inline `Nav` links, User Guide, Settings, the theme toggle, and the wallet
- * connector. On wide viewports (`lg+`) the toolbar shows those controls
- * directly (`ColorModeToggleButton`, Help, Settings icon, `Nav`, `WalletConnector`).
+ * Mirrors inline `Nav` links, User Guide, Settings, language, the theme toggle,
+ * and the wallet connector. On wide viewports (`lg+`) the toolbar shows those
+ * controls directly (`LanguageSelect` icon, `ColorModeToggleButton`, Help,
+ * Settings icon, `Nav`, `WalletConnector`).
  *
  * Previously named `NavMobile`, then `HeaderOverflowMenu` when it briefly
  * rendered on all viewports as a preferences drop-down.
@@ -129,6 +131,7 @@ export default function HeaderOverflowMenu() {
         <MenuItem onClick={() => handleCloseAndNavigate("/settings")}>
           {t("chrome.nav.settings")}
         </MenuItem>
+        <LanguageOverflowMenuItem onPicked={handleMenuClose} />
         <MenuItem
           onClick={handleToggleColorMode}
           aria-label={
