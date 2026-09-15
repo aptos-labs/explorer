@@ -34,6 +34,7 @@ import {
   LOCALE_META,
   normalizeLocalePreference,
   SUPPORTED_LOCALES,
+  translateNetworkName,
   useTranslation,
 } from "../../i18n";
 import {emitApiKeySaved} from "../../context/rate-limit";
@@ -49,13 +50,6 @@ import {
 import PageHeader from "../layout/PageHeader";
 
 const SETTINGS_NETWORKS = Object.keys(networks) as NetworkName[];
-
-function networkLabel(name: NetworkName): string {
-  if (name === "local") {
-    return "Local";
-  }
-  return name.charAt(0).toUpperCase() + name.slice(1);
-}
 
 function settingsEqual(
   a: ExplorerClientSettings,
@@ -380,13 +374,13 @@ export default function SettingsPage() {
                   autoComplete="off"
                   fullWidth
                   label={t("settings.apiKeys.fieldLabel", {
-                    network: networkLabel(network),
+                    network: translateNetworkName(network, t),
                   })}
                   onChange={(event) =>
                     updateOverride(network, event.target.value)
                   }
                   placeholder={t("settings.apiKeys.fieldPlaceholder", {
-                    network: networkLabel(network),
+                    network: translateNetworkName(network, t),
                   })}
                   slotProps={{
                     input: {

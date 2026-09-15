@@ -16,6 +16,7 @@ import {
   type ModulePublishTransaction,
   useGetModulePublishHistory,
 } from "../../../../api/hooks/useGetModulePublishHistory";
+import {useTranslation} from "../../../../i18n";
 import {Link} from "../../../../routing";
 
 interface ModuleVersionSelectorProps {
@@ -48,11 +49,14 @@ function SelectedVersionIndicator({
   selectedVersion: number;
   onVersionChange: (version: number | undefined) => void;
 }) {
+  const {t} = useTranslation();
   return (
     <>
       <Box>
         <Chip
-          label={`Viewing historical version ${selectedVersion.toLocaleString()}`}
+          label={t("modules.viewingHistorical", {
+            version: selectedVersion.toLocaleString(),
+          })}
           color="warning"
           size="small"
           variant="outlined"
@@ -65,7 +69,7 @@ function SelectedVersionIndicator({
           color="primary"
           sx={{cursor: "pointer", "&:hover": {textDecoration: "underline"}}}
         >
-          View Transaction
+          {t("staking.viewTransaction")}
         </Typography>
       </Link>
     </>
@@ -79,6 +83,7 @@ export default function ModuleVersionSelector({
   diffMode,
   onDiffModeToggle,
 }: ModuleVersionSelectorProps) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const {data: publishHistory, isLoading} = useGetModulePublishHistory(address);
   const hasHistory = publishHistory && publishHistory.length > 0;
@@ -134,7 +139,7 @@ export default function ModuleVersionSelector({
             color: "text.secondary",
           }}
         >
-          Version: Latest (only latest available)
+          {t("modules.versionLatestOnly")}
         </Typography>
       </Stack>
     );
@@ -157,7 +162,7 @@ export default function ModuleVersionSelector({
             color: "text.secondary",
           }}
         >
-          Version: Latest
+          {t("modules.versionLatest")}
         </Typography>
         <Typography
           variant="caption"
@@ -165,7 +170,7 @@ export default function ModuleVersionSelector({
             color: "text.secondary",
           }}
         >
-          (1 publish transaction)
+          {t("modules.onePublish")}
         </Typography>
       </Stack>
     );
@@ -192,7 +197,7 @@ export default function ModuleVersionSelector({
           color: "text.secondary",
         }}
       >
-        Version:
+        {t("modules.versionPrefix")}
       </Typography>
       <Select
         size="small"
@@ -213,15 +218,17 @@ export default function ModuleVersionSelector({
               width: "100%",
             }}
           >
-            <Typography variant="body2">Latest</Typography>
-            <Chip label="current" size="small" color="primary" />
+            <Typography variant="body2">{t("modules.latest")}</Typography>
+            <Chip label={t("modules.current")} size="small" color="primary" />
           </Stack>
         </MenuItem>
         {publishHistory.map((txn) => (
           <MenuItem key={txn.version} value={txn.version.toString()}>
             <Stack direction="column">
               <Typography variant="body2">
-                Version {txn.version.toLocaleString()}
+                {t("modules.versionN", {
+                  version: txn.version.toLocaleString(),
+                })}
               </Typography>
               <Typography
                 variant="caption"
@@ -249,7 +256,7 @@ export default function ModuleVersionSelector({
           startIcon={<CompareArrowsIcon />}
           sx={{textTransform: "none", ml: 1}}
         >
-          {diffMode ? "Exit Diff" : "Compare"}
+          {diffMode ? t("modules.exitDiff") : t("modules.compare")}
         </Button>
       )}
     </Stack>

@@ -26,6 +26,9 @@ import {
 
 export type SearchResult = {
   label: string;
+  /** i18n key used when rendering; `label` stays English for filters/tests. */
+  labelKey?: string;
+  labelVars?: Record<string, string | number>;
   to: string | null;
   image?: string;
   /**
@@ -39,6 +42,7 @@ export type SearchResult = {
 
 export const NotFoundResult: SearchResult = {
   label: "No Results",
+  labelKey: "search.noResults",
   to: null,
 };
 
@@ -148,6 +152,8 @@ export async function handleAnsName(
       const std = tryStandardizeAddress(address) ?? address;
       return {
         label: `Account ${truncateAddress(address)} ${searchText}`,
+        labelKey: "search.resultLabel.accountQuery",
+        labelVars: {address: truncateAddress(address), query: searchText},
         to: `/account/${address}`,
         identiconKey: std,
         type: "account",
@@ -179,6 +185,8 @@ export async function handleCoin(
     const stdMod = tryStandardizeAddress(moduleAddr);
     return {
       label: `Coin ${searchText}`,
+      labelKey: "search.resultLabel.coin",
+      labelVars: {type: searchText},
       to: `/coin/${searchText}`,
       identiconKey: stdMod ?? searchText,
       type: "coin",
@@ -226,6 +234,8 @@ export function buildNumericSearchResults(
   if (version <= BigInt(ledger.block_height)) {
     results.push({
       label: `Block ${labelNumber}`,
+      labelKey: "search.resultLabel.block",
+      labelVars: {height: labelNumber},
       to: `/block/${labelNumber}`,
       type: "block",
     });
@@ -233,6 +243,8 @@ export function buildNumericSearchResults(
   if (version <= BigInt(ledger.ledger_version)) {
     results.push({
       label: `Transaction Version ${labelNumber}`,
+      labelKey: "search.resultLabel.transactionVersion",
+      labelVars: {version: labelNumber},
       to: `/txn/${labelNumber}`,
       type: "transaction",
     });
@@ -248,6 +260,8 @@ export function buildContainingBlockSearchResult(
   const labelNumber = version !== null ? version.toString() : searchText;
   return {
     label: `Block with Txn Version ${labelNumber}`,
+    labelKey: "search.resultLabel.blockWithTxn",
+    labelVars: {version: labelNumber},
     to: `/block/${blockHeight.toString()}`,
     type: "block",
   };
@@ -386,6 +400,8 @@ export async function handleTransaction(
 
   return {
     label: `Transaction ${searchText}`,
+    labelKey: "search.resultLabel.transaction",
+    labelVars: {id: searchText},
     to: `/txn/${searchText}`,
     type: "transaction",
   };
@@ -424,6 +440,8 @@ export async function handleAddress(
     await accountPromise;
     results.push({
       label: `Account ${address}`,
+      labelKey: "search.resultLabel.account",
+      labelVars: {address},
       to: `/account/${address}`,
       identiconKey: address,
       type: "account",
@@ -443,6 +461,8 @@ export async function handleAddress(
       .then(
         (): SearchResult => ({
           label: `Fungible Asset ${address}`,
+          labelKey: "search.resultLabel.fungibleAsset",
+          labelVars: {address},
           to: `/fungible_asset/${address}`,
           identiconKey: address,
           type: "fungible-asset",
@@ -456,6 +476,8 @@ export async function handleAddress(
       .then(
         (): SearchResult => ({
           label: `Object ${address}`,
+          labelKey: "search.resultLabel.object",
+          labelVars: {address},
           to: `/object/${address}`,
           identiconKey: address,
           type: "object",
@@ -485,6 +507,8 @@ export function handleLabelLookup(
     if (prefixMatchLongerThan3(searchLowerCase, knownName)) {
       searchResults.push({
         label: `Account ${truncateAddress(address)} ${knownName}`,
+        labelKey: "search.resultLabel.accountNamed",
+        labelVars: {address: truncateAddress(address), name: knownName},
         to: `/account/${address}`,
         identiconKey: address,
         type: "account",
@@ -560,6 +584,8 @@ export function createFallbackAddressResult(
   }
   return {
     label: `Address ${address}`,
+    labelKey: "search.resultLabel.address",
+    labelVars: {address},
     to: `/account/${address}`,
     identiconKey: address,
     type: "address",
@@ -590,12 +616,16 @@ export async function handleEmojiCoinLookup(
     return [
       {
         label: `${searchText} emojicoin`,
+        labelKey: "search.resultLabel.emojicoin",
+        labelVars: {query: searchText},
         to: `/coin/${coin}`,
         identiconKey: coinIconKey,
         type: "coin",
       },
       {
         label: `${searchText} emojicoin LP`,
+        labelKey: "search.resultLabel.emojicoinLp",
+        labelVars: {query: searchText},
         to: `/coin/${lp}`,
         identiconKey: lpIconKey,
         type: "coin",
@@ -653,6 +683,19 @@ function getTypeDisplayName(type: string): string {
     other: "Other",
   };
   return typeMap[type] || type;
+}
+
+function getTypeLabelKey(type: string): string {
+  const typeMap: Record<string, string> = {
+    account: "search.group.account",
+    asset: "search.group.asset",
+    transaction: "search.group.transaction",
+    block: "search.group.block",
+    object: "search.group.object",
+    address: "search.group.address",
+    other: "search.group.other",
+  };
+  return typeMap[type] || "search.group.other";
 }
 
 /**
@@ -750,6 +793,7 @@ export function groupSearchResults(results: SearchResult[]): SearchResult[] {
       // Always add group header
       groupedResults.push({
         label: getTypeDisplayName(type),
+        labelKey: getTypeLabelKey(type),
         to: null,
         type,
         isGroupHeader: true,

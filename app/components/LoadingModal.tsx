@@ -1,10 +1,12 @@
 import {Box, CircularProgress, Modal, Typography} from "@mui/material";
+import {useTranslation} from "../i18n";
 
 type LoadingModalProps = {
   open: boolean;
 };
 
 export default function LoadingModal({open}: LoadingModalProps) {
+  const {t} = useTranslation();
   return (
     <Modal open={open} aria-labelledby="loading-modal-title">
       <Box
@@ -29,7 +31,7 @@ export default function LoadingModal({open}: LoadingModalProps) {
             borderWidth: 0,
           }}
         >
-          Loading
+          {t("common.loading")}
         </Typography>
         <CircularProgress />
       </Box>

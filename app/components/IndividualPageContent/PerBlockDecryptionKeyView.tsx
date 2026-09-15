@@ -1,4 +1,5 @@
 import {Box, Chip, Link, Paper, Typography} from "@mui/material";
+import {useTranslation} from "../../i18n";
 import {
   ResponsiveKeyValueRow,
   ResponsiveKeyValueTable,
@@ -19,6 +20,7 @@ export default function PerBlockDecryptionKeyView({
   parsed,
   rawData,
 }: PerBlockDecryptionKeyViewProps) {
+  const {t} = useTranslation();
   const epochNumber = BigInt(parsed.epoch);
   const roundNumber = BigInt(parsed.round);
   const hasKey = parsed.decryptionKeyHex != null;
@@ -26,8 +28,7 @@ export default function PerBlockDecryptionKeyView({
   return (
     <Box>
       <Typography variant="body2" color="text.secondary" sx={{mb: 2}}>
-        Per-block decryption key updated in each block prologue; used to decrypt
-        encrypted transactions in that block. See{" "}
+        {t("confidential.introBlock")}
         <Link
           href={FRAMEWORK_DECRYPTION_DOCS}
           target="_blank"
@@ -41,8 +42,8 @@ export default function PerBlockDecryptionKeyView({
       <Paper variant="outlined" sx={{overflow: "hidden", maxWidth: "100%"}}>
         <ResponsiveKeyValueTable size="small" tableLayout="fixed">
           <ResponsiveKeyValueRow
-            label="Epoch"
-            description="Epoch of the block this key applies to."
+            labelKey="confidential.epoch"
+            description={t("confidential.epochDescBlock")}
           >
             <Typography variant="body1" component="span" sx={{fontWeight: 600}}>
               {epochNumber.toLocaleString()}
@@ -50,8 +51,8 @@ export default function PerBlockDecryptionKeyView({
           </ResponsiveKeyValueRow>
 
           <ResponsiveKeyValueRow
-            label="Round"
-            description="Consensus round within the epoch."
+            labelKey="confidential.round"
+            description={t("confidential.roundDesc")}
           >
             <Typography variant="body1" component="span" sx={{fontWeight: 600}}>
               {roundNumber.toLocaleString()}
@@ -59,11 +60,11 @@ export default function PerBlockDecryptionKeyView({
           </ResponsiveKeyValueRow>
 
           <ResponsiveKeyValueRow
-            label="Decryption key"
-            description="Key for this block; None until the prologue installs one."
+            labelKey="confidential.decryptionKey"
+            description={t("confidential.decryptionKeyDesc")}
           >
             <Chip
-              label={hasKey ? "Set" : "Not set"}
+              label={hasKey ? t("confidential.set") : t("confidential.notSet")}
               size="small"
               color={hasKey ? "success" : "default"}
               variant={hasKey ? "filled" : "outlined"}
@@ -71,10 +72,10 @@ export default function PerBlockDecryptionKeyView({
           </ResponsiveKeyValueRow>
 
           {hasKey && parsed.decryptionKeyHex && (
-            <ResponsiveKeyValueRow label="Key bytes (hex)">
+            <ResponsiveKeyValueRow labelKey="confidential.keyBytes">
               <HexBytesValue
                 hex={parsed.decryptionKeyHex}
-                copyAriaLabel="Copy decryption key bytes"
+                copyAriaLabel={t("confidential.copyDecryptionKey")}
               />
             </ResponsiveKeyValueRow>
           )}
@@ -83,7 +84,7 @@ export default function PerBlockDecryptionKeyView({
 
       <Box sx={{mt: 3}}>
         <Typography variant="subtitle2" color="text.secondary" sx={{mb: 1}}>
-          Raw resource data
+          {t("confidential.rawResourceData")}
         </Typography>
         <JsonViewCard data={rawData} collapsedByDefault />
       </Box>

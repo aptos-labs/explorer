@@ -1,9 +1,11 @@
 import {ErrorOutlineOutlined as ErrorOutline} from "@mui/icons-material";
 import {Stack, Typography, useTheme} from "@mui/material";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
+import {useTranslation} from "../../i18n";
 
 export default function NotFoundPage() {
   const theme = useTheme();
+  const {t} = useTranslation();
 
   return (
     <ContentBox>
@@ -23,7 +25,7 @@ export default function NotFoundPage() {
         />
         <Stack spacing={1} sx={{flex: 1}}>
           <Typography variant="h6" color="error">
-            Page Not Found (404)
+            {t("errors.pageNotFound404")}
           </Typography>
           <Typography
             variant="body1"
@@ -31,11 +33,10 @@ export default function NotFoundPage() {
               color: "text.secondary",
             }}
           >
-            Maybe the page you are looking for has been removed, or you typed in
-            the wrong URL.
+            {t("errors.pageNotFoundHint")}
             <br />
             <br />
-            You don't have to go home, but you can't stay here!
+            {t("errors.pageNotFoundStay")}
           </Typography>
         </Stack>
       </Stack>

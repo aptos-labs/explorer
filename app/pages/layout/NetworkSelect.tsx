@@ -17,6 +17,7 @@ import {
 } from "../../api/hooks/useGetNetworkChainIds";
 import {hiddenNetworks, type NetworkName, networks} from "../../constants";
 import {useNetworkSelector} from "../../global-config/GlobalConfig";
+import {translateNetworkName, useTranslation} from "../../i18n";
 
 // Moved outside component to avoid recreation on every render
 function DropdownIcon(props: SvgIconProps) {
@@ -35,6 +36,7 @@ function NetworkAndChainIdCached({
   chainId: string | null;
 }) {
   const theme = useTheme();
+  const {t} = useTranslation();
   return (
     <Stack
       direction="row"
@@ -46,7 +48,7 @@ function NetworkAndChainIdCached({
         paddingY: 0.75,
       }}
     >
-      <Typography>{networkName}</Typography>
+      <Typography>{translateNetworkName(networkName, t)}</Typography>
       <Typography variant="body2" sx={{color: theme.palette.text.disabled}}>
         {chainId ?? "…"}
       </Typography>
@@ -81,6 +83,7 @@ function NetworkMenuItem({networkName}: {networkName: string}) {
 export default function NetworkSelect() {
   const [networkName, setNetworkName] = useNetworkSelector();
   const theme = useTheme();
+  const {t} = useTranslation();
 
   const handleChange = (event: SelectChangeEvent) => {
     const network_name = event.target.value;
@@ -97,10 +100,12 @@ export default function NetworkSelect() {
       <FormControl size="small">
         <Select
           id="network-select"
-          inputProps={{"aria-label": "Select Network"}}
+          inputProps={{"aria-label": t("network.selectTitle")}}
           value={networkName}
           onChange={handleChange}
-          renderValue={(value) => <Typography>{value}</Typography>}
+          renderValue={(value) => (
+            <Typography>{translateNetworkName(value, t)}</Typography>
+          )}
           onClose={() => {
             setTimeout(() => {
               (document.activeElement as HTMLElement)?.blur();
@@ -117,7 +122,7 @@ export default function NetworkSelect() {
             ml: 1,
             color: "inherit",
             alignItems: "center",
-            textTransform: "capitalize",
+            textTransform: "none",
             "& .MuiSvgIcon-root": {
               color: theme.palette.text.secondary,
             },
@@ -155,8 +160,8 @@ export default function NetworkSelect() {
                 color: theme.palette.text.secondary,
               }}
             >
-              <Typography variant="body2">Network</Typography>
-              <Typography variant="body2">Chain ID</Typography>
+              <Typography variant="body2">{t("network.column")}</Typography>
+              <Typography variant="body2">{t("network.chainId")}</Typography>
             </Stack>
           </MenuItem>
 
@@ -164,7 +169,7 @@ export default function NetworkSelect() {
             <MenuItem
               key={networkName}
               value={networkName}
-              sx={{paddingY: 0, textTransform: "capitalize"}}
+              sx={{paddingY: 0, textTransform: "none"}}
             >
               <NetworkMenuItem networkName={networkName} />
             </MenuItem>

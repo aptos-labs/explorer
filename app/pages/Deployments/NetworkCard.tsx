@@ -15,12 +15,7 @@ import type {ReactNode} from "react";
 import {useGetNetworkStatus} from "../../api/hooks/useGetNetworkStatus";
 import {useGetNodeReleaseFromCommit} from "../../api/hooks/useGetNodeReleaseFromCommit";
 import type {NetworkName} from "../../lib/constants";
-
-const NETWORK_LABEL: Record<string, string> = {
-  mainnet: "Mainnet",
-  testnet: "Testnet",
-  devnet: "Devnet",
-};
+import {translateNetworkName, useTranslation} from "../../i18n";
 
 function StatusRow({label, value}: {label: string; value: ReactNode}) {
   return (
@@ -60,6 +55,7 @@ function StatusRow({label, value}: {label: string; value: ReactNode}) {
 }
 
 export function NetworkCard({network}: {network: NetworkName}) {
+  const {t} = useTranslation();
   const queryClient = useQueryClient();
   const {data, isFetching, isError} = useGetNetworkStatus(network);
 
@@ -97,17 +93,17 @@ export function NetworkCard({network}: {network: NetworkName}) {
       <CardContent>
         <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 2}}>
           <Typography variant="h6" sx={{flexGrow: 1}}>
-            {NETWORK_LABEL[network] ?? network}
+            {translateNetworkName(network, t)}
           </Typography>
           {isFetching && <CircularProgress size={16} />}
           {!isFetching && (
             <Chip
-              label={isError ? "Down" : "Up"}
+              label={isError ? t("deployments.down") : t("deployments.up")}
               color={isError ? "error" : "success"}
               size="small"
             />
           )}
-          <Tooltip title="Refresh">
+          <Tooltip title={t("common.refresh")}>
             <IconButton size="small" onClick={handleRefresh}>
               <RefreshIcon fontSize="small" />
             </IconButton>
@@ -116,26 +112,39 @@ export function NetworkCard({network}: {network: NetworkName}) {
 
         {isError && (
           <Typography variant="body2" color="error">
-            Unable to reach fullnode
+            {t("deployments.unreachable")}
           </Typography>
         )}
 
         {data && (
           <>
-            <StatusRow label="Epoch" value={data.epoch} />
-            <StatusRow label="Block Height" value={data.blockHeight} />
-            <StatusRow label="Ledger Version" value={data.ledgerVersion} />
-            <StatusRow label="Chain ID" value={data.chainId} />
+            <StatusRow label={t("deployments.epoch")} value={data.epoch} />
             <StatusRow
-              label="Framework Release"
+              label={t("deployments.blockHeight")}
+              value={data.blockHeight}
+            />
+            <StatusRow
+              label={t("deployments.ledgerVersion")}
+              value={data.ledgerVersion}
+            />
+            <StatusRow label={t("deployments.chainId")} value={data.chainId} />
+            <StatusRow
+              label={t("deployments.frameworkRelease")}
               value={(() => {
                 if (data.gasFeatureVersion === null) return null;
                 const mapped = data.frameworkRelease;
                 const display =
-                  mapped ?? `gas ${data.gasFeatureVersion} (unmapped)`;
+                  mapped ??
+                  t("deployments.gasUnmapped", {
+                    version: data.gasFeatureVersion,
+                  });
                 const tooltip = mapped
-                  ? `Gas schedule feature_version ${data.gasFeatureVersion} (aptos-core gas_feature_versions in aptos-gas-schedule/src/ver.rs)`
-                  : `Gas schedule feature_version ${data.gasFeatureVersion} is not mapped to a known framework release in this explorer — update GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE`;
+                  ? t("deployments.gasMappedTip", {
+                      version: data.gasFeatureVersion,
+                    })
+                  : t("deployments.gasUnmappedTip", {
+                      version: data.gasFeatureVersion,
+                    });
                 return (
                   <Tooltip title={tooltip}>
                     <span>{display}</span>
@@ -144,17 +153,17 @@ export function NetworkCard({network}: {network: NetworkName}) {
               })()}
             />
             <StatusRow
-              label="Bytecode Format (max)"
+              label={t("deployments.bytecodeFormat")}
               value={
                 data.bytecodeFormatVersion !== null ? (
-                  <Tooltip title="Highest Move module bytecode format enabled via VM Binary Format feature flags on chain">
+                  <Tooltip title={t("tooltips.bytecodeFormat")}>
                     <span>v{data.bytecodeFormatVersion}</span>
                   </Tooltip>
                 ) : null
               }
             />
             <StatusRow
-              label="Node Release"
+              label={t("deployments.nodeRelease")}
               value={
                 releaseFetching && gitHash ? (
                   <CircularProgress size={12} />
@@ -171,7 +180,7 @@ export function NetworkCard({network}: {network: NetworkName}) {
               }
             />
             <StatusRow
-              label="Node Commit"
+              label={t("deployments.nodeCommit")}
               value={
                 gitHash && shortHash ? (
                   <Tooltip title={gitHash}>
@@ -187,7 +196,10 @@ export function NetworkCard({network}: {network: NetworkName}) {
                 ) : null
               }
             />
-            <StatusRow label="Validators" value={data.validatorCount} />
+            <StatusRow
+              label={t("deployments.validators")}
+              value={data.validatorCount}
+            />
           </>
         )}
       </CardContent>

@@ -7,6 +7,7 @@ import {
   useTheme,
 } from "@mui/material";
 import type React from "react";
+import {useTranslation} from "../i18n";
 
 interface StyledDialogProps extends DialogProps {
   handleDialogClose: () => void;
@@ -19,6 +20,7 @@ export default function StyledDialog({
   ...props
 }: StyledDialogProps) {
   const theme = useTheme();
+  const {t} = useTranslation();
   return (
     <Dialog
       onClose={handleDialogClose}
@@ -37,7 +39,7 @@ export default function StyledDialog({
       ]}
     >
       <IconButton
-        aria-label="Close"
+        aria-label={t("common.close")}
         onClick={handleDialogClose}
         sx={{
           position: "absolute",

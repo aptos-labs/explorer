@@ -25,6 +25,7 @@ import {
   type DecodedMultisigPayload,
   decodeMultisigTransactionPayload,
 } from "./decodeMultisigPayload";
+import {useTranslation} from "../../../../i18n";
 import MoveFunctionParamTypeBadge from "./MoveFunctionParamTypeBadge";
 import {useEntryFunctionArgNames} from "./useEntryFunctionArgNames";
 
@@ -69,122 +70,202 @@ type FieldKind =
 
 type FieldConfig = {
   key: string;
-  label: string;
+  labelKey: string;
   kind: FieldKind;
 };
 
 type EventConfig = {
-  /** Friendly label shown in the summary chip. */
-  summary: string;
+  /** i18n key for the summary chip. */
+  summaryKey: string;
   summaryColor: ChipProps["color"];
   /** Fields rendered, in order, when present in the event data. */
   fields: FieldConfig[];
 };
 
-const COMMON_LABELS: Record<string, string> = {
-  multisig_account: "Multisig Account",
-  sequence_number: "Sequence Number",
+const COMMON_LABEL_KEYS: Record<string, string> = {
+  multisig_account: "multisig.multisigAccount",
+  sequence_number: "multisig.sequenceNumber",
 };
 
 // Field configs keyed by the normalized (suffix-stripped) event short name.
 const EVENT_CONFIGS: Record<string, EventConfig> = {
   TransactionExecutionSucceeded: {
-    summary: "Execution Succeeded",
+    summaryKey: "multisig.executionSucceeded",
     summaryColor: "success",
     fields: [
-      {key: "multisig_account", label: "Multisig Account", kind: "address"},
-      {key: "executor", label: "Executor", kind: "address"},
-      {key: "sequence_number", label: "Sequence Number", kind: "count"},
-      {key: "num_approvals", label: "Approvals", kind: "count"},
-      {key: "transaction_payload", label: "Payload", kind: "hexPayload"},
+      {
+        key: "multisig_account",
+        labelKey: "multisig.multisigAccount",
+        kind: "address",
+      },
+      {key: "executor", labelKey: "multisig.executor", kind: "address"},
+      {
+        key: "sequence_number",
+        labelKey: "multisig.sequenceNumber",
+        kind: "count",
+      },
+      {key: "num_approvals", labelKey: "multisig.approvals", kind: "count"},
+      {
+        key: "transaction_payload",
+        labelKey: "multisig.payload",
+        kind: "hexPayload",
+      },
     ],
   },
   TransactionExecutionFailed: {
-    summary: "Execution Failed",
+    summaryKey: "multisig.executionFailed",
     summaryColor: "error",
     fields: [
-      {key: "multisig_account", label: "Multisig Account", kind: "address"},
-      {key: "executor", label: "Executor", kind: "address"},
-      {key: "sequence_number", label: "Sequence Number", kind: "count"},
-      {key: "num_approvals", label: "Approvals", kind: "count"},
+      {
+        key: "multisig_account",
+        labelKey: "multisig.multisigAccount",
+        kind: "address",
+      },
+      {key: "executor", labelKey: "multisig.executor", kind: "address"},
+      {
+        key: "sequence_number",
+        labelKey: "multisig.sequenceNumber",
+        kind: "count",
+      },
+      {key: "num_approvals", labelKey: "multisig.approvals", kind: "count"},
       {
         key: "execution_error",
-        label: "Execution Error",
+        labelKey: "multisig.executionError",
         kind: "executionError",
       },
-      {key: "transaction_payload", label: "Payload", kind: "hexPayload"},
+      {
+        key: "transaction_payload",
+        labelKey: "multisig.payload",
+        kind: "hexPayload",
+      },
     ],
   },
   ExecuteRejectedTransaction: {
-    summary: "Rejected Transaction Executed",
+    summaryKey: "multisig.rejectedExecuted",
     summaryColor: "warning",
     fields: [
-      {key: "multisig_account", label: "Multisig Account", kind: "address"},
-      {key: "executor", label: "Executor", kind: "address"},
-      {key: "sequence_number", label: "Sequence Number", kind: "count"},
-      {key: "num_rejections", label: "Rejections", kind: "count"},
+      {
+        key: "multisig_account",
+        labelKey: "multisig.multisigAccount",
+        kind: "address",
+      },
+      {key: "executor", labelKey: "multisig.executor", kind: "address"},
+      {
+        key: "sequence_number",
+        labelKey: "multisig.sequenceNumber",
+        kind: "count",
+      },
+      {key: "num_rejections", labelKey: "multisig.rejections", kind: "count"},
     ],
   },
   CreateTransaction: {
-    summary: "Transaction Created",
+    summaryKey: "multisig.transactionCreated",
     summaryColor: "info",
     fields: [
-      {key: "multisig_account", label: "Multisig Account", kind: "address"},
-      {key: "creator", label: "Creator", kind: "address"},
-      {key: "sequence_number", label: "Sequence Number", kind: "count"},
-      {key: "transaction", label: "Transaction", kind: "multisigTransaction"},
+      {
+        key: "multisig_account",
+        labelKey: "multisig.multisigAccount",
+        kind: "address",
+      },
+      {key: "creator", labelKey: "multisig.creator", kind: "address"},
+      {
+        key: "sequence_number",
+        labelKey: "multisig.sequenceNumber",
+        kind: "count",
+      },
+      {
+        key: "transaction",
+        labelKey: "multisig.transaction",
+        kind: "multisigTransaction",
+      },
     ],
   },
   Vote: {
-    summary: "Vote",
+    summaryKey: "multisig.vote",
     summaryColor: "default",
     fields: [
-      {key: "multisig_account", label: "Multisig Account", kind: "address"},
-      {key: "owner", label: "Owner", kind: "address"},
-      {key: "sequence_number", label: "Sequence Number", kind: "count"},
-      {key: "approved", label: "Vote", kind: "vote"},
+      {
+        key: "multisig_account",
+        labelKey: "multisig.multisigAccount",
+        kind: "address",
+      },
+      {key: "owner", labelKey: "multisig.owner", kind: "address"},
+      {
+        key: "sequence_number",
+        labelKey: "multisig.sequenceNumber",
+        kind: "count",
+      },
+      {key: "approved", labelKey: "multisig.vote", kind: "vote"},
     ],
   },
   AddOwners: {
-    summary: "Owners Added",
+    summaryKey: "multisig.ownersAdded",
     summaryColor: "success",
     fields: [
-      {key: "multisig_account", label: "Multisig Account", kind: "address"},
-      {key: "owners_added", label: "Owners Added", kind: "addressList"},
+      {
+        key: "multisig_account",
+        labelKey: "multisig.multisigAccount",
+        kind: "address",
+      },
+      {
+        key: "owners_added",
+        labelKey: "multisig.ownersAdded",
+        kind: "addressList",
+      },
     ],
   },
   RemoveOwners: {
-    summary: "Owners Removed",
+    summaryKey: "multisig.ownersRemoved",
     summaryColor: "warning",
     fields: [
-      {key: "multisig_account", label: "Multisig Account", kind: "address"},
-      {key: "owners_removed", label: "Owners Removed", kind: "addressList"},
+      {
+        key: "multisig_account",
+        labelKey: "multisig.multisigAccount",
+        kind: "address",
+      },
+      {
+        key: "owners_removed",
+        labelKey: "multisig.ownersRemoved",
+        kind: "addressList",
+      },
     ],
   },
   UpdateSignaturesRequired: {
-    summary: "Signatures Required Updated",
+    summaryKey: "multisig.signaturesRequiredUpdated",
     summaryColor: "info",
     fields: [
-      {key: "multisig_account", label: "Multisig Account", kind: "address"},
+      {
+        key: "multisig_account",
+        labelKey: "multisig.multisigAccount",
+        kind: "address",
+      },
       {
         key: "old_num_signatures_required",
-        label: "Previous Signatures Required",
+        labelKey: "multisig.previousSignaturesRequired",
         kind: "count",
       },
       {
         key: "new_num_signatures_required",
-        label: "New Signatures Required",
+        labelKey: "multisig.newSignaturesRequired",
         kind: "count",
       },
     ],
   },
   MetadataUpdated: {
-    summary: "Metadata Updated",
+    summaryKey: "multisig.metadataUpdated",
     summaryColor: "info",
     fields: [
-      {key: "multisig_account", label: "Multisig Account", kind: "address"},
-      {key: "old_metadata", label: "Previous Metadata", kind: "json"},
-      {key: "new_metadata", label: "New Metadata", kind: "json"},
+      {
+        key: "multisig_account",
+        labelKey: "multisig.multisigAccount",
+        kind: "address",
+      },
+      {
+        key: "old_metadata",
+        labelKey: "multisig.previousMetadata",
+        kind: "json",
+      },
+      {key: "new_metadata", labelKey: "multisig.newMetadata", kind: "json"},
     ],
   },
 };
@@ -208,6 +289,7 @@ function hexByteLength(hex: string): number | undefined {
 }
 
 function HexPayloadValue({value}: {value: unknown}) {
+  const {t} = useTranslation();
   const hex = typeof value === "string" ? value : JSON.stringify(value);
   const byteLength =
     typeof value === "string" ? hexByteLength(value) : undefined;
@@ -218,7 +300,7 @@ function HexPayloadValue({value}: {value: unknown}) {
           variant="caption"
           sx={{display: "block", color: "text.secondary", mb: 0.5}}
         >
-          {byteLength} bytes
+          {t("multisig.bytes", {count: byteLength})}
         </Typography>
       ) : null}
       <Box
@@ -286,7 +368,7 @@ function ArgValueView({value}: {value: DecodedMoveValue}) {
       return <MonoText>{value.value}</MonoText>;
     case "option":
       return value.value === null ? (
-        <MonoText>None</MonoText>
+        <NoneText />
       ) : (
         <ArgValueView value={value.value} />
       );
@@ -306,6 +388,11 @@ function ArgValueView({value}: {value: DecodedMoveValue}) {
   }
 }
 
+function NoneText() {
+  const {t} = useTranslation();
+  return <MonoText>{t("multisig.none")}</MonoText>;
+}
+
 /** Decoded entry-function view for a multisig payload, with raw-bytes toggle. */
 function DecodedPayloadView({
   decoded,
@@ -314,6 +401,7 @@ function DecodedPayloadView({
   decoded: DecodedMultisigPayload;
   rawHex: string;
 }) {
+  const {t} = useTranslation();
   const [showRaw, setShowRaw] = React.useState(false);
 
   const [rawAddress, moduleName, functionName] = decoded.function.split("::");
@@ -365,7 +453,7 @@ function DecodedPayloadView({
         sx={{alignItems: "center", flexWrap: "wrap"}}
       >
         <Chip
-          label="Decoded"
+          label={t("multisig.decoded")}
           size="small"
           color="success"
           variant="outlined"
@@ -377,7 +465,7 @@ function DecodedPayloadView({
       </Stack>
       {decoded.typeArguments.length > 0 && (
         <Box>
-          <FieldCaption>Type Arguments</FieldCaption>
+          <FieldCaption>{t("multisig.typeArguments")}</FieldCaption>
           <Stack spacing={0.25}>
             {decoded.typeArguments.map((tag, i) => {
               const name = typeArgNames?.[i];
@@ -402,9 +490,11 @@ function DecodedPayloadView({
         </Box>
       )}
       <Box>
-        <FieldCaption>Arguments ({decoded.arguments.length})</FieldCaption>
+        <FieldCaption>
+          {t("multisig.arguments", {count: decoded.arguments.length})}
+        </FieldCaption>
         {decoded.arguments.length === 0 ? (
-          <MonoText>None</MonoText>
+          <MonoText>{t("multisig.none")}</MonoText>
         ) : (
           <Stack spacing={0.5}>
             {decoded.arguments.map((arg, i) => {
@@ -460,7 +550,7 @@ function DecodedPayloadView({
             variant="caption"
             sx={{display: "block", color: "text.secondary", mt: 0.5}}
           >
-            Raw BCS argument bytes; module ABI unavailable for typed values.
+            {t("multisig.rawBcs")}
           </Typography>
         ) : null}
       </Box>
@@ -479,7 +569,7 @@ function DecodedPayloadView({
             textAlign: "left",
           }}
         >
-          {showRaw ? "Hide encoded bytes" : "Show encoded bytes"}
+          {showRaw ? t("multisig.hideEncoded") : t("multisig.showEncoded")}
         </Typography>
         {showRaw && (
           <Box sx={{mt: 0.5}}>
@@ -534,6 +624,7 @@ function SubRow({
 
 /** Renders the `MultisigTransaction` object carried by a `CreateTransaction` event. */
 function MultisigTransactionValue({value}: {value: unknown}) {
+  const {t} = useTranslation();
   if (typeof value !== "object" || value === null) {
     return <MonoText>{String(value)}</MonoText>;
   }
@@ -557,22 +648,22 @@ function MultisigTransactionValue({value}: {value: unknown}) {
   return (
     <Stack spacing={1.5} sx={{minWidth: 0, maxWidth: "100%"}}>
       {creator && (
-        <SubRow label="Creator">
+        <SubRow label={t("multisig.creator")}>
           <HashButton hash={creator} type={HashType.ACCOUNT} size="small" />
         </SubRow>
       )}
       {created && (
-        <SubRow label="Created">
+        <SubRow label={t("multisig.created")}>
           <MonoText>{parseTimestampString(created)}</MonoText>
         </SubRow>
       )}
-      <SubRow label="Payload">
+      <SubRow label={t("multisig.payload")}>
         {payloadHex !== undefined ? (
           <PayloadValue value={payloadHex} />
         ) : payloadHash !== undefined ? (
           <Stack spacing={0.5}>
             <Chip
-              label="Payload hash only"
+              label={t("multisig.payloadHashOnly")}
               size="small"
               variant="outlined"
               sx={{alignSelf: "flex-start"}}
@@ -580,11 +671,11 @@ function MultisigTransactionValue({value}: {value: unknown}) {
             <HexPayloadValue value={payloadHash} />
           </Stack>
         ) : (
-          <MonoText>None</MonoText>
+          <MonoText>{t("multisig.none")}</MonoText>
         )}
       </SubRow>
       {votes.length > 0 && (
-        <SubRow label={`Votes (${votes.length})`}>
+        <SubRow label={t("multisig.votes", {count: votes.length})}>
           <Stack spacing={0.5}>
             {votes.map((vote, i) => (
               <Stack
@@ -602,7 +693,9 @@ function MultisigTransactionValue({value}: {value: unknown}) {
                   />
                 )}
                 <Chip
-                  label={vote.value ? "Approved" : "Rejected"}
+                  label={
+                    vote.value ? t("multisig.approved") : t("multisig.rejected")
+                  }
                   size="small"
                   color={vote.value ? "success" : "error"}
                   sx={{fontWeight: 600}}
@@ -617,6 +710,7 @@ function MultisigTransactionValue({value}: {value: unknown}) {
 }
 
 function ExecutionErrorValue({value}: {value: unknown}) {
+  const {t} = useTranslation();
   if (typeof value !== "object" || value === null) {
     return <MonoText>{String(value)}</MonoText>;
   }
@@ -636,19 +730,24 @@ function ExecutionErrorValue({value}: {value: unknown}) {
         />
       )}
       {abortLocation !== undefined && (
-        <MonoText>Abort location: {String(abortLocation)}</MonoText>
+        <MonoText>
+          {t("multisig.abortLocation", {location: String(abortLocation)})}
+        </MonoText>
       )}
       {errorCode !== undefined && (
-        <MonoText>Error code: {String(errorCode)}</MonoText>
+        <MonoText>
+          {t("multisig.errorCode", {code: String(errorCode)})}
+        </MonoText>
       )}
     </Stack>
   );
 }
 
 function AddressListValue({value}: {value: unknown}) {
+  const {t} = useTranslation();
   const addresses = Array.isArray(value) ? value : [];
   if (addresses.length === 0) {
-    return <MonoText>None</MonoText>;
+    return <MonoText>{t("multisig.none")}</MonoText>;
   }
   return (
     <Stack spacing={1} sx={{alignItems: "flex-start"}}>
@@ -665,6 +764,18 @@ function AddressListValue({value}: {value: unknown}) {
   );
 }
 
+function VoteChip({approved}: {approved: boolean}) {
+  const {t} = useTranslation();
+  return (
+    <Chip
+      label={approved ? t("multisig.approved") : t("multisig.rejected")}
+      size="small"
+      color={approved ? "success" : "error"}
+      sx={{fontWeight: 600}}
+    />
+  );
+}
+
 function renderFieldValue(kind: FieldKind, value: unknown): React.ReactNode {
   switch (kind) {
     case "address":
@@ -676,14 +787,7 @@ function renderFieldValue(kind: FieldKind, value: unknown): React.ReactNode {
     case "count":
       return <MonoText>{String(value)}</MonoText>;
     case "vote":
-      return (
-        <Chip
-          label={value === true ? "Approved" : "Rejected"}
-          size="small"
-          color={value === true ? "success" : "error"}
-          sx={{fontWeight: 600}}
-        />
-      );
+      return <VoteChip approved={value === true} />;
     case "hexPayload":
       return <PayloadValue value={value} />;
     case "executionError":
@@ -708,8 +812,8 @@ function renderFieldValue(kind: FieldKind, value: unknown): React.ReactNode {
   }
 }
 
-function prettifyKey(key: string): string {
-  if (key in COMMON_LABELS) return COMMON_LABELS[key];
+function extraFieldLabel(key: string, t: (key: string) => string): string {
+  if (key in COMMON_LABEL_KEYS) return t(COMMON_LABEL_KEYS[key]);
   return key
     .split("_")
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
@@ -732,6 +836,7 @@ function EventTable({
   children: React.ReactNode;
 }) {
   const [showRaw, setShowRaw] = React.useState(false);
+  const {t} = useTranslation();
 
   return (
     <Paper variant="outlined" sx={{overflow: "hidden", maxWidth: "100%"}}>
@@ -751,7 +856,9 @@ function EventTable({
           color={summaryColor}
           sx={{fontWeight: 600}}
         />
-        <Tooltip title={showRaw ? "Formatted view" : "Raw JSON"}>
+        <Tooltip
+          title={showRaw ? t("decibel.formattedView") : t("decibel.rawJson")}
+        >
           <IconButton size="small" onClick={() => setShowRaw((v) => !v)}>
             {showRaw ? (
               <TableChartOutlinedIcon fontSize="small" />
@@ -789,6 +896,7 @@ export default function MultisigEventView({
   eventType: string;
   data: Record<string, unknown>;
 }) {
+  const {t} = useTranslation();
   const shortName = getEventShortName(eventType);
   const config = EVENT_CONFIGS[shortName];
 
@@ -800,7 +908,7 @@ export default function MultisigEventView({
   const knownRows = config.fields
     .filter((field) => data[field.key] !== undefined)
     .map((field) => (
-      <ResponsiveKeyValueRow key={field.key} label={field.label}>
+      <ResponsiveKeyValueRow key={field.key} labelKey={field.labelKey}>
         {renderFieldValue(field.kind, data[field.key])}
       </ResponsiveKeyValueRow>
     ));
@@ -809,7 +917,7 @@ export default function MultisigEventView({
   const extraRows = Object.entries(data)
     .filter(([key]) => !configuredKeys.has(key))
     .map(([key, value]) => (
-      <ResponsiveKeyValueRow key={key} label={prettifyKey(key)}>
+      <ResponsiveKeyValueRow key={key} label={extraFieldLabel(key, t)}>
         {typeof value === "object" && value !== null ? (
           renderFieldValue("json", value)
         ) : (
@@ -820,7 +928,7 @@ export default function MultisigEventView({
 
   return (
     <EventTable
-      summary={config.summary}
+      summary={t(config.summaryKey)}
       summaryColor={config.summaryColor}
       rawData={data}
     >

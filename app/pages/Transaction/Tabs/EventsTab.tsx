@@ -78,7 +78,7 @@ export default function EventsTab({transaction}: EventsTabProps) {
           >
             {!hideZeroFields && (
               <ContentRow
-                title="Account Address:"
+                titleKey="fields.accountAddress"
                 value={
                   <HashButton
                     hash={event.guid.account_address}
@@ -89,19 +89,23 @@ export default function EventsTab({transaction}: EventsTabProps) {
             )}
             {!hideZeroFields && (
               <ContentRow
-                title="Creation Number:"
+                titleKey="fields.creationNumber"
                 value={event.guid.creation_number}
               />
             )}
             {!hideZeroFields && (
               <ContentRow
-                title="Sequence Number:"
+                titleKey="fields.sequenceNumber"
                 value={event.sequence_number}
               />
             )}
-            <ContentRow title="Type:" value={event.type} titleLayout="fit" />
             <ContentRow
-              title="Data:"
+              titleKey="fields.type"
+              value={event.type}
+              titleLayout="fit"
+            />
+            <ContentRow
+              titleKey="fields.data"
               value={
                 feeStatementData ? (
                   <FeeStatementEventView

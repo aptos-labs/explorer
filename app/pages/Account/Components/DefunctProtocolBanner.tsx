@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import {useState} from "react";
 import {Banner} from "../../../components/Banner";
+import {useTranslation} from "../../../i18n";
 import StyledDialog from "../../../components/StyledDialog";
 import {
   getDefunctProtocol,
@@ -39,6 +40,7 @@ function DefunctBannerInner({
   protocolName: string;
   plugin: ReturnType<typeof getWithdrawalPlugin>;
 }) {
+  const {t} = useTranslation();
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const withdrawButton = plugin ? (
@@ -53,18 +55,18 @@ function DefunctBannerInner({
         whiteSpace: {xs: "normal", sm: "nowrap"},
       }}
     >
-      Withdraw Funds
+      {t("accountUi.withdrawFunds")}
     </Button>
   ) : null;
 
   const text = plugin
-    ? `This protocol (${protocolName}) may be defunct. A withdrawal plugin is available to recover your funds.`
-    : `This protocol (${protocolName}) may be defunct and is no longer actively maintained.`;
+    ? t("accountUi.defunctWithPlugin", {name: protocolName})
+    : t("accountUi.defunctNoPlugin", {name: protocolName});
 
   return (
     <>
       <Banner
-        pillText="MAY BE DEFUNCT"
+        pillText={t("accountUi.pill.defunct")}
         pillColor="warning"
         action={withdrawButton}
         sx={{marginBottom: 2}}
@@ -95,6 +97,7 @@ function WithdrawalDialog({
   plugin: WithdrawalPlugin;
   protocolName: string;
 }) {
+  const {t} = useTranslation();
   return (
     <StyledDialog
       handleDialogClose={onClose}
@@ -103,11 +106,12 @@ function WithdrawalDialog({
       fullWidth
     >
       <DialogTitle sx={{px: 0, pt: 0}}>
-        Withdraw from {protocolName}
+        {t("accountUi.withdrawFrom", {name: protocolName})}
       </DialogTitle>
       <Alert severity="info" icon={<InfoOutlinedIcon />} sx={{mb: 2}}>
-        At least {MIN_OWNER_WITHDRAWAL_PERCENT}% of withdrawn funds will be
-        returned to the original owner / requester.
+        {t("accountUi.withdrawMinOwner", {
+          percent: MIN_OWNER_WITHDRAWAL_PERCENT,
+        })}
       </Alert>
       <Box sx={{mb: 2}}>
         <Typography
@@ -129,7 +133,7 @@ function WithdrawalDialog({
               color: "text.secondary",
             }}
           >
-            Owner receives
+            {t("accountUi.ownerReceives")}
           </Typography>
           <Chip
             label={`${plugin.ownerPercentage}%`}
@@ -146,7 +150,7 @@ function WithdrawalDialog({
                 color: "text.secondary",
               }}
             >
-              Operator fee
+              {t("accountUi.operatorFee")}
             </Typography>
             <Chip
               label={`${100 - plugin.ownerPercentage}%`}
@@ -162,7 +166,7 @@ function WithdrawalDialog({
               color: "text.secondary",
             }}
           >
-            Entry function
+            {t("accountUi.entryFunction")}
           </Typography>
           <Typography
             variant="body2"
@@ -180,12 +184,10 @@ function WithdrawalDialog({
       </Box>
       <Divider sx={{my: 2}} />
       <Alert severity="warning" sx={{mb: 2}}>
-        Connect your wallet and interact with the protocol&apos;s contract
-        directly to execute the withdrawal. Verify the transaction details
-        carefully before signing.
+        {t("accountUi.withdrawWarning")}
       </Alert>
       <Button variant="outlined" fullWidth onClick={onClose}>
-        Close
+        {t("common.close")}
       </Button>
     </StyledDialog>
   );

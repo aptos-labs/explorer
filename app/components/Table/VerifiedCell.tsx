@@ -30,6 +30,7 @@ import {
   nativeTokens,
 } from "../../constants";
 import {useNetworkName} from "../../global-config/GlobalConfig";
+import {englishT, useTranslation, type TFunction} from "../../i18n";
 import {getSemanticColors} from "../../themes/colors/aptosBrandColors";
 import StyledTooltip from "../StyledTooltip";
 import {BUTTON_HEIGHT} from "../TitleHashButton";
@@ -144,56 +145,71 @@ export function verifiedLevel(
   };
 }
 
+export function verifiedLevelMessageKey(level: VerifiedType): string {
+  switch (level) {
+    case VerifiedType.NATIVE_TOKEN:
+      return "verified.level.native";
+    case VerifiedType.LABS_VERIFIED:
+      return "verified.level.labs";
+    case VerifiedType.COMMUNITY_VERIFIED:
+      return "verified.level.community";
+    case VerifiedType.RECOGNIZED:
+      return "verified.level.recognized";
+    case VerifiedType.UNVERIFIED:
+      return "verified.level.unverified";
+    case VerifiedType.LABS_BANNED:
+      return "verified.level.labsBanned";
+    case VerifiedType.COMMUNITY_BANNED:
+      return "verified.level.communityBanned";
+    case VerifiedType.DISABLED:
+      return "verified.level.disabled";
+  }
+}
+
 export function getVerifiedMessageAndIcon(
   level: VerifiedType,
   reason?: string,
+  t: TFunction = englishT,
 ) {
   let tooltipMessage = "";
   let icon = null;
   switch (level) {
     case VerifiedType.NATIVE_TOKEN:
-      tooltipMessage = `This asset is verified as a native token of Aptos.`;
+      tooltipMessage = t("verified.tooltip.native");
       icon = <VerifiedUser fontSize="small" color="info" />;
       break;
     case VerifiedType.LABS_VERIFIED:
-      tooltipMessage = `This asset is verified by the builders of the explorer.`;
-      if (reason) {
-        tooltipMessage += ` Reason: (${reason})`;
-      }
+      tooltipMessage = reason
+        ? t("verified.tooltip.labsReason", {reason})
+        : t("verified.tooltip.labs");
       icon = <Verified fontSize="small" color="info" />;
       break;
     case VerifiedType.COMMUNITY_VERIFIED:
-      tooltipMessage =
-        "This asset is verified by the community on the Panora token list.";
+      tooltipMessage = t("verified.tooltip.community");
       icon = <VerifiedOutlined fontSize="small" color="info" />;
       break;
     case VerifiedType.RECOGNIZED:
-      tooltipMessage =
-        "This asset is recognized, but many not have been verified by the community.";
+      tooltipMessage = t("verified.tooltip.recognized");
       icon = <Warning fontSize="small" color="secondary" />;
       break;
     case VerifiedType.UNVERIFIED:
-      tooltipMessage =
-        "This asset is not verified, it may or may not be recognized by the community.  Please use with caution.";
+      tooltipMessage = t("verified.tooltip.unverified");
       icon = <WarningAmberOutlined fontSize="small" color="warning" />;
       break;
     case VerifiedType.COMMUNITY_BANNED:
-      tooltipMessage =
-        "This asset has been banned on the Panora token list, please avoid using this asset.";
+      tooltipMessage = t("verified.tooltip.communityBanned");
       icon = <DangerousOutlined fontSize="small" color="error" />;
       break;
     case VerifiedType.LABS_BANNED:
-      tooltipMessage = `This asset has been marked as a scam or dangerous, please avoid using this asset.`;
-      if (reason) {
-        tooltipMessage += ` Reason: (${reason})`;
-      }
+      tooltipMessage = reason
+        ? t("verified.tooltip.labsBannedReason", {reason})
+        : t("verified.tooltip.labsBanned");
       icon = <Dangerous fontSize="small" color="error" />;
       break;
     case VerifiedType.DISABLED:
-      tooltipMessage = `Verification disabled for non-Mainnet`;
-      if (reason) {
-        tooltipMessage += ` Reason: (${reason})`;
-      }
+      tooltipMessage = reason
+        ? t("verified.tooltip.disabledReason", {reason})
+        : t("verified.tooltip.disabled");
       icon = <UnpublishedOutlined fontSize="small" color="disabled" />;
   }
   return {tooltipMessage, icon};
@@ -201,6 +217,7 @@ export function getVerifiedMessageAndIcon(
 
 export function VerifiedAsset({data}: {data: VerifiedCellProps}) {
   const theme = useTheme();
+  const {t} = useTranslation();
   const networkName = useNetworkName();
 
   const isCoin = data?.id?.includes("::") ?? false;
@@ -245,7 +262,7 @@ export function VerifiedAsset({data}: {data: VerifiedCellProps}) {
     level = result.level;
     reason = result.reason;
   }
-  const {tooltipMessage, icon} = getVerifiedMessageAndIcon(level, reason);
+  const {tooltipMessage, icon} = getVerifiedMessageAndIcon(level, reason, t);
   const semanticColors = getSemanticColors(theme.palette.mode);
 
   const bannerTheme = {
@@ -264,7 +281,7 @@ export function VerifiedAsset({data}: {data: VerifiedCellProps}) {
   };
 
   return isLoading ? (
-    <Box>Loading...</Box>
+    <Box>{t("common.loadingEllipsis")}</Box>
   ) : (
     <Stack
       direction="row"
@@ -276,7 +293,7 @@ export function VerifiedAsset({data}: {data: VerifiedCellProps}) {
       }}
     >
       <StyledTooltip title={tooltipMessage}>{icon}</StyledTooltip>
-      {data.banner && <Box>{level}</Box>}
+      {data.banner && <Box>{t(verifiedLevelMessageKey(level))}</Box>}
     </Stack>
   );
 }

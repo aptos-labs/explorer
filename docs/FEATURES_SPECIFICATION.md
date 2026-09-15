@@ -1354,7 +1354,7 @@ top of the HTML site.
 | Aspect | Detail |
 |--------|--------|
 | **Library** | In-repo helpers in `app/i18n/` (no extra npm i18n dependency). Nested JSON-like catalogs, `{name}` interpolation, `t` / `tList`, and a small inline markup parser (`**bold**`, `` `code` ``, `[label](href)`). |
-| **English source** | `app/i18n/messages/en.ts` is the complete catalog for chrome, settings, search tokens, and the user guide. |
+| **English source** | `app/i18n/messages/en.ts` (and `app/i18n/messages/en/*.ts`) is the complete catalog for chrome, settings, search, the user guide, and remaining explorer UI copy (tabs, field labels, tables, errors, page titles, verification, analytics, and related chrome). Translation of catalogs into other languages is a follow-up. |
 | **Adding a locale** | Add a catalog file, register it in `SUPPORTED_LOCALES` / `messageCatalogs` / `LOCALE_META`. Missing keys fall back to English. |
 | **Provider** | `I18nProvider` (inside `ExplorerSettingsProvider`) resolves locale and updates `document.documentElement.lang` / `dir` after hydration. `useTranslation()` falls back to English when no provider is mounted. |
 | **Formatting helpers** | `formatInteger` / `formatDateTime` wrap `Intl` with the active locale for incremental migration of number/date UI. |
@@ -1437,7 +1437,7 @@ top of the HTML site.
 | `app/i18n/detectLocale.test.ts` | FEAT-I18N-001 (locale preference and browser-language resolution) |
 | `app/i18n/format.test.ts` | FEAT-I18N-001 (`Intl` number/date helpers) |
 | `app/i18n/inlineMarkup.test.ts` | FEAT-I18N-001 (bold/code/link markup and internal vs external hrefs) |
-| `app/i18n/messages.en.test.ts` | FEAT-I18N-001 / FEAT-GUIDE-001 (English chrome and guide titles) |
+| `app/i18n/messages.en.test.ts` | FEAT-I18N-001 / FEAT-GUIDE-001 (English chrome, guide, tabs, fields, errors, verification titles) |
 | `app/pages/Guide/guideSections.test.ts` | FEAT-GUIDE-001 (section ids, titles, body copy) |
 | `app/utils/routerParams.test.ts` | FEAT-ROUTING-003 (`pathSplatToSegments` normalization) |
 | `app/api/hooks/aptosFeatureFlagsUpstream.test.ts` | FEAT-RELEASES-001 (upstream Rust enum parse for unlisted feature flag names) |

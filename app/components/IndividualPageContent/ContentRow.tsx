@@ -1,10 +1,14 @@
 import {Box, Grid, useTheme} from "@mui/material";
 import type React from "react";
 import {memo} from "react";
+import {type TranslateVars, useTranslation} from "../../i18n";
 import EmptyValue from "./ContentValue/EmptyValue";
 
 type ContentRowProps = {
-  title: string;
+  title?: string;
+  /** i18n key; when set, rendered instead of `title`. */
+  titleKey?: string;
+  titleVars?: TranslateVars;
   value: React.ReactNode;
   tooltip?: React.ReactNode;
   i?: string | number;
@@ -42,12 +46,16 @@ const valueBoxStyle = {
 
 const ContentRow = memo(function ContentRow({
   title,
+  titleKey,
+  titleVars,
   value,
   tooltip,
   i,
   titleLayout = "grid",
 }: ContentRowProps) {
   const theme = useTheme();
+  const {t} = useTranslation();
+  const displayTitle = titleKey ? t(titleKey, titleVars) : (title ?? "");
   const titleSize =
     titleLayout === "fit"
       ? ({xs: 12, sm: "auto"} as const)
@@ -73,7 +81,7 @@ const ContentRow = memo(function ContentRow({
           sx={titleLayout === "fit" ? {flexShrink: 0} : undefined}
         >
           <Box sx={{fontSize: "0.875rem", color: theme.palette.text.secondary}}>
-            {title}
+            {displayTitle}
             <Box component="span" sx={tooltipWrapperStyle}>
               &nbsp;
               <Box sx={tooltipInnerStyle}>{tooltip}</Box>

@@ -1,6 +1,7 @@
 import {Box, Skeleton, Stack, Table, TableHead, TableRow} from "@mui/material";
 import type {ReactNode} from "react";
 import {Card} from "./Card";
+import {useTranslation} from "../i18n";
 import ContentBox from "./IndividualPageContent/ContentBox";
 import GeneralTableBody from "./Table/GeneralTableBody";
 import GeneralTableCell from "./Table/GeneralTableCell";
@@ -39,8 +40,13 @@ export function TabStripSkeleton({count = 6}: {count?: number}) {
 }
 
 export function BalanceCardSkeleton() {
+  const {t} = useTranslation();
   return (
-    <Card sx={{height: "auto"}} aria-busy="true" aria-label="Loading balance">
+    <Card
+      sx={{height: "auto"}}
+      aria-busy="true"
+      aria-label={t("common.loadingBalance")}
+    >
       <Stack spacing={1.5} sx={{marginY: 1}}>
         <Skeleton variant="text" width="55%" height={28} />
         <Skeleton variant="text" width="40%" height={20} />
@@ -60,8 +66,9 @@ export function TitleHashSkeleton() {
 }
 
 export function ContentRowsSkeleton({rows = 8}: {rows?: number}) {
+  const {t} = useTranslation();
   return (
-    <ContentBox aria-busy="true" aria-label="Loading content">
+    <ContentBox aria-busy="true" aria-label={t("common.loadingContent")}>
       {Array.from({length: rows}, (_, i) => (
         // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholders
         <Stack
@@ -84,12 +91,13 @@ export function ContentRowsSkeleton({rows = 8}: {rows?: number}) {
 }
 
 export function ResourcesListSkeleton({cards = 4}: {cards?: number}) {
+  const {t} = useTranslation();
   return (
     <Stack
       spacing={2}
       sx={{mt: 2}}
       aria-busy="true"
-      aria-label="Loading resources"
+      aria-label={t("common.loadingResources")}
     >
       {Array.from({length: cards}, (_, i) => (
         // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholders
@@ -130,9 +138,10 @@ export function TransactionsTableSkeleton({
   rowCount?: number;
   headers?: ReactNode;
 }) {
+  const {t} = useTranslation();
   return (
     <Box sx={{width: "auto", overflowX: "auto"}} aria-busy="true">
-      <Table aria-label="Loading transactions">
+      <Table aria-label={t("common.loadingTransactions")}>
         {headers ? (
           <TableHead>
             <TableRow>{headers}</TableRow>
@@ -156,8 +165,9 @@ export function TransactionCardSkeleton() {
 }
 
 export function AccountTabPanelSkeleton() {
+  const {t} = useTranslation();
   return (
-    <Box sx={{mt: 2}} aria-busy="true" aria-label="Loading tab">
+    <Box sx={{mt: 2}} aria-busy="true" aria-label={t("common.loadingTab")}>
       <TransactionsTableSkeleton />
     </Box>
   );

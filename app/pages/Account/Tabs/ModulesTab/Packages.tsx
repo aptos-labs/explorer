@@ -15,6 +15,7 @@ import {
   type PackageMetadata,
   useGetAccountPackages,
 } from "../../../../api/hooks/useGetAccountResource";
+import {InlineMarkup, useTranslation} from "../../../../i18n";
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
 import {useNavigate} from "../../../../routing";
 import {MovePackageManifest} from "../../Components/MovePackageManifest";
@@ -48,6 +49,7 @@ function Packages({
   isObject: boolean;
   ledgerVersion?: number;
 }) {
+  const {t} = useTranslation();
   const {
     packages: sortedPackages,
     isPending,
@@ -107,14 +109,7 @@ function Packages({
   if (sortedPackages.length === 0 && isFetched) {
     return (
       <EmptyTabContent
-        message={
-          <>
-            No published package metadata for this address. Move modules may
-            still exist on chain (for example legacy publishes); try the{" "}
-            <strong>Code</strong> tab, or use the REST API{" "}
-            <code>/accounts/&#123;address&#125;/modules</code>.
-          </>
-        }
+        message={<InlineMarkup text={t("modules.noPublishedPackage")} />}
       />
     );
   }
@@ -150,7 +145,7 @@ function Packages({
       <Grid size={{md: 9, xs: 12}}>
         {selectedPackage === undefined ? (
           <EmptyTabContent
-            message={`No package found with name: ${selectedPackageName}`}
+            message={t("modules.noPackageNamed", {name: selectedPackageName})}
           />
         ) : (
           <PackageContent
@@ -170,6 +165,7 @@ function PackagesSidebar({
   getLinkToPackage,
   navigateToPackage,
 }: PackageSidebarProps) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const logEvent = useLogEventWithBasic();
@@ -212,7 +208,7 @@ function PackagesSidebar({
           options={sortedPackages}
           getOptionLabel={(option) => option.name}
           renderInput={(params) => (
-            <TextField {...params} label="Select a package" />
+            <TextField {...params} label={t("modules.selectPackage")} />
           )}
           onChange={(_, pkg) => {
             if (pkg) {
@@ -279,6 +275,7 @@ function PackageInfo({
   address: string;
   packageMetadata: PackageMetadata;
 }) {
+  const {t} = useTranslation();
   const navigate = useNavigate();
 
   return (
@@ -294,7 +291,7 @@ function PackageInfo({
             fontWeight: 600,
           }}
         >
-          Modules
+          {t("modules.modulesLabel")}
         </Typography>
         <Autocomplete
           disableClearable
@@ -323,7 +320,7 @@ function PackageInfo({
             fontWeight: 600,
           }}
         >
-          Package Name
+          {t("modules.packageName")}
         </Typography>
         <Typography>{packageMetadata.name}</Typography>
       </Box>
@@ -338,9 +335,9 @@ function PackageInfo({
             fontWeight: 600,
           }}
         >
-          Upgrade Policy
+          {t("modules.upgradePolicy")}
         </Typography>
-        {upgrade_policy(packageMetadata.upgrade_policy.policy)}
+        {upgrade_policy(packageMetadata.upgrade_policy.policy, t)}
       </Box>
       <Box
         sx={{
@@ -353,7 +350,7 @@ function PackageInfo({
             fontWeight: 600,
           }}
         >
-          Upgrade Number
+          {t("modules.upgradeNumber")}
         </Typography>
         <Typography>{packageMetadata.upgrade_number}</Typography>
       </Box>
@@ -368,7 +365,7 @@ function PackageInfo({
             fontWeight: 600,
           }}
         >
-          Source Digest
+          {t("modules.sourceDigest")}
         </Typography>
         <Typography>{packageMetadata.source_digest}</Typography>
       </Box>
@@ -377,17 +374,17 @@ function PackageInfo({
   );
 }
 
-function upgrade_policy(policyNumber: number) {
-  let policy = "Unknown";
+function upgrade_policy(policyNumber: number, t: (key: string) => string) {
+  let policy = t("modules.policy.unknown");
   switch (policyNumber) {
     case 0:
-      policy = "Arbitrary";
+      policy = t("modules.policy.arbitrary");
       break;
     case 1:
-      policy = "Compatible";
+      policy = t("modules.policy.compatible");
       break;
     case 3:
-      policy = "Immutable";
+      policy = t("modules.policy.immutable");
       break;
   }
 

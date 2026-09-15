@@ -3,6 +3,7 @@ import type {Types} from "~/types/aptos";
 import {useGetDelegationNodeInfo} from "../../api/hooks/delegations";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import TitleHashButton, {HashType} from "../../components/TitleHashButton";
+import {useTranslation} from "../../i18n";
 import ValidatorStatusIcon from "./Components/ValidatorStatusIcon";
 import {getValidatorStatus} from "./utils";
 
@@ -15,14 +16,16 @@ export default function ValidatorTitle({
   address,
   isSkeletonLoading,
 }: ValidatorTitleProps) {
+  const {t} = useTranslation();
   const {validatorStatus} = useGetDelegationNodeInfo({
     validatorAddress: address,
   });
 
   const shortAddress = `${address.slice(0, 10)}...${address.slice(-8)}`;
-  const statusText = validatorStatus
-    ? getValidatorStatus(Number(validatorStatus[0]))
-    : "unknown";
+  const statusText =
+    (validatorStatus
+      ? getValidatorStatus(Number(validatorStatus[0]))
+      : undefined) ?? t("common.unknown").toLowerCase();
 
   return isSkeletonLoading ? (
     ValidatorTitleSkeleton()
@@ -35,8 +38,11 @@ export default function ValidatorTitle({
       }}
     >
       <PageMetadata
-        title={`Validator ${shortAddress}`}
-        description={`View Aptos validator ${shortAddress}. Status: ${statusText}. See delegation pool, commission rates, stake amounts, voting power, rewards, and performance metrics.`}
+        title={t("pages.validator.metaTitle", {id: shortAddress})}
+        description={t("pages.validator.metaDescription", {
+          id: shortAddress,
+          status: statusText,
+        })}
         type="validator"
         keywords={[
           "validator",
@@ -49,7 +55,7 @@ export default function ValidatorTitle({
         canonicalPath={`/validator/${address}`}
       />
       <Typography variant="h3" component="h1">
-        Validator
+        {t("pages.validator.entity")}
       </Typography>
       <Stack direction="row" spacing={1}>
         <TitleHashButton hash={address} type={HashType.ACCOUNT} isValidator />

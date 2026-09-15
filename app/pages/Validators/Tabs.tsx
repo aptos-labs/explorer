@@ -9,6 +9,7 @@ import StyledTabs from "../../components/StyledTabs";
 import {Network, type NetworkName} from "../../constants";
 import {useNetworkName} from "../../global-config/GlobalConfig";
 import {useNavigate} from "../../routing";
+import {useTranslation} from "../../i18n";
 import {addressFromWallet, assertNever} from "../../utils";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import {EnhancedDelegationValidatorsTable} from "./Delegation/EnhancedDelegationValidatorsTable";
@@ -20,12 +21,15 @@ export enum VALIDATORS_TAB_VALUE {
   DELEGATION_NODES = "delegation",
 }
 
-function getTabLabel(value: VALIDATORS_TAB_VALUE): string {
+function getTabLabel(
+  value: VALIDATORS_TAB_VALUE,
+  t: (key: string) => string,
+): string {
   switch (value) {
     case VALIDATORS_TAB_VALUE.ALL_NODES:
-      return "All Nodes";
+      return t("tabs.validators.all");
     case VALIDATORS_TAB_VALUE.DELEGATION_NODES:
-      return "Delegation Nodes";
+      return t("tabs.validators.delegation");
     default:
       return assertNever(value);
   }
@@ -72,6 +76,7 @@ export default function ValidatorsPageTabs(): React.JSX.Element {
   const params = useParams({strict: false}) as {tab?: string};
   const tab = params?.tab;
   const navigate = useNavigate();
+  const {t} = useTranslation();
   const {account, wallet} = useWallet();
   const logEvent = useLogEventWithBasic();
 
@@ -108,7 +113,7 @@ export default function ValidatorsPageTabs(): React.JSX.Element {
               key={tabValue}
               value={tabValue}
               icon={getTabIcon(tabValue)}
-              label={getTabLabel(tabValue)}
+              label={getTabLabel(tabValue, t)}
               isFirst={i === 0}
               isLast={i === tabValues.length - 1}
             />

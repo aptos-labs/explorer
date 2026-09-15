@@ -1,6 +1,7 @@
 import IosShareIcon from "@mui/icons-material/IosShare";
 import {IconButton, Snackbar, Tooltip} from "@mui/material";
 import {useCallback, useState} from "react";
+import {useTranslation} from "../../i18n";
 import {resolveShareDeps, sharePage} from "./sharePage";
 
 interface ShareButtonProps {
@@ -29,6 +30,7 @@ export default function ShareButton({
   title,
   marginLeft = "1rem",
 }: ShareButtonProps) {
+  const {t} = useTranslation();
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
     message: string;
@@ -46,16 +48,16 @@ export default function ShareButton({
     );
 
     if (outcome === "copied") {
-      setSnackbar({open: true, message: "Link copied to clipboard"});
+      setSnackbar({open: true, message: t("share.copied")});
     } else if (outcome === "error") {
       setSnackbar({
         open: true,
-        message: "Unable to share or copy the link",
+        message: t("share.error"),
       });
     }
     // "shared" and "cancelled" intentionally show no toast — the system UI
     // already gave the user feedback.
-  }, [title]);
+  }, [title, t]);
 
   const handleClose = useCallback(() => {
     setSnackbar((prev) => ({...prev, open: false}));
@@ -63,9 +65,9 @@ export default function ShareButton({
 
   return (
     <>
-      <Tooltip title="Share this page">
+      <Tooltip title={t("share.tooltip")}>
         <IconButton
-          aria-label="Share this page"
+          aria-label={t("share.tooltip")}
           onClick={handleClick}
           sx={{
             marginLeft,

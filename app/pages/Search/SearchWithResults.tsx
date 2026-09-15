@@ -325,7 +325,7 @@ export default function SearchWithResults({
         <Paper
           variant="outlined"
           sx={{mt: 1, borderRadius: 2, overflow: "hidden"}}
-          aria-label="Search results"
+          aria-label={t("common.searchResultsAria")}
           aria-live="polite"
         >
           {isEmpty ? (
@@ -355,7 +355,10 @@ export default function SearchWithResults({
             results.map((result, idx) => (
               <Box key={result.to ?? `header-${result.label}`}>
                 {result.isGroupHeader ? (
-                  <SearchResultGroupHeader label={result.label} />
+                  <SearchResultGroupHeader
+                    label={result.label}
+                    labelKey={result.labelKey}
+                  />
                 ) : (
                   <SearchResultRow result={result} showChevron />
                 )}

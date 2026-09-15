@@ -12,7 +12,7 @@ export default function TransactionBlockRow({version}: {version: string}) {
   if (isPending) {
     return (
       <ContentRow
-        title="Block:"
+        titleKey="fields.block"
         value={<Skeleton width={96} />}
         tooltip={getLearnMoreTooltip("block_height")}
       />
@@ -25,7 +25,7 @@ export default function TransactionBlockRow({version}: {version: string}) {
 
   return (
     <ContentRow
-      title="Block:"
+      titleKey="fields.block"
       value={
         <Link to={`/block/${data.block_height}`} underline="none">
           {data.block_height}

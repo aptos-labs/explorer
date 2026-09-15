@@ -1,6 +1,7 @@
 import {Alert, Snackbar, Typography} from "@mui/material";
 import type {Types} from "~/types/aptos";
 import {Link} from "../../routing";
+import {useTranslation} from "../../i18n";
 import {CloseAction} from "./TransactionResponseSnackbar";
 
 type FailureSnackbarProps = {
@@ -12,6 +13,7 @@ export default function FailureSnackbar({
   onCloseSnackbar,
   data,
 }: FailureSnackbarProps) {
+  const {t} = useTranslation();
   const {hash} = data;
 
   return (
@@ -28,14 +30,14 @@ export default function FailureSnackbar({
         action={<CloseAction onCloseSnackbar={onCloseSnackbar} />}
       >
         <Typography variant="inherit">
-          Transaction {""}
+          {t("snackbar.transaction")} {""}
           <Link to={`/txn/${hash}`} color="inherit" target="_blank">
             {hash}
           </Link>{" "}
-          failed{" "}
+          {t("snackbar.failed")}{" "}
           {"vm_status" in data && data.vm_status
-            ? `with "${data.vm_status}"`
-            : "."}
+            ? t("snackbar.failedWith", {status: data.vm_status})
+            : t("snackbar.failedPeriod")}
         </Typography>
       </Alert>
     </Snackbar>

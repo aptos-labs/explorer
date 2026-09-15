@@ -1,11 +1,13 @@
 import {Box, CircularProgress, Typography} from "@mui/material";
+import {useTranslation} from "../../i18n";
 
 /** Progress indicator while ValidatorSet / validator stats are still loading. */
 export function ValidatorsLoading() {
+  const {t} = useTranslation();
   return (
     <Box
       role="status"
-      aria-label="Loading validators"
+      aria-label={t("common.loadingValidators")}
       sx={{
         display: "flex",
         alignItems: "center",
@@ -21,7 +23,7 @@ export function ValidatorsLoading() {
           color: "text.secondary",
         }}
       >
-        Loading validators...
+        {t("common.loadingValidatorsEllipsis")}
       </Typography>
     </Box>
   );

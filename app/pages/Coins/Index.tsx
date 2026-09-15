@@ -2,17 +2,19 @@ import {Box, Typography} from "@mui/material";
 import {useGetCoinList} from "../../api/hooks/useGetCoinList";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import LoadingModal from "../../components/LoadingModal";
+import {useTranslation} from "../../i18n";
 import PageHeader from "../layout/PageHeader";
 import CoinsListTable from "./Table";
 
 export default function CoinsPage() {
+  const {t} = useTranslation();
   const {data, isLoading, error} = useGetCoinList();
 
   return (
     <>
       <PageMetadata
-        title="Coins & Fungible Assets"
-        description="Browse the top coins and fungible assets on the Aptos blockchain. View token details, supply, price, market cap, and verification status."
+        title={t("pages.coins.title")}
+        description={t("pages.coins.listDescription")}
         type="website"
         keywords={[
           "coins",
@@ -35,12 +37,10 @@ export default function CoinsPage() {
             marginBottom: 2,
           }}
         >
-          Coins & Fungible Assets
+          {t("pages.coins.title")}
         </Typography>
         {error ? (
-          <Typography color="error">
-            Error loading coin list. Please try again later.
-          </Typography>
+          <Typography color="error">{t("pages.coins.loadError")}</Typography>
         ) : (
           <CoinsListTable coins={data?.data ?? []} isLoading={isLoading} />
         )}

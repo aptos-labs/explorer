@@ -98,9 +98,9 @@ export default function InfoTab({
     >
       {data && (
         <ContentBox>
-          <ContentRow title={"Name:"} value={data?.data?.name} />
+          <ContentRow titleKey="fields.name" value={data?.data?.name} />
           <ContentRow
-            title={"Symbol:"}
+            titleKey="fields.symbol"
             value={getAssetSymbol(
               coinData?.panoraSymbol,
               coinData?.bridge,
@@ -108,13 +108,13 @@ export default function InfoTab({
             )}
           />
           <ContentRow
-            title={"Decimals:"}
+            titleKey="fields.decimals"
             value={data?.data?.decimals?.toString()}
           />
           {formattedSupply !== null ? (
             <>
               <ContentRow
-                title={"Total supply:"}
+                titleKey="fields.totalSupply"
                 value={
                   <>
                     {`${formattedSupply} `}
@@ -124,7 +124,7 @@ export default function InfoTab({
               />
               {marketCap ? (
                 <ContentRow
-                  title={"Current Market Cap (supply * price):"}
+                  titleKey="fields.marketCap"
                   value={
                     <>
                       $
@@ -139,11 +139,11 @@ export default function InfoTab({
               ) : null}
             </>
           ) : (
-            <ContentRow title={"Total supply:"} value={supplyIcon} />
+            <ContentRow titleKey="fields.totalSupply" value={supplyIcon} />
           )}
           {confidentialRowEnabled && (
             <ContentRow
-              title={"Confidential supply (pool):"}
+              titleKey="fields.confidentialSupply"
               value={
                 confidentialSupplyError ? (
                   "—"
@@ -170,7 +170,7 @@ export default function InfoTab({
             />
           )}
           <ContentRow
-            title={"Icon:"}
+            titleKey="fields.icon"
             value={
               coinData?.logoUrl && (
                 <img
@@ -181,9 +181,12 @@ export default function InfoTab({
               )
             }
           />
-          <ContentRow title={"Project URL:"} value={coinData?.websiteUrl} />
           <ContentRow
-            title={"Creator:"}
+            titleKey="fields.projectUrl"
+            value={coinData?.websiteUrl}
+          />
+          <ContentRow
+            titleKey="fields.creator"
             value={
               <HashButton
                 size="large"
@@ -194,7 +197,7 @@ export default function InfoTab({
           />
           {pairedFa && (
             <ContentRow
-              title={"Paired FA:"}
+              titleKey="fields.pairedFa"
               value={
                 <HashButton
                   size="large"
@@ -206,7 +209,7 @@ export default function InfoTab({
           )}
           {firstActivity && (
             <ContentRow
-              title={"First Activity:"}
+              titleKey="fields.firstActivity"
               value={
                 <HashButton
                   size="large"

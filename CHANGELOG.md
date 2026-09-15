@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Per-network fullnode URL overrides**: Every network in `app/lib/constants.ts` can now have its REST endpoint overridden at build time via `VITE_APTOS_<NETWORK>_URL` (`MAINNET`, `TESTNET`, `DEVNET`, `DECIBEL`, `SHELBYNET`, `LOCAL`). Previously only devnet was overridable. Trailing slashes are stripped as before.
 
+### Changed
+
+- **English UI copy in message catalogs**: Remaining explorer chrome — tabs, field labels, table headers, error pages, entity titles, search result templates, verification copy, analytics chart labels, and related tooltips — now reads from the English i18n catalogs. Visible English is unchanged; other locales can be added later without rewriting components.
+
 ### Fixed
 
 - **Horizontal scroll into empty space**: The desktop header’s min-content was wider than typical `lg`/`xl` viewports (nav gaps plus the new help icon), so pages — including `/guide` — could pan sideways into blank area. The toolbar now packs nav, network, help, settings, theme, and wallet so they stay on-screen, and the guide column wraps instead of extending the page.

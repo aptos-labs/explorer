@@ -2,17 +2,18 @@ import {Stack} from "@mui/material";
 import {CodeLineBox} from "../../../components/CodeLineBox";
 import TableTooltip from "../../../components/Table/TableTooltip";
 import TooltipTypography from "../../../components/TooltipTypography";
+import {useTranslation} from "../../../i18n";
 
 export default function LastEpochPerformanceTooltip() {
+  const {t} = useTranslation();
   return (
-    <TableTooltip title="Last Epoch Performance">
+    <TableTooltip titleKey="fields.lastEpochPerformance">
       <Stack spacing={2}>
         <TooltipTypography variant="body2">
-          The Last Epoch Performance column shows the performance of a validator
-          in the most recent epoch.
+          {t("tooltips.lastEpochPerformanceBody1")}
         </TooltipTypography>
         <TooltipTypography variant="body2">
-          It is calculated as:
+          {t("tooltips.lastEpochPerformanceBody2")}
         </TooltipTypography>
         <CodeLineBox
           sx={{
@@ -23,11 +24,10 @@ export default function LastEpochPerformanceTooltip() {
             width: "100%",
           }}
         >
-          (number of successful proposals) / (number of total proposal
-          opportunities)
+          {t("tooltips.lastEpochPerformanceFormula")}
         </CodeLineBox>
         <TooltipTypography variant="body2">
-          This metric gives you an early indicator if performance is degrading.
+          {t("tooltips.lastEpochPerformanceBody3")}
         </TooltipTypography>
       </Stack>
     </TableTooltip>

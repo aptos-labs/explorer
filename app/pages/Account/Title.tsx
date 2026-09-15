@@ -10,6 +10,7 @@ import TitleHashButton, {
   NameType,
 } from "../../components/TitleHashButton";
 import {useKnownAddressBranding, useKnownAddressName} from "../../data/hooks";
+import {useTranslation} from "../../i18n";
 import {truncateAddress} from "../../utils";
 import {getAccountTabHeadLabel} from "./accountTabLabels";
 import {useIsDaaAccount} from "./hooks/useIsDaaAccount";
@@ -35,50 +36,57 @@ export default function AccountTitle({
   pathTab,
   isDeleted = false,
 }: AccountTitleProps) {
+  const {t} = useTranslation();
   const isDAA = useIsDaaAccount(address);
   const knownBranding = useKnownAddressBranding(address);
   const knownLabel = useKnownAddressName(address);
 
-  let title = "Account";
-  let description = `View details for Aptos account ${address}. See transactions, resources, modules, coins, and NFTs owned by this account.`;
+  let titleKind: "account" | "object" | "other" = "account";
+  let title = t("pages.account.entity");
+  let description = t("pages.account.description", {address});
   let pageType: PageType = "account";
   let keywords: string[] = ["account", "wallet", "address"];
 
   if (isMultisig) {
-    title = "Multisig Account";
-    description = `View details for Aptos multisig account ${address}. See pending transactions, owners, and multisig configuration.`;
+    titleKind = "other";
+    title = t("pages.account.multisig");
+    description = t("pages.account.multisigDescription", {address});
     keywords = ["multisig", "multi-signature", "account", "governance"];
   } else if (isToken) {
+    titleKind = "other";
     pageType = "token";
     keywords = ["token", "NFT", "digital asset"];
     if (isDeleted) {
-      title = "Deleted Token Object";
-      description = `This token object ${address} has been deleted from the Aptos blockchain.`;
+      title = t("pages.account.deletedTokenObject");
+      description = t("pages.account.deletedTokenDescription", {address});
     } else {
-      title = `Token Object`;
-      description = `View token object ${address} on the Aptos blockchain. See token metadata, ownership, and transfer history.`;
+      title = t("pages.account.tokenObject");
+      description = t("pages.account.tokenDescription", {address});
     }
   } else if (isObject) {
+    titleKind = "object";
     pageType = "object";
     if (isDeleted) {
-      title = "Deleted Object";
-      description = `This object ${address} has been deleted from the Aptos blockchain.`;
+      titleKind = "other";
+      title = t("pages.account.deletedObject");
+      description = t("pages.account.deletedObjectDescription", {address});
     } else {
-      title = "Object";
-      description = `View object ${address} on the Aptos blockchain. See object resources, ownership, and associated data.`;
+      title = t("pages.account.object");
+      description = t("pages.account.objectDescription", {address});
     }
     keywords = ["object", "resource", "move"];
   } else if (isDAA) {
-    title = "Derivable Aptos Account";
-    description = `View derivable Aptos account ${address}. Cross-chain account derived from another blockchain address.`;
+    titleKind = "other";
+    title = t("pages.account.daa");
+    description = t("pages.account.daaDescription", {address});
     keywords = ["DAA", "derivable", "cross-chain", "account"];
   }
 
   if (knownLabel) {
-    if (title === "Account") {
-      title = `${knownLabel} - Account`;
-    } else if (title === "Object") {
-      title = `${knownLabel} - Object`;
+    if (titleKind === "account") {
+      title = t("pages.account.named", {name: knownLabel});
+    } else if (titleKind === "object") {
+      title = t("pages.account.namedObject", {name: knownLabel});
     }
   }
 
@@ -95,7 +103,7 @@ export default function AccountTitle({
   const displayAddr = truncateAddress(address);
 
   const tab = pathTab ?? "transactions";
-  const tabHead = getAccountTabHeadLabel(pathTab);
+  const tabHead = getAccountTabHeadLabel(pathTab, t);
   const trimmedAddress = address.trim();
   const canonicalPath = trimmedAddress
     ? objectRoute
@@ -110,7 +118,13 @@ export default function AccountTitle({
 
   const tabSpecificDescription =
     pathTab !== undefined && address && !isDeleted
-      ? `View ${tabHead.toLowerCase()} for ${objectRoute ? "object" : "account"} ${address} on the Aptos blockchain.`
+      ? t("pages.account.tabMetaDescription", {
+          tab: tabHead,
+          kind: objectRoute
+            ? t("pages.account.kindObject")
+            : t("pages.account.kindAccount"),
+          address,
+        })
       : null;
 
   const metadataDescription =
@@ -159,12 +173,12 @@ export default function AccountTitle({
         <Box sx={{mb: 4}}>
           <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 1}}>
             <Typography variant="body1">
-              This is a Derivable Aptos Account
+              {t("pages.account.daaHeading")}
             </Typography>
             <StyledTooltip
               title={
                 <Typography variant="body2">
-                  Learn more about
+                  {t("pages.account.daaLearnMore")}
                   <Link
                     href="https://aptos.dev/build/sdks/wallet-adapter/x-chain-accounts"
                     target="_blank"
@@ -172,7 +186,7 @@ export default function AccountTitle({
                     underline="none"
                   >
                     <Typography variant="body2" sx={{fontWeight: 600}}>
-                      Derivable Aptos Accounts
+                      {t("pages.account.daaLearnMoreLink")}
                     </Typography>
                   </Link>
                 </Typography>
@@ -190,8 +204,7 @@ export default function AccountTitle({
           </Box>
           <Stack spacing={1}>
             <Typography variant="body1">
-              To get more insights on your derivable aptos accounts, please
-              visit the
+              {t("pages.account.daaDashboardIntro")}
             </Typography>
             <Link
               href="https://daadashboard.vercel.app/"
@@ -200,7 +213,7 @@ export default function AccountTitle({
               underline="none"
             >
               <Typography variant="body2" sx={{fontWeight: 600}}>
-                Derivable Aptos Account Dashboard
+                {t("pages.account.daaDashboard")}
               </Typography>
             </Link>
           </Stack>

@@ -13,6 +13,7 @@ import type React from "react";
 import {useState} from "react";
 import type {Types} from "~/types/aptos";
 import {useSentioCallTrace} from "../../../api/hooks/useSentioCallTrace";
+import {useTranslation} from "../../../i18n";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {TransactionTypeName} from "../../../components/TransactionType";
@@ -31,6 +32,7 @@ type TransactionTraceTabProps = {
 export default function TransactionTraceTab({
   transaction,
 }: TransactionTraceTabProps): React.JSX.Element {
+  const {t} = useTranslation();
   const networkName = useNetworkName();
   const isUser = transaction.type === TransactionTypeName.User;
   const txFailed =
@@ -88,7 +90,7 @@ export default function TransactionTraceTab({
               fontWeight: 600,
             }}
           >
-            Move call trace
+            {t("trace.title")}
           </Typography>
           <Typography
             variant="body2"
@@ -96,20 +98,16 @@ export default function TransactionTraceTab({
               color: "text.secondary",
             }}
           >
-            Execution tree from Sentio’s traced fullnode (experimental). Links
-            open caller and callee accounts and the module Run tab in this
-            explorer; Sentio’s viewer is linked below.
+            {t("trace.body")}
           </Typography>
           {viewerUrl ? (
             <SentioTraceExternalLink
               href={viewerUrl}
-              label="Open Sentio’s interactive trace viewer"
+              label={t("trace.openSentio")}
             />
           ) : null}
           {!supported ? (
-            <Alert severity="info">
-              Call traces are only fetched for Aptos mainnet in this build.
-            </Alert>
+            <Alert severity="info">{t("trace.mainnetOnly")}</Alert>
           ) : traceQuery.isPending ? (
             <Box
               sx={{
@@ -124,16 +122,16 @@ export default function TransactionTraceTab({
             <Alert severity="warning">
               {traceQuery.error instanceof Error
                 ? traceQuery.error.message
-                : "Failed to load trace."}
+                : t("trace.failedLoad")}
             </Alert>
           ) : traceQuery.isSuccess ? (
             isSentioCallTraceNode(traceQuery.data) ? (
               <Stack spacing={2}>
                 {txFailed && (
                   <Alert severity="error">
-                    Transaction failed
-                    {vmStatus ? `: ${vmStatus}` : ""}. The failed call is
-                    highlighted below.
+                    {t("trace.txnFailed", {
+                      detail: vmStatus ? `: ${vmStatus}` : "",
+                    })}
                   </Alert>
                 )}
                 <CallTraceGraph root={traceQuery.data} txFailed={txFailed} />
@@ -155,7 +153,7 @@ export default function TransactionTraceTab({
                         color: "text.secondary",
                       }}
                     >
-                      Raw response (JSON)
+                      {t("trace.rawJson")}
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails sx={{pt: 0}}>
@@ -167,7 +165,7 @@ export default function TransactionTraceTab({
               </Stack>
             ) : (
               <Alert severity="warning">
-                Trace response had an unexpected shape; showing raw JSON only.
+                {t("trace.unexpectedShape")}
                 <Box sx={{mt: 2}}>
                   <JsonViewCard data={traceQuery.data} collapsedByDefault />
                 </Box>

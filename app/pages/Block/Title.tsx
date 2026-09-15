@@ -1,5 +1,6 @@
 import {Stack, Typography} from "@mui/material";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
+import {useTranslation} from "../../i18n";
 import {getBlockTabHeadLabel} from "./blockTabMeta";
 
 type BlockTitleProps = {
@@ -9,11 +10,18 @@ type BlockTitleProps = {
 };
 
 export default function BlockTitle({height, pathTab}: BlockTitleProps) {
+  const {t} = useTranslation();
   const tab = pathTab ?? "overview";
-  const tabHead = getBlockTabHeadLabel(pathTab);
+  const tabHead = getBlockTabHeadLabel(pathTab, t);
   const heightLabel = height.toLocaleString();
-  const metadataTitle = `${tabHead} | Block ${heightLabel}`;
-  const metadataDescription = `View ${tabHead.toLowerCase()} for block ${heightLabel} on the Aptos blockchain.`;
+  const metadataTitle = t("pages.blocks.metaTitle", {
+    tab: tabHead,
+    height: heightLabel,
+  });
+  const metadataDescription = t("pages.blocks.metaDescription", {
+    tab: tabHead,
+    height: heightLabel,
+  });
 
   return (
     <Stack
@@ -32,7 +40,7 @@ export default function BlockTitle({height, pathTab}: BlockTitleProps) {
         canonicalPath={`/block/${height}/${tab}`}
       />
       <Typography variant="h3" component="h1">
-        Block
+        {t("pages.blocks.entity")}
       </Typography>
     </Stack>
   );

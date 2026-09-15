@@ -5,6 +5,7 @@ import {
 } from "../../api/hooks/delegations";
 import {moveResourceData} from "../../api/moveResource";
 import {OCTA} from "../../constants";
+import {englishT, type TFunction} from "../../i18n";
 import {
   MINIMUM_APT_IN_POOL,
   MINIMUM_APT_IN_POOL_FOR_EXPLORER,
@@ -236,16 +237,19 @@ export function getStakeOperationAPTRequirement(
   }
 }
 
-export function getStakeOperationLabel(stakeOperation: StakeOperation): string {
+export function getStakeOperationLabel(
+  stakeOperation: StakeOperation,
+  t: TFunction = englishT,
+): string {
   switch (stakeOperation) {
     case StakeOperation.STAKE:
-      return "STAKE";
+      return t("staking.op.stake");
     case StakeOperation.UNLOCK:
-      return "UNSTAKE";
+      return t("staking.op.unstake");
     case StakeOperation.REACTIVATE:
-      return "RESTAKE";
+      return t("staking.op.restake");
     case StakeOperation.WITHDRAW:
-      return "WITHDRAW";
+      return t("staking.op.withdraw");
   }
 }
 

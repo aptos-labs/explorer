@@ -9,9 +9,12 @@ import {
 } from "@mui/material";
 import type {Theme} from "@mui/material/styles";
 import type React from "react";
+import {type TranslateVars, useTranslation} from "../../i18n";
 
 interface GeneralTableHeaderCellProps {
-  header: React.ReactNode;
+  header?: React.ReactNode;
+  headerKey?: string;
+  headerVars?: TranslateVars;
   textAlignRight?: boolean;
   sx?: SxProps<Theme>;
   tooltip?: React.ReactNode;
@@ -23,6 +26,8 @@ interface GeneralTableHeaderCellProps {
 
 export default function GeneralTableHeaderCell({
   header,
+  headerKey,
+  headerVars,
   textAlignRight,
   sx = [],
   tooltip,
@@ -32,6 +37,8 @@ export default function GeneralTableHeaderCell({
   isTableTooltip = true,
 }: GeneralTableHeaderCellProps) {
   const theme = useTheme();
+  const {t} = useTranslation();
+  const displayHeader = headerKey ? t(headerKey, headerVars) : header;
   const tableCellBackgroundColor = "transparent";
   const tableCellTextColor = theme.palette.text.secondary;
 
@@ -44,7 +51,7 @@ export default function GeneralTableHeaderCell({
 
   const headerTextComponent = (
     <Typography variant="subtitle1" sx={{fontSize: 15, lineHeight: "inherit"}}>
-      {header}
+      {displayHeader}
     </Typography>
   );
 

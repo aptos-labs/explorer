@@ -14,6 +14,7 @@ import {
   truncateAddress,
   tryStandardizeAddress,
 } from "../../utils";
+import {useTranslation} from "../../i18n";
 import {getFungibleAssetTabHeadLabel} from "./fungibleAssetTabMeta";
 
 type FATitleProps = {
@@ -29,8 +30,9 @@ export default function FATitle({
   coinData,
   pathTab,
 }: FATitleProps) {
+  const {t} = useTranslation();
   function title() {
-    return "Fungible Asset";
+    return t("pages.fa.entity");
   }
 
   const assetSymbol =
@@ -60,16 +62,21 @@ export default function FATitle({
   const canonicalPath = hasCanonicalAddress
     ? `/fungible_asset/${canonicalAddress}/${tab}`
     : "/coins";
-  const tabHead = getFungibleAssetTabHeadLabel(pathTab);
+  const tabHead = getFungibleAssetTabHeadLabel(pathTab, t);
   const baseMetaTitle = assetSymbol
-    ? `${assetSymbol} - Fungible Asset`
-    : `Fungible Asset ${displayAddr}`;
+    ? t("pages.fa.named", {symbol: assetSymbol})
+    : t("pages.fa.metaTitleShort", {id: displayAddr});
   const metadataTitle = canonicalAddress
-    ? `${tabHead} | Fungible Asset ${displayAddr}`
+    ? t("pages.fa.metaTitle", {tab: tabHead, id: displayAddr})
     : baseMetaTitle;
   const metadataDescription = canonicalAddress
-    ? `View ${tabHead.toLowerCase()} for fungible asset ${canonicalAddress} on the Aptos blockchain.`
-    : `View ${assetSymbol || "fungible asset"} on Aptos. ${metadata?.name ? `${metadata.name}. ` : ""}See token supply, decimals, holders, metadata, and transaction history.`;
+    ? t("pages.fa.metaDescription", {
+        tab: tabHead,
+        address: canonicalAddress,
+      })
+    : t("pages.fa.metaDescriptionFallback", {
+        symbol: assetSymbol || t("pages.fa.entity").toLowerCase(),
+      });
 
   return (
     <Stack
@@ -101,7 +108,7 @@ export default function FATitle({
         <TitleHashButton hash={address} type={HashType.STRUCT} />
         {!isBannedType(level) && (
           <TitleHashButton
-            hash={assetSymbol ?? "Unknown"}
+            hash={assetSymbol ?? t("common.unknown")}
             type={HashType.SYMBOL}
           />
         )}

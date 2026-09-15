@@ -194,7 +194,7 @@ function TableItemDetails({
     <>
       {enclosingAccounts.length > 0 && (
         <ContentRow
-          title="Enclosing Account:"
+          titleKey="fields.enclosingAccount"
           value={
             <Stack spacing={1}>
               {enclosingAccounts.map((account) => (
@@ -227,7 +227,7 @@ function TableItemDetails({
       )}
       {isEnriching && !hasDecodedData && (
         <ContentRow
-          title="Decoded Data:"
+          titleKey="fields.decodedData"
           value={
             <Typography
               variant="body2"
@@ -241,7 +241,7 @@ function TableItemDetails({
       {hasDecodedData && change.data && (
         <>
           <ContentRow
-            title="Key Type:"
+            titleKey="fields.keyType"
             value={
               <Chip
                 label={change.data.key_type}
@@ -252,13 +252,13 @@ function TableItemDetails({
             }
           />
           <ContentRow
-            title="Key (Decoded):"
+            titleKey="fields.keyDecoded"
             value={<DecodedValueDisplay value={change.data.key} />}
           />
 
           {change.data.value_type && (
             <ContentRow
-              title="Value Type:"
+              titleKey="fields.valueType"
               value={
                 <Chip
                   label={change.data.value_type}
@@ -271,7 +271,7 @@ function TableItemDetails({
           )}
           {change.data.value !== undefined && (
             <ContentRow
-              title="Value (Decoded):"
+              titleKey="fields.valueDecoded"
               value={<DecodedValueDisplay value={change.data.value} />}
             />
           )}
@@ -414,10 +414,10 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
           expanded={expandedList[i]}
           toggleExpanded={() => toggleExpandedAt(i)}
         >
-          <ContentRow title="Type:" value={change.type} />
+          <ContentRow titleKey="fields.type" value={change.type} />
           {"address" in change && (
             <ContentRow
-              title="Address:"
+              titleKey="fields.address"
               value={
                 <HashButton
                   hash={change.address}
@@ -436,13 +436,16 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
               }
             />
           )}
-          <ContentRow title="State Key Hash:" value={change.state_key_hash} />
+          <ContentRow
+            titleKey="fields.stateKeyHash"
+            value={change.state_key_hash}
+          />
           {"data" in change && change.data && "type" in change.data && (
-            <ContentRow title="Resource:" value={change.data.type} />
+            <ContentRow titleKey="fields.resource" value={change.data.type} />
           )}
           {"data" in change && change.data && !isTableItemChange(change) && (
             <ContentRow
-              title="Data:"
+              titleKey="fields.data"
               value={
                 isMoveResourcePayload(change.data) ? (
                   <ResourceDataView
@@ -456,7 +459,7 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
             />
           )}
           {"handle" in change && (
-            <ContentRow title="Handle:" value={change.handle} />
+            <ContentRow titleKey="fields.handle" value={change.handle} />
           )}
 
           {isTableItemChange(change) && (
@@ -468,11 +471,14 @@ export default function ChangesTab({transaction}: ChangesTabProps) {
           )}
 
           {!isTableItemChange(change) && "key" in change && (
-            <ContentRow title="Key:" value={(change as {key: string}).key} />
+            <ContentRow
+              titleKey="fields.key"
+              value={(change as {key: string}).key}
+            />
           )}
           {!isTableItemChange(change) && "value" in change && (
             <ContentRow
-              title="Value:"
+              titleKey="fields.value"
               value={(change as {value: string}).value}
             />
           )}

@@ -1,8 +1,10 @@
 import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
 import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import {useTranslation} from "../../../i18n";
 import MetricCard from "./MetricCard";
 
 export default function TotalStake() {
+  const {t} = useTranslation();
   const {totalVotingPower} = useGetValidatorSet();
 
   return (
@@ -12,8 +14,8 @@ export default function TotalStake() {
           ? getFormattedBalanceStr(totalVotingPower.toString(), undefined, 0)
           : "-"
       }
-      label="Actively Staked"
-      tooltip="Amount of APT tokens currently held in staking pools."
+      label={t("analytics.activelyStaked")}
+      tooltip={t("analytics.activelyStakedTip")}
     />
   );
 }

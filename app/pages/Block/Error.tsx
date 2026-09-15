@@ -2,6 +2,7 @@ import {ErrorOutlineOutlined as ErrorOutline} from "@mui/icons-material";
 import {Stack, Typography, useTheme} from "@mui/material";
 import {type ResponseError, ResponseErrorType} from "../../api/client";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
+import {useTranslation} from "../../i18n";
 
 type ErrorProps = {
   error: ResponseError;
@@ -10,6 +11,7 @@ type ErrorProps = {
 
 export default function BlockError({error, height}: ErrorProps) {
   const theme = useTheme();
+  const {t} = useTranslation();
 
   if (error.type === ResponseErrorType.NOT_FOUND) {
     return (
@@ -30,7 +32,7 @@ export default function BlockError({error, height}: ErrorProps) {
           />
           <Stack spacing={1} sx={{flex: 1}}>
             <Typography variant="h6" color="error">
-              Block Not Found
+              {t("notFound.blockTitle")}
             </Typography>
             <Typography
               variant="body1"
@@ -39,7 +41,7 @@ export default function BlockError({error, height}: ErrorProps) {
               }}
             >
               {error.message && `${error.message} `}
-              Could not find a block with height {height}
+              {t("notFound.blockBody", {height})}
             </Typography>
           </Stack>
         </Stack>
@@ -64,7 +66,7 @@ export default function BlockError({error, height}: ErrorProps) {
           />
           <Stack spacing={1} sx={{flex: 1}}>
             <Typography variant="h6" color="error">
-              Error Loading Block
+              {t("notFound.blockLoad")}
             </Typography>
             <Typography
               variant="body1"
@@ -72,12 +74,12 @@ export default function BlockError({error, height}: ErrorProps) {
                 color: "text.secondary",
               }}
             >
-              Unknown error fetching block with height {height}:
+              {t("notFound.blockLoadBody", {height})}
               <br />
               {error.message}
               <br />
               <br />
-              Try again later
+              {t("common.tryAgainLater")}
             </Typography>
           </Stack>
         </Stack>

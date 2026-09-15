@@ -4,6 +4,7 @@ import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import StyledTooltip from "../../components/StyledTooltip";
 import {labsBannedCollections} from "../../constants";
 import {truncateAddress, tryStandardizeAddress} from "../../utils";
+import {useTranslation} from "../../i18n";
 import {getTokenTabHeadLabel} from "./tokenTabMeta";
 
 type TokenTitleProps = {
@@ -22,11 +23,11 @@ export default function TokenTitle({
   urlTokenId,
   pathTab = "overview",
 }: TokenTitleProps) {
+  const {t} = useTranslation();
   let badge = null;
   const reason = labsBannedCollections[tokenCollection];
   if (reason) {
-    let tooltipMessage = `This asset has been marked as a scam or dangerous, please avoid using this asset.`;
-    tooltipMessage += ` Reason: (${reason})`;
+    const tooltipMessage = t("verified.tooltip.labsBannedReason", {reason});
     badge = (
       <StyledTooltip title={tooltipMessage}>
         <Dangerous fontSize="small" color="error" />
@@ -39,9 +40,15 @@ export default function TokenTitle({
   const canonicalPath = hasTokenId
     ? `/token/${canonicalTokenId}/${pathTab}`
     : undefined;
-  const tabHead = getTokenTabHeadLabel(pathTab);
-  const metadataTitle = `${tabHead} | Token ${truncateAddress(canonicalTokenId)}`;
-  const metadataDescription = `View ${tabHead.toLowerCase()} for NFT token ${canonicalTokenId} on the Aptos blockchain.`;
+  const tabHead = getTokenTabHeadLabel(pathTab, t);
+  const metadataTitle = t("pages.tokens.metaTitle", {
+    tab: tabHead,
+    id: truncateAddress(canonicalTokenId),
+  });
+  const metadataDescription = t("pages.tokens.metaDescription", {
+    tab: tabHead,
+    id: canonicalTokenId,
+  });
 
   return (
     <Stack

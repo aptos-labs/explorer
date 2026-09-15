@@ -17,6 +17,7 @@ import {
   type PackageMetadata,
   useGetAccountPackages,
 } from "../../../../api/hooks/useGetAccountResource";
+import {InlineMarkup, useTranslation} from "../../../../i18n";
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
 import {useNavigate} from "../../../../routing";
 import {getBytecodeSizeInKB} from "../../../../utils";
@@ -52,6 +53,7 @@ function ViewCode({
   isObject: boolean;
   ledgerVersion?: number;
 }) {
+  const {t} = useTranslation();
   const {
     packages: sortedPackages,
     isPending,
@@ -111,15 +113,7 @@ function ViewCode({
   if (sortedPackages.length === 0 && isFetched) {
     return (
       <EmptyTabContent
-        message={
-          <>
-            No published source in package metadata for this address. If this
-            account has Move modules on chain, open the <strong>Run</strong> or{" "}
-            <strong>View</strong> tab (module list comes from the modules API),
-            or fetch bytecode via{" "}
-            <code>/accounts/&#123;address&#125;/module/&#123;name&#125;</code>.
-          </>
-        }
+        message={<InlineMarkup text={t("modules.noPublishedSource")} />}
       />
     );
   }
@@ -155,7 +149,7 @@ function ViewCode({
       <Grid size={{md: 9, xs: 12}}>
         {selectedModule === undefined ? (
           <EmptyTabContent
-            message={`No module found with name: ${selectedModuleName}`}
+            message={t("modules.noModuleNamed", {name: selectedModuleName})}
           />
         ) : (
           <ModuleContent
@@ -177,6 +171,7 @@ function ModuleSidebar({
   getLinkToModule,
   navigateToModule,
 }: ModuleSidebarProps) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const isWideScreen = useMediaQuery(theme.breakpoints.up("md"));
   const flattedModules = useMemo(
@@ -240,7 +235,7 @@ function ModuleSidebar({
           groupBy={(option) => option.pkg}
           getOptionLabel={(option) => option.name}
           renderInput={(params) => (
-            <TextField {...params} label="Select a module" />
+            <TextField {...params} label={t("modules.selectModule")} />
           )}
           onChange={(_, module) => {
             if (module) {
@@ -313,6 +308,7 @@ function ModuleHeader({
   module: Types.MoveModuleBytecode | undefined;
   moduleName: string;
 }) {
+  const {t} = useTranslation();
   return (
     <Box
       sx={{
@@ -337,9 +333,12 @@ function ModuleHeader({
               fontSize: 10,
             }}
           >
-            {module.abi?.exposed_functions?.filter((fn) => fn.is_entry)?.length}{" "}
-            entry functions | Bytecode: {getBytecodeSizeInKB(module.bytecode)}{" "}
-            KB
+            {t("modules.entryFunctionsBytecode", {
+              count:
+                module.abi?.exposed_functions?.filter((fn) => fn.is_entry)
+                  ?.length ?? 0,
+              size: getBytecodeSizeInKB(module.bytecode),
+            })}
           </Typography>
         ) : null}
       </Box>

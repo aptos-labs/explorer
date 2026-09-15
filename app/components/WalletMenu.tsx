@@ -8,6 +8,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import {type JSX, useState} from "react";
+import {useTranslation} from "../i18n";
 
 type WalletMenuProps = {
   popoverAnchor: HTMLButtonElement | null;
@@ -21,6 +22,7 @@ export default function WalletMenu({
   handleNavigate,
 }: WalletMenuProps): JSX.Element {
   const {account, disconnect} = useWallet();
+  const {t} = useTranslation();
   const popoverOpen = Boolean(popoverAnchor);
   const id = popoverOpen ? "wallet-popover" : undefined;
 
@@ -61,7 +63,7 @@ export default function WalletMenu({
     >
       <List>
         <Tooltip
-          title="Copied"
+          title={t("common.copied")}
           placement="bottom-end"
           open={tooltipOpen}
           disableFocusListener
@@ -70,20 +72,20 @@ export default function WalletMenu({
         >
           <ListItem disablePadding>
             <ListItemButton onClick={copyAddress}>
-              <ListItemText primary="Copy Address" />
+              <ListItemText primary={t("common.copyAddress")} />
             </ListItemButton>
           </ListItem>
         </Tooltip>
         {!!handleNavigate && (
           <ListItem disablePadding>
             <ListItemButton onClick={onAccountOptionClicked}>
-              <ListItemText primary="Account" />
+              <ListItemText primary={t("common.account")} />
             </ListItemButton>
           </ListItem>
         )}
         <ListItem disablePadding>
           <ListItemButton onClick={handleLogout}>
-            <ListItemText primary="Logout" />
+            <ListItemText primary={t("common.logout")} />
           </ListItemButton>
         </ListItem>
       </List>

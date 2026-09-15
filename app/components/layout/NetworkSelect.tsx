@@ -8,10 +8,12 @@ import {
 import {useLocation} from "@tanstack/react-router";
 import {hiddenNetworks, type NetworkName, networks} from "../../constants";
 import {useNetworkSelector} from "../../global-config";
+import {translateNetworkName, useTranslation} from "../../i18n";
 import {useNavigate} from "../../routing";
 
 export default function NetworkSelect() {
   const theme = useTheme();
+  const {t} = useTranslation();
   const [networkName, setNetworkName] = useNetworkSelector();
   const navigate = useNavigate();
   const location = useLocation();
@@ -41,9 +43,7 @@ export default function NetworkSelect() {
 
   // Custom render for the selected value to show hidden network names
   const renderValue = (selected: string) => {
-    // Display "localnet" instead of "local" for better UX
-    const displayName = selected === "local" ? "localnet" : selected;
-    return <span style={{textTransform: "capitalize"}}>{displayName}</span>;
+    return <span>{translateNetworkName(selected, t)}</span>;
   };
 
   return (
@@ -52,7 +52,7 @@ export default function NetworkSelect() {
         value={networkName}
         onChange={handleChange}
         displayEmpty
-        inputProps={{"aria-label": "Select network"}}
+        inputProps={{"aria-label": t("network.selectAriaLabel")}}
         renderValue={renderValue}
         sx={{
           color: theme.palette.text.primary,
@@ -77,21 +77,17 @@ export default function NetworkSelect() {
             value={networkName}
             sx={{display: "none"}}
           >
-            {networkName}
+            {translateNetworkName(networkName, t)}
           </MenuItem>
         )}
         {visibleNetworks.map((network) => (
-          <MenuItem
-            key={network}
-            value={network}
-            sx={{textTransform: "capitalize"}}
-          >
-            {network}
+          <MenuItem key={network} value={network}>
+            {translateNetworkName(network, t)}
           </MenuItem>
         ))}
         {/* Always show localnet option - user must explicitly select it to trigger local device detection */}
-        <MenuItem key="local" value="local" sx={{textTransform: "capitalize"}}>
-          localnet
+        <MenuItem key="local" value="local">
+          {t("network.localnet")}
         </MenuItem>
       </Select>
     </FormControl>

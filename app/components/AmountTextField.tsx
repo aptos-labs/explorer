@@ -6,6 +6,7 @@ import {
   Stack,
 } from "@mui/material";
 import type React from "react";
+import {useTranslation} from "../i18n";
 import {getFormattedBalanceStr} from "./IndividualPageContent/ContentValue/CurrencyValue";
 
 interface AmountTextFieldProps {
@@ -21,6 +22,7 @@ export default function AmountTextField({
   onAmountChange,
   balance,
 }: AmountTextFieldProps) {
+  const {t} = useTranslation();
   return (
     <FormControl fullWidth>
       <Stack
@@ -29,7 +31,9 @@ export default function AmountTextField({
           justifyContent: "space-between",
         }}
       >
-        <FormHelperText sx={{fontSize: "1rem"}}>Enter Amount</FormHelperText>
+        <FormHelperText sx={{fontSize: "1rem"}}>
+          {t("staking.enterAmount")}
+        </FormHelperText>
       </Stack>
       <OutlinedInput
         notched
@@ -40,7 +44,9 @@ export default function AmountTextField({
         endAdornment={<InputAdornment position="end">APT</InputAdornment>}
         placeholder={
           balance
-            ? `Your balance: ${getFormattedBalanceStr(balance, undefined, 1)}`
+            ? t("staking.balancePlaceholder", {
+                balance: getFormattedBalanceStr(balance, undefined, 1),
+              })
             : ""
         }
       />

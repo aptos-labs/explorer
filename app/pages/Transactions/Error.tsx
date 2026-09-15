@@ -3,6 +3,7 @@ import {Stack, Typography, useTheme} from "@mui/material";
 import type React from "react";
 import {type ResponseError, ResponseErrorType} from "../../api/client";
 import ContentBox from "../../components/IndividualPageContent/ContentBox";
+import {useTranslation} from "../../i18n";
 
 type ErrorProps = {
   error: ResponseError;
@@ -10,6 +11,7 @@ type ErrorProps = {
 
 export default function TransactionsError({error}: ErrorProps) {
   const theme = useTheme();
+  const {t} = useTranslation();
 
   const renderErrorContent = (title: string, message: React.ReactNode) => (
     <ContentBox>
@@ -47,26 +49,29 @@ export default function TransactionsError({error}: ErrorProps) {
   switch (error.type) {
     case ResponseErrorType.NOT_FOUND:
       return renderErrorContent(
-        "Transactions Not Found",
-        error.message || "Transactions not found.",
+        t("notFound.transactionsTitle"),
+        error.message || t("notFound.transactionsBody"),
       );
     case ResponseErrorType.INVALID_INPUT:
       return renderErrorContent(
-        "Invalid Request",
+        t("errors.invalidRequest"),
         <>
-          Invalid request ({error.type}): {error.message}
+          {t("errors.invalidRequestDetail", {
+            type: error.type,
+            message: error.message ?? "",
+          })}
         </>,
       );
     case ResponseErrorType.TOO_MANY_REQUESTS:
       return renderErrorContent(
-        "Too Many Requests",
-        <>Too many requests. Please try again in a few moments.</>,
+        t("errors.tooManyRequests"),
+        <>{t("errors.tooManyRequestsMoments")}</>,
       );
     default:
       return renderErrorContent(
-        "Error Loading Transactions",
+        t("notFound.transactionsLoad"),
         <>
-          Unable to load transactions.
+          {t("notFound.transactionsLoadBody")}
           {error.message && (
             <>
               <br />
@@ -75,7 +80,7 @@ export default function TransactionsError({error}: ErrorProps) {
           )}
           <br />
           <br />
-          Please try again later.
+          {t("common.pleaseTryAgainLater")}
         </>,
       );
   }

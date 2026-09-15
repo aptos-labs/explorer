@@ -7,6 +7,7 @@ import type {Current_Token_Datas_V2} from "~/types/aptos";
 import StyledTab from "../../components/StyledTab";
 import StyledTabs from "../../components/StyledTabs";
 import {useNavigate, useSearch} from "../../routing";
+import {useTranslation} from "../../i18n";
 import {assertNever} from "../../utils";
 import ActivitiesTab from "./Tabs/ActivitiesTab";
 import OverviewTab from "./Tabs/OverviewTab";
@@ -20,12 +21,12 @@ const TabComponents = Object.freeze({
 
 type TabValue = keyof typeof TabComponents;
 
-function getTabLabel(value: TabValue): string {
+function getTabLabel(value: TabValue, t: (key: string) => string): string {
   switch (value) {
     case "overview":
-      return "Overview";
+      return t("tabs.token.overview");
     case "activities":
-      return "Activities";
+      return t("tabs.token.activities");
     default:
       return assertNever(value);
   }
@@ -67,6 +68,7 @@ export default function TokenTabs({
   const propertyVersion = search?.propertyVersion;
   const tab = params?.tab;
   const navigate = useNavigate();
+  const {t} = useTranslation();
   const value = tab === undefined ? TAB_VALUES[0] : (tab as TabValue);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: TabValue) => {
@@ -87,7 +89,7 @@ export default function TokenTabs({
               key={value}
               value={value}
               icon={getTabIcon(value)}
-              label={getTabLabel(value)}
+              label={getTabLabel(value, t)}
               isFirst={i === 0}
               isLast={i === tabValues.length - 1}
             />

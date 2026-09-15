@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import React from "react";
+import {InlineMarkup, useTranslation} from "../../../i18n";
 import type {Types} from "~/types/aptos";
 import {getTransaction} from "../../../api/client";
 import useFunctionFilter, {
@@ -187,6 +188,7 @@ type AccountAllTransactionsProps = {
 export default function AccountAllTransactions({
   address,
 }: AccountAllTransactionsProps) {
+  const {t} = useTranslation();
   const {
     functionFilter,
     handleFunctionFilterChange,
@@ -229,12 +231,12 @@ export default function AccountAllTransactions({
             },
           }}
         >
-          <AlertTitle>Transaction History Limited</AlertTitle>
-          This account has a large transaction history. Due to performance
-          constraints, only the latest{" "}
-          <strong>{MAX_DISPLAYABLE_TRANSACTIONS.toLocaleString()}</strong>{" "}
-          transactions are displayed. Older transactions are not shown but can
-          still be accessed directly by their version number.
+          <AlertTitle>{t("pages.accountHistory.limitedTitle")}</AlertTitle>
+          <InlineMarkup
+            text={t("pages.accountHistory.limitedBody", {
+              count: MAX_DISPLAYABLE_TRANSACTIONS.toLocaleString(),
+            })}
+          />
         </Alert>
       )}
       {isFilterActive ? (
@@ -245,8 +247,7 @@ export default function AccountAllTransactions({
               color: "text.secondary",
             }}
           >
-            Function filter searches transactions sent by this account only, not
-            all transactions involving it.
+            {t("pages.accountHistory.functionFilterHint")}
           </Typography>
           <FilteredAccountTransactions
             address={address}

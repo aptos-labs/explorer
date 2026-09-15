@@ -1,23 +1,28 @@
+import {englishT, type TFunction} from "../../i18n";
+
 /**
  * Tab labels aligned with legacy route `head` titles for account and object pages.
  */
-export function getAccountTabHeadLabel(tab: string | undefined): string {
+export function getAccountTabHeadLabel(
+  tab: string | undefined,
+  t: TFunction = englishT,
+): string {
   switch (tab ?? "transactions") {
     case "transactions":
-      return "Transactions";
+      return t("tabs.account.transactions");
     case "coins":
-      return "Assets";
+      return t("tabs.account.coins");
     case "tokens":
-      return "NFTs";
+      return t("tabs.account.tokens");
     case "resources":
-      return "Resources";
+      return t("tabs.account.resources");
     case "modules":
-      return "Modules";
+      return t("tabs.account.modules");
     case "multisig":
-      return "Multisig";
+      return t("tabs.account.multisig");
     case "info":
-      return "Info";
+      return t("tabs.account.info");
     default:
-      return "Info";
+      return t("tabs.account.info");
   }
 }

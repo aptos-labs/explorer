@@ -3,6 +3,7 @@ import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import {useReducer} from "react";
+import {useTranslation} from "../../../i18n";
 import {
   type CoinHolder,
   useGetCoinHolders,
@@ -67,6 +68,7 @@ function holdersReducer(
 }
 
 function HoldersContent({address, data}: HoldersTabProps) {
+  const {t} = useTranslation();
   const [state, dispatch] = useReducer(holdersReducer, {
     offset: 0,
     holders: [],
@@ -116,7 +118,9 @@ function HoldersContent({address, data}: HoldersTabProps) {
               holderData.isLoading ? <CircularProgress size={16} /> : null
             }
           >
-            {holderData.isLoading ? "Loading..." : "Load more"}
+            {holderData.isLoading
+              ? t("common.loadingEllipsis")
+              : t("common.loadMore")}
           </Button>
         </Box>
       )}
@@ -133,8 +137,9 @@ export function HoldersTable({
   data: FACombinedData;
   offset?: number;
 }) {
+  const {t} = useTranslation();
   return (
-    <Table aria-label="Asset holders" data-entity-type="holder">
+    <Table aria-label={t("common.assetHoldersAria")} data-entity-type="holder">
       <TableHead>
         <TableRow>
           <GeneralTableHeaderCell header="rank" />

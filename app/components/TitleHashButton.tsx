@@ -18,6 +18,7 @@ import {useScamAddresses} from "../constants";
 import {truncateAddress, truncateAddressMiddle} from "../pages/utils";
 import {getSemanticColors} from "../themes/colors/aptosBrandColors";
 import {tryStandardizeAddress} from "../utils";
+import {useTranslation} from "../i18n";
 
 export const BUTTON_HEIGHT = 34;
 export const TOOLTIP_TIME = 2000; // 2s
@@ -59,6 +60,7 @@ export default function TitleHashButton({
 }
 
 function HashButton({hash}: {hash: string}) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const isOnSmallerScreen = !useMediaQuery(theme.breakpoints.up("lg"));
@@ -119,7 +121,7 @@ function HashButton({hash}: {hash: string}) {
   return (
     <Box>
       <Tooltip
-        title="Copied"
+        title={t("common.copied")}
         placement="bottom-end"
         open={tooltipOpen}
         disableFocusListener
@@ -141,6 +143,7 @@ function Name({
   isValidator: boolean;
   nameType?: NameType;
 }) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
   const scamAddresses = useScamAddresses();
@@ -194,7 +197,7 @@ function Name({
     content = (
       <Typography sx={{display: "flex", alignItems: "row", gap: 1}}>
         <span>{name}</span>
-        <Tooltip title={"This is a known scam address."}>
+        <Tooltip title={t("copyHints.scamAddress")}>
           <DangerousOutlined
             fontSize="small"
             color="error"
@@ -207,7 +210,7 @@ function Name({
     content = (
       <Typography sx={{display: "flex", alignItems: "row", gap: 1}}>
         <span>{name}</span>
-        <Tooltip title={"This is a verified address label."}>
+        <Tooltip title={t("copyHints.verifiedLabel")}>
           <VerifiedOutlined
             fontSize="small"
             color="info"

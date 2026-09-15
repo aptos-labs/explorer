@@ -2,14 +2,16 @@ import CloseIcon from "@mui/icons-material/Close";
 import {IconButton} from "@mui/material";
 import {useGetTransaction} from "../../api/hooks/useGetTransaction";
 import type {TransactionResponse} from "../../api/hooks/useSubmitTransaction";
+import {useTranslation} from "../../i18n";
 import ErrorSnackbar from "./ErrorSnackbar";
 import FailureSnackbar from "./FailureSnackbar";
 
 export function CloseAction({onCloseSnackbar}: {onCloseSnackbar: () => void}) {
+  const {t} = useTranslation();
   return (
     <IconButton
       size="small"
-      aria-label="close"
+      aria-label={t("snackbar.closeAria")}
       color="inherit"
       onClick={onCloseSnackbar}
     >

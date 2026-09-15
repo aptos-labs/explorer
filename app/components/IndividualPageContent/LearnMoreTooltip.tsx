@@ -1,6 +1,7 @@
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import {Box, Link, Stack, Typography, useTheme} from "@mui/material";
 import type React from "react";
+import {useTranslation} from "../../i18n";
 import StyledTooltip from "../StyledTooltip";
 
 function TooltipBox({children}: {children?: React.ReactNode}) {
@@ -19,6 +20,7 @@ export function LearnMoreTooltip({
   linkToText,
 }: LearnMoreTooltipProps) {
   const theme = useTheme();
+  const {t} = useTranslation();
   const color = theme.palette.text.secondary;
 
   return (
@@ -55,7 +57,7 @@ export function LearnMoreTooltip({
                       alignSelf: "flex-end",
                     }}
                   >
-                    Learn More
+                    {t("common.learnMore")}
                   </Link>
                 )}
               </>
