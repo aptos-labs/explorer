@@ -31,6 +31,7 @@ describe("isSupportedLocale", () => {
     expect(isSupportedLocale("ur")).toBe(true);
     expect(isSupportedLocale("ha")).toBe(true);
     expect(isSupportedLocale("zu")).toBe(true);
+    expect(isSupportedLocale("am")).toBe(true);
   });
 
   it("rejects unknown tags", () => {
@@ -78,6 +79,7 @@ describe("localeFromBrowserTag", () => {
     expect(localeFromBrowserTag("ur-PK")).toBe("ur");
     expect(localeFromBrowserTag("ha-NG")).toBe("ha");
     expect(localeFromBrowserTag("zu-ZA")).toBe("zu");
+    expect(localeFromBrowserTag("am-ET")).toBe("am");
   });
 
   it("maps Tagalog to Filipino", () => {

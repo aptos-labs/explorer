@@ -40,6 +40,7 @@ describe("FEAT-SETTINGS-003 / FEAT-CHROME-001 — header language switch", () =>
     fireEvent.mouseDown(combobox);
     expect(screen.getByRole("option", {name: "Hausa"})).toBeTruthy();
     expect(screen.getByRole("option", {name: "isiZulu"})).toBeTruthy();
+    expect(screen.getByRole("option", {name: "አማርኛ"})).toBeTruthy();
     fireEvent.click(screen.getByRole("option", {name: "Français"}));
 
     expect(screen.getByRole("combobox").textContent).toContain("Français");

@@ -1,6 +1,7 @@
 import type {SupportedLocale} from "../locales";
 import type {MessageTree} from "../translate";
 import {ar} from "./ar";
+import {am} from "./am";
 import {bn} from "./bn";
 import {de} from "./de";
 import {en} from "./en";
@@ -62,9 +63,11 @@ export const messageCatalogs: Record<SupportedLocale, MessageTree> = {
   "pt-PT": ptPT,
   ha,
   zu,
+  am,
 };
 
 export {
+  am,
   ar,
   bn,
   de,
