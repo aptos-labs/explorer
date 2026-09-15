@@ -43,6 +43,7 @@ export const FULL_UI_LOCALES = [
   "de",
   "ja",
   "ko",
+  "ru",
   "pt",
   "ar",
   "th",
