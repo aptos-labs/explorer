@@ -291,9 +291,6 @@ export default defineConfig({
   },
   test: {
     exclude: [...configDefaults.exclude, "e2e/**"],
-    // Full-UI catalogs are large data modules. Coverage + isolate re-evaluation
-    // of that graph can keep Vite environments alive past the 10s default.
-    teardownTimeout: 30_000,
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "lcov"],
