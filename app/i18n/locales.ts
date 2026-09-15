@@ -54,6 +54,7 @@ export const FULL_UI_LOCALES = [
   "bn",
   "sw",
   "zh-Hant",
+  "it",
   "ms",
   "ta",
   "pl",
