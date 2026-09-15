@@ -276,7 +276,7 @@ export const en = {
         "Open [Settings](/settings). Preferences are stored **in this browser**, not on Aptos Labs servers.",
       ],
       bullets: [
-        "**Language** — Browser default or an explicit catalog (English ships today). This controls translated chrome, settings copy, and this guide. On-chain data (addresses, function names, events) stays as the chain stores it.",
+        "**Language** — Browser default or an explicit language. This controls translated chrome, settings copy, and this guide. On-chain data (addresses, function names, events) stays as the chain stores it.",
         "**Move bytecode decompilation** — off by default. Read the disclaimer before enabling. When off, Decompiled and Disassembly views are hidden.",
         "**API key overrides** — optional per-network [geomi.dev](https://geomi.dev) keys so your browser is not stuck on the shared anonymous rate limit. Keys are sent as `Authorization: Bearer`. Geomi `AG-*` client keys must allow this site’s Origin. Check **Remember on this device** only on a machine you trust; otherwise keys last for the tab session.",
         "**Theme** — light or dark from the header sun/moon control. Stored in a cookie (`color_scheme`) and follows the system if you have not chosen.",
@@ -343,3 +343,13 @@ export const en = {
     },
   },
 } as const satisfies MessageTree;
+
+type DeepStringLeaves<T> = T extends string
+  ? string
+  : T extends readonly unknown[]
+    ? {[I in keyof T]: DeepStringLeaves<T[I]>}
+    : T extends object
+      ? {[K in keyof T]: DeepStringLeaves<T[K]>}
+      : T;
+
+export type EnglishMessages = DeepStringLeaves<typeof en>;

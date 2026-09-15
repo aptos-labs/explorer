@@ -5,6 +5,7 @@ export {
 } from "./I18nProvider";
 export {
   isSupportedLocale,
+  localeFromBrowserTag,
   normalizeLocalePreference,
   resolveLocale,
 } from "./detectLocale";

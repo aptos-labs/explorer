@@ -914,9 +914,9 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Control** | "Language" select on `/settings`: **Browser default** (`auto`) or a registered catalog. English (`en`) ships with the app. |
+| **Control** | "Language" select on `/settings`: **Browser default** (`auto`) or a registered catalog. Shipped catalogs: English (`en`), Simplified Chinese (`zh`), Filipino (`fil`), Spanish (`es`), French (`fr`), German (`de`), Japanese (`ja`), Korean (`ko`), Russian (`ru`), Brazilian Portuguese (`pt`), Arabic (`ar`, RTL), Hindi (`hi`). |
 | **Scope** | Translated chrome (header, nav, footer, skip link, search placeholder/helper/type chips), settings copy, and the in-app user guide. On-chain identifiers and most entity-page copy remain English until those surfaces are migrated onto the same catalogs. |
-| **Resolution** | Explicit catalog wins. `auto` matches `navigator.languages` primary subtags against `SUPPORTED_LOCALES`, then falls back to `en`. |
+| **Resolution** | Explicit catalog wins. `auto` maps `navigator.languages` tags (including `tl`→`fil`, `zh-CN`/`zh-Hans`→`zh`, `pt-BR`→`pt`) onto `SUPPORTED_LOCALES`. Traditional Chinese tags (`zh-Hant`, `zh-TW`, `zh-HK`, `zh-MO`) do not select Simplified Chinese; they fall through to the next browser language or English. |
 | **Persistence** | `localePreference` on `ExplorerClientSettings`, stored in `aptos-explorer-locale` localStorage independently of API keys. |
 | **Document language** | SSR `html lang="en"`; after hydration `document.documentElement.lang` / `dir` follow the resolved locale. |
 
@@ -1354,9 +1354,9 @@ top of the HTML site.
 | Aspect | Detail |
 |--------|--------|
 | **Library** | In-repo helpers in `app/i18n/` (no extra npm i18n dependency). Nested JSON-like catalogs, `{name}` interpolation, `t` / `tList`, and a small inline markup parser (`**bold**`, `` `code` ``, `[label](href)`). |
-| **English source** | `app/i18n/messages/en.ts` is the complete catalog for chrome, settings, search tokens, and the user guide. |
+| **English source** | `app/i18n/messages/en.ts` is the complete catalog for chrome, settings, search tokens, and the user guide. Other locales live beside it (`zh.ts`, `fil.ts`, `es.ts`, `fr.ts`, `de.ts`, `ja.ts`, `ko.ts`, `ru.ts`, `pt.ts`, `ar.ts`, `hi.ts`) and must match the English key tree. |
 | **Adding a locale** | Add a catalog file, register it in `SUPPORTED_LOCALES` / `messageCatalogs` / `LOCALE_META`. Missing keys fall back to English. |
-| **Provider** | `I18nProvider` (inside `ExplorerSettingsProvider`) resolves locale and updates `document.documentElement.lang` / `dir` after hydration. `useTranslation()` falls back to English when no provider is mounted. |
+| **Provider** | `I18nProvider` (inside `ExplorerSettingsProvider`) resolves locale and updates `document.documentElement.lang` / `dir` (and `og:locale` when present) after hydration. `useTranslation()` falls back to English when no provider is mounted. |
 | **Formatting helpers** | `formatInteger` / `formatDateTime` wrap `Intl` with the active locale for incremental migration of number/date UI. |
 
 ---
@@ -1369,7 +1369,7 @@ top of the HTML site.
 
 | Aspect | Detail |
 |--------|--------|
-| **Content** | Article-style guide covering what the explorer is, chrome, search, networks, transactions, accounts/objects, modules, blocks, validators, assets, analytics, releases, Run Script, configuration, wallet, verification, URLs/agents, glossary, and troubleshooting. Copy lives in the English i18n catalog so future locales can translate it. |
+| **Content** | Article-style guide covering what the explorer is, chrome, search, networks, transactions, accounts/objects, modules, blocks, validators, assets, analytics, releases, Run Script, configuration, wallet, verification, URLs/agents, glossary, and troubleshooting. Copy lives in i18n catalogs (English source plus shipped translations). |
 | **TOC** | Sticky "On this page" nav with hash links to each section. |
 | **Layout** | The guide column is width-constrained (`min-width: 0`, wrapping long tokens) so it does not extend the page sideways. |
 | **Navigation** | Header help icon (desktop), overflow menu (compact), footer link. WebMCP `open_guide` tool. |
@@ -1437,7 +1437,7 @@ top of the HTML site.
 | `app/i18n/detectLocale.test.ts` | FEAT-I18N-001 (locale preference and browser-language resolution) |
 | `app/i18n/format.test.ts` | FEAT-I18N-001 (`Intl` number/date helpers) |
 | `app/i18n/inlineMarkup.test.ts` | FEAT-I18N-001 (bold/code/link markup and internal vs external hrefs) |
-| `app/i18n/messages.en.test.ts` | FEAT-I18N-001 / FEAT-GUIDE-001 (English chrome and guide titles) |
+| `app/i18n/messages.en.test.ts` | FEAT-I18N-001 / FEAT-GUIDE-001 (English chrome and guide titles; shipped locale key/placeholder parity) |
 | `app/pages/Guide/guideSections.test.ts` | FEAT-GUIDE-001 (section ids, titles, body copy) |
 | `app/utils/routerParams.test.ts` | FEAT-ROUTING-003 (`pathSplatToSegments` normalization) |
 | `app/api/hooks/aptosFeatureFlagsUpstream.test.ts` | FEAT-RELEASES-001 (upstream Rust enum parse for unlisted feature flag names) |

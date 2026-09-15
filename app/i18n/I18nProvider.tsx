@@ -98,8 +98,12 @@ export function I18nProvider({children}: {children: ReactNode}) {
     if (typeof document === "undefined") {
       return;
     }
-    document.documentElement.lang = locale;
+    document.documentElement.lang = LOCALE_META[locale].htmlLang;
     document.documentElement.dir = LOCALE_META[locale].dir;
+    const ogLocale = document.querySelector('meta[property="og:locale"]');
+    if (ogLocale) {
+      ogLocale.setAttribute("content", LOCALE_META[locale].ogLocale);
+    }
   }, [locale]);
 
   const value = useMemo<I18nContextValue>(
