@@ -8,18 +8,40 @@ import {
 /** Browser tags whose primary subtag should use another registered catalog. */
 const BROWSER_PRIMARY_ALIASES: Record<string, SupportedLocale> = {
   tl: "fil",
+  iw: "he",
 };
 
+/** Regions that use European Portuguese (including lusophone Africa). */
+const EUROPEAN_PORTUGUESE_REGIONS = new Set([
+  "pt",
+  "ao",
+  "mz",
+  "cv",
+  "gw",
+  "st",
+  "gq",
+  "tl",
+]);
+
+export function canonicalSupportedLocale(
+  value: string,
+): SupportedLocale | undefined {
+  const normalized = value.trim().toLowerCase().replaceAll("_", "-");
+  return SUPPORTED_LOCALES.find(
+    (locale) => locale.toLowerCase() === normalized,
+  );
+}
+
 export function isSupportedLocale(value: string): value is SupportedLocale {
-  return (SUPPORTED_LOCALES as readonly string[]).includes(value);
+  return canonicalSupportedLocale(value) !== undefined;
 }
 
 export function normalizeLocalePreference(value: unknown): LocalePreference {
   if (value === "auto") {
     return "auto";
   }
-  if (typeof value === "string" && isSupportedLocale(value)) {
-    return value;
+  if (typeof value === "string") {
+    return canonicalSupportedLocale(value) ?? "auto";
   }
   return "auto";
 }
@@ -39,6 +61,14 @@ function isTraditionalChinese(normalized: string): boolean {
   );
 }
 
+function portugueseCatalog(normalized: string): SupportedLocale {
+  const region = normalized.split("-")[1];
+  if (region && EUROPEAN_PORTUGUESE_REGIONS.has(region)) {
+    return "pt-PT";
+  }
+  return "pt";
+}
+
 /**
  * Map a BCP 47 language tag from the browser to a registered catalog, if any.
  */
@@ -48,12 +78,9 @@ export function localeFromBrowserTag(tag: string): SupportedLocale | undefined {
     return undefined;
   }
 
-  if (isSupportedLocale(normalized)) {
-    return normalized;
-  }
-
-  if (isTraditionalChinese(normalized)) {
-    return undefined;
+  const exact = canonicalSupportedLocale(normalized);
+  if (exact) {
+    return exact;
   }
 
   const primary = normalized.split("-")[0];
@@ -61,16 +88,20 @@ export function localeFromBrowserTag(tag: string): SupportedLocale | undefined {
     return undefined;
   }
 
+  if (primary === "zh") {
+    return isTraditionalChinese(normalized) ? "zh-Hant" : "zh";
+  }
+
+  if (primary === "pt") {
+    return portugueseCatalog(normalized);
+  }
+
   const aliased = BROWSER_PRIMARY_ALIASES[primary];
-  if (aliased && isSupportedLocale(aliased)) {
+  if (aliased) {
     return aliased;
   }
 
-  if (isSupportedLocale(primary)) {
-    return primary;
-  }
-
-  return undefined;
+  return canonicalSupportedLocale(primary);
 }
 
 /**
@@ -82,8 +113,11 @@ export function resolveLocale(
   preference: LocalePreference,
   browserLanguages: readonly string[] = [],
 ): SupportedLocale {
-  if (preference !== "auto" && isSupportedLocale(preference)) {
-    return preference;
+  if (preference !== "auto") {
+    const explicit = canonicalSupportedLocale(preference);
+    if (explicit) {
+      return explicit;
+    }
   }
 
   for (const tag of browserLanguages) {

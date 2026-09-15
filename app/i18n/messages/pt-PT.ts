@@ -87,8 +87,7 @@ export const ptPT = {
       whyAriaLabel: "Porquê usar a sua própria chave de API?",
       popover:
         "O explorador utiliza por predefinição uma chave de API partilhada do geomi.dev. Adicionar a sua concede um limite de taxa dedicado, útil se navega bastante ou recebe HTTP 429.",
-      popoverManage:
-        "Crie e gira chaves em [geomi.dev](https://geomi.dev).",
+      popoverManage: "Crie e gira chaves em [geomi.dev](https://geomi.dev).",
       description:
         "Chaves de API geomi.dev opcionais por rede. Utilizadas apenas no seu navegador. Deixe uma rede vazia para utilizar a chave predefinida da compilação (se existir). Por predefinição, as substituições ficam na sessão atual do navegador e são apagadas quando a sessão termina.",
       fieldLabel: "Chave de API de {network}",

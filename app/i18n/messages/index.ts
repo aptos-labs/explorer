@@ -7,17 +7,27 @@ import {en} from "./en";
 import {es} from "./es";
 import {fil} from "./fil";
 import {fr} from "./fr";
+import {he} from "./he";
 import {hi} from "./hi";
 import {id} from "./id";
+import {it} from "./it";
 import {ja} from "./ja";
 import {ko} from "./ko";
+import {ms} from "./ms";
+import {nl} from "./nl";
+import {pl} from "./pl";
 import {pt} from "./pt";
+import {ptPT} from "./pt-PT";
 import {ru} from "./ru";
 import {sw} from "./sw";
+import {ta} from "./ta";
 import {th} from "./th";
 import {tr} from "./tr";
+import {uk} from "./uk";
+import {ur} from "./ur";
 import {vi} from "./vi";
 import {zh} from "./zh";
+import {zhHant} from "./zh-Hant";
 
 export const messageCatalogs: Record<SupportedLocale, MessageTree> = {
   en,
@@ -38,6 +48,16 @@ export const messageCatalogs: Record<SupportedLocale, MessageTree> = {
   tr,
   bn,
   sw,
+  "zh-Hant": zhHant,
+  it,
+  ms,
+  ta,
+  uk,
+  nl,
+  pl,
+  he,
+  ur,
+  "pt-PT": ptPT,
 };
 
 export {
@@ -48,15 +68,25 @@ export {
   es,
   fil,
   fr,
+  he,
   hi,
   id,
+  it,
   ja,
   ko,
+  ms,
+  nl,
+  pl,
   pt,
+  ptPT,
   ru,
   sw,
+  ta,
   th,
   tr,
+  uk,
+  ur,
   vi,
   zh,
+  zhHant,
 };

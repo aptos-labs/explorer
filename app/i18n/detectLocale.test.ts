@@ -18,6 +18,17 @@ describe("isSupportedLocale", () => {
     expect(isSupportedLocale("tr")).toBe(true);
     expect(isSupportedLocale("bn")).toBe(true);
     expect(isSupportedLocale("sw")).toBe(true);
+    expect(isSupportedLocale("zh-Hant")).toBe(true);
+    expect(isSupportedLocale("zh-hant")).toBe(true);
+    expect(isSupportedLocale("pt-PT")).toBe(true);
+    expect(isSupportedLocale("it")).toBe(true);
+    expect(isSupportedLocale("ms")).toBe(true);
+    expect(isSupportedLocale("ta")).toBe(true);
+    expect(isSupportedLocale("uk")).toBe(true);
+    expect(isSupportedLocale("nl")).toBe(true);
+    expect(isSupportedLocale("pl")).toBe(true);
+    expect(isSupportedLocale("he")).toBe(true);
+    expect(isSupportedLocale("ur")).toBe(true);
   });
 
   it("rejects unknown tags", () => {
@@ -31,6 +42,8 @@ describe("normalizeLocalePreference", () => {
     expect(normalizeLocalePreference("auto")).toBe("auto");
     expect(normalizeLocalePreference("en")).toBe("en");
     expect(normalizeLocalePreference("fr")).toBe("fr");
+    expect(normalizeLocalePreference("zh-hant")).toBe("zh-Hant");
+    expect(normalizeLocalePreference("pt-pt")).toBe("pt-PT");
   });
 
   it("falls back to auto for invalid values", () => {
@@ -53,6 +66,14 @@ describe("localeFromBrowserTag", () => {
     expect(localeFromBrowserTag("tr-TR")).toBe("tr");
     expect(localeFromBrowserTag("bn-BD")).toBe("bn");
     expect(localeFromBrowserTag("sw-KE")).toBe("sw");
+    expect(localeFromBrowserTag("it-IT")).toBe("it");
+    expect(localeFromBrowserTag("ms-MY")).toBe("ms");
+    expect(localeFromBrowserTag("ta-IN")).toBe("ta");
+    expect(localeFromBrowserTag("uk-UA")).toBe("uk");
+    expect(localeFromBrowserTag("nl-NL")).toBe("nl");
+    expect(localeFromBrowserTag("pl-PL")).toBe("pl");
+    expect(localeFromBrowserTag("he-IL")).toBe("he");
+    expect(localeFromBrowserTag("ur-PK")).toBe("ur");
   });
 
   it("maps Tagalog to Filipino", () => {
@@ -61,10 +82,25 @@ describe("localeFromBrowserTag", () => {
     expect(localeFromBrowserTag("fil-PH")).toBe("fil");
   });
 
-  it("does not map Traditional Chinese to Simplified Chinese", () => {
-    expect(localeFromBrowserTag("zh-TW")).toBeUndefined();
-    expect(localeFromBrowserTag("zh-Hant")).toBeUndefined();
-    expect(localeFromBrowserTag("zh-HK")).toBeUndefined();
+  it("maps Traditional Chinese to the zh-Hant catalog", () => {
+    expect(localeFromBrowserTag("zh-TW")).toBe("zh-Hant");
+    expect(localeFromBrowserTag("zh-Hant")).toBe("zh-Hant");
+    expect(localeFromBrowserTag("zh-HK")).toBe("zh-Hant");
+    expect(localeFromBrowserTag("zh-MO")).toBe("zh-Hant");
+  });
+
+  it("maps European and African Portuguese to pt-PT, Brazilian to pt", () => {
+    expect(localeFromBrowserTag("pt-PT")).toBe("pt-PT");
+    expect(localeFromBrowserTag("pt-AO")).toBe("pt-PT");
+    expect(localeFromBrowserTag("pt-MZ")).toBe("pt-PT");
+    expect(localeFromBrowserTag("pt-CV")).toBe("pt-PT");
+    expect(localeFromBrowserTag("pt")).toBe("pt");
+    expect(localeFromBrowserTag("pt-BR")).toBe("pt");
+  });
+
+  it("maps legacy Hebrew iw to he", () => {
+    expect(localeFromBrowserTag("iw")).toBe("he");
+    expect(localeFromBrowserTag("iw-IL")).toBe("he");
   });
 });
 
@@ -82,7 +118,7 @@ describe("resolveLocale", () => {
 
   it("falls back to English when no browser language is supported", () => {
     expect(resolveLocale("auto", ["zz-ZZ"])).toBe("en");
-    expect(resolveLocale("auto", ["zh-TW"])).toBe("en");
     expect(resolveLocale("auto", [])).toBe("en");
+    expect(resolveLocale("auto", ["zh-TW"])).toBe("zh-Hant");
   });
 });

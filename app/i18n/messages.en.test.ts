@@ -83,6 +83,8 @@ describe("FEAT-I18N-001 — shipped locale catalogs", () => {
       expect(messageCatalogs[locale]).toBeDefined();
     }
     expect(LOCALE_META.ar.dir).toBe("rtl");
+    expect(LOCALE_META.he.dir).toBe("rtl");
+    expect(LOCALE_META.ur.dir).toBe("rtl");
   });
 
   it("keeps the same message keys as English", () => {

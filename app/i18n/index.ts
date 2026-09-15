@@ -4,6 +4,7 @@ export {
   useTranslation,
 } from "./I18nProvider";
 export {
+  canonicalSupportedLocale,
   isSupportedLocale,
   localeFromBrowserTag,
   normalizeLocalePreference,

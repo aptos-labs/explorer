@@ -17,6 +17,16 @@ export const SUPPORTED_LOCALES = [
   "tr",
   "bn",
   "sw",
+  "zh-Hant",
+  "it",
+  "ms",
+  "ta",
+  "uk",
+  "nl",
+  "pl",
+  "he",
+  "ur",
+  "pt-PT",
 ] as const;
 
 export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
@@ -140,6 +150,66 @@ export const LOCALE_META: Record<
     nativeName: "Kiswahili",
     ogLocale: "sw_KE",
     htmlLang: "sw",
+    dir: "ltr",
+  },
+  "zh-Hant": {
+    nativeName: "繁體中文",
+    ogLocale: "zh_TW",
+    htmlLang: "zh-Hant",
+    dir: "ltr",
+  },
+  it: {
+    nativeName: "Italiano",
+    ogLocale: "it_IT",
+    htmlLang: "it",
+    dir: "ltr",
+  },
+  ms: {
+    nativeName: "Bahasa Melayu",
+    ogLocale: "ms_MY",
+    htmlLang: "ms",
+    dir: "ltr",
+  },
+  ta: {
+    nativeName: "தமிழ்",
+    ogLocale: "ta_IN",
+    htmlLang: "ta",
+    dir: "ltr",
+  },
+  uk: {
+    nativeName: "Українська",
+    ogLocale: "uk_UA",
+    htmlLang: "uk",
+    dir: "ltr",
+  },
+  nl: {
+    nativeName: "Nederlands",
+    ogLocale: "nl_NL",
+    htmlLang: "nl",
+    dir: "ltr",
+  },
+  pl: {
+    nativeName: "Polski",
+    ogLocale: "pl_PL",
+    htmlLang: "pl",
+    dir: "ltr",
+  },
+  he: {
+    nativeName: "עברית",
+    ogLocale: "he_IL",
+    htmlLang: "he",
+    dir: "rtl",
+  },
+  ur: {
+    nativeName: "اردو",
+    ogLocale: "ur_PK",
+    htmlLang: "ur",
+    dir: "rtl",
+  },
+  "pt-PT": {
+    nativeName: "Português (Portugal)",
+    ogLocale: "pt_PT",
+    htmlLang: "pt-PT",
     dir: "ltr",
   },
 };

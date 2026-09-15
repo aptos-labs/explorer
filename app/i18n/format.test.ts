@@ -65,4 +65,13 @@ describe("formatDateTime", () => {
     expect(formatDateTime(date, "id")).toBe("14 Sep 2026, 12.00");
     expect(formatDateTime(date, "bn")).toContain("১৪ সেপ, ২০২৬");
   });
+
+  it("uses European Portuguese date order and Dutch grouping", () => {
+    const date = new Date("2026-09-14T12:00:00.000Z");
+    expect(formatDateTime(date, "pt-PT")).toBe("14/09/2026, 12:00");
+    expect(formatNumber(1_234.5, "nl", {minimumFractionDigits: 1})).toBe(
+      "1.234,5",
+    );
+    expect(formatDateTime(date, "zh-Hant")).toContain("2026");
+  });
 });

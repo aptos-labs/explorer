@@ -26,8 +26,7 @@ export const pl = {
       releasesTitle:
         "Wyświetl wdrożenia sieci, AIP oraz wydania SDK i narzędzi",
       runScript: "Uruchom skrypt",
-      runScriptTitle:
-        "Buduj, symuluj i wykonuj skrypt Move (zaawansowane)",
+      runScriptTitle: "Buduj, symuluj i wykonuj skrypt Move (zaawansowane)",
       settings: "Ustawienia",
       guide: "Przewodnik użytkownika",
     },
@@ -96,8 +95,7 @@ export const pl = {
       fieldPlaceholder: "Wklej klucz dla {network} (opcjonalnie)",
       showKeys: "Pokaż klucze API",
       hideKeys: "Ukryj klucze API",
-      getKey:
-        "Nie masz klucza? [Pobierz go na geomi.dev](https://geomi.dev)",
+      getKey: "Nie masz klucza? [Pobierz go na geomi.dev](https://geomi.dev)",
       remember: "Zapamiętaj klucze API na tym urządzeniu",
       rememberWarning:
         "Zapamiętywanie kluczy zapisuje je w lokalnej pamięci tej przeglądarki. Nie włączaj tego na współdzielonych lub niezaufanych urządzeniach.",
