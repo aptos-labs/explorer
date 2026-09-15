@@ -3,7 +3,12 @@ import {createTranslator} from "./I18nProvider";
 import {isFullUiLocale, LOCALE_META, SUPPORTED_LOCALES} from "./locales";
 import {en} from "./messages/en";
 import {messageCatalogs} from "./messages";
-import type {MessageTree, MessageValue} from "./translate";
+import {
+  getMessage,
+  messagePlaceholders,
+  type MessageTree,
+  type MessageValue,
+} from "./translate";
 
 function isMessageList(value: MessageValue): value is readonly string[] {
   return Array.isArray(value);
@@ -27,28 +32,6 @@ function collectKeys(
     }
   }
   return keys;
-}
-
-function placeholders(value: string): string[] {
-  return [...value.matchAll(/\{(\w+)\}/g)].map((match) => match[1]).sort();
-}
-
-function visitLeaves(
-  tree: MessageTree,
-  visit: (key: string, value: string | readonly string[]) => void,
-  prefix = "",
-): void {
-  for (const [part, value] of Object.entries(tree) as [
-    string,
-    MessageValue,
-  ][]) {
-    const key = prefix ? `${prefix}.${part}` : part;
-    if (typeof value === "string" || isMessageList(value)) {
-      visit(key, value);
-    } else {
-      visitLeaves(value, visit, key);
-    }
-  }
 }
 
 describe("FEAT-I18N-001 — English catalog", () => {
@@ -150,31 +133,28 @@ describe("FEAT-I18N-001 — shipped locale catalogs", () => {
   });
 
   it("preserves interpolation placeholders from English for keys each catalog defines", () => {
-    visitLeaves(en, (key, englishValue) => {
-      const englishStrings = Array.isArray(englishValue)
-        ? englishValue
-        : [englishValue];
-      for (const locale of SUPPORTED_LOCALES) {
-        if (locale === "en") {
-          continue;
-        }
-        const localeKeys = collectKeys(messageCatalogs[locale]);
+    const localeKeySets = new Map(
+      SUPPORTED_LOCALES.filter((locale) => locale !== "en").map((locale) => [
+        locale,
+        collectKeys(messageCatalogs[locale]),
+      ]),
+    );
+    for (const [key] of englishKeys) {
+      const englishValue = getMessage(en, key);
+      expect(englishValue, key).toBeDefined();
+      const englishPlaceholders = messagePlaceholders(englishValue ?? "");
+      for (const [locale, localeKeys] of localeKeySets) {
         if (!localeKeys.has(key)) {
           continue;
         }
-        const {t, tList} = createTranslator(locale);
-        const localized = Array.isArray(englishValue) ? tList(key) : [t(key)];
-        expect(localized.length, `${locale}:${key}`).toBe(
-          englishStrings.length,
-        );
-        englishStrings.forEach((source, index) => {
-          expect(
-            placeholders(localized[index]),
-            `${locale}:${key}[${index}]`,
-          ).toEqual(placeholders(source));
-        });
+        const localeValue = getMessage(messageCatalogs[locale], key);
+        expect(localeValue, `${locale}:${key}`).toBeDefined();
+        expect(
+          messagePlaceholders(localeValue ?? ""),
+          `${locale}:${key}`,
+        ).toEqual(englishPlaceholders);
       }
-    });
+    }
   });
 
   it("translates chrome titles away from English for non-English locales", () => {
