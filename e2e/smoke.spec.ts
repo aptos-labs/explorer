@@ -22,6 +22,11 @@ test.describe("smoke", () => {
     await expect(page).toHaveURL(/\/blocks/);
   });
 
+  test("header language select is available", async ({page}) => {
+    await page.goto("/");
+    await expect(page.getByRole("combobox", {name: "Language"})).toBeVisible();
+  });
+
   test("user guide page is reachable", async ({page}) => {
     await page.goto("/guide");
     await expect(

@@ -21,8 +21,10 @@ import {WalletConnector} from "../WalletConnector";
 /**
  * Compact-viewport header menu (`xs`–`md`, below the `lg` breakpoint).
  * Mirrors inline `Nav` links, User Guide, Settings, the theme toggle, and the wallet
- * connector. On wide viewports (`lg+`) the toolbar shows those controls
- * directly (`ColorModeToggleButton`, Help, Settings icon, `Nav`, `WalletConnector`).
+ * connector. Language switching stays in the toolbar (`LanguageSelect`, next to
+ * `NetworkSelect`) on every viewport. On wide viewports (`lg+`) the toolbar shows
+ * those other controls directly (`ColorModeToggleButton`, Help, Settings icon, `Nav`,
+ * `WalletConnector`).
  *
  * Previously named `NavMobile`, then `HeaderOverflowMenu` when it briefly
  * rendered on all viewports as a preferences drop-down.

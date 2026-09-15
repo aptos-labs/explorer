@@ -62,12 +62,13 @@ The app shell that wraps every page.
 | **Mobile Nav** | Hamburger opens `HeaderOverflowMenu` with the same links, plus User Guide, Settings, theme toggle, and Wallet. |
 | **Search** | Header autocomplete search (see FEAT-SEARCH). |
 | **Network selector** | Dropdown to switch `?network=` param (see FEAT-NETWORK). |
+| **Language selector** | Dropdown next to the network selector to switch display language immediately (see FEAT-SETTINGS-003). |
 | **Theme toggle** | Light/dark icon button (see FEAT-THEME). |
 | **User guide** | Help icon (desktop) and overflow-menu item (compact) link to `/guide` (see FEAT-GUIDE-001). |
 | **Settings** | Gear icon links to `/settings` page (see FEAT-SETTINGS-001). Rate Limit Drawer also links to `/settings`. |
 | **Wallet connector** | Connect/disconnect wallet button (see FEAT-WALLET). |
 | **Feature bar** | Colored banner when running on a non-production feature branch (see FEAT-FLAGS-004). |
-| **No horizontal page scroll** | The `lg+` toolbar (nav, network, help, settings, theme, wallet) fits the viewport so the document does not scroll sideways into empty space. |
+| **No horizontal page scroll** | The `lg+` toolbar (nav, network, language, help, settings, theme, wallet) fits the viewport so the document does not scroll sideways into empty space. |
 
 ### FEAT-CHROME-002 — Footer
 
@@ -914,10 +915,10 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Control** | "Language" select on `/settings`: **Browser default** (`auto`) or a registered catalog. Shipped catalogs: English (`en`), Simplified Chinese (`zh`), Traditional Chinese (`zh-Hant`), Filipino (`fil`), Spanish (`es`), French (`fr`), German (`de`), Japanese (`ja`), Korean (`ko`), Russian (`ru`), Brazilian Portuguese (`pt`), European Portuguese (`pt-PT`), Arabic (`ar`, RTL), Hindi (`hi`), Thai (`th`), Indonesian (`id`), Vietnamese (`vi`), Turkish (`tr`), Bengali (`bn`), Swahili (`sw`), Italian (`it`), Malay (`ms`), Tamil (`ta`), Ukrainian (`uk`), Dutch (`nl`), Polish (`pl`), Hebrew (`he`, RTL), Urdu (`ur`, RTL), Hausa (`ha`), and Zulu (`zu`). |
+| **Control** | Header dropdown next to the network selector (`LanguageSelect`) applies the catalog immediately. `/settings` has the same control (labeled **Display language**). Both offer **Browser default** (`auto`) or a registered catalog. Shipped catalogs: English (`en`), Simplified Chinese (`zh`), Traditional Chinese (`zh-Hant`), Filipino (`fil`), Spanish (`es`), French (`fr`), German (`de`), Japanese (`ja`), Korean (`ko`), Russian (`ru`), Brazilian Portuguese (`pt`), European Portuguese (`pt-PT`), Arabic (`ar`, RTL), Hindi (`hi`), Thai (`th`), Indonesian (`id`), Vietnamese (`vi`), Turkish (`tr`), Bengali (`bn`), Swahili (`sw`), Italian (`it`), Malay (`ms`), Tamil (`ta`), Ukrainian (`uk`), Dutch (`nl`), Polish (`pl`), Hebrew (`he`, RTL), Urdu (`ur`, RTL), Hausa (`ha`), and Zulu (`zu`). |
 | **Scope** | Translated chrome (header, nav, footer, skip link, search placeholder/helper/type chips), settings copy, and the in-app user guide. On-chain identifiers and most entity-page copy remain English until those surfaces are migrated onto the same catalogs. |
 | **Resolution** | Explicit catalog wins (case-insensitive). `auto` maps `navigator.languages` tags onto `SUPPORTED_LOCALES`, including `tl`→`fil`, `iw`→`he`, `zh-CN`/`zh-Hans`→`zh`, `zh-Hant`/`zh-TW`/`zh-HK`/`zh-MO`→`zh-Hant`, `pt-BR`→`pt`, and `pt-PT` plus lusophone African regions (`pt-AO`, `pt-MZ`, `pt-CV`, `pt-GW`, `pt-ST`)→`pt-PT`. |
-| **Persistence** | `localePreference` on `ExplorerClientSettings`, stored in `aptos-explorer-locale` localStorage independently of API keys. |
+| **Persistence** | `localePreference` on `ExplorerClientSettings`, stored in `aptos-explorer-locale` localStorage independently of API keys. The header (and Settings) language dropdown writes this immediately; it does not wait for Settings **Save**. |
 | **Document language** | SSR `html lang="en"`; after hydration `document.documentElement.lang` / `dir` follow the resolved locale. |
 
 ---
@@ -1438,6 +1439,7 @@ top of the HTML site.
 | `app/i18n/format.test.ts` | FEAT-I18N-001 (`Intl` number/date helpers) |
 | `app/i18n/inlineMarkup.test.ts` | FEAT-I18N-001 (bold/code/link markup and internal vs external hrefs) |
 | `app/i18n/messages.en.test.ts` | FEAT-I18N-001 / FEAT-GUIDE-001 (English chrome and guide titles; shipped locale key/placeholder parity) |
+| `app/components/layout/LanguageSelect.test.tsx` | FEAT-SETTINGS-003 / FEAT-CHROME-001 (header language dropdown lists catalogs and persists `aptos-explorer-locale`) |
 | `app/pages/Guide/guideSections.test.ts` | FEAT-GUIDE-001 (section ids, titles, body copy) |
 | `app/utils/routerParams.test.ts` | FEAT-ROUTING-003 (`pathSplatToSegments` normalization) |
 | `app/api/hooks/aptosFeatureFlagsUpstream.test.ts` | FEAT-RELEASES-001 (upstream Rust enum parse for unlisted feature flag names) |
@@ -1491,7 +1493,7 @@ top of the HTML site.
 | `app/pages/Transaction/Tabs/Components/decodeMultisigPayload.test.ts` | FEAT-TXN-004 (BCS decoding of multisig payload bytes into an entry function; empty/invalid fallbacks) |
 | `app/pages/Transaction/Tabs/Components/decodeMoveArgument.test.ts` | FEAT-TXN-011 / FEAT-TXN-004 (ABI-typed BCS argument decoding: address, ints, bool, String, vector, Object, Option; positional alignment and invalid/leftover fallbacks) |
 | `app/pages/Transaction/Tabs/Components/useEntryFunctionArgNames.test.ts` | FEAT-TXN-011 (entry function arg / type-param name resolution from Move source, signer-slot dropping, no-source fallback) |
-| `e2e/smoke.spec.ts` | FEAT-GUIDE-001 / FEAT-CHROME-001 (Playwright: `/guide` loads; document does not overflow horizontally on desktop and a 375px viewport) |
+| `e2e/smoke.spec.ts` | FEAT-GUIDE-001 / FEAT-CHROME-001 / FEAT-SETTINGS-003 (Playwright: `/guide` loads; document does not overflow horizontally on desktop and a 375px viewport; header language combobox is present) |
 | `e2e/transaction-balance-change.spec.ts` | FEAT-TXN-003 (Playwright: testnet Balance Change tab loads indexer FA activities; asserts gas-fee row; skips outside CI when testnet gateway returns 401 for local preview origin) |
 | `e2e/transaction-payments.spec.ts` | FEAT-TXN-016 (Playwright: Payments tab hidden on fees-only testnet txn; shown and explains a live P2P transfer) |
 | `e2e/encrypted-transaction-localnet.spec.ts` | FEAT-TXN-002 / FEAT-TXN-005 (Playwright: submit encrypted transfer on localnet, assert overview Encryption chips + Coin Transfer + Payload tab; gated by `APTOS_LOCALNET=1`) |
