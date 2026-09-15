@@ -2,7 +2,8 @@ import type {MessageTree} from "../translate";
 
 /**
  * English is the source catalog. Add another file (e.g. `es.ts`) and register
- * it in `app/i18n/messages/index.ts` plus `SUPPORTED_LOCALES` to ship a locale.
+ * it in `app/i18n/messages/index.ts` plus `SUPPORTED_LOCALES`. Update the
+ * shipped-locales table in `AGENTS.md` in the same change.
  */
 export const en = {
   chrome: {

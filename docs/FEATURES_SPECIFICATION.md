@@ -1356,7 +1356,7 @@ top of the HTML site.
 |--------|--------|
 | **Library** | In-repo helpers in `app/i18n/` (no extra npm i18n dependency). Nested JSON-like catalogs, `{name}` interpolation, `t` / `tList`, and a small inline markup parser (`**bold**`, `` `code` ``, `[label](href)`). |
 | **English source** | `app/i18n/messages/en.ts` is the complete catalog for chrome, settings, search tokens, and the user guide. Other locales live beside it and must match the English key tree; automated tests enforce key, list-length, and interpolation-placeholder parity for every registered catalog. |
-| **Adding a locale** | Add a catalog file, register it in `SUPPORTED_LOCALES` / `messageCatalogs` / `LOCALE_META`. Missing keys fall back to English. |
+| **Adding a locale** | Add a catalog file, register it in `SUPPORTED_LOCALES` / `messageCatalogs` / `LOCALE_META`, and update the shipped-locales table in `AGENTS.md` in the same PR (`app/i18n/agentsLocales.test.ts` fails if the list diverges). Also update FEAT-SETTINGS-003 and `CHANGELOG.md`. Missing keys fall back to English. |
 | **Provider** | `I18nProvider` (inside `ExplorerSettingsProvider`) resolves locale and updates `document.documentElement.lang` / `dir` (and `og:locale` when present) after hydration. `useTranslation()` falls back to English when no provider is mounted. |
 | **Formatting helpers** | Locale-bound `formatNumber`, `formatInteger`, and `formatDateTime` wrap `Intl`. Locale metadata selects intended regional tags (for example `pt-BR`) so decimal separators, grouping (including Indian grouping), date order, and 12/24-hour conventions follow the selected locale. Date/time output is pinned to UTC to remain deterministic between SSR and hydration. |
 
@@ -1439,6 +1439,7 @@ top of the HTML site.
 | `app/i18n/format.test.ts` | FEAT-I18N-001 (`Intl` number/date helpers) |
 | `app/i18n/inlineMarkup.test.ts` | FEAT-I18N-001 (bold/code/link markup and internal vs external hrefs) |
 | `app/i18n/messages.en.test.ts` | FEAT-I18N-001 / FEAT-GUIDE-001 (English chrome and guide titles; shipped locale key/placeholder parity) |
+| `app/i18n/agentsLocales.test.ts` | FEAT-I18N-001 (`AGENTS.md` shipped-locales table matches `SUPPORTED_LOCALES` / `LOCALE_META`) |
 | `app/components/layout/LanguageSelect.test.tsx` | FEAT-SETTINGS-003 / FEAT-CHROME-001 (header language dropdown lists catalogs and persists `aptos-explorer-locale`) |
 | `app/pages/Guide/guideSections.test.ts` | FEAT-GUIDE-001 (section ids, titles, body copy) |
 | `app/utils/routerParams.test.ts` | FEAT-ROUTING-003 (`pathSplatToSegments` normalization) |
