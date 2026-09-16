@@ -4,6 +4,7 @@ import type {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
 import ChartTitle from "../Components/ChartTitle";
 import LineChart from "../Components/LineChart";
 import {getLabels} from "../utils";
+import {useTranslation} from "../../../i18n";
 
 export function getDataset(data: DailyPeakTPSData[], days: number): number[] {
   return data.slice(-days).map((dailyData) => dailyData.max_tps_15_blocks);
@@ -18,7 +19,8 @@ export default function DailyPeakTPSChart({
   data,
   days,
 }: DailyPeakTPSChartProps) {
-  const labels = getLabels(data, days);
+  const {locale} = useTranslation();
+  const labels = getLabels(data, days, locale);
   const dataset = getDataset(data, days);
 
   return (

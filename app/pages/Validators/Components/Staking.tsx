@@ -17,7 +17,7 @@ type StakingProps = {
 };
 
 export default function Staking({isSkeletonLoading}: StakingProps) {
-  const {t} = useTranslation();
+  const {t, locale} = useTranslation();
   const {totalVotingPower} = useGetValidatorSet();
   const {rewardsRateYearly} = useGetStakingRewardsRate();
 
@@ -32,7 +32,7 @@ export default function Staking({isSkeletonLoading}: StakingProps) {
       >
         <Subtitle>
           {totalVotingPower
-            ? getFormattedBalanceStr(totalVotingPower, undefined, 0)
+            ? getFormattedBalanceStr(totalVotingPower, undefined, 0, locale)
             : "-"}
         </Subtitle>
         <Body color="inherit">{t("staking.aptStaked")}</Body>

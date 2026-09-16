@@ -459,6 +459,7 @@ export const th = {
     showNArguments: "แสดง {count} อาร์กิวเมนต์",
     showNArgumentsPlural: "แสดง {count} อาร์กิวเมนต์",
     octasParens: "({amount} octas)",
+    gasUnits: "{count} หน่วยแก๊ส",
   },
   network: {
     selectAriaLabel: "เลือกเครือข่าย",

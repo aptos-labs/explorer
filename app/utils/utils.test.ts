@@ -1,4 +1,5 @@
 import {afterEach, describe, expect, it, vi} from "vitest";
+import {formatDateTime} from "../i18n/format";
 import {
   downloadTextFile,
   ensureBigInt,
@@ -491,14 +492,21 @@ describe("timestampDisplay", () => {
     expect(timestampDisplay(d).formatted).toBe("01/02/07 03:04:05.006 UTC");
   });
 
-  it("local_formatted uses full 4-digit year", () => {
-    const result = timestampDisplay(fixedDate).local_formatted;
+  it("local_formatted uses locale-aware UTC with a 4-digit year", () => {
+    const result = timestampDisplay(fixedDate, "en").local_formatted;
     expect(result).toMatch(/2024/);
+    expect(result).toMatch(/UTC|GMT/i);
   });
 
-  it("local_formatted_short uses 2-digit year", () => {
-    const result = timestampDisplay(fixedDate).local_formatted_short;
-    expect(result).toMatch(/24/);
-    expect(result).not.toMatch(/2024/);
+  it("local_formatted_short uses locale-aware UTC medium date and short time", () => {
+    const result = timestampDisplay(fixedDate, "en").local_formatted_short;
+    expect(result).toMatch(/2024/);
+    expect(result).toBe(formatDateTime(fixedDate, "en"));
+  });
+
+  it("local_formatted follows the selected locale", () => {
+    const de = timestampDisplay(fixedDate, "de").local_formatted;
+    expect(de).toMatch(/19/);
+    expect(de).not.toBe(timestampDisplay(fixedDate, "en").local_formatted);
   });
 });

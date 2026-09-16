@@ -161,13 +161,18 @@ function encryptedAmount(
   };
 }
 
-export function formatPaymentAmount(amount: PaymentAmount): string {
+export function formatPaymentAmount(
+  amount: PaymentAmount,
+  locale: string = "en",
+): string {
   if (amount.visibility === "encrypted") {
     return `encrypted ${amount.symbol}`;
   }
   const raw = amount.raw ?? "0";
   const formatted =
-    amount.decimals > 0 ? getFormattedBalanceStr(raw, amount.decimals) : raw;
+    amount.decimals > 0
+      ? getFormattedBalanceStr(raw, amount.decimals, undefined, locale)
+      : raw;
   return `${formatted} ${amount.symbol}`;
 }
 
@@ -698,6 +703,7 @@ export function parseExchangeEvent(event: Types.Event): SwapHit | undefined {
 function parsePayloadTransfers(
   transaction: Types.Transaction,
   coinData: CoinDescription[] | undefined,
+  locale = "en",
 ): PaymentStep[] {
   if (!("sender" in transaction)) return [];
   const payload = extractEntryFunctionPayload(transaction);
@@ -745,6 +751,7 @@ function parsePayloadTransfers(
         amount,
         partner,
         partnerLabel,
+        locale,
       ),
       from: sender,
       to: addr(to) ?? to,
@@ -846,8 +853,9 @@ function explainTransfer(
   amount: PaymentAmount,
   partner: string | undefined,
   partnerLabel: string | undefined,
+  locale = "en",
 ): string {
-  const amountText = formatPaymentAmount(amount);
+  const amountText = formatPaymentAmount(amount, locale);
   const fromLabel = shortPaymentLabel(from);
   const toLabel = shortPaymentLabel(to);
   if (kind === "p2p") {
@@ -880,6 +888,7 @@ function confidentialSteps(
   transaction: Types.Transaction,
   connectedWallet: string | undefined,
   coinData: CoinDescription[] | undefined,
+  locale = "en",
 ): PaymentStep[] {
   const actions = parseConfidentialActions(transaction);
   const audited = hasVoluntaryAuditor(transaction);
@@ -919,7 +928,7 @@ function confidentialSteps(
         id: `ca-deposit-${i}`,
         kind: "public_to_confidential",
         title: "Public → confidential",
-        explanation: `${shortPaymentLabel(account)} deposited ${formatPaymentAmount(amount)} from a public fungible-asset balance into a confidential store. After this, that confidential balance is encrypted.`,
+        explanation: `${shortPaymentLabel(account)} deposited ${formatPaymentAmount(amount, locale)} from a public fungible-asset balance into a confidential store. After this, that confidential balance is encrypted.`,
         from: account,
         to: account,
         amount,
@@ -935,7 +944,7 @@ function confidentialSteps(
         id: `ca-withdraw-${i}`,
         kind: "confidential_to_public",
         title: "Confidential → public",
-        explanation: `${shortPaymentLabel(from)} withdrew ${formatPaymentAmount(amount)} from a confidential store to ${shortPaymentLabel(to)} as a normal (public) balance. The withdrawn amount is public; any remaining confidential balance stays encrypted.`,
+        explanation: `${shortPaymentLabel(from)} withdrew ${formatPaymentAmount(amount, locale)} from a confidential store to ${shortPaymentLabel(to)} as a normal (public) balance. The withdrawn amount is public; any remaining confidential balance stays encrypted.`,
         from,
         to,
         amount,
@@ -949,6 +958,7 @@ function exchangeFromEvents(
   transaction: Types.Transaction,
   sender: string | undefined,
   coinData: CoinDescription[] | undefined,
+  locale = "en",
 ): PaymentStep[] {
   const events: Types.Event[] =
     "events" in transaction ? transaction.events : [];
@@ -963,7 +973,7 @@ function exchangeFromEvents(
       id: `swap-${i}`,
       kind: "exchange",
       title: "Exchange",
-      explanation: `${trader ? shortPaymentLabel(trader) : "This account"} exchanged ${formatPaymentAmount(amountIn)} for ${formatPaymentAmount(amountOut)}. These are the inputs and outputs of the swap.`,
+      explanation: `${trader ? shortPaymentLabel(trader) : "This account"} exchanged ${formatPaymentAmount(amountIn, locale)} for ${formatPaymentAmount(amountOut, locale)}. These are the inputs and outputs of the swap.`,
       from: trader,
       to: trader,
       partner: swap.dex,
@@ -980,6 +990,7 @@ function exchangeFromMovements(
   sender: string | undefined,
   coinData: CoinDescription[] | undefined,
   alreadyCovered: boolean,
+  locale = "en",
 ): PaymentStep[] {
   if (alreadyCovered) return [];
   const byOwner = new Map<string, Map<string, bigint>>();
@@ -1029,7 +1040,7 @@ function exchangeFromMovements(
       id: `exchange-bal-${owner}`,
       kind: "exchange",
       title: "Exchange",
-      explanation: `${shortPaymentLabel(owner)} exchanged ${formatPaymentAmount(amountIn)} for ${formatPaymentAmount(amountOut)} (inferred from this account's inputs and outputs in the transaction).`,
+      explanation: `${shortPaymentLabel(owner)} exchanged ${formatPaymentAmount(amountIn, locale)} for ${formatPaymentAmount(amountOut, locale)} (inferred from this account's inputs and outputs in the transaction).`,
       from: owner,
       to: owner,
       amount: amountIn,
@@ -1069,6 +1080,7 @@ function hopsToSteps(
   functionId: string | undefined,
   sender: string | undefined,
   coinData: CoinDescription[] | undefined,
+  locale = "en",
 ): PaymentStep[] {
   const intermediates = new Set<string>();
   for (const hop of hops) {
@@ -1117,6 +1129,7 @@ function hopsToSteps(
         amount,
         partner,
         partnerLabel,
+        locale,
       ),
       from: hop.from,
       to: hop.to,
@@ -1166,6 +1179,7 @@ function stepInvolvesWallet(
 function buildFlow(
   steps: PaymentStep[],
   fees: PaymentFeeLine[],
+  locale = "en",
 ): PaymentFlowGraph {
   const nodes = new Map<string, PaymentFlowNode>();
   const edges: PaymentFlowEdge[] = [];
@@ -1204,7 +1218,7 @@ function buildFlow(
         edges.push({
           from: traderId,
           to: dexId,
-          label: `in ${formatPaymentAmount(step.amount)}`,
+          label: `in ${formatPaymentAmount(step.amount, locale)}`,
           kind: "exchange",
         });
       }
@@ -1212,7 +1226,7 @@ function buildFlow(
         edges.push({
           from: dexId,
           to: traderId,
-          label: `out ${formatPaymentAmount(step.amountOut)}`,
+          label: `out ${formatPaymentAmount(step.amountOut, locale)}`,
           kind: "exchange",
         });
       }
@@ -1236,7 +1250,7 @@ function buildFlow(
         "confidential_store",
       );
       const label = step.amount
-        ? formatPaymentAmount(step.amount)
+        ? formatPaymentAmount(step.amount, locale)
         : "encrypted";
       if (step.kind === "public_to_confidential") {
         edges.push({
@@ -1273,7 +1287,7 @@ function buildFlow(
     );
     const toId = ensure(`acct-${to}`, shortPaymentLabel(to), "account", to);
     const amountLabel = step.amount
-      ? formatPaymentAmount(step.amount)
+      ? formatPaymentAmount(step.amount, locale)
       : step.kind;
     if (
       step.partner &&
@@ -1349,7 +1363,7 @@ function buildFlow(
     edges.push({
       from: payerId,
       to: feeId,
-      label: `${getFormattedBalanceStr(net.amountOctas, 8)} APT fee`,
+      label: `${getFormattedBalanceStr(net.amountOctas, 8, undefined, locale)} APT fee`,
       kind: "fee",
     });
   }
@@ -1409,6 +1423,7 @@ function headlineFor(
 function identifyFromTransactionBody(
   input: IdentifyPaymentsInput,
 ): PaymentIdentification {
+  const locale = input.locale ?? "en";
   const {transaction, indexerActivities, coinData} = input;
   const connectedWallet = input.connectedWallet
     ? addr(input.connectedWallet)
@@ -1437,12 +1452,17 @@ function identifyFromTransactionBody(
     };
   }
 
-  const caSteps = confidentialSteps(transaction, connectedWallet, coinData);
-  const swapSteps = exchangeFromEvents(transaction, sender, coinData);
-  const payloadSteps = parsePayloadTransfers(transaction, coinData);
+  const caSteps = confidentialSteps(
+    transaction,
+    connectedWallet,
+    coinData,
+    locale,
+  );
+  const swapSteps = exchangeFromEvents(transaction, sender, coinData, locale);
+  const payloadSteps = parsePayloadTransfers(transaction, coinData, locale);
   const movements = collectMovements(transaction, indexerActivities);
   const hops = matchHops(movements);
-  const hopSteps = hopsToSteps(hops, functionId, sender, coinData);
+  const hopSteps = hopsToSteps(hops, functionId, sender, coinData, locale);
 
   // Prefer confidential + exchange + hops. Payload steps fill gaps when events are missing.
   const hasEventTransfers = hopSteps.length > 0 || caSteps.length > 0;
@@ -1452,6 +1472,7 @@ function identifyFromTransactionBody(
     sender,
     coinData,
     swapSteps.length > 0,
+    locale,
   );
 
   // Drop same-asset hops that are really swap legs (user ↔ pool) once an exchange is identified.
@@ -1493,7 +1514,7 @@ function identifyFromTransactionBody(
   const involvesConnectedWallet = steps.some((step) =>
     stepInvolvesWallet(step, connectedWallet),
   );
-  const flow = buildFlow(steps, fees);
+  const flow = buildFlow(steps, fees, locale);
 
   return {
     source: "transaction_body",

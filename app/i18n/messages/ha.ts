@@ -463,6 +463,7 @@ export const ha = {
     showNArguments: "Nuna hujja {count}",
     showNArgumentsPlural: "Nuna hujjoji {count}",
     octasParens: "({amount} octas)",
+    gasUnits: "{count} raka'o'in iskar gas",
   },
   network: {
     selectAriaLabel: "Zaɓi hanyar sadarwa",

@@ -462,6 +462,7 @@ export const ta = {
     showNArguments: "{count} வாதத்தை காட்டு",
     showNArgumentsPlural: "{count} வாதங்களை காட்டு",
     octasParens: "({amount} octas)",
+    gasUnits: "{count} வாயு அலகுகள்",
   },
   network: {
     selectAriaLabel: "நெட்வொர்க்கைத் தேர்வு செய்யவும்",

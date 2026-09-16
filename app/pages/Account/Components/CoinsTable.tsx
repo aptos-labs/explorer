@@ -68,6 +68,7 @@ const AmountCell = React.memo(function AmountCell({
   symbol: string;
 }) {
   const theme = useTheme();
+  const {formatNumber} = useTranslation();
   if (amount == null || decimals == null) {
     return <GeneralTableCell>-</GeneralTableCell>;
   }
@@ -75,7 +76,7 @@ const AmountCell = React.memo(function AmountCell({
   const formattedAmount = amount / 10 ** decimals;
   return (
     <GeneralTableCell>
-      <span>{formattedAmount.toLocaleString()}</span>
+      <span>{formatNumber(formattedAmount)}</span>
       <span style={{marginLeft: 8, color: theme.palette.text.secondary}}>
         {symbol}
       </span>
@@ -89,7 +90,7 @@ const USDCell = React.memo(function USDCell({
   amount: number | null | undefined;
 }) {
   const theme = useTheme();
-  const {t} = useTranslation();
+  const {t, formatNumber} = useTranslation();
   const inMainnet = useGetInMainnet();
   if (amount === null || amount === undefined || !inMainnet) {
     return <GeneralTableCell>{t("common.na")}</GeneralTableCell>;
@@ -99,7 +100,7 @@ const USDCell = React.memo(function USDCell({
     <GeneralTableCell>
       <span>
         $
-        {amount.toLocaleString(undefined, {
+        {formatNumber(amount, {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         })}
@@ -216,7 +217,7 @@ function CoinCard({
     key: string | null | undefined,
   ) => ConfidentialStoreQueryState;
 }) {
-  const {t} = useTranslation();
+  const {t, formatNumber} = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
   const augmentTo = useAugmentToWithGlobalSearchParams();
@@ -356,7 +357,7 @@ function CoinCard({
         <Typography sx={{fontSize: "0.85rem"}}>
           {formattedAmount !== null ? (
             <>
-              {formattedAmount.toLocaleString()}
+              {formatNumber(formattedAmount)}
               <Typography
                 component="span"
                 sx={{ml: 0.75, color: "text.secondary", fontSize: "0.85rem"}}
@@ -370,7 +371,7 @@ function CoinCard({
         </Typography>
         <Typography sx={{fontSize: "0.85rem", color: "text.secondary"}}>
           {formattedAmount !== null && coin.usdValue !== null && inMainnet
-            ? `$${coin.usdValue.toLocaleString(undefined, {
+            ? `$${formatNumber(coin.usdValue, {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
               })}`

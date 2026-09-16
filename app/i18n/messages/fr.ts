@@ -463,6 +463,7 @@ export const fr = {
     showNArguments: "Afficher {count} argument",
     showNArgumentsPlural: "Afficher {count} arguments",
     octasParens: "({amount} octas)",
+    gasUnits: "{count} unités de gaz",
   },
   network: {
     selectAriaLabel: "Sélectionner un réseau",

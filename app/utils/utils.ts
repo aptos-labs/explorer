@@ -8,37 +8,40 @@ import type {
   AdapterNotDetectedWallet,
   AdapterWallet,
 } from "@aptos-labs/wallet-adapter-react";
-import {differenceInMilliseconds, format} from "date-fns";
+import {differenceInMilliseconds} from "date-fns";
 import {ungzip} from "pako";
 import type {Types} from "~/types/aptos";
+import {
+  formatDateTime,
+  formatNumber as formatNumberForLocale,
+  formatTimestamp,
+} from "../i18n/format";
+import {DEFAULT_LOCALE} from "../i18n/locales";
 
 /**
- * Hydration-safe timestamp formatter.
- * Returns a consistent placeholder during SSR to avoid hydration mismatches.
+ * Locale-aware timestamp formatter pinned to UTC so SSR and hydration match.
  */
 export function formatTimestampLocal(
   timestamp: string | number | bigint,
-  options?: {placeholder?: string},
+  options?: {placeholder?: string; locale?: string},
 ): string {
-  // During SSR, return a placeholder to avoid hydration mismatch
-  if (typeof window === "undefined") {
-    return options?.placeholder ?? "-";
-  }
+  const locale = options?.locale ?? DEFAULT_LOCALE;
 
-  // Convert to milliseconds
   let ms: number;
   if (typeof timestamp === "bigint") {
     ms = Number(timestamp) / 1000; // Assume microseconds
   } else if (typeof timestamp === "string") {
     const num = Number(timestamp);
-    // Assume microseconds if > 1e15, otherwise milliseconds
     ms = num > 1e15 ? num / 1000 : num;
   } else {
-    // Assume microseconds if > 1e15, otherwise milliseconds
     ms = timestamp > 1e15 ? timestamp / 1000 : timestamp;
   }
 
-  return new Date(ms).toLocaleString();
+  if (!Number.isFinite(ms)) {
+    return options?.placeholder ?? "-";
+  }
+
+  return formatDateTime(new Date(ms), locale);
 }
 
 /**
@@ -557,6 +560,7 @@ export function parseTimestamp(
 export function parseTimestampString(
   timestamp: string,
   ensureMilliSeconds: boolean = true,
+  locale: string = DEFAULT_LOCALE,
 ): string {
   let time: bigint;
   if (ensureMilliSeconds) {
@@ -565,9 +569,9 @@ export function parseTimestampString(
     time = BigInt(timestamp);
   }
   if (time > 8640000000000000n) {
-    return `> ${timestampDisplay(new Date(8640000000000000)).local_formatted}`;
+    return `> ${timestampDisplay(new Date(8640000000000000), locale).local_formatted}`;
   } else {
-    return timestampDisplay(new Date(Number(time))).local_formatted;
+    return timestampDisplay(new Date(Number(time)), locale).local_formatted;
   }
 }
 
@@ -581,9 +585,12 @@ export interface TimestampDisplay {
   local_formatted_short: string;
 }
 
-export function timestampDisplay(timestamp: Date): TimestampDisplay {
+export function timestampDisplay(
+  timestamp: Date,
+  locale: string = DEFAULT_LOCALE,
+): TimestampDisplay {
   // Build the UTC string manually so it is always accurate regardless of the
-  // browser's local timezone.
+  // browser's local timezone. Used for CSV and other machine-oriented output.
   const pad = (n: number, len = 2) => String(n).padStart(len, "0");
   const year2 = timestamp.getUTCFullYear() % 100;
   const utcFormatted =
@@ -592,8 +599,8 @@ export function timestampDisplay(timestamp: Date): TimestampDisplay {
 
   return {
     formatted: utcFormatted,
-    local_formatted: format(timestamp, "MM/dd/yyyy HH:mm:ss.SSS"),
-    local_formatted_short: format(timestamp, "MM/dd/yy HH:mm:ss.SSS"),
+    local_formatted: formatTimestamp(timestamp, locale),
+    local_formatted_short: formatDateTime(timestamp, locale),
   };
 }
 
@@ -679,9 +686,12 @@ export function isNumeric(text: string) {
   return /^-?\d+$/.test(text);
 }
 
-export function getTableFormattedTimestamp(timestamp?: string): string {
+export function getTableFormattedTimestamp(
+  timestamp?: string,
+  locale: string = DEFAULT_LOCALE,
+): string {
   if (!timestamp || timestamp === "0") return "-";
-  return parseTimestampString(timestamp);
+  return parseTimestampString(timestamp, true, locale);
 }
 
 export function isValidUrl(url: string): boolean {
@@ -839,8 +849,11 @@ export function toIpfsDisplayUrl(url: string): string {
 /**
  * Formatting utilities
  */
-export function formatNumber(num: number | string): string {
-  return Number(num).toLocaleString("en-US");
+export function formatNumber(
+  num: number | string,
+  locale: string = DEFAULT_LOCALE,
+): string {
+  return formatNumberForLocale(Number(num), locale);
 }
 
 export function octaToApt(octa: number | string | bigint): number {
@@ -851,9 +864,10 @@ export function octaToApt(octa: number | string | bigint): number {
 export function formatApt(
   octa: number | string | bigint,
   decimals = 2,
+  locale: string = DEFAULT_LOCALE,
 ): string {
   const apt = octaToApt(octa);
-  return `${apt.toLocaleString("en-US", {
+  return `${formatNumberForLocale(apt, locale, {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
   })} APT`;
@@ -872,7 +886,8 @@ export function formatTransactionForCSV(
   if ("success" in transaction) result.Success = transaction.success;
   result.Type = transaction.type;
   if ("timestamp" in transaction && transaction.timestamp) {
-    result.Timestamp = getTableFormattedTimestamp(transaction.timestamp);
+    const parsed = parseTimestamp(transaction.timestamp);
+    result.Timestamp = timestampDisplay(parsed).formatted;
   }
   if ("sender" in transaction) result.Sender = transaction.sender;
   if ("sequence_number" in transaction)

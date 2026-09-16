@@ -461,6 +461,7 @@ export const hi = {
     showNArguments: "{count} आर्गुमेंट दिखाएँ",
     showNArgumentsPlural: "{count} आर्गुमेंट दिखाएँ",
     octasParens: "({amount} octas)",
+    gasUnits: "{count} गैस यूनिट",
   },
   network: {
     selectAriaLabel: "नेटवर्क चुनें",

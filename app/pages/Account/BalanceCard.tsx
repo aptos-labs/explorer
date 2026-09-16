@@ -41,7 +41,7 @@ const portfolioProviders: Record<
 };
 
 export default function BalanceCard({address}: BalanceCardProps) {
-  const {t, formatNumber} = useTranslation();
+  const {t, locale, formatNumber} = useTranslation();
   const theme = useTheme();
   const balance = useGetAccountAPTBalance(address);
   const networkName = useNetworkName();
@@ -93,7 +93,7 @@ export default function BalanceCard({address}: BalanceCardProps) {
             fontWeight: 700,
           }}
         >
-          {`${getFormattedBalanceStr(balance.data)} APT`}
+          {`${getFormattedBalanceStr(balance.data, undefined, undefined, locale)} APT`}
         </Typography>
 
         {/* USD value */}
@@ -128,7 +128,10 @@ export default function BalanceCard({address}: BalanceCardProps) {
             title={
               networkName === "mainnet"
                 ? t("accountUi.balanceTipWithUsd", {
-                    price: `$${price?.toFixed(2)}`,
+                    price: `$${formatNumber(price ?? 0, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}`,
                   })
                 : t("accountUi.balanceTip")
             }

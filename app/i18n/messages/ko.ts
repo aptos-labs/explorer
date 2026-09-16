@@ -461,6 +461,7 @@ export const ko = {
     showNArguments: "인자 {count}개 표시",
     showNArgumentsPlural: "인자 {count}개 표시",
     octasParens: "({amount} octa)",
+    gasUnits: "{count} 가스 유닛",
   },
   network: {
     selectAriaLabel: "네트워크 선택",

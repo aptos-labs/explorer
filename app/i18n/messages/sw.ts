@@ -462,6 +462,7 @@ export const sw = {
     showNArguments: "Onyesha hoja {count}",
     showNArgumentsPlural: "Onyesha hoja {count}",
     octasParens: "({amount} octas)",
+    gasUnits: "{count} vipimo vya gesi",
   },
   network: {
     selectAriaLabel: "Chagua mtandao",

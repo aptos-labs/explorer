@@ -17,7 +17,7 @@ type EpochProps = {
 };
 
 export default function Epoch({isSkeletonLoading}: EpochProps) {
-  const {t} = useTranslation();
+  const {t, formatInteger} = useTranslation();
   const {curEpoch, lastEpochTime, epochInterval} = useGetEpochTime();
 
   // Calculate values during render using useMemo to avoid Date.now() during render
@@ -54,7 +54,9 @@ export default function Epoch({isSkeletonLoading}: EpochProps) {
         }}
       >
         <Subtitle>
-          {t("staking.epochN", {epoch: String(curEpoch ?? "")})}
+          {t("staking.epochN", {
+            epoch: formatInteger(Number(curEpoch ?? 0)),
+          })}
         </Subtitle>
         <StyledLearnMoreTooltip
           text={t("staking.epochTip")}
@@ -62,7 +64,9 @@ export default function Epoch({isSkeletonLoading}: EpochProps) {
         />
       </Stack>
       <Body>
-        {t("staking.percentComplete", {percent: String(percentageComplete)})}
+        {t("staking.percentComplete", {
+          percent: formatInteger(percentageComplete),
+        })}
       </Body>
       <IntervalBar
         percentage={percentageComplete}

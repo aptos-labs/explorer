@@ -463,6 +463,7 @@ export const ru = {
     showNArguments: "Показать {count} аргумент",
     showNArgumentsPlural: "Показать {count} аргументов",
     octasParens: "({amount} octa)",
+    gasUnits: "{count} ед. газа",
   },
   network: {
     selectAriaLabel: "Выбрать сеть",

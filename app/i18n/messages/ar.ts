@@ -459,6 +459,7 @@ export const ar = {
     showNArguments: "إظهار {count} وسيط",
     showNArgumentsPlural: "إظهار {count} وسائط",
     octasParens: "({amount} أوكتا)",
+    gasUnits: "{count} وحدات الغاز",
   },
   network: {
     selectAriaLabel: "اختيار الشبكة",

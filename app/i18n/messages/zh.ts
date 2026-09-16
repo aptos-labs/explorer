@@ -457,6 +457,7 @@ export const zh = {
     showNArguments: "显示 {count} 个参数",
     showNArgumentsPlural: "显示 {count} 个参数",
     octasParens: "({amount} octa)",
+    gasUnits: "{count} 个 Gas 单位",
   },
   network: {
     selectAriaLabel: "选择网络",

@@ -63,18 +63,22 @@ function useNow(): Date {
   );
 }
 
-function formatAge(seconds: number, t: TFunction = englishT): string {
+function formatAge(
+  seconds: number,
+  t: TFunction = englishT,
+  formatInteger: (value: number) => string = (value) => String(value),
+): string {
   if (seconds < 60) {
-    return t("common.secondsAgo", {count: seconds});
+    return t("common.secondsAgo", {count: formatInteger(seconds)});
   } else if (seconds < 3600) {
     const mins = Math.floor(seconds / 60);
-    return t("common.minutesAgo", {count: mins});
+    return t("common.minutesAgo", {count: formatInteger(mins)});
   } else if (seconds < 86400) {
     const hrs = Math.floor(seconds / 3600);
-    return t("common.hoursAgo", {count: hrs});
+    return t("common.hoursAgo", {count: formatInteger(hrs)});
   } else {
     const days = Math.floor(seconds / 86400);
-    return t("common.daysAgo", {count: days});
+    return t("common.daysAgo", {count: formatInteger(days)});
   }
 }
 
@@ -82,12 +86,13 @@ function calcAge(
   blockTimestamp: Date,
   now: Date,
   t: TFunction = englishT,
+  formatInteger: (value: number) => string = (value) => String(value),
 ): string {
   const durationInSec = Math.max(
     0,
     Math.floor(getTimeDiffInSeconds(blockTimestamp, now)),
   );
-  return formatAge(durationInSec, t);
+  return formatAge(durationInSec, t, formatInteger);
 }
 
 type BlockCellProps = {
@@ -105,7 +110,7 @@ function BlockHeightCell({block}: BlockCellProps) {
 }
 
 function BlockAgeCell({block}: BlockCellProps) {
-  const {t} = useTranslation();
+  const {t, formatInteger} = useTranslation();
   const now = useNow();
   const blockTimestamp = useMemo(
     () => parseTimestamp(block.block_timestamp),
@@ -113,7 +118,7 @@ function BlockAgeCell({block}: BlockCellProps) {
   );
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
-      {calcAge(blockTimestamp, now, t)}
+      {calcAge(blockTimestamp, now, t, formatInteger)}
     </GeneralTableCell>
   );
 }
@@ -202,7 +207,7 @@ type BlockCardProps = {
 };
 
 const BlockCard = React.memo(function BlockCard({block}: BlockCardProps) {
-  const {t} = useTranslation();
+  const {t, formatInteger} = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
   const augmentTo = useAugmentToWithGlobalSearchParams();
@@ -211,7 +216,7 @@ const BlockCard = React.memo(function BlockCard({block}: BlockCardProps) {
     () => parseTimestamp(block.block_timestamp),
     [block.block_timestamp],
   );
-  const age = calcAge(blockTimestamp, now, t);
+  const age = calcAge(blockTimestamp, now, t, formatInteger);
 
   const numTransactions = (
     BigInt(block.last_version) -

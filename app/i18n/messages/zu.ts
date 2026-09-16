@@ -465,6 +465,7 @@ export const zu = {
     showNArguments: "Bonisa impikiswano engu-{count}",
     showNArgumentsPlural: "Bonisa izimpikiswano ezingu-{count}",
     octasParens: "({amount} octas)",
+    gasUnits: "{count} amayunithi e-gas",
   },
   network: {
     selectAriaLabel: "Khetha inethiwekhi",

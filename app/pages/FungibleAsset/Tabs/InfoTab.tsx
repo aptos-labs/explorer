@@ -38,7 +38,7 @@ function ExtraInfo({address}: {address: string}) {
 }
 
 export default function InfoTab({address, data}: InfoTabProps) {
-  const {t, formatNumber} = useTranslation();
+  const {t, formatNumber, locale} = useTranslation();
   const {data: firstActivity} = useGetFirstCoinActivity(address);
   const {data: dispatchInfo} = useGetFaIsDispatchable(address);
   const {
@@ -58,7 +58,12 @@ export default function InfoTab({address, data}: InfoTabProps) {
   let formattedSupply: string | null = null;
   if (data?.supply !== undefined && data?.supply !== null && data?.metadata) {
     formattedSupply =
-      getFormattedBalanceStr(data?.supply.toString(), data.metadata?.decimals) +
+      getFormattedBalanceStr(
+        data?.supply.toString(),
+        data.metadata?.decimals,
+        undefined,
+        locale,
+      ) +
       " " +
       data.metadata?.symbol;
     marketCap =
@@ -116,6 +121,8 @@ export default function InfoTab({address, data}: InfoTabProps) {
                     {getFormattedBalanceStr(
                       confidentialSupply.toString(),
                       data.metadata?.decimals,
+                      undefined,
+                      locale,
                     )}{" "}
                     {data.metadata?.symbol}
                   </span>

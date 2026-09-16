@@ -461,6 +461,7 @@ export const ms = {
     showNArguments: "Tunjukkan {count} argumen",
     showNArgumentsPlural: "Tunjukkan {count} argumen",
     octasParens: "({amount} octas)",
+    gasUnits: "{count} unit gas",
   },
   network: {
     selectAriaLabel: "Pilih rangkaian",

@@ -9,6 +9,7 @@ import {
   Tooltip,
 } from "chart.js";
 import {Bar} from "react-chartjs-2";
+import {useTranslation} from "../../../i18n";
 import {BACKGROUND_COLOR} from "../constants";
 import {numberFormatter} from "../utils";
 
@@ -27,6 +28,7 @@ type BarChartProps = {
 };
 
 export default function BarChart({labels, dataset}: BarChartProps) {
+  const {locale} = useTranslation();
   const options = {
     fill: false,
     responsive: true,
@@ -66,6 +68,7 @@ export default function BarChart({labels, dataset}: BarChartProps) {
             numberFormatter(
               typeof value === "string" ? parseFloat(value) : value,
               0,
+              locale,
             ),
           autoSkip: true,
           maxTicksLimit: 3,

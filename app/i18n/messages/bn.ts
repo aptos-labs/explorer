@@ -460,6 +460,7 @@ export const bn = {
     showNArguments: "{count} আর্গুমেন্ট দেখান",
     showNArgumentsPlural: "{count} আর্গুমেন্ট দেখান",
     octasParens: "({amount} octas)",
+    gasUnits: "{count} গ্যাস ইউনিট",
   },
   network: {
     selectAriaLabel: "নেটওয়ার্ক নির্বাচন করুন",

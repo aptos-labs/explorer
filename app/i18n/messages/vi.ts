@@ -460,6 +460,7 @@ export const vi = {
     showNArguments: "Hiện {count} đối số",
     showNArgumentsPlural: "Hiện {count} đối số",
     octasParens: "({amount} octas)",
+    gasUnits: "{count} đơn vị gas",
   },
   network: {
     selectAriaLabel: "Chọn mạng",

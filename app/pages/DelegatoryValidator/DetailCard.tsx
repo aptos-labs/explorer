@@ -47,7 +47,7 @@ function ValidatorDetailCardContent({
   accountResource: Types.MoveResource;
   validator: ValidatorData;
 }) {
-  const {t} = useTranslation();
+  const {t, formatNumber} = useTranslation();
   const theme = useTheme();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
   const {commission} = useGetDelegationNodeInfo({
@@ -114,7 +114,14 @@ function ValidatorDetailCardContent({
         />
         <ContentRowSpaceBetween
           titleKey="fields.rewardsPerformance"
-          value={rewardGrowth ? `${rewardGrowth.toFixed(2)} %` : null}
+          value={
+            rewardGrowth
+              ? `${formatNumber(rewardGrowth, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })} %`
+              : null
+          }
           tooltip={<RewardsPerformanceTooltip />}
         />
         <ContentRowSpaceBetween

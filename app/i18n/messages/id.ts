@@ -461,6 +461,7 @@ export const id = {
     showNArguments: "Tampilkan {count} argumen",
     showNArgumentsPlural: "Tampilkan {count} argumen",
     octasParens: "({amount} octas)",
+    gasUnits: "{count} unit gas",
   },
   network: {
     selectAriaLabel: "Pilih jaringan",

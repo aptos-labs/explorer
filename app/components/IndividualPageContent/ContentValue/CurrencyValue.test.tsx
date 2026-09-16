@@ -20,4 +20,13 @@ it("formats balances correctly", () => {
   expect(getFormattedBalanceStr("1000200345000001", undefined, 3)).toEqual(
     "10,002,003.45",
   );
+  expect(
+    getFormattedBalanceStr("10000000000000000", undefined, undefined, "de"),
+  ).toEqual("100.000.000");
+  expect(
+    getFormattedBalanceStr("110100000", undefined, undefined, "de"),
+  ).toEqual("1,101");
+  expect(getFormattedBalanceStr("1000000000", 0, undefined, "en")).toEqual(
+    "1,000,000,000",
+  );
 });

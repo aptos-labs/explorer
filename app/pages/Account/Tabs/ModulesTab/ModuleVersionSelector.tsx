@@ -28,20 +28,6 @@ interface ModuleVersionSelectorProps {
   publishHistory?: ModulePublishTransaction[];
 }
 
-const utcFormatter = new Intl.DateTimeFormat("en-US", {
-  timeZone: "UTC",
-  year: "numeric",
-  month: "short",
-  day: "numeric",
-  hour: "2-digit",
-  minute: "2-digit",
-});
-
-function formatTimestamp(timestamp: string): string {
-  const date = new Date(timestamp);
-  return `${utcFormatter.format(date)} UTC`;
-}
-
 function SelectedVersionIndicator({
   selectedVersion,
   onVersionChange,
@@ -49,13 +35,13 @@ function SelectedVersionIndicator({
   selectedVersion: number;
   onVersionChange: (version: number | undefined) => void;
 }) {
-  const {t} = useTranslation();
+  const {t, formatInteger} = useTranslation();
   return (
     <>
       <Box>
         <Chip
           label={t("modules.viewingHistorical", {
-            version: selectedVersion.toLocaleString(),
+            version: formatInteger(selectedVersion),
           })}
           color="warning"
           size="small"
@@ -83,7 +69,7 @@ export default function ModuleVersionSelector({
   diffMode,
   onDiffModeToggle,
 }: ModuleVersionSelectorProps) {
-  const {t} = useTranslation();
+  const {t, formatInteger, formatTimestamp} = useTranslation();
   const theme = useTheme();
   const {data: publishHistory, isLoading} = useGetModulePublishHistory(address);
   const hasHistory = publishHistory && publishHistory.length > 0;
@@ -227,7 +213,7 @@ export default function ModuleVersionSelector({
             <Stack direction="column">
               <Typography variant="body2">
                 {t("modules.versionN", {
-                  version: txn.version.toLocaleString(),
+                  version: formatInteger(txn.version),
                 })}
               </Typography>
               <Typography
@@ -236,7 +222,7 @@ export default function ModuleVersionSelector({
                   color: "text.secondary",
                 }}
               >
-                {formatTimestamp(txn.timestamp)}
+                {formatTimestamp(new Date(txn.timestamp))}
               </Typography>
             </Stack>
           </MenuItem>

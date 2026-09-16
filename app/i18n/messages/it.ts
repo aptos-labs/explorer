@@ -463,6 +463,7 @@ export const it = {
     showNArguments: "Mostra {count} argomento",
     showNArgumentsPlural: "Mostra {count} argomenti",
     octasParens: "({amount} octas)",
+    gasUnits: "{count} unità di gas",
   },
   network: {
     selectAriaLabel: "Seleziona rete",

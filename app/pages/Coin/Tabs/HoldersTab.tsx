@@ -137,7 +137,7 @@ export function HoldersTable({
   data: CoinData;
   offset?: number;
 }) {
-  const {t} = useTranslation();
+  const {t, locale} = useTranslation();
   return (
     <Table aria-label={t("common.coinHoldersAria")} data-entity-type="holder">
       <TableHead>
@@ -162,6 +162,8 @@ export function HoldersTable({
                 {getFormattedBalanceStr(
                   holder.amount.toString(),
                   data.data.decimals,
+                  undefined,
+                  locale,
                 ) +
                   " " +
                   data.data.symbol}

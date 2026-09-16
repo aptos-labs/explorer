@@ -465,6 +465,7 @@ export const es = {
     showNArguments: "Mostrar {count} argumento",
     showNArgumentsPlural: "Mostrar {count} argumentos",
     octasParens: "({amount} octas)",
+    gasUnits: "{count} unidades de gas",
   },
   network: {
     selectAriaLabel: "Seleccionar red",

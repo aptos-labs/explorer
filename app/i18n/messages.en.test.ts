@@ -112,6 +112,11 @@ describe("FEAT-I18N-001 — English catalog", () => {
     expect(
       translator.formatDateTime(new Date("2026-09-14T12:00:00.000Z")),
     ).toBe("14.09.2026, 12:00");
+    expect(translator.formatIntegerString("1234567")).toBe("1.234.567");
+    expect(translator.formatBigInt(1_234_567n)).toBe("1.234.567");
+    expect(
+      translator.formatMonthDay(new Date("2026-09-14T00:00:00.000Z")),
+    ).toMatch(/14/);
   });
 });
 

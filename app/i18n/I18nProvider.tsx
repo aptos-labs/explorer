@@ -9,9 +9,15 @@ import {
 import {useExplorerSettings} from "../settings/ExplorerSettings";
 import {resolveLocale} from "./detectLocale";
 import {
+  formatBigInt as formatBigIntForLocale,
+  formatCompactNumber as formatCompactNumberForLocale,
   formatDateTime as formatDateTimeForLocale,
   formatInteger as formatIntegerForLocale,
+  formatIntegerString as formatIntegerStringForLocale,
+  formatMonthDay as formatMonthDayForLocale,
   formatNumber as formatNumberForLocale,
+  formatRelativeTime as formatRelativeTimeForLocale,
+  formatTimestamp as formatTimestampForLocale,
 } from "./format";
 import {
   DEFAULT_LOCALE,
@@ -28,14 +34,23 @@ export type TFunction = (key: string, vars?: TranslateVars) => string;
 
 export type TListFunction = (key: string, vars?: TranslateVars) => string[];
 
-export interface I18nContextValue {
+export interface I18nFormatters {
+  formatNumber: (value: number, options?: Intl.NumberFormatOptions) => string;
+  formatInteger: (value: number) => string;
+  formatBigInt: (value: bigint) => string;
+  formatIntegerString: (value: string) => string;
+  formatCompactNumber: (value: number, fractionDigits?: number) => string;
+  formatDateTime: (date: Date) => string;
+  formatTimestamp: (date: Date) => string;
+  formatMonthDay: (date: Date) => string;
+  formatRelativeTime: (date: Date, now?: Date) => string;
+}
+
+export interface I18nContextValue extends I18nFormatters {
   locale: SupportedLocale;
   localePreference: LocalePreference;
   t: TFunction;
   tList: TListFunction;
-  formatNumber: (value: number, options?: Intl.NumberFormatOptions) => string;
-  formatInteger: (value: number) => string;
-  formatDateTime: (date: Date) => string;
 }
 
 function catalogsFor(locale: SupportedLocale): MessageCatalog[] {
@@ -52,13 +67,9 @@ function catalogsFor(locale: SupportedLocale): MessageCatalog[] {
   ];
 }
 
-export function createTranslator(locale: SupportedLocale): {
-  t: TFunction;
-  tList: TListFunction;
-  formatNumber: (value: number, options?: Intl.NumberFormatOptions) => string;
-  formatInteger: (value: number) => string;
-  formatDateTime: (date: Date) => string;
-} {
+export function createTranslator(
+  locale: SupportedLocale,
+): {t: TFunction; tList: TListFunction} & I18nFormatters {
   const catalogs = catalogsFor(locale);
   return {
     t: (key, vars) => translate(catalogs, key, vars),
@@ -66,7 +77,15 @@ export function createTranslator(locale: SupportedLocale): {
     formatNumber: (value, options) =>
       formatNumberForLocale(value, locale, options),
     formatInteger: (value) => formatIntegerForLocale(value, locale),
+    formatBigInt: (value) => formatBigIntForLocale(value, locale),
+    formatIntegerString: (value) => formatIntegerStringForLocale(value, locale),
+    formatCompactNumber: (value, fractionDigits) =>
+      formatCompactNumberForLocale(value, locale, fractionDigits),
     formatDateTime: (date) => formatDateTimeForLocale(date, locale),
+    formatTimestamp: (date) => formatTimestampForLocale(date, locale),
+    formatMonthDay: (date) => formatMonthDayForLocale(date, locale),
+    formatRelativeTime: (date, now) =>
+      formatRelativeTimeForLocale(date, locale, now),
   };
 }
 
@@ -81,7 +100,13 @@ const fallbackValue: I18nContextValue = {
   tList: englishTranslator.tList,
   formatNumber: englishTranslator.formatNumber,
   formatInteger: englishTranslator.formatInteger,
+  formatBigInt: englishTranslator.formatBigInt,
+  formatIntegerString: englishTranslator.formatIntegerString,
+  formatCompactNumber: englishTranslator.formatCompactNumber,
   formatDateTime: englishTranslator.formatDateTime,
+  formatTimestamp: englishTranslator.formatTimestamp,
+  formatMonthDay: englishTranslator.formatMonthDay,
+  formatRelativeTime: englishTranslator.formatRelativeTime,
 };
 
 function readBrowserLanguages(): string[] {
@@ -132,7 +157,13 @@ export function I18nProvider({children}: {children: ReactNode}) {
       tList: translator.tList,
       formatNumber: translator.formatNumber,
       formatInteger: translator.formatInteger,
+      formatBigInt: translator.formatBigInt,
+      formatIntegerString: translator.formatIntegerString,
+      formatCompactNumber: translator.formatCompactNumber,
       formatDateTime: translator.formatDateTime,
+      formatTimestamp: translator.formatTimestamp,
+      formatMonthDay: translator.formatMonthDay,
+      formatRelativeTime: translator.formatRelativeTime,
     }),
     [locale, settings.localePreference, translator],
   );

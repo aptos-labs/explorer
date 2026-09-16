@@ -31,7 +31,7 @@ export default function InfoTab({
   pairedFa,
   coinData,
 }: InfoTabProps) {
-  const {t, formatNumber} = useTranslation();
+  const {t, formatNumber, locale} = useTranslation();
   const faMetadataAddress = pairedFa ?? coinData?.faAddress ?? null;
 
   const {
@@ -82,7 +82,12 @@ export default function InfoTab({
   let formattedSupply: string | null = null;
   if (supply !== undefined && supply !== null) {
     formattedSupply =
-      getFormattedBalanceStr(supply.toString(), data.data.decimals) +
+      getFormattedBalanceStr(
+        supply.toString(),
+        data.data.decimals,
+        undefined,
+        locale,
+      ) +
       " " +
       data.data.symbol;
     marketCap =
@@ -155,6 +160,8 @@ export default function InfoTab({
                       {getFormattedBalanceStr(
                         confidentialSupply.toString(),
                         data.data.decimals,
+                        undefined,
+                        locale,
                       )}{" "}
                       {data.data.symbol}
                     </span>

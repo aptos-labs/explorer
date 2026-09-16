@@ -458,6 +458,7 @@ export const am = {
     showNArguments: "{count} አርግመንት አሳይ",
     showNArgumentsPlural: "{count} አርግመንቶችን አሳይ",
     octasParens: "({amount} octas)",
+    gasUnits: "{count} የጋዝ አሃዶች",
   },
   network: {
     selectAriaLabel: "አውታረ መረብ ምረጥ",

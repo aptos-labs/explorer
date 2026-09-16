@@ -96,6 +96,7 @@ export const common = {
   showNArguments: "Show {count} argument",
   showNArgumentsPlural: "Show {count} arguments",
   octasParens: "({amount} octas)",
+  gasUnits: "{count} Gas Units",
 } as const;
 
 export const network = {

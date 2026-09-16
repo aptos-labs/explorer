@@ -20,7 +20,7 @@ export default function PerBlockDecryptionKeyView({
   parsed,
   rawData,
 }: PerBlockDecryptionKeyViewProps) {
-  const {t} = useTranslation();
+  const {t, formatBigInt} = useTranslation();
   const epochNumber = BigInt(parsed.epoch);
   const roundNumber = BigInt(parsed.round);
   const hasKey = parsed.decryptionKeyHex != null;
@@ -46,7 +46,7 @@ export default function PerBlockDecryptionKeyView({
             description={t("confidential.epochDescBlock")}
           >
             <Typography variant="body1" component="span" sx={{fontWeight: 600}}>
-              {epochNumber.toLocaleString()}
+              {formatBigInt(epochNumber)}
             </Typography>
           </ResponsiveKeyValueRow>
 
@@ -55,7 +55,7 @@ export default function PerBlockDecryptionKeyView({
             description={t("confidential.roundDesc")}
           >
             <Typography variant="body1" component="span" sx={{fontWeight: 600}}>
-              {roundNumber.toLocaleString()}
+              {formatBigInt(roundNumber)}
             </Typography>
           </ResponsiveKeyValueRow>
 

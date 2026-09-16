@@ -463,6 +463,7 @@ export const fil = {
     showNArguments: "Ipakita ang {count} argument",
     showNArgumentsPlural: "Ipakita ang {count} arguments",
     octasParens: "({amount} octas)",
+    gasUnits: "{count} gas units",
   },
   network: {
     selectAriaLabel: "Pumili ng network",

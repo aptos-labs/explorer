@@ -4,6 +4,7 @@ import BarChart from "../Components/BarChart";
 import type {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
 import ChartTitle from "../Components/ChartTitle";
 import {getLabels} from "../utils";
+import {useTranslation} from "../../../i18n";
 
 function getDataset(data: DailyActiveUserData[], days: number): number[] {
   return data
@@ -20,7 +21,8 @@ export default function DailyActiveUserChart({
   data,
   days,
 }: DailyActiveUserChartProps) {
-  const labels = getLabels(data, days);
+  const {locale} = useTranslation();
+  const labels = getLabels(data, days, locale);
   const dataset = getDataset(data, days);
 
   return (

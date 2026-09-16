@@ -461,6 +461,7 @@ export const ur = {
     showNArguments: "{count} آرگیومنٹ دکھائیں",
     showNArgumentsPlural: "{count} آرگیومنٹس دکھائیں",
     octasParens: "({amount} octas)",
+    gasUnits: "{count} گیس یونٹس",
   },
   network: {
     selectAriaLabel: "نیٹ ورک منتخب کریں",

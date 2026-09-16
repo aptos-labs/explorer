@@ -12,6 +12,7 @@ import {
   type TooltipItem,
 } from "chart.js";
 import {Line} from "react-chartjs-2";
+import {useTranslation} from "../../../i18n";
 import {BACKGROUND_COLOR, COLOR, HIGHLIGHT_COLOR} from "../constants";
 import {numberFormatter} from "../utils";
 
@@ -41,6 +42,7 @@ export default function LineChart({
   tooltipsLabelFunc,
   decimals,
 }: LineChartProps) {
+  const {locale} = useTranslation();
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -78,6 +80,7 @@ export default function LineChart({
             numberFormatter(
               typeof value === "string" ? parseFloat(value) : value,
               decimals ?? 0,
+              locale,
             ),
           autoSkip: true,
           maxTicksLimit: 3,

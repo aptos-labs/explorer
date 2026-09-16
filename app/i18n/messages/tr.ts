@@ -462,6 +462,7 @@ export const tr = {
     showNArguments: "{count} argümanı göster",
     showNArgumentsPlural: "{count} argümanı göster",
     octasParens: "({amount} octas)",
+    gasUnits: "{count} gaz birimi",
   },
   network: {
     selectAriaLabel: "Ağ seç",

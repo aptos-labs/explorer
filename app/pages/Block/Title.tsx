@@ -10,10 +10,10 @@ type BlockTitleProps = {
 };
 
 export default function BlockTitle({height, pathTab}: BlockTitleProps) {
-  const {t} = useTranslation();
+  const {t, formatInteger} = useTranslation();
   const tab = pathTab ?? "overview";
   const tabHead = getBlockTabHeadLabel(pathTab, t);
-  const heightLabel = height.toLocaleString();
+  const heightLabel = formatInteger(height);
   const metadataTitle = t("pages.blocks.metaTitle", {
     tab: tabHead,
     height: heightLabel,

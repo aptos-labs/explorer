@@ -91,9 +91,10 @@ function TransactionTypeCell({transaction}: TransactionCellProps) {
 }
 
 function TransactionTimestampCell({transaction}: TransactionCellProps) {
+  const {locale} = useTranslation();
   const timestamp =
     "timestamp" in transaction ? (
-      getTableFormattedTimestamp(transaction.timestamp)
+      getTableFormattedTimestamp(transaction.timestamp, locale)
     ) : (
       // Genesis transaction
       <Typography variant="subtitle2" align="center">
@@ -230,7 +231,7 @@ function TransactionDetailDialog({
   transaction,
   address,
 }: TransactionDetailDialogProps) {
-  const {t} = useTranslation();
+  const {t, locale} = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
   const augmentTo = useAugmentToWithGlobalSearchParams();
@@ -239,7 +240,7 @@ function TransactionDetailDialog({
   const version = "version" in transaction ? transaction.version : null;
   const timestamp =
     "timestamp" in transaction
-      ? getTableFormattedTimestamp(transaction.timestamp)
+      ? getTableFormattedTimestamp(transaction.timestamp, locale)
       : "-";
   const counterparty = getTransactionCounterparty(transaction);
   const sender =
@@ -531,14 +532,14 @@ type TransactionCardProps = {
 };
 
 function TransactionCard({transaction, address}: TransactionCardProps) {
-  const {t} = useTranslation();
+  const {t, locale} = useTranslation();
   const theme = useTheme();
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
   const version = "version" in transaction ? transaction.version : null;
   const timestamp =
     "timestamp" in transaction
-      ? getTableFormattedTimestamp(transaction.timestamp)
+      ? getTableFormattedTimestamp(transaction.timestamp, locale)
       : "-";
   const counterparty = getTransactionCounterparty(transaction);
 

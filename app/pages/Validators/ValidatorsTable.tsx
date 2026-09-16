@@ -215,14 +215,21 @@ export function OperatorAddrCell({validator}: ValidatorCellProps) {
 }
 
 function VotingPowerCell({validator}: ValidatorCellProps) {
+  const {locale} = useTranslation();
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      {getFormattedBalanceStr(validator.voting_power.toString(), undefined, 0)}
+      {getFormattedBalanceStr(
+        validator.voting_power.toString(),
+        undefined,
+        0,
+        locale,
+      )}
     </GeneralTableCell>
   );
 }
 
 export function RewardsPerformanceCell({validator}: ValidatorCellProps) {
+  const {formatNumber} = useTranslation();
   return (
     <GeneralTableCell sx={{textAlign: "left", paddingRight: 5}}>
       {validator.rewards_growth === undefined ? null : (
@@ -234,7 +241,12 @@ export function RewardsPerformanceCell({validator}: ValidatorCellProps) {
             justifyContent: "flex-end",
           }}
         >
-          <Box>{`${validator.rewards_growth.toFixed(2)} %`}</Box>
+          <Box>
+            {`${formatNumber(validator.rewards_growth, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })} %`}
+          </Box>
         </Stack>
       )}
     </GeneralTableCell>
@@ -271,6 +283,7 @@ const ValidatorCells = Object.freeze({
 // Mobile card component for validators
 function ValidatorCard({validator}: {validator: ValidatorData}) {
   const theme = useTheme();
+  const {locale, formatNumber} = useTranslation();
 
   const location =
     validator.location_stats?.city && validator.location_stats?.country
@@ -330,6 +343,7 @@ function ValidatorCard({validator}: {validator: ValidatorData}) {
               validator.voting_power.toString(),
               undefined,
               0,
+              locale,
             )}
           </Typography>
         </Box>
@@ -339,7 +353,10 @@ function ValidatorCard({validator}: {validator: ValidatorData}) {
           </Typography>
           <Typography sx={{fontSize: "0.85rem", fontWeight: 600}}>
             {validator.rewards_growth !== undefined
-              ? `${validator.rewards_growth.toFixed(2)}%`
+              ? `${formatNumber(validator.rewards_growth, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}%`
               : "-"}
           </Typography>
         </Box>

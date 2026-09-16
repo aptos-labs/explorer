@@ -624,7 +624,7 @@ function SubRow({
 
 /** Renders the `MultisigTransaction` object carried by a `CreateTransaction` event. */
 function MultisigTransactionValue({value}: {value: unknown}) {
-  const {t} = useTranslation();
+  const {t, locale} = useTranslation();
   if (typeof value !== "object" || value === null) {
     return <MonoText>{String(value)}</MonoText>;
   }
@@ -654,7 +654,7 @@ function MultisigTransactionValue({value}: {value: unknown}) {
       )}
       {created && (
         <SubRow label={t("multisig.created")}>
-          <MonoText>{parseTimestampString(created)}</MonoText>
+          <MonoText>{parseTimestampString(created, true, locale)}</MonoText>
         </SubRow>
       )}
       <SubRow label={t("multisig.payload")}>

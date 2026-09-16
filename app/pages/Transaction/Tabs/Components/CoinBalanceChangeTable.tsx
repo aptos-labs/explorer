@@ -111,7 +111,7 @@ function TokenInfoCell({balanceChange}: BalanceChangeCellProps) {
 }
 
 function AmountCell({balanceChange}: BalanceChangeCellProps) {
-  const {t} = useTranslation();
+  const {t, locale} = useTranslation();
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
   const isNegative = balanceChange.amount < 0;
@@ -123,6 +123,8 @@ function AmountCell({balanceChange}: BalanceChangeCellProps) {
     const formattedValue = getFormattedBalanceStr(
       amount.toString(),
       balanceChange.asset.decimals,
+      undefined,
+      locale,
     );
     await navigator.clipboard.writeText(
       `${isNegative ? "-" : ""}${formattedValue}`,

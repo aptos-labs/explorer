@@ -462,6 +462,7 @@ export const ja = {
     showNArguments: "{count} 個の引数を表示",
     showNArgumentsPlural: "{count} 個の引数を表示",
     octasParens: "({amount} octa)",
+    gasUnits: "{count} ガスユニット",
   },
   network: {
     selectAriaLabel: "ネットワークを選択",

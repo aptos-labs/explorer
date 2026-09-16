@@ -4,14 +4,19 @@ import {useTranslation} from "../../../i18n";
 import MetricCard from "./MetricCard";
 
 export default function TotalStake() {
-  const {t} = useTranslation();
+  const {t, locale} = useTranslation();
   const {totalVotingPower} = useGetValidatorSet();
 
   return (
     <MetricCard
       data={
         totalVotingPower
-          ? getFormattedBalanceStr(totalVotingPower.toString(), undefined, 0)
+          ? getFormattedBalanceStr(
+              totalVotingPower.toString(),
+              undefined,
+              0,
+              locale,
+            )
           : "-"
       }
       label={t("analytics.activelyStaked")}

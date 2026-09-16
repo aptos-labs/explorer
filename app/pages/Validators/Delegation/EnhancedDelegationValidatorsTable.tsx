@@ -316,7 +316,7 @@ function StatusCell({validator}: {validator: ValidatorWithExtendedData}) {
 }
 
 function CommissionCell({validator}: {validator: ValidatorWithExtendedData}) {
-  const {t} = useTranslation();
+  const {t, formatNumber} = useTranslation();
   const theme = useTheme();
   const commission =
     validator.commission !== undefined ? validator.commission : 0;
@@ -334,7 +334,12 @@ function CommissionCell({validator}: {validator: ValidatorWithExtendedData}) {
   return (
     <GeneralTableCell sx={{paddingRight: 10, textAlign: "right"}}>
       <Tooltip
-        title={t("staking.commissionRate", {percent: String(commission)})}
+        title={t("staking.commissionRate", {
+          percent: formatNumber(commission, {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2,
+          }),
+        })}
         arrow
         placement="top"
       >
@@ -367,13 +372,14 @@ function CommissionCell({validator}: {validator: ValidatorWithExtendedData}) {
 }
 
 function DelegatorCell({validator}: {validator: ValidatorWithExtendedData}) {
+  const {formatInteger} = useTranslation();
   const delegatorCount =
     validator.delegatorCount !== undefined ? validator.delegatorCount : 0;
 
   return (
     <GeneralTableCell sx={{paddingRight: 10, textAlign: "right"}}>
       <Typography variant="body2" sx={{fontWeight: 500}}>
-        {delegatorCount.toLocaleString()}
+        {formatInteger(delegatorCount)}
       </Typography>
     </GeneralTableCell>
   );
@@ -415,11 +421,16 @@ function DelegatedAmountCell({
   totalVotingPower: string | null;
 }) {
   const theme = useTheme();
+  const {formatNumber} = useTranslation();
   const networkPercentage = totalVotingPower
     ? calculateNetworkPercentage(validator.voting_power, totalVotingPower)
     : "0";
 
   const percentageValue = parseFloat(networkPercentage);
+  const percentageLabel = formatNumber(percentageValue, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 
   return (
     <GeneralTableCell sx={{paddingRight: 10, textAlign: "right"}}>
@@ -448,7 +459,7 @@ function DelegatedAmountCell({
             variant="caption"
             sx={{ml: 1, color: theme.palette.text.secondary, minWidth: "36px"}}
           >
-            {networkPercentage}%
+            {percentageLabel}%
           </Typography>
         </Box>
       </Box>
@@ -596,6 +607,7 @@ function EnhancedDelegationValidatorCard({
   totalVotingPower: string | null;
 }) {
   const theme = useTheme();
+  const {formatInteger, formatNumber} = useTranslation();
   const navigate = useNavigate();
   const augmentTo = useAugmentToWithGlobalSearchParams();
 
@@ -603,6 +615,10 @@ function EnhancedDelegationValidatorCard({
   const networkPercentage = totalVotingPower
     ? calculateNetworkPercentage(validator.voting_power, totalVotingPower)
     : "0";
+  const networkPercentageLabel = formatNumber(parseFloat(networkPercentage), {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 
   const handleClick = () => {
     navigate({to: augmentTo(`/validator/${validator.owner_address}`)});
@@ -698,7 +714,7 @@ function EnhancedDelegationValidatorCard({
             variant="caption"
             sx={{color: "text.secondary", fontSize: "0.7rem"}}
           >
-            {networkPercentage}% of network
+            {networkPercentageLabel}% of network
           </Typography>
         </Box>
         <Box sx={{textAlign: "center"}}>
@@ -717,7 +733,7 @@ function EnhancedDelegationValidatorCard({
           </Typography>
           <Typography sx={{fontSize: "0.85rem", fontWeight: 600}}>
             {validator.delegatorCount !== undefined
-              ? validator.delegatorCount.toLocaleString()
+              ? formatInteger(validator.delegatorCount)
               : "-"}
           </Typography>
         </Box>

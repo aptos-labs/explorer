@@ -34,9 +34,15 @@ function ValidatorAddrCell({validator}: ValidatorCellProps) {
 }
 
 function VotingPowerCell({validator}: ValidatorCellProps) {
+  const {locale} = useTranslation();
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      {getFormattedBalanceStr(validator.voting_power.toString(), undefined, 3)}
+      {getFormattedBalanceStr(
+        validator.voting_power.toString(),
+        undefined,
+        3,
+        locale,
+      )}
     </GeneralTableCell>
   );
 }

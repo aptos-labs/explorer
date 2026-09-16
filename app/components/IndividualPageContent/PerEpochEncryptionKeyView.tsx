@@ -20,7 +20,7 @@ export default function PerEpochEncryptionKeyView({
   parsed,
   rawData,
 }: PerEpochEncryptionKeyViewProps) {
-  const {t} = useTranslation();
+  const {t, formatBigInt} = useTranslation();
   const epochNumber = BigInt(parsed.epoch);
   const hasKey = parsed.encryptionKeyHex != null;
 
@@ -45,7 +45,7 @@ export default function PerEpochEncryptionKeyView({
             description={t("confidential.epochDescEnc")}
           >
             <Typography variant="body1" component="span" sx={{fontWeight: 600}}>
-              {epochNumber.toLocaleString()}
+              {formatBigInt(epochNumber)}
             </Typography>
           </ResponsiveKeyValueRow>
 

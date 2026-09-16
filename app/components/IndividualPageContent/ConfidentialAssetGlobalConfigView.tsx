@@ -21,7 +21,7 @@ export default function ConfidentialAssetGlobalConfigView({
   parsed,
   rawData,
 }: ConfidentialAssetGlobalConfigViewProps) {
-  const {t} = useTranslation();
+  const {t, formatBigInt} = useTranslation();
   const auditorEpoch = BigInt(parsed.globalAuditor.epoch);
   const hasAuditorKey = parsed.globalAuditor.encryptionKeyHex != null;
 
@@ -85,7 +85,7 @@ export default function ConfidentialAssetGlobalConfigView({
             description={t("confidential.globalAuditorEpochDesc")}
           >
             <Typography variant="body1" component="span" sx={{fontWeight: 600}}>
-              {auditorEpoch.toLocaleString()}
+              {formatBigInt(auditorEpoch)}
             </Typography>
           </ResponsiveKeyValueRow>
 
