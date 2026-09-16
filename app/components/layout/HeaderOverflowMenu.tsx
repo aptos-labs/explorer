@@ -20,17 +20,17 @@ import {WalletConnector} from "../WalletConnector";
 import {LanguageOverflowMenuItem} from "./LanguageSelect";
 
 /**
- * Compact-viewport header menu (`xs`–`md`, below the `lg` breakpoint).
- * Mirrors inline `Nav` links, User Guide, Settings, language, the theme toggle,
- * and the wallet connector. On every viewport the toolbar already shows
- * `NetworkSelect` and `LanguageSelect` (globe + short locale code). On wide
- * viewports (`lg+`) it also shows Help, Settings, `ColorModeToggleButton`,
- * `Nav`, and `WalletConnector` inline.
+ * Compact header menu: below `lg`, and at `lg+` when translated desktop chrome
+ * does not fit the toolbar. Mirrors inline `Nav` links, User Guide, Settings,
+ * language, the theme toggle, and the wallet connector. On every viewport the
+ * toolbar already shows `NetworkSelect` and `LanguageSelect` (globe + short
+ * locale code). When the desktop toolbar fits, it also shows Help, Settings,
+ * `ColorModeToggleButton`, `Nav`, and `WalletConnector` inline.
  *
  * Previously named `NavMobile`, then `HeaderOverflowMenu` when it briefly
  * rendered on all viewports as a preferences drop-down.
  */
-export default function HeaderOverflowMenu() {
+export default function HeaderOverflowMenu({visible}: {visible?: boolean}) {
   const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
   const theme = useTheme();
   const navigate = useNavigate();
@@ -61,7 +61,17 @@ export default function HeaderOverflowMenu() {
   };
 
   return (
-    <Box sx={{display: {xs: "block", lg: "none"}, flexShrink: 0}}>
+    <Box
+      sx={{
+        display:
+          visible === undefined
+            ? {xs: "block", lg: "none"}
+            : visible
+              ? "block"
+              : "none",
+        flexShrink: 0,
+      }}
+    >
       <IconButton
         id="header-overflow-menu-button"
         aria-label={t("chrome.overflowMenuAriaLabel")}

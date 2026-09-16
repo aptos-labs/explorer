@@ -55,4 +55,17 @@ describe("FEAT-SETTINGS-003 / FEAT-CHROME-001 — header language switch", () =>
       screen.getByRole("button", {name: /Language|Langue/}).textContent,
     ).toContain("FR");
   });
+
+  it("restores the persisted catalog after remount", () => {
+    const {unmount} = renderHeaderButton();
+    fireEvent.click(screen.getByRole("button", {name: "Language"}));
+    fireEvent.click(screen.getByRole("menuitem", {name: "Français"}));
+    unmount();
+
+    renderHeaderButton();
+    const button = screen.getByRole("button", {name: "Langue"});
+    expect(button).toBeTruthy();
+    expect(button.textContent).toContain("FR");
+    expect(window.localStorage.getItem("aptos-explorer-locale")).toBe("fr");
+  });
 });

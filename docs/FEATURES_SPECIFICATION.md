@@ -58,17 +58,17 @@ The app shell that wraps every page.
 | Aspect | Detail |
 |--------|--------|
 | **Logo** | Aptos logo links to `/`, scrolls to top. |
-| **Desktop Nav** | Links: Transactions, Analytics (mainnet only), Validators, Blocks, Coins, Releases, Run Script. Active link highlighted via `useLocation`. |
-| **Mobile Nav** | Compact viewports use a 48px hamburger `IconButton` (glyph pinned at 24×24 so the SVG cannot overflow the tap target) that opens `HeaderOverflowMenu` with the same links, plus User Guide, Settings, language, theme toggle, and Wallet. The menu does **not** lock document scroll (MUI's default `overflow: hidden` on `body` makes the overlay appear inert on iOS Safari) and is height-capped so items including Wallet stay reachable. Header blur lives on a non-interactive `::before` layer so iOS Safari still hit-tests the hamburger and network Select. The wordmark is hidden on phones and at the `lg` nav breakpoint so logo, network, language, and (on wide viewports) help/settings/theme/wallet stay on-screen, including when the PWA Share button is present. |
+| **Desktop Nav** | Links: Transactions, Analytics (mainnet only), Validators, Blocks, Coins, Releases, Run Script. Active link highlighted via `useLocation`. Shown when the viewport is `lg+` **and** those labels (plus network, language, help, settings, theme, wallet) fit the toolbar. |
+| **Mobile Nav** | Compact chrome uses a 48px hamburger `IconButton` (glyph pinned at 24×24 so the SVG cannot overflow the tap target) that opens `HeaderOverflowMenu` with the same links, plus User Guide, Settings, language, theme toggle, and Wallet. Compact is used below `lg`, and also at `lg+` when translated nav labels (or other chrome) no longer fit — `useCompactHeader` measures intrinsic desktop width vs the toolbar and keeps a 16px hysteresis so the layout does not flicker. The menu does **not** lock document scroll (MUI's default `overflow: hidden` on `body` makes the overlay appear inert on iOS Safari) and is height-capped so items including Wallet stay reachable. Header blur lives on a non-interactive `::before` layer so iOS Safari still hit-tests the hamburger and network Select. The wordmark is hidden on phones and at the `lg` nav breakpoint so logo, network, language, and (when the desktop toolbar fits) help/settings/theme/wallet stay on-screen, including when the PWA Share button is present. |
 | **Search** | Header autocomplete search (see FEAT-SEARCH). |
 | **Network selector** | Dropdown to switch `?network=` param (see FEAT-NETWORK). Visible in the header on every viewport, including the installed PWA. |
-| **Language selector** | A globe control with the current locale short code (`LanguageSelect`) in the header toolbar next to the network selector on **every** viewport (`xs`–`xl`), including the installed PWA. Compact viewports also keep a Language `MenuItem` (with the current native name as secondary text) inside `HeaderOverflowMenu`. Applies immediately (see FEAT-SETTINGS-003). |
+| **Language selector** | A globe control with the current locale short code (`LanguageSelect`) in the header toolbar next to the network selector on **every** viewport (`xs`–`xl`), including the installed PWA. Compact chrome also keeps a Language `MenuItem` (with the current native name as secondary text) inside `HeaderOverflowMenu`. Applies immediately (see FEAT-SETTINGS-003). |
 | **Theme toggle** | Light/dark icon button (see FEAT-THEME). |
 | **User guide** | Help icon (desktop) and overflow-menu item (compact) link to `/guide` (see FEAT-GUIDE-001). |
 | **Settings** | Gear icon links to `/settings` page (see FEAT-SETTINGS-001). Rate Limit Drawer also links to `/settings`. |
 | **Wallet connector** | Connect/disconnect wallet button (see FEAT-WALLET). |
 | **Feature bar** | Colored banner when running on a non-production feature branch (see FEAT-FLAGS-004). |
-| **No horizontal page scroll** | The `lg+` toolbar (nav, network, language, help, settings, theme, wallet) and the compact toolbar (logo, network, language, optional share, hamburger) fit the viewport so the document does not scroll sideways into empty space. |
+| **No horizontal page scroll** | The desktop toolbar (nav, network, language, help, settings, theme, wallet) either fits the viewport or the header switches to compact chrome so the document does not scroll sideways. Longer translated nav labels collapse to the hamburger earlier than English at the same width. The compact toolbar (logo, network, language, optional share, hamburger) also fits, including in the installed PWA. |
 
 ### FEAT-CHROME-002 — Footer
 
@@ -899,7 +899,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **Navigation** | Header gear icon and mobile nav "Settings" item link to `/settings`. Rate Limit Drawer "Set API key override" button also links there. |
 | **API key overrides** | One optional masked geomi.dev API key field per network (mainnet, testnet, devnet, decibel, shelbynet, local); shared show/hide toggle for all fields. Empty network uses the build default key (if any). Keys are sent as `Authorization: Bearer <key>` (Geomi + TS SDK `API_KEY`). A custom `api-key` header is ignored by the gateway. Geomi `AG-*` client keys also require a matching browser Origin. An info icon next to the section title opens a popover explaining that a personal key provides a dedicated rate limit (useful for heavy use or after HTTP 429) and links to geomi.dev. |
 | **Migration** | Previously saved single-key settings load as the same key applied to every network until the user saves again. |
-| **Persistence** | "Remember on this device" → localStorage, cross-tab sync via `storage` events. Non-API-key preferences (decompilation, language) persist to dedicated localStorage keys. |
+| **Persistence** | "Remember on this device" → localStorage, cross-tab sync via `storage` events. Non-API-key preferences (decompilation, language) persist to dedicated localStorage keys (`aptos-explorer-enable-decompilation`, `aptos-explorer-locale`); those keys are included in the same cross-tab listener. |
 | **On save** | Clears cached SDK clients (`clearCachedV2Clients`, `clearCachedSearchClients`), invalidates all React Query queries, invalidates router. If non-empty API key saved, fires `emitApiKeySaved()` to dismiss rate-limit drawer (see FEAT-RATELIMIT-001). |
 
 ### FEAT-SETTINGS-002 — Decompilation Opt-In
@@ -915,10 +915,10 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Control** | A globe control with the current locale short code (`LanguageSelect`) in the header toolbar next to the network selector on every viewport. Compact viewports (`xs`–`md`) also keep a Language item in `HeaderOverflowMenu` (current native name as secondary text) that opens the same list. `/settings` keeps a labeled **Display language** select. All three apply immediately. Options: **Browser default** (`auto`) or a registered catalog. Shipped catalogs: English (`en`), Simplified Chinese (`zh`), Traditional Chinese (`zh-Hant`), Filipino (`fil`), Spanish (`es`), French (`fr`), German (`de`), Japanese (`ja`), Korean (`ko`), Russian (`ru`), Brazilian Portuguese (`pt`), European Portuguese (`pt-PT`), Arabic (`ar`, RTL), Hindi (`hi`), Thai (`th`), Indonesian (`id`), Vietnamese (`vi`), Turkish (`tr`), Bengali (`bn`), Swahili (`sw`), Italian (`it`), Malay (`ms`), Tamil (`ta`), Ukrainian (`uk`), Dutch (`nl`), Polish (`pl`), Hebrew (`he`, RTL), Urdu (`ur`, RTL), Hausa (`ha`), Zulu (`zu`), and Amharic (`am`). |
+| **Control** | A globe control with the current locale short code (`LanguageSelect`) in the header toolbar next to the network selector on every viewport. Compact chrome (below `lg`, or `lg+` when translated labels overflow) also keeps a Language item in `HeaderOverflowMenu` (current native name as secondary text) that opens the same list. `/settings` keeps a labeled **Display language** select. All three apply immediately. Options: **Browser default** (`auto`) or a registered catalog. Shipped catalogs: English (`en`), Simplified Chinese (`zh`), Traditional Chinese (`zh-Hant`), Filipino (`fil`), Spanish (`es`), French (`fr`), German (`de`), Japanese (`ja`), Korean (`ko`), Russian (`ru`), Brazilian Portuguese (`pt`), European Portuguese (`pt-PT`), Arabic (`ar`, RTL), Hindi (`hi`), Thai (`th`), Indonesian (`id`), Vietnamese (`vi`), Turkish (`tr`), Bengali (`bn`), Swahili (`sw`), Italian (`it`), Malay (`ms`), Tamil (`ta`), Ukrainian (`uk`), Dutch (`nl`), Polish (`pl`), Hebrew (`he`, RTL), Urdu (`ur`, RTL), Hausa (`ha`), Zulu (`zu`), and Amharic (`am`). |
 | **Scope** | Chrome (header, nav, footer, skip link, search placeholder/helper/type chips), settings copy, and the in-app user guide are translated in every shipped catalog. Remaining explorer UI copy (tabs, field labels, tables, errors, entity titles, and related chrome) lives in the English catalogs; `zh`, `fil`, `es`, `fr`, `de`, `ja`, `ko`, `ru`, `pt`, `ar`, `hi`, `th`, `id`, `vi`, `tr`, `bn`, `sw`, `zh-Hant`, `it`, `ms`, `ta`, `pl`, `ur`, `pt-PT`, `ha`, `zu`, `am` include those keys, and other locales fall back to English. On-chain identifiers stay untranslated. |
 | **Resolution** | Explicit catalog wins (case-insensitive). `auto` maps `navigator.languages` tags onto `SUPPORTED_LOCALES`, including `tl`→`fil`, `iw`→`he`, `zh-CN`/`zh-Hans`→`zh`, `zh-Hant`/`zh-TW`/`zh-HK`/`zh-MO`→`zh-Hant`, `pt-BR`→`pt`, and `pt-PT` plus lusophone African regions (`pt-AO`, `pt-MZ`, `pt-CV`, `pt-GW`, `pt-ST`)→`pt-PT`. |
-| **Persistence** | `localePreference` on `ExplorerClientSettings`, stored in `aptos-explorer-locale` localStorage independently of API keys. The header globe control, overflow-menu language item, and Settings language select write this immediately; they do not wait for Settings **Save**. |
+| **Persistence** | `localePreference` on `ExplorerClientSettings`, stored in `aptos-explorer-locale` localStorage independently of API keys. The header globe control, overflow-menu language item, and Settings language select write this immediately; they do not wait for Settings **Save**. Reloads and new tabs read that key; other open tabs pick it up via `storage` events. |
 | **Document language** | SSR `html lang="en"`; after hydration `document.documentElement.lang` / `dir` follow the resolved locale. |
 
 ---
@@ -929,7 +929,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Toggle** | On wide viewports (`lg+`), a dedicated sun/moon `IconButton` (`ColorModeToggleButton`) in the header toolbar next to Settings. On compact viewports (`xs`–`md`), the same action appears as a "Switch to light/dark mode" `MenuItem` inside `HeaderOverflowMenu` (the hamburger nav menu). |
+| **Toggle** | When desktop chrome fits (`lg+` and no overflow), a dedicated sun/moon `IconButton` (`ColorModeToggleButton`) in the header toolbar next to Settings. When compact, the same action appears as a "Switch to light/dark mode" `MenuItem` inside `HeaderOverflowMenu` (the hamburger nav menu). |
 | **Persistence** | Cookie (`COLOR_MODE_COOKIE`) + system preference detection. |
 | **Implementation** | MUI `ThemeProvider` via `ProvideColorMode`. |
 | **Light theme** | Neutral grey app background (`#ECEEF2`), white cards/panels, cooler borders, soft grey stripes for tables and filled inputs. Body text ink (`#171612`). |
@@ -1445,9 +1445,11 @@ top of the HTML site.
 | `app/i18n/messages.en.test.ts` | FEAT-I18N-001 / FEAT-GUIDE-001 (English chrome, guide, tabs, fields, errors, verification titles; shipped locale key/placeholder parity) |
 | `app/i18n/messages.catalogs.test.ts` | FEAT-I18N-001 (locale metadata; full-UI locales match English keys; other locales are an English-key subset) |
 | `app/i18n/agentsLocales.test.ts` | FEAT-I18N-001 (`AGENTS.md` shipped-locales table matches `SUPPORTED_LOCALES` / `LOCALE_META`) |
-| `app/components/layout/LanguageSelect.test.tsx` | FEAT-SETTINGS-003 / FEAT-CHROME-001 (header language control shows the current locale code, lists catalogs, and persists `aptos-explorer-locale`) |
+| `app/components/layout/LanguageSelect.test.tsx` | FEAT-SETTINGS-003 / FEAT-CHROME-001 (header language control shows the current locale code, lists catalogs, persists `aptos-explorer-locale`, and restores the catalog after remount) |
 | `app/i18n/locales.test.ts` | FEAT-SETTINGS-003 / FEAT-CHROME-001 (`localeShortLabel` compact codes for every shipped locale) |
 | `app/components/layout/HeaderOverflowMenu.test.tsx` | FEAT-CHROME-001 (compact hamburger opens without locking body scroll; 48px IconButton with 24×24 glyph; Language item shows the current native name) |
+| `app/components/layout/headerOverflow.test.ts` | FEAT-CHROME-001 (desktop toolbar overflow → compact chrome with hysteresis) |
+| `app/settings/ExplorerSettings.test.tsx` | FEAT-SETTINGS-003 (cross-tab `storage` events reload `aptos-explorer-locale`) |
 | `app/components/layout/NetworkSelect.test.tsx` | FEAT-NETWORK-001 (header network dropdown opens without locking body scroll; choosing an option updates the URL; status-dot mapping) |
 | `app/pages/Guide/guideSections.test.ts` | FEAT-GUIDE-001 (section ids, titles, body copy) |
 | `app/utils/routerParams.test.ts` | FEAT-ROUTING-003 (`pathSplatToSegments` normalization) |
@@ -1484,7 +1486,7 @@ top of the HTML site.
 | `app/data/defunctProtocols.test.ts` | FEAT-ACCOUNT-003 (defunct protocol registry shape, uniqueness, known-address `// defunct` / `// winding_down` comment drift) |
 | `app/data/functionArgumentNameOverrides/lookup.test.ts` | FEAT-DATA-003 / FEAT-MODULES-006 (argument name override lookup) |
 | `app/types/defunctProtocol.test.ts` | FEAT-ACCOUNT-003 (withdrawal plugin validation) |
-| `app/settings/clientSettings.test.ts` | FEAT-SETTINGS-001 (settings persistence, sanitization), FEAT-I18N-001 (locale preference) |
+| `app/settings/clientSettings.test.ts` | FEAT-SETTINGS-001 (settings persistence, sanitization), FEAT-I18N-001 (locale preference), FEAT-SETTINGS-003 (locale storage key is part of settings sync) |
 | `app/themes/colors/aptosBrandColors.a11y.test.ts` | FEAT-THEME-001 (WCAG contrast regression) |
 | `app/components/hooks/usePageMetadata.structuredData.test.ts` | FEAT-SEO-001 (JSON-LD generation) |
 | `app/components/IndividualPageContent/ContentValue/CurrencyValue.test.tsx` | Currency formatting (octa → APT) |

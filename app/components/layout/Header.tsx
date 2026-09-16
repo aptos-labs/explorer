@@ -14,6 +14,7 @@ import MuiAppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
 import {useEffect, useRef} from "react";
+import {useGetInMainnet} from "../../api/hooks/useGetInMainnet";
 import {sendToGTM} from "../../api/hooks/useGoogleTagManager";
 import LogoIconDark from "../../assets/svg/aptos_logo_icon_dark.svg?react";
 import LogoIconLight from "../../assets/svg/aptos_logo_icon_light.svg?react";
@@ -33,6 +34,7 @@ import LanguageSelect from "./LanguageSelect";
 import Nav from "./Nav";
 import NetworkSelect from "./NetworkSelect";
 import ShareButton from "./ShareButton";
+import {useCompactHeader} from "./useCompactHeader";
 
 export default function Header() {
   const scrollTop = () => {
@@ -50,7 +52,7 @@ export default function Header() {
 
   const theme = useTheme();
   const logEvent = useLogEventWithBasic();
-  const {t} = useTranslation();
+  const {t, locale} = useTranslation();
   const isDark = theme.palette.mode === "dark";
 
   const {ref, inView} = useInView({
@@ -58,10 +60,30 @@ export default function Header() {
     threshold: 0,
   });
 
-  const isOnMobile = !useMediaQuery(theme.breakpoints.up("lg"));
+  const belowLg = !useMediaQuery(theme.breakpoints.up("lg"));
+  const inMainnet = useGetInMainnet();
   const isStandalonePWA = useIsStandalonePWA();
   const isInIframe = useIsInIframe();
   const showShareButton = isStandalonePWA || isInIframe;
+
+  const toolbarRef = useRef<HTMLDivElement>(null);
+  const brandRef = useRef<HTMLElement>(null);
+  const navRef = useRef<HTMLElement>(null);
+  const networkRef = useRef<HTMLElement>(null);
+  const languageRef = useRef<HTMLElement>(null);
+  const shareRef = useRef<HTMLElement>(null);
+  const desktopActionsRef = useRef<HTMLElement>(null);
+  const isCompact = useCompactHeader({
+    forceCompact: belowLg,
+    toolbarRef,
+    brandRef,
+    navRef,
+    networkRef,
+    languageRef,
+    shareRef,
+    desktopActionsRef,
+    remeasureKey: `${locale}:${inMainnet}:${showShareButton}`,
+  });
 
   const networkName = useNetworkName();
   const {account, wallet, network} = useWallet();
@@ -147,6 +169,7 @@ export default function Header() {
         <FeatureBar />
         <Container maxWidth={false} sx={{minWidth: 0, px: {xs: 1, sm: 2}}}>
           <Toolbar
+            ref={toolbarRef}
             sx={{
               height: "5rem",
               color: theme.palette.text.primary,
@@ -158,6 +181,7 @@ export default function Header() {
             disableGutters
           >
             <Box
+              ref={brandRef}
               component={Link}
               onClick={scrollTop}
               to="/"
@@ -204,51 +228,92 @@ export default function Header() {
               </Typography>
             </Box>
 
-            <Nav />
-            <NetworkSelect />
-            <LanguageSelect />
-            {showShareButton && <ShareButton />}
-            {!isOnMobile && (
-              <IconButton
-                component={Link}
-                to="/guide"
-                aria-label={t("chrome.openGuide")}
-                sx={{
-                  color: "inherit",
-                  flexShrink: 0,
-                }}
+            {!belowLg && (
+              <Box
+                ref={navRef}
+                aria-hidden={isCompact}
+                inert={isCompact || undefined}
+                sx={
+                  isCompact
+                    ? {
+                        position: "absolute",
+                        visibility: "hidden",
+                        display: "flex",
+                        alignItems: "center",
+                        height: 0,
+                        overflow: "hidden",
+                        pointerEvents: "none",
+                        whiteSpace: "nowrap",
+                        width: "max-content",
+                      }
+                    : {
+                        display: "flex",
+                        flexShrink: 0,
+                        minWidth: 0,
+                      }
+                }
               >
-                <HelpOutlineOutlinedIcon fontSize="small" />
-              </IconButton>
-            )}
-            {!isOnMobile && (
-              <IconButton
-                component={Link}
-                to="/settings"
-                aria-label={t("chrome.openSettings")}
-                sx={{
-                  color: "inherit",
-                  flexShrink: 0,
-                }}
-              >
-                <SettingsOutlinedIcon fontSize="small" />
-              </IconButton>
-            )}
-            {!isOnMobile && <ColorModeToggleButton />}
-
-            <HeaderOverflowMenu />
-            {!isOnMobile && (
-              <Box sx={{flexShrink: 0}}>
-                <WalletConnector
-                  networkSupport={networkName}
-                  handleNavigate={() =>
-                    navigate({to: `/account/${account?.address}`})
-                  }
-                  sortInstallableWallets={sortPetraFirst}
-                  modalMaxWidth="sm"
-                />
+                <Nav />
               </Box>
             )}
+            <Box ref={networkRef} sx={{flexShrink: 0, minWidth: 0}}>
+              <NetworkSelect />
+            </Box>
+            <Box ref={languageRef} sx={{flexShrink: 0, minWidth: 0}}>
+              <LanguageSelect />
+            </Box>
+            {showShareButton && (
+              <Box ref={shareRef} sx={{flexShrink: 0}}>
+                <ShareButton />
+              </Box>
+            )}
+            {!isCompact && (
+              <Box
+                ref={desktopActionsRef}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  columnGap: "inherit",
+                  flexShrink: 0,
+                }}
+              >
+                <IconButton
+                  component={Link}
+                  to="/guide"
+                  aria-label={t("chrome.openGuide")}
+                  sx={{
+                    color: "inherit",
+                    flexShrink: 0,
+                  }}
+                >
+                  <HelpOutlineOutlinedIcon fontSize="small" />
+                </IconButton>
+                <IconButton
+                  component={Link}
+                  to="/settings"
+                  aria-label={t("chrome.openSettings")}
+                  sx={{
+                    color: "inherit",
+                    flexShrink: 0,
+                  }}
+                >
+                  <SettingsOutlinedIcon fontSize="small" />
+                </IconButton>
+                <ColorModeToggleButton />
+                <Box sx={{flexShrink: 0}}>
+                  <WalletConnector
+                    networkSupport={networkName}
+                    handleNavigate={() =>
+                      navigate({to: `/account/${account?.address}`})
+                    }
+                    sortInstallableWallets={sortPetraFirst}
+                    modalMaxWidth="sm"
+                  />
+                </Box>
+              </Box>
+            )}
+
+            <HeaderOverflowMenu visible={isCompact} />
           </Toolbar>
         </Container>
       </MuiAppBar>

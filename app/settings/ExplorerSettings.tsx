@@ -8,8 +8,8 @@ import {
   useState,
 } from "react";
 import {
-  EXPLORER_SETTINGS_STORAGE_KEY,
   type ExplorerClientSettings,
+  isExplorerSettingsStorageKey,
   loadExplorerClientSettings,
   persistExplorerClientSettings,
   sanitizeExplorerClientSettings,
@@ -31,16 +31,20 @@ export function ExplorerSettingsProvider({children}: {children: ReactNode}) {
 
   useEffect(() => {
     const handleStorage = (event: StorageEvent) => {
-      const isRelevantStorageArea =
-        event.storageArea === window.localStorage ||
-        event.storageArea === window.sessionStorage;
-
-      if (
-        isRelevantStorageArea &&
-        (event.key === EXPLORER_SETTINGS_STORAGE_KEY || event.key === null)
-      ) {
-        setSettings(loadExplorerClientSettings());
+      if (!isExplorerSettingsStorageKey(event.key)) {
+        return;
       }
+      // jsdom StorageEvents often omit `storageArea`; the browser only fires
+      // this event for local/session storage of this origin.
+      const area = event.storageArea;
+      if (
+        area != null &&
+        area !== window.localStorage &&
+        area !== window.sessionStorage
+      ) {
+        return;
+      }
+      setSettings(loadExplorerClientSettings());
     };
 
     window.addEventListener("storage", handleStorage);
