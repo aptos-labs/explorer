@@ -9,6 +9,7 @@ import type {ValidatorData} from "../../api/hooks/useGetValidators";
 import HashButton, {HashType} from "../../components/HashButton";
 import ContentBoxSpaceBetween from "../../components/IndividualPageContent/ContentBoxSpaceBetween";
 import ContentRowSpaceBetween from "../../components/IndividualPageContent/ContentRowSpaceBetween";
+import IntegerValue from "../../components/IndividualPageContent/ContentValue/IntegerValue";
 import {StyledLearnMoreTooltip} from "../../components/StyledTooltip";
 import LastEpochPerformanceTooltip from "../Validators/Components/LastEpochPerformanceTooltip";
 import RewardsPerformanceTooltip from "../Validators/Components/RewardsPerformanceTooltip";
@@ -80,14 +81,22 @@ function ValidatorDetailCardContent({
         />
         <ContentRowSpaceBetween
           titleKey="fields.numberOfDelegators"
-          value={delegatorBalance}
+          value={<IntegerValue value={delegatorBalance} />}
           tooltip={
             <StyledLearnMoreTooltip text={t("staking.operatorCountTip")} />
           }
         />
         <ContentRowSpaceBetween
           titleKey="fields.compoundRewards"
-          value={`${rewardsRateYearly}% APR`}
+          value={
+            rewardsRateYearly && rewardsRateYearly !== "N/A"
+              ? t("staking.aprReward", {
+                  rate: formatNumber(Number(rewardsRateYearly), {
+                    maximumSignificantDigits: 4,
+                  }),
+                })
+              : rewardsRateYearly
+          }
           tooltip={
             <StyledLearnMoreTooltip
               text={t("staking.rewardsAprTip")}
@@ -97,7 +106,13 @@ function ValidatorDetailCardContent({
         />
         <ContentRowSpaceBetween
           titleKey="fields.operatorCommission"
-          value={commission && `${commission}%`}
+          value={
+            commission != null
+              ? `${formatNumber(Number(commission), {
+                  maximumFractionDigits: 2,
+                })}%`
+              : null
+          }
           tooltip={<StyledLearnMoreTooltip text={t("staking.commissionTip")} />}
         />
       </ContentBoxSpaceBetween>

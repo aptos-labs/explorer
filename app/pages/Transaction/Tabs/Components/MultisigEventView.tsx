@@ -289,7 +289,7 @@ function hexByteLength(hex: string): number | undefined {
 }
 
 function HexPayloadValue({value}: {value: unknown}) {
-  const {t} = useTranslation();
+  const {t, formatInteger} = useTranslation();
   const hex = typeof value === "string" ? value : JSON.stringify(value);
   const byteLength =
     typeof value === "string" ? hexByteLength(value) : undefined;
@@ -300,7 +300,7 @@ function HexPayloadValue({value}: {value: unknown}) {
           variant="caption"
           sx={{display: "block", color: "text.secondary", mb: 0.5}}
         >
-          {t("multisig.bytes", {count: byteLength})}
+          {t("multisig.bytes", {count: formatInteger(byteLength)})}
         </Typography>
       ) : null}
       <Box
@@ -401,7 +401,7 @@ function DecodedPayloadView({
   decoded: DecodedMultisigPayload;
   rawHex: string;
 }) {
-  const {t} = useTranslation();
+  const {t, formatInteger} = useTranslation();
   const [showRaw, setShowRaw] = React.useState(false);
 
   const [rawAddress, moduleName, functionName] = decoded.function.split("::");
@@ -491,7 +491,9 @@ function DecodedPayloadView({
       )}
       <Box>
         <FieldCaption>
-          {t("multisig.arguments", {count: decoded.arguments.length})}
+          {t("multisig.arguments", {
+            count: formatInteger(decoded.arguments.length),
+          })}
         </FieldCaption>
         {decoded.arguments.length === 0 ? (
           <MonoText>{t("multisig.none")}</MonoText>
@@ -624,7 +626,7 @@ function SubRow({
 
 /** Renders the `MultisigTransaction` object carried by a `CreateTransaction` event. */
 function MultisigTransactionValue({value}: {value: unknown}) {
-  const {t, locale} = useTranslation();
+  const {t, locale, formatInteger} = useTranslation();
   if (typeof value !== "object" || value === null) {
     return <MonoText>{String(value)}</MonoText>;
   }
@@ -675,7 +677,9 @@ function MultisigTransactionValue({value}: {value: unknown}) {
         )}
       </SubRow>
       {votes.length > 0 && (
-        <SubRow label={t("multisig.votes", {count: votes.length})}>
+        <SubRow
+          label={t("multisig.votes", {count: formatInteger(votes.length)})}
+        >
           <Stack spacing={0.5}>
             {votes.map((vote, i) => (
               <Stack

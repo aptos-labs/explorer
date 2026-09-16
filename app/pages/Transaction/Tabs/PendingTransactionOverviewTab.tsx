@@ -5,6 +5,7 @@ import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
+import IntegerValue from "../../../components/IndividualPageContent/ContentValue/IntegerValue";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {parseExpirationTimestamp} from "../../utils";
 import {getLearnMoreTooltip} from "../helpers";
@@ -35,7 +36,7 @@ export default function PendingTransactionOverviewTab({
         />
         <ContentRow
           titleKey="fields.sequenceNumber"
-          value={transactionData.sequence_number}
+          value={<IntegerValue value={transactionData.sequence_number} />}
           tooltip={getLearnMoreTooltip("sequence_number")}
         />
         <ContentRow

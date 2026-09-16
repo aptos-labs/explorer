@@ -486,7 +486,7 @@ export default function CoinsListTable({
   coins,
   isLoading,
 }: CoinsListTableProps) {
-  const {t} = useTranslation();
+  const {t, formatInteger} = useTranslation();
   const theme = useTheme();
   const networkName = useNetworkName();
   const inMainnet = useGetInMainnet();
@@ -838,7 +838,9 @@ export default function CoinsListTable({
             mb: 2,
           }}
         >
-          {t("accountUi.coinsFound", {count: filteredCoins.length})}
+          {t("accountUi.coinsFound", {
+            count: formatInteger(filteredCoins.length),
+          })}
           {isMarketDataLoading && t("accountUi.loadingMarketData")}
         </Typography>
         <Box>
@@ -906,7 +908,9 @@ export default function CoinsListTable({
           mb: 2,
         }}
       >
-        {t("accountUi.coinsFound", {count: filteredCoins.length})}
+        {t("accountUi.coinsFound", {
+          count: formatInteger(filteredCoins.length),
+        })}
         {isMarketDataLoading && t("accountUi.loadingMarketData")}
       </Typography>
       <Box

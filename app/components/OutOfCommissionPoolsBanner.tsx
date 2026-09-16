@@ -12,7 +12,7 @@ import {useTranslation} from "../i18n";
  * and displays a warning banner if they do.
  */
 export function OutOfCommissionPoolsBanner() {
-  const {t} = useTranslation();
+  const {t, formatInteger} = useTranslation();
   const {connected, account} = useWallet();
   const aptosClient = useAptosClient();
   const [zeroCommissionPoolAddresses, setZeroCommissionPoolAddresses] =
@@ -89,10 +89,11 @@ export function OutOfCommissionPoolsBanner() {
   }
 
   const count = zeroCommissionPoolAddresses.length;
+  const countLabel = formatInteger(count);
   const message =
     count === 1
-      ? t("staking.zeroCommissionOne", {count})
-      : t("staking.zeroCommissionMany", {count});
+      ? t("staking.zeroCommissionOne", {count: countLabel})
+      : t("staking.zeroCommissionMany", {count: countLabel});
 
   return (
     <Banner

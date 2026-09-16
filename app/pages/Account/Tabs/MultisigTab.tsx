@@ -4,6 +4,7 @@ import type {Types} from "~/types/aptos";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
+import IntegerValue from "../../../components/IndividualPageContent/ContentValue/IntegerValue";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {useTranslation} from "../../../i18n";
 
@@ -109,7 +110,8 @@ function MultisigContent({
 }: {
   multisigResource: Types.MoveResource;
 }): React.JSX.Element {
-  const {t, formatInteger, formatDateTime} = useTranslation();
+  const {t, formatInteger, formatIntegerString, formatDateTime} =
+    useTranslation();
   const theme = useTheme();
   const multisigData: MultisigAccountData =
     multisigResource.data as MultisigAccountData; // Use any for now to handle unknown structure
@@ -143,11 +145,17 @@ function MultisigContent({
       />
       <ContentRow
         titleKey="fields.requiredSignatures"
-        value={safeGet(multisigData, "num_signatures_required")}
+        value={
+          <IntegerValue
+            value={safeGet(multisigData, "num_signatures_required")}
+          />
+        }
       />
       <ContentRow
         titleKey="fields.nextSequenceNumber"
-        value={safeGet(multisigData, "next_sequence_number")}
+        value={
+          <IntegerValue value={safeGet(multisigData, "next_sequence_number")} />
+        }
       />
       {multisigData.owners && Array.isArray(multisigData.owners) && (
         <Box sx={{mt: 2, mb: 2}}>
@@ -177,7 +185,7 @@ function MultisigContent({
                   textAlign: "center",
                 }}
               >
-                {index + 1}
+                <IntegerValue value={index + 1} />
               </Typography>
               <Box sx={{flexGrow: 1}}>
                 <HashButton hash={owner} type={HashType.ACCOUNT} size="large" />
@@ -236,7 +244,9 @@ function MultisigContent({
                       {t("multisig.transactionId", {
                         id:
                           tx.key ||
-                          t("multisig.transactionN", {n: String(index + 1)}),
+                          t("multisig.transactionN", {
+                            n: formatInteger(index + 1),
+                          }),
                       })}
                     </Typography>
                     {tx.value && (
@@ -263,11 +273,13 @@ function MultisigContent({
                                 count: formatInteger(
                                   tx.value.votes.data.length,
                                 ),
-                                required: String(
-                                  safeGet(
-                                    multisigData,
-                                    "num_signatures_required",
-                                    "?",
+                                required: formatIntegerString(
+                                  String(
+                                    safeGet(
+                                      multisigData,
+                                      "num_signatures_required",
+                                      "?",
+                                    ),
                                   ),
                                 ),
                               })}

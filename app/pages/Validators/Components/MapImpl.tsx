@@ -16,6 +16,7 @@ import type {
 } from "../../../api/hooks/useGetValidatorsGeoData";
 import {brandColors} from "../../../themes/colors/aptosBrandColors";
 import type {MapGroupBy} from "../types";
+import {useTranslation} from "../../../i18n";
 
 const MARKER_COLOR = brandColors.babyBlue;
 const MIN_NODE_COUNT_SHOWN_IN_MARKER = 5;
@@ -43,6 +44,7 @@ function MapMarker({
   groupBy: MapGroupBy;
 }) {
   const theme = useTheme();
+  const {formatInteger} = useTranslation();
   const {city, country, lng, lat, nodes, cities} = group;
   const radius = getCircleRadius(nodes.length);
 
@@ -67,7 +69,9 @@ function MapMarker({
             <Typography variant="body2">
               {isCountryMode ? country : `${city}, ${country}`}
             </Typography>
-            <Typography variant="body2">{nodes.length}</Typography>
+            <Typography variant="body2">
+              {formatInteger(nodes.length)}
+            </Typography>
           </Stack>
           {isCountryMode &&
             cities?.map((c: CityBreakdown) => (
@@ -82,7 +86,7 @@ function MapMarker({
                 }}
               >
                 <Box>{c.name}</Box>
-                <Box>{c.count}</Box>
+                <Box>{formatInteger(c.count)}</Box>
               </Stack>
             ))}
         </Box>
@@ -112,7 +116,7 @@ function MapMarker({
               transform={`translate(0, 3.3)`}
               fontSize={9}
             >
-              {nodes.length}
+              {formatInteger(nodes.length)}
             </text>
           )}
         </g>

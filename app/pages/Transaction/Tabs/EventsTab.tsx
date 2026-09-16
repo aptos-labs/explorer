@@ -5,6 +5,7 @@ import CollapsibleCard from "../../../components/IndividualPageContent/Collapsib
 import CollapsibleCards from "../../../components/IndividualPageContent/CollapsibleCards";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import IntegerValue from "../../../components/IndividualPageContent/ContentValue/IntegerValue";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import DecibelEventView, {isDecibelEvent} from "./Components/DecibelEventView";
 import FeeStatementEventView, {
@@ -90,13 +91,13 @@ export default function EventsTab({transaction}: EventsTabProps) {
             {!hideZeroFields && (
               <ContentRow
                 titleKey="fields.creationNumber"
-                value={event.guid.creation_number}
+                value={<IntegerValue value={event.guid.creation_number} />}
               />
             )}
             {!hideZeroFields && (
               <ContentRow
                 titleKey="fields.sequenceNumber"
-                value={event.sequence_number}
+                value={<IntegerValue value={event.sequence_number} />}
               />
             )}
             <ContentRow

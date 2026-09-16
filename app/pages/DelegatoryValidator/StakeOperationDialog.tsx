@@ -21,6 +21,7 @@ import type {ValidatorData} from "../../api/hooks/useGetValidators";
 import ContentBoxSpaceBetween from "../../components/IndividualPageContent/ContentBoxSpaceBetween";
 import ContentRowSpaceBetween from "../../components/IndividualPageContent/ContentRowSpaceBetween";
 import TimestampValue from "../../components/IndividualPageContent/ContentValue/TimestampValue";
+import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import LoadingModal from "../../components/LoadingModal";
 import StyledDialog from "../../components/StyledDialog";
 import StyledTooltip, {
@@ -94,7 +95,7 @@ function StakeOperationDialogContent({
   accountResource: Types.MoveResource;
   validator: ValidatorData;
 }) {
-  const {t} = useTranslation();
+  const {t, formatNumber} = useTranslation();
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
   const {balance, lockedUntilSecs, rewardsRateYearly} = useGetDelegationState(
@@ -312,18 +313,34 @@ function StakeOperationDialogContent({
           <ContentBoxSpaceBetween>
             <ContentRowSpaceBetween
               titleKey="fields.stakingFee"
-              value={`${Number(addStakeFee) / OCTA} APT`}
+              value={
+                <APTCurrencyValue amount={String(addStakeFee)} decimals={8} />
+              }
               tooltip={
                 <StyledLearnMoreTooltip text={t("staking.stakeFeeTip")} />
               }
             />
             <ContentRowSpaceBetween
               titleKey="fields.operatorCommission"
-              value={commission && `${commission}%`}
+              value={
+                commission != null
+                  ? `${formatNumber(Number(commission), {
+                      maximumFractionDigits: 2,
+                    })}%`
+                  : null
+              }
             />
             <ContentRowSpaceBetween
               titleKey="fields.compoundRewards"
-              value={`${rewardsRateYearly}% APR`}
+              value={
+                rewardsRateYearly && rewardsRateYearly !== "N/A"
+                  ? t("staking.aprReward", {
+                      rate: formatNumber(Number(rewardsRateYearly), {
+                        maximumSignificantDigits: 4,
+                      }),
+                    })
+                  : rewardsRateYearly
+              }
               tooltip={
                 <StyledLearnMoreTooltip
                   text={t("staking.rewardsAprTip")}

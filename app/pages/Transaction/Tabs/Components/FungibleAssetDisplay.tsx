@@ -2,6 +2,7 @@ import * as React from "react";
 import {useGetAssetMetadata} from "../../../../api/hooks/useGetAssetMetadata";
 import type {CoinDescription} from "../../../../api/hooks/useGetCoinList";
 import HashButton, {HashType} from "../../../../components/HashButton";
+import CurrencyValue from "../../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import {findCoinData} from "../../utils";
 
 export function FungibleAssetChip({
@@ -35,11 +36,10 @@ export function FungibleAssetAmount({
   const {data: assetMetadata} = useGetAssetMetadata(metadata);
   const assetCoin = findCoinData(coinData?.data ?? [], metadata);
   const decimals = assetCoin?.decimals ?? assetMetadata?.decimals ?? 0;
-  const displayAmount = Number(amount) / 10 ** decimals;
 
   return (
     <React.Fragment>
-      {displayAmount}
+      <CurrencyValue amount={amount} decimals={decimals} />
       <FungibleAssetChip metadata={metadata} coinData={coinData} />
     </React.Fragment>
   );

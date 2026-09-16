@@ -17,7 +17,7 @@ type StakingProps = {
 };
 
 export default function Staking({isSkeletonLoading}: StakingProps) {
-  const {t, locale} = useTranslation();
+  const {t, locale, formatNumber} = useTranslation();
   const {totalVotingPower} = useGetValidatorSet();
   const {rewardsRateYearly} = useGetStakingRewardsRate();
 
@@ -44,7 +44,16 @@ export default function Staking({isSkeletonLoading}: StakingProps) {
           alignItems: "center",
         }}
       >
-        <Body>{t("staking.aprReward", {rate: String(rewardsRateYearly)})}</Body>{" "}
+        <Body>
+          {t("staking.aprReward", {
+            rate:
+              rewardsRateYearly === "N/A"
+                ? rewardsRateYearly
+                : formatNumber(Number(rewardsRateYearly), {
+                    maximumSignificantDigits: 4,
+                  }),
+          })}
+        </Body>{" "}
         <StyledLearnMoreTooltip
           text={t("staking.rewardsAprTip")}
           link={REWARDS_LEARN_MORE_LINK}

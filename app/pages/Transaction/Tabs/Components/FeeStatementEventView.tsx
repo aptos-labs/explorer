@@ -57,7 +57,7 @@ function GasUnitsWithOptionalApt({
   gasUnits: string;
   gasUnitPrice?: string;
 }) {
-  const {t} = useTranslation();
+  const {t, formatIntegerString} = useTranslation();
   const theme = useTheme();
   const octas =
     gasUnitPrice !== undefined
@@ -73,7 +73,9 @@ function GasUnitsWithOptionalApt({
           sx={{display: "block", color: theme.palette.text.secondary, mt: 0.25}}
         >
           <APTCurrencyValue amount={octas} />{" "}
-          <span>{t("common.octasParens", {amount: octas})}</span>
+          <span>
+            {t("common.octasParens", {amount: formatIntegerString(octas)})}
+          </span>
         </Typography>
       ) : null}
     </Box>
@@ -81,7 +83,7 @@ function GasUnitsWithOptionalApt({
 }
 
 function OctasRowValue({octas}: {octas: string}) {
-  const {t} = useTranslation();
+  const {t, formatIntegerString} = useTranslation();
   return (
     <Box>
       <APTCurrencyValue amount={octas} />
@@ -90,7 +92,7 @@ function OctasRowValue({octas}: {octas: string}) {
         variant="body2"
         sx={(theme) => ({color: theme.palette.text.secondary, ml: 0.5})}
       >
-        {t("common.octasParens", {amount: octas})}
+        {t("common.octasParens", {amount: formatIntegerString(octas)})}
       </Typography>
     </Box>
   );

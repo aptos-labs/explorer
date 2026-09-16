@@ -7,6 +7,7 @@ import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+import IntegerValue from "../../../components/IndividualPageContent/ContentValue/IntegerValue";
 import {
   isValidIpfsUrl,
   isValidUrl,
@@ -280,16 +281,18 @@ export default function OverviewTab({data}: OverviewTabProps) {
         {data?.largest_property_version_v1 != null && (
           <ContentRow
             titleKey="fields.largestPropertyVersion"
-            value={data?.largest_property_version_v1}
+            value={<IntegerValue value={data?.largest_property_version_v1} />}
           />
         )}
         <ContentRow
           titleKey="fields.supply"
-          value={data?.current_collection?.current_supply}
+          value={
+            <IntegerValue value={data?.current_collection?.current_supply} />
+          }
         />
         <ContentRow
           titleKey="fields.maximum"
-          value={data?.current_collection?.max_supply}
+          value={<IntegerValue value={data?.current_collection?.max_supply} />}
         />
         <ContentRow
           titleKey="fields.tokenProperties"

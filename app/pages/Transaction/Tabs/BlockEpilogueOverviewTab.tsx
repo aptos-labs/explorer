@@ -2,6 +2,7 @@ import {Box} from "@mui/material";
 import type {Types} from "~/types/aptos";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
+import IntegerValue from "../../../components/IndividualPageContent/ContentValue/IntegerValue";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {TransactionStatus} from "../../../components/TransactionStatus";
 import {getLearnMoreTooltip} from "../helpers";
@@ -45,7 +46,11 @@ export default function BlockEpilogueOverviewTab({
       <ContentBox sx={{padding: 4}}>
         <ContentRow
           titleKey="fields.version"
-          value={<Box sx={{fontWeight: 600}}>{transactionData.version}</Box>}
+          value={
+            <Box sx={{fontWeight: 600}}>
+              <IntegerValue value={transactionData.version} />
+            </Box>
+          }
           tooltip={getLearnMoreTooltip("version")}
         />
         <ContentRow
@@ -76,12 +81,22 @@ export default function BlockEpilogueOverviewTab({
         />
         <ContentRow
           titleKey="fields.blockApproximateOutputSize"
-          value={transactionData.block_end_info.block_approx_output_size}
+          value={
+            <IntegerValue
+              value={transactionData.block_end_info.block_approx_output_size}
+            />
+          }
           tooltip={getLearnMoreTooltip("block_approx_output_size")}
         />
         <ContentRow
           titleKey="fields.blockEffectiveGasUnits"
-          value={transactionData.block_end_info.block_effective_block_gas_units}
+          value={
+            <IntegerValue
+              value={
+                transactionData.block_end_info.block_effective_block_gas_units
+              }
+            />
+          }
           tooltip={getLearnMoreTooltip("block_effective_block_gas_units")}
         />
         <ContentRow

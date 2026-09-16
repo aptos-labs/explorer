@@ -383,7 +383,7 @@ function PriceSizeTable({
 }
 
 function BulkOrderPlacedEventView({data}: {data: Record<string, unknown>}) {
-  const {t} = useTranslation();
+  const {t, formatIntegerString} = useTranslation();
   const bidPrices = (data.bid_prices as string[]) ?? [];
   const bidSizes = (data.bid_sizes as string[]) ?? [];
   const askPrices = (data.ask_prices as string[]) ?? [];
@@ -405,7 +405,7 @@ function BulkOrderPlacedEventView({data}: {data: Record<string, unknown>}) {
         <AddressValue hash={String(data.user)} />
       </Row>
       <Row labelKey="decibel.sequence">
-        <MonoText>{String(data.sequence_number)}</MonoText>
+        <MonoText>{formatIntegerString(String(data.sequence_number))}</MonoText>
       </Row>
       <Row labelKey="decibel.bids">
         <PriceSizeTable

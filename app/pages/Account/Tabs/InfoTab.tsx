@@ -15,6 +15,7 @@ import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import IntegerValue from "../../../components/IndividualPageContent/ContentValue/IntegerValue";
 import {tryStandardizeAddress} from "../../../utils";
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
 import {useTranslation} from "../../../i18n";
@@ -211,7 +212,7 @@ export default function InfoTab({
         <ContentBox>
           <ContentRow
             titleKey="fields.sequenceNumber"
-            value={accountData.sequence_number}
+            value={<IntegerValue value={accountData.sequence_number} />}
             tooltip={getLearnMoreTooltip("sequence_number")}
           />
           {keyRotated ? (

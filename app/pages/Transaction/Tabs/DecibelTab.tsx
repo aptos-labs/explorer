@@ -289,7 +289,7 @@ function LegTable({
   marketConfig: DecibelMarketConfig | undefined;
 }) {
   const theme = useTheme();
-  const {t, locale} = useTranslation();
+  const {t, locale, formatInteger} = useTranslation();
   const displayLabel = labelKey ? t(labelKey) : label;
   if (legs.length === 0) return null;
 
@@ -326,7 +326,7 @@ function LegTable({
             variant="subtitle2"
             sx={{color: theme.palette[color].main}}
           >
-            {displayLabel} ({legs.length})
+            {displayLabel} ({formatInteger(legs.length)})
           </Typography>
           {totalSize && (
             <Typography
@@ -417,7 +417,7 @@ function LegTable({
                     color: "text.secondary",
                   }}
                 >
-                  {i + 1}
+                  {formatInteger(i + 1)}
                 </Typography>
               </GeneralTableCell>
               <GeneralTableCell>
@@ -519,7 +519,7 @@ function BulkOrderInlineDetail({
   filledEvents: DecibelBulkOrderFilledEvent[];
   marketConfig: DecibelMarketConfig | undefined;
 }) {
-  const {t, locale} = useTranslation();
+  const {t, locale, formatInteger} = useTranslation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const hasDetail = detail !== undefined;
@@ -613,7 +613,9 @@ function BulkOrderInlineDetail({
             <Box>
               <Typography variant="subtitle2" sx={{mb: 1}}>
                 {placedEvents.length > 1
-                  ? t("decibel.placedCount", {count: placedEvents.length})
+                  ? t("decibel.placedCount", {
+                      count: formatInteger(placedEvents.length),
+                    })
                   : t("decibel.placed")}
               </Typography>
               <Stack spacing={1.5}>
@@ -706,7 +708,9 @@ function BulkOrderInlineDetail({
           {hasFills && (
             <Box>
               <Typography variant="subtitle2" sx={{mb: 1}}>
-                {t("decibel.fills", {count: filledEvents.length})}
+                {t("decibel.fills", {
+                  count: formatInteger(filledEvents.length),
+                })}
               </Typography>
               {isMobile ? (
                 <Stack spacing={1}>

@@ -13,6 +13,7 @@ import * as React from "react";
 import {useMemo, useSyncExternalStore} from "react";
 import type {Types} from "~/types/aptos";
 import HashButton, {HashType} from "../../components/HashButton";
+import IntegerValue from "../../components/IndividualPageContent/ContentValue/IntegerValue";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
@@ -103,7 +104,7 @@ function BlockHeightCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
       <Link to={`/block/${block.block_height}`} underline="none">
-        {block.block_height}
+        <IntegerValue value={block.block_height} />
       </Link>
     </GeneralTableCell>
   );
@@ -134,11 +135,13 @@ function BlockHashCell({block}: BlockCellProps) {
 function CountVersionCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      {(
-        BigInt(block.last_version) -
-        BigInt(block.first_version) +
-        BigInt(1)
-      ).toString()}
+      <IntegerValue
+        value={(
+          BigInt(block.last_version) -
+          BigInt(block.first_version) +
+          BigInt(1)
+        ).toString()}
+      />
     </GeneralTableCell>
   );
 }
@@ -147,7 +150,7 @@ function FirstVersionCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
       <Link to={`/txn/${block.first_version}`} underline="none">
-        {block.first_version}
+        <IntegerValue value={block.first_version} />
       </Link>
     </GeneralTableCell>
   );
@@ -157,7 +160,7 @@ function LastVersionCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
       <Link to={`/txn/${block.last_version}`} underline="none">
-        {block.last_version}
+        <IntegerValue value={block.last_version} />
       </Link>
     </GeneralTableCell>
   );
@@ -207,7 +210,7 @@ type BlockCardProps = {
 };
 
 const BlockCard = React.memo(function BlockCard({block}: BlockCardProps) {
-  const {t, formatInteger} = useTranslation();
+  const {t, formatInteger, formatIntegerString} = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
   const augmentTo = useAugmentToWithGlobalSearchParams();
@@ -262,7 +265,9 @@ const BlockCard = React.memo(function BlockCard({block}: BlockCardProps) {
         <Typography
           sx={{fontWeight: 600, fontSize: "0.95rem", color: "primary.main"}}
         >
-          {t("table.blockHeight", {height: block.block_height})}
+          {t("table.blockHeight", {
+            height: formatIntegerString(block.block_height),
+          })}
         </Typography>
         <Typography
           variant="caption"
@@ -298,7 +303,7 @@ const BlockCard = React.memo(function BlockCard({block}: BlockCardProps) {
             {t("common.transactions")}
           </Typography>
           <Typography sx={{fontSize: "0.85rem", fontWeight: 600}}>
-            {numTransactions}
+            <IntegerValue value={numTransactions} />
           </Typography>
         </Box>
         <Box sx={{textAlign: "center"}}>
@@ -308,7 +313,7 @@ const BlockCard = React.memo(function BlockCard({block}: BlockCardProps) {
           <Typography
             sx={{fontSize: "0.85rem", fontWeight: 500, color: "primary.main"}}
           >
-            {block.first_version}
+            {formatIntegerString(block.first_version)}
           </Typography>
         </Box>
         <Box sx={{textAlign: "right"}}>
@@ -318,7 +323,7 @@ const BlockCard = React.memo(function BlockCard({block}: BlockCardProps) {
           <Typography
             sx={{fontSize: "0.85rem", fontWeight: 500, color: "primary.main"}}
           >
-            {block.last_version}
+            {formatIntegerString(block.last_version)}
           </Typography>
         </Box>
       </Stack>

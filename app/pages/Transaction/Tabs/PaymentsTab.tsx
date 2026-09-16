@@ -250,7 +250,7 @@ function StepCard({
   coinData: CoinList;
   index: number;
 }) {
-  const {t, locale} = useTranslation();
+  const {t, locale, formatInteger} = useTranslation();
   const theme = useTheme();
   return (
     <Paper
@@ -266,7 +266,7 @@ function StepCard({
         >
           <Chip
             size="small"
-            label={t("payments.step", {n: index + 1})}
+            label={t("payments.step", {n: formatInteger(index + 1)})}
             sx={{fontWeight: 700}}
           />
           <Chip

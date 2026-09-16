@@ -632,7 +632,9 @@ function CSVExportButton({
     >
       {isExporting
         ? totalTransactionCount > 100
-          ? t("accountUi.exportingProgress", {percent: String(exportProgress)})
+          ? t("accountUi.exportingProgress", {
+              percent: formatInteger(exportProgress),
+            })
           : t("accountUi.exporting")
         : t("accountUi.exportCsv", {
             count: formatInteger(
