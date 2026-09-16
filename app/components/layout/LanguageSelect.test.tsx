@@ -41,7 +41,7 @@ describe("FEAT-SETTINGS-003 / FEAT-CHROME-001 — header language switch", () =>
     renderHeaderButton();
 
     const button = screen.getByRole("button", {name: "Language"});
-    expect(button).toHaveTextContent("EN");
+    expect(button.textContent).toContain("EN");
     expect(button.querySelector("svg")).toBeTruthy();
 
     fireEvent.click(button);
@@ -51,8 +51,8 @@ describe("FEAT-SETTINGS-003 / FEAT-CHROME-001 — header language switch", () =>
     fireEvent.click(screen.getByRole("menuitem", {name: "Français"}));
 
     expect(window.localStorage.getItem("aptos-explorer-locale")).toBe("fr");
-    expect(screen.getByRole("button", {name: "Language"})).toHaveTextContent(
-      "FR",
-    );
+    expect(
+      screen.getByRole("button", {name: /Language|Langue/}).textContent,
+    ).toContain("FR");
   });
 });

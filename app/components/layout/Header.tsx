@@ -196,16 +196,6 @@ export default function Header() {
                 variant="h6"
                 sx={{
                   fontWeight: 600,
-                  display: {xs: "none", lg: "block", xl: "none"},
-                  fontSize: "1rem",
-                }}
-              >
-                {t("chrome.appNameShort")}
-              </Typography>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: 600,
                   display: {xs: "none", sm: "block", lg: "none", xl: "block"},
                   fontSize: {sm: "1.1rem", md: "1.25rem"},
                 }}
