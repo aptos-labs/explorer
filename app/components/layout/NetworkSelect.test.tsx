@@ -22,7 +22,7 @@ vi.mock("@tanstack/react-router", () => ({
   useLocation: () => ({pathname: "/"}),
 }));
 
-import NetworkSelect from "./NetworkSelect";
+import NetworkSelect, {networkStatusPaletteKey} from "./NetworkSelect";
 
 const theme = createTheme(getDesignTokens("light"));
 
@@ -43,6 +43,21 @@ afterEach(() => {
 });
 
 describe("FEAT-NETWORK-001 — header network selector", () => {
+  it("maps each network to a status color", () => {
+    expect(networkStatusPaletteKey("mainnet")).toBe("success");
+    expect(networkStatusPaletteKey("testnet")).toBe("warning");
+    expect(networkStatusPaletteKey("devnet")).toBe("info");
+    expect(networkStatusPaletteKey("local")).toBe("disabled");
+    expect(networkStatusPaletteKey("decibel")).toBe("disabled");
+  });
+
+  it("shows a status indicator for the current network", () => {
+    renderSelect();
+    expect(
+      document.querySelector("[data-network-status='mainnet']"),
+    ).toBeTruthy();
+  });
+
   it("opens the network list without locking body scroll", () => {
     renderSelect();
 

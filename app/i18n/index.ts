@@ -34,6 +34,7 @@ export {
   DEFAULT_LOCALE,
   FULL_UI_LOCALES,
   isFullUiLocale,
+  localeShortLabel,
   LOCALE_META,
   SUPPORTED_LOCALES,
   type FullUiLocale,

@@ -60,7 +60,8 @@ describe("FEAT-CHROME-001 — compact overflow menu on mobile", () => {
     fireEvent.click(screen.getByRole("button", {name: "Navigation menu"}));
 
     expect(screen.getByRole("menuitem", {name: "Transactions"})).toBeTruthy();
-    expect(screen.getByRole("menuitem", {name: "Language"})).toBeTruthy();
+    expect(screen.getByRole("menuitem", {name: /Language/})).toBeTruthy();
+    expect(screen.getByText("English")).toBeTruthy();
     // iOS Safari treats MUI's overflow:hidden scroll-lock as a broken overlay:
     // the menu appears to do nothing or immediately dismisses.
     expect(document.body.style.overflow).not.toBe("hidden");

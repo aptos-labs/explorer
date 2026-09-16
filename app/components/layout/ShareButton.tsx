@@ -11,8 +11,8 @@ interface ShareButtonProps {
    */
   title?: string;
   /**
-   * Optional spacing override (CSS margin-left) applied to the icon button.
-   * Mirrors the spacing pattern used by the other Header IconButtons.
+   * Optional extra left margin. Header spacing uses toolbar `columnGap`, so
+   * this defaults to none and should stay unused in the PWA/iframe slot.
    */
   marginLeft?: string;
 }
@@ -26,10 +26,7 @@ interface ShareButtonProps {
  * installed PWA — which doesn't have the browser address bar / share menu —
  * still have a one-tap way to share whatever page they're on.
  */
-export default function ShareButton({
-  title,
-  marginLeft = "1rem",
-}: ShareButtonProps) {
+export default function ShareButton({title, marginLeft}: ShareButtonProps) {
   const {t} = useTranslation();
   const [snackbar, setSnackbar] = useState<{
     open: boolean;
@@ -70,8 +67,9 @@ export default function ShareButton({
           aria-label={t("share.tooltip")}
           onClick={handleClick}
           sx={{
-            marginLeft,
+            ...(marginLeft ? {marginLeft} : {}),
             color: "inherit",
+            flexShrink: 0,
           }}
         >
           <IosShareIcon fontSize="small" />

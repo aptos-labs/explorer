@@ -1,8 +1,11 @@
 import {
+  Box,
   FormControl,
+  InputAdornment,
   MenuItem,
   Select,
   type SelectChangeEvent,
+  Tooltip,
   useTheme,
 } from "@mui/material";
 import {useLocation} from "@tanstack/react-router";
@@ -10,6 +13,21 @@ import {hiddenNetworks, type NetworkName, networks} from "../../constants";
 import {useNetworkSelector} from "../../global-config";
 import {translateNetworkName, useTranslation} from "../../i18n";
 import {useNavigate} from "../../routing";
+
+export function networkStatusPaletteKey(
+  networkName: string,
+): "success" | "warning" | "info" | "disabled" {
+  switch (networkName) {
+    case "mainnet":
+      return "success";
+    case "testnet":
+      return "warning";
+    case "devnet":
+      return "info";
+    default:
+      return "disabled";
+  }
+}
 
 export default function NetworkSelect() {
   const theme = useTheme();
@@ -41,62 +59,94 @@ export default function NetworkSelect() {
   const isHiddenNetwork =
     hiddenNetworks.includes(networkName) && networkName !== "local";
 
+  const statusKey = networkStatusPaletteKey(networkName);
+  const statusColor =
+    statusKey === "disabled"
+      ? theme.palette.text.disabled
+      : theme.palette[statusKey].main;
+
   // Custom render for the selected value to show hidden network names
   const renderValue = (selected: string) => {
     return <span>{translateNetworkName(selected, t)}</span>;
   };
 
   return (
-    <FormControl size="small" sx={{minWidth: 120, flexShrink: 0}}>
-      <Select
-        value={networkName}
-        onChange={handleChange}
-        displayEmpty
-        inputProps={{"aria-label": t("network.selectAriaLabel")}}
-        renderValue={renderValue}
-        MenuProps={{
-          disableScrollLock: true,
-          disableAutoFocusItem: true,
-          disableRestoreFocus: true,
-        }}
-        sx={{
-          color: theme.palette.text.primary,
-          touchAction: "manipulation",
-          "& .MuiSelect-icon": {pointerEvents: "none"},
-          "& .MuiOutlinedInput-notchedOutline": {
-            borderColor: theme.palette.divider,
-          },
-          "&:hover .MuiOutlinedInput-notchedOutline": {
-            borderColor: theme.palette.primary.main,
-          },
-          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-            borderColor: theme.palette.primary.main,
-          },
-          "& .MuiSelect-select": {
-            py: 1,
-          },
-        }}
-      >
-        {/* Hidden MenuItem for when a private network is selected - needed for MUI value lookup */}
-        {isHiddenNetwork && (
-          <MenuItem
-            key={networkName}
-            value={networkName}
-            sx={{display: "none"}}
-          >
-            {translateNetworkName(networkName, t)}
+    <FormControl
+      size="small"
+      sx={{minWidth: 0, maxWidth: {xs: "42vw", sm: "none"}, flexShrink: 0}}
+    >
+      <Tooltip title={t("network.selectTitle")} disableTouchListener>
+        <Select
+          value={networkName}
+          onChange={handleChange}
+          displayEmpty
+          inputProps={{"aria-label": t("network.selectAriaLabel")}}
+          renderValue={renderValue}
+          startAdornment={
+            <InputAdornment
+              position="start"
+              sx={{ml: 0.5, mr: 0, pointerEvents: "none"}}
+            >
+              <Box
+                data-network-status={networkName}
+                aria-hidden
+                sx={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: "50%",
+                  bgcolor: statusColor,
+                  flexShrink: 0,
+                }}
+              />
+            </InputAdornment>
+          }
+          MenuProps={{
+            disableScrollLock: true,
+            disableAutoFocusItem: true,
+            disableRestoreFocus: true,
+          }}
+          sx={{
+            color: theme.palette.text.primary,
+            touchAction: "manipulation",
+            "& .MuiSelect-icon": {pointerEvents: "none"},
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: theme.palette.divider,
+            },
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              borderColor: theme.palette.primary.main,
+            },
+            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+              borderColor: theme.palette.primary.main,
+            },
+            "& .MuiSelect-select": {
+              py: 1,
+              pr: 3,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            },
+          }}
+        >
+          {/* Hidden MenuItem for when a private network is selected - needed for MUI value lookup */}
+          {isHiddenNetwork && (
+            <MenuItem
+              key={networkName}
+              value={networkName}
+              sx={{display: "none"}}
+            >
+              {translateNetworkName(networkName, t)}
+            </MenuItem>
+          )}
+          {visibleNetworks.map((network) => (
+            <MenuItem key={network} value={network}>
+              {translateNetworkName(network, t)}
+            </MenuItem>
+          ))}
+          {/* Always show localnet option - user must explicitly select it to trigger local device detection */}
+          <MenuItem key="local" value="local">
+            {t("network.localnet")}
           </MenuItem>
-        )}
-        {visibleNetworks.map((network) => (
-          <MenuItem key={network} value={network}>
-            {translateNetworkName(network, t)}
-          </MenuItem>
-        ))}
-        {/* Always show localnet option - user must explicitly select it to trigger local device detection */}
-        <MenuItem key="local" value="local">
-          {t("network.localnet")}
-        </MenuItem>
-      </Select>
+        </Select>
+      </Tooltip>
     </FormControl>
   );
 }
