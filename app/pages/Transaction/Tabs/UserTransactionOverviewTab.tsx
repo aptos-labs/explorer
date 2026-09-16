@@ -1616,8 +1616,14 @@ const objectTransferAction = (action: ObjectTransfer, i: number) => {
   );
 };
 
-const CONFIDENTIAL_TRANSFER_AMOUNT_TOOLTIP =
-  "Transfer amount is encrypted on-chain and cannot be displayed.";
+function ConfidentialAmountTooltip({children}: {children: React.ReactElement}) {
+  const {t} = useTranslation();
+  return (
+    <StyledTooltip title={t("txn.action.confidentialAmountHidden")}>
+      {children}
+    </StyledTooltip>
+  );
+}
 
 const confidentialAssetAction = (
   coinData: {data: CoinDescription[]} | undefined,
@@ -1650,9 +1656,9 @@ const confidentialAssetAction = (
       return (
         <Box key={`action-${i}`} sx={actionBoxSx}>
           <Box sx={rowSx}>
-            <StyledTooltip title={CONFIDENTIAL_TRANSFER_AMOUNT_TOOLTIP}>
+            <ConfidentialAmountTooltip>
               <TxnCopy messageKey="txn.action.confidentiallyTransferred" />
-            </StyledTooltip>
+            </ConfidentialAmountTooltip>
             <FungibleAssetChip metadata={action.metadata} coinData={coinData} />
           </Box>
           <Box sx={rowSx}>

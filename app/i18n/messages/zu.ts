@@ -456,6 +456,15 @@ export const zu = {
     hoursAgo: "{count}h edlule",
     daysAgo: "{count}d edlule",
     noValidatorsFound: "Abekho abaqinisekisi abatholakele",
+    usd: "USD",
+    iconAlt: "Isithonjana sika-{name}",
+    nArguments: "impikiswano engu-{count}",
+    nArgumentsPlural: "izimpikiswano ezingu-{count}",
+    hideNArguments: "Fihla impikiswano engu-{count}",
+    hideNArgumentsPlural: "Fihla izimpikiswano ezingu-{count}",
+    showNArguments: "Bonisa impikiswano engu-{count}",
+    showNArgumentsPlural: "Bonisa izimpikiswano ezingu-{count}",
+    octasParens: "({amount} octas)",
   },
   network: {
     selectAriaLabel: "Khetha inethiwekhi",
@@ -537,6 +546,9 @@ export const zu = {
   interval: {
     refreshHint:
       "Sicela uvuselele ikhasi ukuze ubone isikhathi esisele esibuyekeziwe.",
+    hms: "{hours}h {minutes}m {seconds}s",
+    dhm: "{days}z {hours}h {minutes}m",
+    dhms: "{days}z {hours}h {minutes}m {seconds}s",
   },
   tabs: {
     transaction: {
@@ -714,6 +726,7 @@ export const zu = {
     stakingFee: "Inkokhelo Yokubeka Isitoko",
     nextUnlockIn: "Ukuvula Okulandelayo Nge",
     index: "Inkomba:",
+    transactionsWithCount: "Ukuthengiselana ({count}):",
   },
   table: {
     hash: "#",
@@ -871,6 +884,8 @@ export const zu = {
       atPrice: "@ {price}",
       openCctpWormholeAria:
         "Vula ukudlulisa kwe-CCTP ku-WormholeScan ethebhini entsha",
+      confidentialAmountHidden:
+        "Inani lokudlulisa libethelwe ku-chain futhi alikwazi ukuboniswa.",
     },
   },
   pages: {
@@ -920,6 +935,8 @@ export const zu = {
         "Ukuphakelwa kuqinisekiswe ngaphandle kochungechunge ukuthi kunokuphakelwa okungaguquki",
       supplyNone:
         "Akukho ukuphakelwa okulandelelwa yale nhlamvu yemali esiqeshini noma ngaphandle",
+      confidentialSupplyTip:
+        "Amathokheni echibini lezimpahla eziyimfihlo ku-chain yempahla eguqukayo ebhanqiwe (isamba somphakathi). Amabhalansi ngamanye ahlala eyimfihlo.",
     },
     fa: {
       entity: "Impahla Efakwayo",
@@ -932,6 +949,20 @@ export const zu = {
         "Buka {tab} yempahla efakwayo {address} ku-Aptos blockchain.",
       metaDescriptionFallback:
         "Buka {symbol} ku-Aptos. Bona ukuphakelwa kwe-token, amadesimali, ababambi, i-metadata, nomlando wokuthengiselana.",
+      confidentialSupplyTip:
+        "Amathokheni echibini lezimpahla eziyimfihlo ku-chain yalesi sinto semethadatha (isamba somphakathi). Amabhalansi ngamanye ahlala eyimfihlo.",
+      dispatchable: "Iyathunyelwa",
+      dispatchableTip:
+        "Imisebenzi yokuthumela yangokwezifiso ibhalisiwe ukuze kudluliselwe (khipha/faka/ibhalansi/ukunikezwa)",
+      hookWithdraw: "Khipha",
+      hookDeposit: "Faka",
+      hookDerivedBalance: "Ibhalansi etholakele",
+      hookDerivedSupply: "Ukunikezwa okutholakele",
+      viewModuleSource: "chofoza ukuze ubuke umthombo wemojuli",
+      hookTooltip: "{hook}: {path} — {action}",
+      nativeGasTokenInfo:
+        "Leli ithokheni le-gas yomdabu esemthethweni ku-Aptos. Lena inguqulo yempahla eguqukayo ye-APT. Ihambisana ngokugcwele nenguqulo ye-coin lapho usebenzisa imisebenzi ye-0x1::coin. Bona 0x1::aptos_coin::AptosCoin ngenguqulo ye-coin.",
+      nativeUsdtInfo: "Leli i-USD₮ yomdabu esemthethweni ku-Aptos.",
     },
     tokens: {
       entity: "I-Token",
@@ -1448,6 +1479,14 @@ export const zu = {
     commissionChange: "Amazinga ekhomishini manje angashintshwa umsebenzisi",
     commissionUpdate:
       "Izinga lekhomishini lamanje lingu-{current}%. Izinga lekhomishini lizobuyekezwa libe ngu-{next}% ngesikhathi samanje sokukhiya.",
+    epochN: "Inkathi {epoch}",
+    percentComplete: "Kuqediwe ngo-{percent}%",
+    epochTip:
+      "Inkathi ku-blockchain ye-Aptos yisikhathi, ngemizuzwana, lapho abaqinisekisi bevotela amabhulokhi amaningi. Inkathi ye-mainnet ye-Aptos ingu-7200 imizuzwana (amahora amabili).",
+    nodeCount: "Ama-node angu-{count}",
+    countryCount: "Amazwe angu-{count}",
+    cityCount: "Amadolobha angu-{count}",
+    commissionRate: "izinga lekhomishini elingu-{percent}%",
   },
   analytics: {
     deployedContracts: "Izinkontileka Ezisakaziwe",
@@ -1501,6 +1540,7 @@ export const zu = {
     activelyStaked: "Kubekwe Ngokusebenza",
     activelyStakedTip:
       "Inani lama-token e-APT agcinwe manje emachibini okubeka isitoko.",
+    totalTransactionsLabel: "UKUTHENGISELANA KWONKE: {count}",
   },
   filter: {
     contractAddress: "Ikheli Lenkontileka",
@@ -1514,6 +1554,12 @@ export const zu = {
     clear: "Sula {name}",
     clearAll: "Sula konke",
     entryFunction: "Hlunga ngoMsebenzi Wokungena",
+    noResults:
+      "Akukho ukuthengiselana okufana nesihlungi. I-indexer ayizange ibuyise ukuthengiselana komsebenzisi okufanayo kwale nethiwekhi.",
+    loadError:
+      "Yehlulekile ukuhlunga ukuthengiselana ngomsebenzi. Amanani angase angalungile noma i-indexer ingatholakali okwesikhashana.",
+    matchingOne: "ukuthengiselana okufanayo okungu-{count}",
+    matchingMany: "ukuthengiselana okufanayo okungu-{count}",
   },
   flags: {
     differences: "Umehluko",
@@ -1811,6 +1857,13 @@ export const zu = {
       partner: "Inkokhelo yomlingani / yephrothokholi ({symbol})",
       partnerTip:
         "Umehluko phakathi kwenani elikhishiwe nelifakiwe yale mpahla — ngokuvamile i-hook yokudlulisa, inkokhelo yephrothokholi ye-DEX, noma insizelo yomlingani.",
+      total: "I-gas yonke ekhokhiswayo",
+      totalTip:
+        "Isamba sokusebenza, I/O, nokugcina (njengamayunithi e-gas). Kufana ne-gas_used yokuthengiselana.",
+      storageShortTip:
+        "Kukhokhiswa isimo esisha esihlanzekile; intengo ngama-octas.",
+      storageRefundShortTip:
+        "Kubhalwa uma kukhululwa ukugcina; akuyona ingxenye ye-gas_used.",
     },
   },
   payload: {
@@ -1978,6 +2031,33 @@ export const zu = {
       "Xhuma i-wallet yakho futhi usebenzisane nenkontileka yephrothokholi ngqo ukuze ukhiphe. Qinisekisa imininingwane yokuthengiselana ngokucophelela ngaphambi kokusayina.",
     openPetraVault: "Vula ku-Petra Vault",
     manageMultisig: "Phatha le akhawunti ye-multisig nge-Petra Vault",
+    balance: "Ibhalansi",
+    balanceTip:
+      "Le bhalansi ibonisa inani lamathokheni e-APT esikhwameni sakho.",
+    balanceTipWithUsd:
+      "Le bhalansi ibonisa inani lamathokheni e-APT esikhwameni sakho kanye nenani lawo le-USD ngesikhathi sangempela ngesilinganiso esingu-1 APT = {price}.",
+    defiPositionsOn: "Izikhundla ze-DeFi ku-",
+    openPortfolioAria: "Vula iphothifoliyo ku-{name} ethebhu entsha",
+    transactionCount: "ukuthengiselana okungu-{count}",
+    transactionCountUpTo: "Kuboniswa kuze kube ukuthengiselana okungu-{count}",
+    matchingSentOne:
+      "ukuthengiselana okufanayo okungu-{count} (kuthunyelwe yile akhawunti)",
+    matchingSentMany:
+      "ukuthengiselana okufanayo okungu-{count} (kuthunyelwe yile akhawunti)",
+    filterNoResults:
+      "Akukho ukuthengiselana okuthunyelwe yile akhawunti okufana nesihlungi",
+    exportCsv: "Khipha i-CSV ({count})",
+    exporting: "Iyakhishwa...",
+    exportingProgress: "Iyakhishwa... {percent}%",
+    exportNone: "Akukho ukuthengiselana okuzokhishwa.",
+    exportNoneFailed:
+      "Akukho ukuthengiselana okuzokhishwa. Kungenzeka konke ukulanda kuhlulekile.",
+    exportPartial:
+      "Kukhishwe ukuthengiselana okungu-{exported}. Okungu-{failed} akukwazanga ukulandwa futhi kwakhishwa ekukhishweni.",
+    exportRateLimit:
+      "Umkhawulo wesilinganiso udlule. Linda kancane bese uzama futhi.",
+    exportError: "Iphutha ekukhisheni ukuthengiselana. Zama futhi.",
+    exportErrorDetail: "Iphutha ekukhisheni ukuthengiselana: {message}",
   },
   confidential: {
     epoch: "I-Epoch",
@@ -2075,6 +2155,15 @@ export const zu = {
     rawJson: "Impendulo eluhlaza (JSON)",
     unexpectedShape:
       "Impendulo ye-trace ibinesimo esingalindelekile; kuboniswa i-JSON eluhlaza kuphela.",
+    userOnly:
+      "Umkhondo wokushayela utholakala kuphela ekuthengiseleni komsebenzisi.",
+    gasZero: "0 i-gas",
+    gasAmount: "i-gas engu-{count}",
+    collapseCalls: "Goqa izingcingo ezigxilile",
+    expandCalls: "Nweba izingcingo ezigxilile",
+    callFailed: "Le ngcingo ihlulekile",
+    caller: "Umshayeli",
+    callee: "Oshayelwayo",
   },
   decibel: {
     buy: "Thenga",
@@ -2193,5 +2282,17 @@ export const zu = {
     newSignaturesRequired: "Amasignesha Adingekayo Amasha",
     previousMetadata: "I-Metadata Yangaphambilini",
     newMetadata: "I-Metadata Entsha",
+    pendingTitle: "Ukuthengiselana okulindile ({count})",
+    ownersTitle: "Abanikazi ({count})",
+    transactionId: "I-ID yokuthengiselana: {id}",
+    transactionN: "Ukuthengiselana {n}",
+    creatorLabel: "Umdali:",
+    creationTime: "Isikhathi sokudala:",
+    votesRequired: "Amavoti: {count} / {required} ayadingeka",
+    voteApproved: "✓ Kuvunyiwe",
+    voteRejected: "✗ Kunqatshiwe",
+    eventCounters: "Izibali zezehlakalo",
+    rawData: "Idatha eluhlaza ye-multisig",
+    noResource: "Le akhawunti ayinaso insiza ye-multisig.",
   },
 } as const satisfies MessageTree;

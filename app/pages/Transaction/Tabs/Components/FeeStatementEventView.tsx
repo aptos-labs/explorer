@@ -5,6 +5,7 @@ import {
   ResponsiveKeyValueRow,
   ResponsiveKeyValueTable,
 } from "../../../../components/Table/ResponsiveKeyValueTable";
+import {useTranslation} from "../../../../i18n";
 
 /** Module event type emitted with transaction fee breakdown (Aptos Framework). */
 export const FEE_STATEMENT_EVENT_TYPE =
@@ -20,12 +21,12 @@ const KNOWN_FIELD_ORDER = [
 
 type KnownField = (typeof KNOWN_FIELD_ORDER)[number];
 
-const FIELD_LABELS: Record<KnownField, string> = {
-  execution_gas_units: "Execution (compute)",
-  io_gas_units: "I/O (storage access)",
-  storage_fee_octas: "Storage fee",
-  storage_fee_refund_octas: "Storage fee refund",
-  total_charge_gas_units: "Total gas charged",
+const FIELD_LABEL_KEYS: Record<KnownField, string> = {
+  execution_gas_units: "payments.fee.execution",
+  io_gas_units: "payments.fee.io",
+  storage_fee_octas: "payments.fee.storage",
+  storage_fee_refund_octas: "payments.fee.storageRefund",
+  total_charge_gas_units: "payments.fee.total",
 };
 
 function isUIntString(value: unknown): value is string {
@@ -56,6 +57,7 @@ function GasUnitsWithOptionalApt({
   gasUnits: string;
   gasUnitPrice?: string;
 }) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const octas =
     gasUnitPrice !== undefined
@@ -70,8 +72,8 @@ function GasUnitsWithOptionalApt({
           variant="body2"
           sx={{display: "block", color: theme.palette.text.secondary, mt: 0.25}}
         >
-          <APTCurrencyValue amount={octas} />
-          <span> ({octas} octas)</span>
+          <APTCurrencyValue amount={octas} />{" "}
+          <span>{t("common.octasParens", {amount: octas})}</span>
         </Typography>
       ) : null}
     </Box>
@@ -79,6 +81,7 @@ function GasUnitsWithOptionalApt({
 }
 
 function OctasRowValue({octas}: {octas: string}) {
+  const {t} = useTranslation();
   return (
     <Box>
       <APTCurrencyValue amount={octas} />
@@ -87,7 +90,7 @@ function OctasRowValue({octas}: {octas: string}) {
         variant="body2"
         sx={(theme) => ({color: theme.palette.text.secondary, ml: 0.5})}
       >
-        ({octas} octas)
+        {t("common.octasParens", {amount: octas})}
       </Typography>
     </Box>
   );
@@ -113,6 +116,7 @@ export default function FeeStatementEventView({
   data,
   gasUnitPrice,
 }: FeeStatementEventViewProps) {
+  const {t} = useTranslation();
   const extraEntries = Object.entries(data).filter(
     ([key]) => !KNOWN_FIELD_ORDER.includes(key as KnownField),
   );
@@ -122,12 +126,12 @@ export default function FeeStatementEventView({
     if (!isUIntString(raw)) {
       return null;
     }
-    const label = FIELD_LABELS[key];
+    const label = t(FIELD_LABEL_KEYS[key]);
     if (key === "storage_fee_octas" || key === "storage_fee_refund_octas") {
       const description =
         key === "storage_fee_refund_octas"
-          ? "Credited when storage is released; not part of gas_used."
-          : "Charged for net new state; priced in octas.";
+          ? t("payments.fee.storageRefundShortTip")
+          : t("payments.fee.storageShortTip");
       return (
         <ResponsiveKeyValueRow
           key={key}
@@ -139,9 +143,7 @@ export default function FeeStatementEventView({
       );
     }
     const description =
-      key === "total_charge_gas_units"
-        ? "Sum of execution, I/O, and storage (as gas units). Matches gas_used on the transaction."
-        : undefined;
+      key === "total_charge_gas_units" ? t("payments.fee.totalTip") : undefined;
     return (
       <ResponsiveKeyValueRow key={key} label={label} description={description}>
         <GasUnitsWithOptionalApt gasUnits={raw} gasUnitPrice={gasUnitPrice} />

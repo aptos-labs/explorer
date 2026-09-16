@@ -87,6 +87,15 @@ export const common = {
   hoursAgo: "{count}h ago",
   daysAgo: "{count}d ago",
   noValidatorsFound: "No validators found",
+  usd: "USD",
+  iconAlt: "{name} icon",
+  nArguments: "{count} argument",
+  nArgumentsPlural: "{count} arguments",
+  hideNArguments: "Hide {count} argument",
+  hideNArgumentsPlural: "Hide {count} arguments",
+  showNArguments: "Show {count} argument",
+  showNArgumentsPlural: "Show {count} arguments",
+  octasParens: "({amount} octas)",
 } as const;
 
 export const network = {
@@ -173,4 +182,7 @@ export const copyHints = {
 
 export const interval = {
   refreshHint: "Please refresh the page to view the updated time remaining.",
+  hms: "{hours}h {minutes}m {seconds}s",
+  dhm: "{days}d {hours}h {minutes}m",
+  dhms: "{days}d {hours}h {minutes}m {seconds}s",
 } as const;

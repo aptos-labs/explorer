@@ -104,6 +104,30 @@ export const accountUi = {
     "Connect your wallet and interact with the protocol's contract directly to execute the withdrawal. Verify the transaction details carefully before signing.",
   openPetraVault: "Open in Petra Vault",
   manageMultisig: "Manage this multisig account with Petra Vault",
+  balance: "Balance",
+  balanceTip:
+    "This balance reflects the amount of APT tokens held in your wallet.",
+  balanceTipWithUsd:
+    "This balance reflects the amount of APT tokens held in your wallet and their live value in USD at a rate of 1 APT = {price}.",
+  defiPositionsOn: "DeFi positions on",
+  openPortfolioAria: "Open portfolio on {name} in new tab",
+  transactionCount: "{count} transactions",
+  transactionCountUpTo: "Showing up to {count} transactions",
+  matchingSentOne: "{count} matching transaction (sent by this account)",
+  matchingSentMany: "{count} matching transactions (sent by this account)",
+  filterNoResults:
+    "No transactions found matching the filter criteria sent by this account",
+  exportCsv: "Export CSV ({count})",
+  exporting: "Exporting...",
+  exportingProgress: "Exporting... {percent}%",
+  exportNone: "No transactions found to export.",
+  exportNoneFailed:
+    "No transactions found to export. All transaction fetches may have failed.",
+  exportPartial:
+    "Exported {exported} transactions successfully. {failed} transactions could not be fetched and were excluded from the export.",
+  exportRateLimit: "Rate limit exceeded. Please wait a moment and try again.",
+  exportError: "Error exporting transactions. Please try again.",
+  exportErrorDetail: "Error exporting transactions: {message}",
 } as const;
 
 export const releasesUi = {
@@ -200,4 +224,12 @@ export const trace = {
   rawJson: "Raw response (JSON)",
   unexpectedShape:
     "Trace response had an unexpected shape; showing raw JSON only.",
+  userOnly: "Call trace is only available for user transactions.",
+  gasZero: "0 gas",
+  gasAmount: "{count} gas",
+  collapseCalls: "Collapse nested calls",
+  expandCalls: "Expand nested calls",
+  callFailed: "This call failed",
+  caller: "Caller",
+  callee: "Callee",
 } as const;

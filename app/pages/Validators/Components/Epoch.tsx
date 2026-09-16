@@ -3,13 +3,12 @@ import {useMemo} from "react";
 import {useGetEpochTime} from "../../../api/hooks/useGetEpochTime";
 import IntervalBar, {IntervalType} from "../../../components/IntervalBar";
 import {StyledLearnMoreTooltip} from "../../../components/StyledTooltip";
+import {useTranslation} from "../../../i18n";
 import {getTimeDiffInMs, parseTimestamp} from "../../utils";
 import MetricSection from "./MetricSection";
 import Body from "./Text/Body";
 import Subtitle from "./Text/Subtitle";
 
-const EPOCH_TOOLTIP_TEXT =
-  "An epoch in the Aptos blockchain is defined as a duration of time, in seconds, during which a number of blocks are voted on by the validators. The Aptos mainnet epoch is set as 7200 seconds (two hours).";
 const EPOCH_LEARN_MORE_LINK =
   "https://aptos.dev/en/network/blockchain/staking#epoch";
 
@@ -18,6 +17,7 @@ type EpochProps = {
 };
 
 export default function Epoch({isSkeletonLoading}: EpochProps) {
+  const {t} = useTranslation();
   const {curEpoch, lastEpochTime, epochInterval} = useGetEpochTime();
 
   // Calculate values during render using useMemo to avoid Date.now() during render
@@ -53,13 +53,17 @@ export default function Epoch({isSkeletonLoading}: EpochProps) {
           alignItems: "center",
         }}
       >
-        <Subtitle>{`Epoch ${curEpoch}`}</Subtitle>
+        <Subtitle>
+          {t("staking.epochN", {epoch: String(curEpoch ?? "")})}
+        </Subtitle>
         <StyledLearnMoreTooltip
-          text={EPOCH_TOOLTIP_TEXT}
+          text={t("staking.epochTip")}
           link={EPOCH_LEARN_MORE_LINK}
         />
       </Stack>
-      <Body>{`${percentageComplete}% complete`}</Body>
+      <Body>
+        {t("staking.percentComplete", {percent: String(percentageComplete)})}
+      </Body>
       <IntervalBar
         percentage={percentageComplete}
         timestamp={endTimestamp}

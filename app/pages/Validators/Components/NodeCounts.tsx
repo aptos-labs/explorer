@@ -1,6 +1,7 @@
 import {Skeleton, Typography, useTheme} from "@mui/material";
 import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
 import type {ValidatorGeoMetric} from "../../../api/hooks/useGetValidatorsGeoData";
+import {useTranslation} from "../../../i18n";
 import {
   fontSizeBodySmall,
   fontSizeSubtitle,
@@ -18,25 +19,32 @@ export default function NodeCounts({
   validatorGeoMetric,
   isSkeletonLoading,
 }: NodeCountsProps) {
+  const {t, formatInteger} = useTranslation();
   const theme = useTheme();
   const {numberOfActiveValidators} = useGetValidatorSet();
 
   return !isSkeletonLoading ? (
     <MetricSection>
       <Typography sx={{fontSize: {xs: fontSizeTitleSmall, md: fontSizeTitle}}}>
-        {numberOfActiveValidators} Nodes
+        {t("staking.nodeCount", {
+          count: formatInteger(numberOfActiveValidators ?? 0),
+        })}
       </Typography>
       <Typography
         sx={{fontSize: {xs: fontSizeBodySmall, md: fontSizeSubtitle}}}
         color={theme.palette.text.secondary}
       >
-        {validatorGeoMetric.countryCount} Countries
+        {t("staking.countryCount", {
+          count: formatInteger(validatorGeoMetric.countryCount),
+        })}
       </Typography>
       <Typography
         sx={{fontSize: {xs: fontSizeBodySmall, md: fontSizeSubtitle}}}
         color={theme.palette.text.secondary}
       >
-        {validatorGeoMetric.cityCount} Cities
+        {t("staking.cityCount", {
+          count: formatInteger(validatorGeoMetric.cityCount),
+        })}
       </Typography>
     </MetricSection>
   ) : (

@@ -454,6 +454,15 @@ export const ha = {
     hoursAgo: "daqa {count}h",
     daysAgo: "daqa {count}d",
     noValidatorsFound: "Ba a sami masu tabbatarwa ba",
+    usd: "USD",
+    iconAlt: "Alamar {name}",
+    nArguments: "hujja {count}",
+    nArgumentsPlural: "hujjoji {count}",
+    hideNArguments: "Ɓoye hujja {count}",
+    hideNArgumentsPlural: "Ɓoye hujjoji {count}",
+    showNArguments: "Nuna hujja {count}",
+    showNArgumentsPlural: "Nuna hujjoji {count}",
+    octasParens: "({amount} octas)",
   },
   network: {
     selectAriaLabel: "Zaɓi hanyar sadarwa",
@@ -534,6 +543,9 @@ export const ha = {
   interval: {
     refreshHint:
       "Da fatan a sabunta shafin don ganin sauran lokacin da aka sabunta.",
+    hms: "{hours}a {minutes}m {seconds}d",
+    dhm: "{days}r {hours}a {minutes}m",
+    dhms: "{days}r {hours}a {minutes}m {seconds}d",
   },
   tabs: {
     transaction: {
@@ -710,6 +722,7 @@ export const ha = {
     stakingFee: "Kuɗin saka hannun jari",
     nextUnlockIn: "Buɗewa na gaba a cikin",
     index: "Jeri:",
+    transactionsWithCount: "Ma'amaloli ({count}):",
   },
   table: {
     hash: "#",
@@ -867,6 +880,8 @@ export const ha = {
       atPrice: "@ {price}",
       openCctpWormholeAria:
         "Buɗe canja wurin CCTP a kan WormholeScan a sabon shafi",
+      confidentialAmountHidden:
+        "Adadin canja wurin an ɓoye shi akan sarka kuma ba za a iya nuna shi ba.",
     },
   },
   pages: {
@@ -915,6 +930,8 @@ export const ha = {
         "An tabbatar da samarwa a wajen sarkar cewa tana da samarwa mai ƙayyade",
       supplyNone:
         "Babu samarwa da ake bin ta don wannan tsabar kuɗi a kan sarkar ko a wajen",
+      confidentialSupplyTip:
+        "Alamomi a tafkin kadarorin sirri akan sarkar na kadarar da za a iya musanyawa da aka haɗa (jimlar jama'a). Ma'aunin mutum yana kasancewa a ɓoye.",
     },
     fa: {
       entity: "Kadari mai musayawa",
@@ -926,6 +943,20 @@ export const ha = {
         "Duba {tab} na kadari mai musayawa {address} a kan blockchain na Aptos.",
       metaDescriptionFallback:
         "Duba {symbol} a kan Aptos. Duba samarwar token, lambobi na ƙasa, masu riƙe, metadata, da tarihin ma'amala.",
+      confidentialSupplyTip:
+        "Alamomi a tafkin kadarorin sirri akan sarkar na wannan abu na metadata (jimlar jama'a). Ma'aunin mutum yana kasancewa a ɓoye.",
+      dispatchable: "Ana iya aika",
+      dispatchableTip:
+        "An yi rajistar ayyukan aika na musamman don canja wurin (cirewa/saka/ma'auni/wadata)",
+      hookWithdraw: "Cirewa",
+      hookDeposit: "Saka",
+      hookDerivedBalance: "Ma'auni da aka samo",
+      hookDerivedSupply: "Wadata da aka samo",
+      viewModuleSource: "danna don duba tushen module",
+      hookTooltip: "{hook}: {path} — {action}",
+      nativeGasTokenInfo:
+        "Wannan shine alamar iskar gas ta hukuma a Aptos. Wannan shine sigar kadarar da za a iya musanyawa ta APT. Tana daidaita sosai da sigar tsabar kudi lokacin amfani da ayyukan 0x1::coin. Duba 0x1::aptos_coin::AptosCoin don sigar tsabar kudi.",
+      nativeUsdtInfo: "Wannan shine USD₮ na asali na hukuma a Aptos.",
     },
     tokens: {
       entity: "Token",
@@ -1448,6 +1479,14 @@ export const ha = {
     commissionChange: "Yanzu ƙimar kwamishin na iya canzawa ta mai gudanarwa",
     commissionUpdate:
       "Ƙimar kwamishin na yanzu {current}% ce. Za a sabunta ƙimar kwamishin zuwa {next}% a lokacin kullewa na yanzu.",
+    epochN: "Zamani {epoch}",
+    percentComplete: "An kammala {percent}%",
+    epochTip:
+      "Zamani a blockchain ɗin Aptos tsawon lokaci ne, a daƙiƙoƙi, wanda masu tabbatarwa ke kada kuri'a akan adadin tubalan. Zamanin babban hanyar sadarwa ta Aptos shine daƙiƙoƙi 7200 (awa biyu).",
+    nodeCount: "Nodes {count}",
+    countryCount: "Kasashe {count}",
+    cityCount: "Garuruwa {count}",
+    commissionRate: "kashi {percent}% na kwamishina",
   },
   analytics: {
     deployedContracts: "Kwangilolin da aka tura",
@@ -1501,6 +1540,7 @@ export const ha = {
     activelyStaked: "An saka hannun jari a aiki",
     activelyStakedTip:
       "Adadin token na APT da ake riƙe a halin yanzu a cikin tafkunan saka hannun jari.",
+    totalTransactionsLabel: "JIMLAR MA'AMALOLI: {count}",
   },
   filter: {
     contractAddress: "Adireshin kwangila",
@@ -1514,6 +1554,12 @@ export const ha = {
     clear: "Share {name}",
     clearAll: "Share duka",
     entryFunction: "Tace ta aikin shigarwa",
+    noResults:
+      "Babu ma'amalolin da suka dace da tacewa. Mai fihirisa bai dawo da ma'amalolin mai amfani da suka dace ba ga wannan hanyar sadarwa.",
+    loadError:
+      "An kasa tace ma'amaloli ta aiki. Wataƙila ƙimar ba daidai ba ne ko mai fihirisa ba ya samuwa na ɗan lokaci.",
+    matchingOne: "ma'amala {count} da ta dace",
+    matchingMany: "ma'amaloli {count} da suka dace",
   },
   flags: {
     differences: "Bambance-bambance",
@@ -1812,6 +1858,12 @@ export const ha = {
       partner: "Kuɗin abokin ciniki / tsari ({symbol})",
       partnerTip:
         "Bambanci tsakanin adadin da aka janye da adadin da aka ajiye don wannan kadari — yawanci ƙugiya ta canja wuri, kuɗin tsarin DEX, ko ɗebewar abokin ciniki.",
+      total: "Jimlar gas da aka caje",
+      totalTip:
+        "Jimlar aiwatarwa, I/O, da ajiya (a na'urorin gas). Ya dace da gas_used na ma'amala.",
+      storageShortTip: "Ana caje don sabon yanayi mai tsafta; farashi a octas.",
+      storageRefundShortTip:
+        "Ana ƙididdigewa lokacin da aka saki ajiya; ba cikin gas_used ba.",
     },
   },
   payload: {
@@ -1977,6 +2029,30 @@ export const ha = {
       "Haɗa walat ɗinku kuma yi hulɗa da kwangilar tsarin kai tsaye don aiwatar da janye. Duba cikakkun bayanan ma'amala a hankali kafin sa hannu.",
     openPetraVault: "Buɗe a cikin Petra Vault",
     manageMultisig: "Sarrafa wannan asusun multisig da Petra Vault",
+    balance: "Ma'auni",
+    balanceTip:
+      "Wannan ma'auni yana nuna adadin alamun APT a cikin walat ɗin ku.",
+    balanceTipWithUsd:
+      "Wannan ma'auni yana nuna adadin alamun APT a walat ɗin ku da ƙimarsu ta USD kai tsaye a kan 1 APT = {price}.",
+    defiPositionsOn: "Matsayin DeFi a",
+    openPortfolioAria: "Buɗe fayil a {name} a sabon shafi",
+    transactionCount: "ma'amaloli {count}",
+    transactionCountUpTo: "Ana nuna har ma'amaloli {count}",
+    matchingSentOne: "ma'amala {count} da ta dace (wannan asusun ya aika)",
+    matchingSentMany: "ma'amaloli {count} da suka dace (wannan asusun ya aika)",
+    filterNoResults:
+      "Babu ma'amalolin da wannan asusun ya aika da suka dace da tacewa",
+    exportCsv: "Fitar da CSV ({count})",
+    exporting: "Ana fitarwa...",
+    exportingProgress: "Ana fitarwa... {percent}%",
+    exportNone: "Babu ma'amaloli da za a fitar.",
+    exportNoneFailed:
+      "Babu ma'amaloli da za a fitar. Wataƙila duk ɗaukar bayanai ta gaza.",
+    exportPartial:
+      "An fitar da ma'amaloli {exported}. Ba a iya ɗaukar {failed} ba kuma an cire su daga fitarwa.",
+    exportRateLimit: "An wuce iyakar adadi. Jira ɗan lokaci kuma sake gwadawa.",
+    exportError: "Kuskure wajen fitar da ma'amaloli. Sake gwadawa.",
+    exportErrorDetail: "Kuskure wajen fitar da ma'amaloli: {message}",
   },
   confidential: {
     epoch: "Epoch",
@@ -2071,6 +2147,14 @@ export const ha = {
     rawJson: "Amsa ta asali (JSON)",
     unexpectedShape:
       "Amsar bibiya tana da siffa da ba a yi tsammani ba; ana nuna JSON na asali kawai.",
+    userOnly: "Gano kira yana samuwa kawai ga ma'amalolin mai amfani.",
+    gasZero: "0 gas",
+    gasAmount: "{count} gas",
+    collapseCalls: "Nannade kiraye-kiraye masu ciki",
+    expandCalls: "Faɗaɗa kiraye-kiraye masu ciki",
+    callFailed: "Wannan kira ya gaza",
+    caller: "Mai kira",
+    callee: "Wanda aka kira",
   },
   decibel: {
     buy: "Saya",
@@ -2189,5 +2273,17 @@ export const ha = {
     newSignaturesRequired: "Sabbin sa hannun da ake buƙata",
     previousMetadata: "Metadata na baya",
     newMetadata: "Sabuwar metadata",
+    pendingTitle: "Ma'amalolin da ake jira ({count})",
+    ownersTitle: "Masu mallaka ({count})",
+    transactionId: "ID ɗin ma'amala: {id}",
+    transactionN: "Ma'amala {n}",
+    creatorLabel: "Mahalicci:",
+    creationTime: "Lokacin ƙirƙira:",
+    votesRequired: "Kuri'u: {count} / {required} ana buƙata",
+    voteApproved: "✓ An amince",
+    voteRejected: "✗ An ƙi",
+    eventCounters: "Masu ƙidayar abubuwan da suka faru",
+    rawData: "Bayanan sa hannu da yawa ɗanyayye",
+    noResource: "Wannan asusun ba shi da albarkatun sa hannu da yawa.",
   },
 } as const satisfies MessageTree;

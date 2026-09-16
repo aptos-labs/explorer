@@ -316,6 +316,7 @@ function StatusCell({validator}: {validator: ValidatorWithExtendedData}) {
 }
 
 function CommissionCell({validator}: {validator: ValidatorWithExtendedData}) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const commission =
     validator.commission !== undefined ? validator.commission : 0;
@@ -332,7 +333,11 @@ function CommissionCell({validator}: {validator: ValidatorWithExtendedData}) {
 
   return (
     <GeneralTableCell sx={{paddingRight: 10, textAlign: "right"}}>
-      <Tooltip title={`${commission}% commission rate`} arrow placement="top">
+      <Tooltip
+        title={t("staking.commissionRate", {percent: String(commission)})}
+        arrow
+        placement="top"
+      >
         <Box>
           <Typography
             variant="body2"

@@ -453,6 +453,15 @@ export const sw = {
     hoursAgo: "saa {count} zilizopita",
     daysAgo: "siku {count} zilizopita",
     noValidatorsFound: "Hakuna wathibitishaji walio patikana",
+    usd: "USD",
+    iconAlt: "Ikoni ya {name}",
+    nArguments: "hoja {count}",
+    nArgumentsPlural: "hoja {count}",
+    hideNArguments: "Ficha hoja {count}",
+    hideNArgumentsPlural: "Ficha hoja {count}",
+    showNArguments: "Onyesha hoja {count}",
+    showNArgumentsPlural: "Onyesha hoja {count}",
+    octasParens: "({amount} octas)",
   },
   network: {
     selectAriaLabel: "Chagua mtandao",
@@ -533,6 +542,9 @@ export const sw = {
   interval: {
     refreshHint:
       "Tafadhali sasisha ukurasa ili kuona muda uliosalia uliosasishwa.",
+    hms: "{hours}saa {minutes}dk {seconds}sek",
+    dhm: "{days}siku {hours}saa {minutes}dk",
+    dhms: "{days}siku {hours}saa {minutes}dk {seconds}sek",
   },
   tabs: {
     transaction: {
@@ -710,6 +722,7 @@ export const sw = {
     stakingFee: "Ada ya kuweka stake",
     nextUnlockIn: "Ufunguzi ujao baada ya",
     index: "Faharasa:",
+    transactionsWithCount: "Miamala ({count}):",
   },
   table: {
     hash: "#",
@@ -868,6 +881,8 @@ export const sw = {
       atPrice: "@ {price}",
       openCctpWormholeAria:
         "Fungua uhamisho wa CCTP kwenye WormholeScan kwenye kichupo kipya",
+      confidentialAmountHidden:
+        "Kiasi cha uhamisho kimesimbwa kwenye mnyororo na hakiwezi kuonyeshwa.",
     },
   },
   pages: {
@@ -918,6 +933,8 @@ export const sw = {
         "Ugavi umethibitishwa nje ya mnyororo kuwa na ugavi thabiti",
       supplyNone:
         "Hakuna ugavi unaofuatiliwa kwa sarafu hii kwenye mnyororo au nje yake",
+      confidentialSupplyTip:
+        "Tokeni katika dimbwi la mali ya siri kwenye mnyororo kwa mali fungible iliyooanishwa (jumla ya umma). Salio binafsi linabaki faragha.",
     },
     fa: {
       entity: "Mali inayoweza kubadilishana",
@@ -930,6 +947,20 @@ export const sw = {
         "Tazama {tab} ya mali inayoweza kubadilishana {address} kwenye mnyororo wa Aptos.",
       metaDescriptionFallback:
         "Tazama {symbol} kwenye Aptos. Tazama ugavi wa tokeni, desimali, wamiliki, metadata, na historia ya miamala.",
+      confidentialSupplyTip:
+        "Tokeni katika dimbwi la mali ya siri kwenye mnyororo kwa kitu hiki cha metadata (jumla ya umma). Salio binafsi linabaki faragha.",
+      dispatchable: "Inaweza kutumwa",
+      dispatchableTip:
+        "Vitendaji maalum vya kutuma vimesajiliwa kwa uhamisho (kutoa/kuweka/salio/ugavi)",
+      hookWithdraw: "Kutoa",
+      hookDeposit: "Kuweka",
+      hookDerivedBalance: "Salio lililotokana",
+      hookDerivedSupply: "Ugavi uliotokana",
+      viewModuleSource: "bofya kuona chanzo cha moduli",
+      hookTooltip: "{hook}: {path} — {action}",
+      nativeGasTokenInfo:
+        "Hii ni tokeni rasmi ya gesi asilia kwenye Aptos. Hii ni toleo la mali fungible la APT. Inaoana kikamilifu na toleo la sarafu unapotumia vitendaji vya 0x1::coin. Tazama 0x1::aptos_coin::AptosCoin kwa toleo la sarafu.",
+      nativeUsdtInfo: "Hii ni USD₮ rasmi asilia kwenye Aptos.",
     },
     tokens: {
       entity: "Tokeni",
@@ -1453,6 +1484,14 @@ export const sw = {
       "Viwango vya kamisheni sasa vinaweza kubadilishwa na opereta",
     commissionUpdate:
       "Kiwango cha sasa cha kamisheni ni {current}%. Kiwango cha kamisheni kitasasishwa kuwa {next}% katika kipindi cha sasa cha kufunga.",
+    epochN: "Kipindi {epoch}",
+    percentComplete: "{percent}% imekamilika",
+    epochTip:
+      "Kipindi katika blockchain ya Aptos ni muda, kwa sekunde, ambapo wathibitishaji hupiga kura kwenye idadi ya vizuizi. Kipindi cha mainnet ya Aptos ni sekunde 7200 (saa mbili).",
+    nodeCount: "Nodi {count}",
+    countryCount: "Nchi {count}",
+    cityCount: "Miji {count}",
+    commissionRate: "kiwango cha kamisheni {percent}%",
   },
   analytics: {
     deployedContracts: "Mikataba iliyotumwa",
@@ -1506,6 +1545,7 @@ export const sw = {
     activelyStaked: "Imewekwa stake kwa sasa",
     activelyStakedTip:
       "Kiasi cha tokeni za APT kinachoshikiliwa sasa katika mabwawa ya kuweka stake.",
+    totalTransactionsLabel: "JUMLA YA MIAMALA: {count}",
   },
   filter: {
     contractAddress: "Anwani ya mkataba",
@@ -1519,6 +1559,12 @@ export const sw = {
     clear: "Futa {name}",
     clearAll: "Futa zote",
     entryFunction: "Chuja kwa kazi ya kuingia",
+    noResults:
+      "Hakuna miamala inayolingana na kichujio. Kiweka faharasa hakikurejesha miamala ya mtumiaji inayolingana kwa mtandao huu.",
+    loadError:
+      "Imeshindwa kuchuja miamala kwa kazi. Thamani zinaweza kuwa batili au kiweka faharasa hakipatikani kwa muda.",
+    matchingOne: "muamala {count} unaolingana",
+    matchingMany: "miamala {count} inayolingana",
   },
   flags: {
     differences: "Tofauti",
@@ -1816,6 +1862,12 @@ export const sw = {
       partner: "Ada ya mshirika / itifaki ({symbol})",
       partnerTip:
         "Tofauti kati ya kiasi kilichotolewa na kiasi kilichowekwa kwa mali hii — kwa kawaida ndoano ya uhamisho, ada ya itifaki ya DEX, au utoaji wa mshirika.",
+      total: "Jumla ya gesi iliyotozwa",
+      totalTip:
+        "Jumla ya utekelezaji, I/O, na uhifadhi (katika vitengo vya gesi). Inalingana na gas_used ya muamala.",
+      storageShortTip: "Inatozwa kwa hali mpya halisi; bei kwa octas.",
+      storageRefundShortTip:
+        "Inawekwa salio uhifadhi unapofunguliwa; si sehemu ya gas_used.",
     },
   },
   payload: {
@@ -1982,6 +2034,31 @@ export const sw = {
       "Unganisha pochi yako na shirikiana na mkataba wa itifaki moja kwa moja ili kutekeleza utoaji. Thibitisha maelezo ya muamala kwa makini kabla ya kutia saini.",
     openPetraVault: "Fungua katika Petra Vault",
     manageMultisig: "Simamia akaunti hii ya multisig kwa Petra Vault",
+    balance: "Salio",
+    balanceTip:
+      "Salio hili linaonyesha kiasi cha tokeni za APT kwenye pochi yako.",
+    balanceTipWithUsd:
+      "Salio hili linaonyesha kiasi cha tokeni za APT kwenye pochi yako na thamani yake ya USD kwa wakati halisi kwa kiwango cha 1 APT = {price}.",
+    defiPositionsOn: "Nafasi za DeFi kwenye",
+    openPortfolioAria: "Fungua kwingineko kwenye {name} kwenye kichupo kipya",
+    transactionCount: "miamala {count}",
+    transactionCountUpTo: "Inaonyesha hadi miamala {count}",
+    matchingSentOne: "muamala {count} unaolingana (ulitumwa na akaunti hii)",
+    matchingSentMany: "miamala {count} inayolingana (ilitumwa na akaunti hii)",
+    filterNoResults:
+      "Hakuna miamala iliyotumwa na akaunti hii inayolingana na kichujio",
+    exportCsv: "Hamisha CSV ({count})",
+    exporting: "Inahamisha...",
+    exportingProgress: "Inahamisha... {percent}%",
+    exportNone: "Hakuna miamala ya kuhamisha.",
+    exportNoneFailed:
+      "Hakuna miamala ya kuhamisha. Labda urejeshaji wote umeshindwa.",
+    exportPartial:
+      "Miamala {exported} imehamishwa. {failed} haikuweza kurejeshwa na iliondolewa kwenye hamisho.",
+    exportRateLimit:
+      "Kikomo cha kasi kimepitwa. Subiri kidogo kisha ujaribu tena.",
+    exportError: "Hitilafu ya kuhamisha miamala. Jaribu tena.",
+    exportErrorDetail: "Hitilafu ya kuhamisha miamala: {message}",
   },
   confidential: {
     epoch: "Kipindi",
@@ -2079,6 +2156,14 @@ export const sw = {
     rawJson: "Jibu mbichi (JSON)",
     unexpectedShape:
       "Jibu la alama lilikuwa na umbo lisilotarajiwa; inaonyesha JSON mbichi pekee.",
+    userOnly: "Kufuatilia simu kunapatikana tu kwa miamala ya mtumiaji.",
+    gasZero: "0 gesi",
+    gasAmount: "gesi {count}",
+    collapseCalls: "Kunja simu zilizopachikwa",
+    expandCalls: "Panua simu zilizopachikwa",
+    callFailed: "Simu hii imeshindwa",
+    caller: "Anayeita",
+    callee: "Anayeitwa",
   },
   decibel: {
     buy: "Nunua",
@@ -2197,5 +2282,17 @@ export const sw = {
     newSignaturesRequired: "Sahihi mpya zinazohitajika",
     previousMetadata: "Metadata ya awali",
     newMetadata: "Metadata mpya",
+    pendingTitle: "Miamala inayosubiri ({count})",
+    ownersTitle: "Wamiliki ({count})",
+    transactionId: "Kitambulisho cha muamala: {id}",
+    transactionN: "Muamala {n}",
+    creatorLabel: "Muundaji:",
+    creationTime: "Muda wa kuunda:",
+    votesRequired: "Kura: {count} / {required} zinahitajika",
+    voteApproved: "✓ Imeidhinishwa",
+    voteRejected: "✗ Imekataliwa",
+    eventCounters: "Kaunta za matukio",
+    rawData: "Data ghafi ya saini nyingi",
+    noResource: "Akaunti hii haina rasilimali ya saini nyingi.",
   },
 } as const satisfies MessageTree;

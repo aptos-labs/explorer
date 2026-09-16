@@ -71,6 +71,31 @@ describe("FEAT-I18N-001 — English catalog", () => {
     expect(t("trace.openSentio")).toBe(
       "Open Sentio’s interactive trace viewer",
     );
+    expect(t("accountUi.balance")).toBe("Balance");
+    expect(t("accountUi.exportCsv", {count: "10"})).toBe("Export CSV (10)");
+    expect(t("filter.matchingMany", {count: "2"})).toBe(
+      "2 matching transactions",
+    );
+    expect(t("analytics.totalTransactionsLabel", {count: "1"})).toBe(
+      "TOTAL TRANSACTIONS: 1",
+    );
+    expect(t("pages.fa.dispatchable")).toBe("Dispatchable");
+    expect(
+      t("pages.fa.hookTooltip", {
+        hook: "Withdraw",
+        path: "0x1::m::f",
+        action: "click",
+      }),
+    ).toContain("0x1::m::f");
+    expect(t("payments.fee.total")).toBe("Total gas charged");
+    expect(t("staking.epochN", {epoch: "12"})).toBe("Epoch 12");
+    expect(t("multisig.noResource")).toBe(
+      "This account does not have a multisig resource.",
+    );
+    expect(t("txn.action.confidentialAmountHidden")).toContain("encrypted");
+    expect(t("fields.transactionsWithCount", {count: "3"})).toBe(
+      "Transactions (3):",
+    );
   });
 
   it("keeps search tokens aligned with the catalog", () => {

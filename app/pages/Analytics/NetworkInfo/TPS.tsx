@@ -4,13 +4,16 @@ import {useNetworkName} from "../../../global-config/GlobalConfig";
 import {useTranslation} from "../../../i18n";
 import MetricCard, {DoubleMetricCard} from "./MetricCard";
 
-function getFormattedTPS(tps: number) {
+function getFormattedTPS(
+  tps: number,
+  formatInteger: (value: number) => string,
+) {
   const tpsWithDecimal = parseFloat(tps.toFixed(0));
-  return tpsWithDecimal.toLocaleString("en-US");
+  return formatInteger(tpsWithDecimal);
 }
 
 export default function TPS() {
-  const {t} = useTranslation();
+  const {t, formatInteger} = useTranslation();
   const {tps} = useGetTPS();
   const {peakTps} = useGetPeakTPS();
   const networkName = useNetworkName();
@@ -20,8 +23,8 @@ export default function TPS() {
 
   return showPeakTps ? (
     <DoubleMetricCard
-      data1={tps ? getFormattedTPS(tps) : "-"}
-      data2={peakTps ? getFormattedTPS(peakTps) : "-"}
+      data1={tps ? getFormattedTPS(tps, formatInteger) : "-"}
+      data2={peakTps ? getFormattedTPS(peakTps, formatInteger) : "-"}
       label1={t("analytics.realtime")}
       label2={t("analytics.peakLast30Days")}
       cardLabel={t("analytics.tps")}
@@ -42,7 +45,7 @@ export default function TPS() {
     />
   ) : (
     <MetricCard
-      data={tps ? getFormattedTPS(tps) : "-"}
+      data={tps ? getFormattedTPS(tps, formatInteger) : "-"}
       label={t("analytics.tps")}
       tooltip={t("analytics.tpsTip")}
     />

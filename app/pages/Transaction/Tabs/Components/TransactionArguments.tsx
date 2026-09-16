@@ -173,6 +173,18 @@ export default function TransactionArguments({
   }
 
   const argCount = payload.arguments.length + payload.type_arguments.length;
+  const argCountVars = {count: argCount};
+  const argCountLabel =
+    argCount === 1
+      ? t("common.nArguments", argCountVars)
+      : t("common.nArgumentsPlural", argCountVars);
+  const argCountAria = expanded
+    ? argCount === 1
+      ? t("common.hideNArguments", argCountVars)
+      : t("common.hideNArgumentsPlural", argCountVars)
+    : argCount === 1
+      ? t("common.showNArguments", argCountVars)
+      : t("common.showNArgumentsPlural", argCountVars);
   const showTypeArgNames = typeArgNames !== null;
   const showFunctionArgNames = functionArgNames !== null;
 
@@ -193,7 +205,7 @@ export default function TransactionArguments({
         role="button"
         tabIndex={0}
         aria-expanded={expanded}
-        aria-label={`${expanded ? "Hide" : "Show"} ${argCount} argument${argCount !== 1 ? "s" : ""}`}
+        aria-label={argCountAria}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
@@ -206,9 +218,7 @@ export default function TransactionArguments({
         ) : (
           <ExpandMoreIcon sx={{fontSize: 18}} />
         )}
-        <span>
-          {argCount} argument{argCount !== 1 ? "s" : ""}
-        </span>
+        <span>{argCountLabel}</span>
       </Box>
       <Collapse in={expanded}>
         <Box sx={{mt: 1.5, maxWidth: "100%", overflow: "hidden"}}>

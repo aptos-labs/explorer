@@ -113,4 +113,5 @@ export const fields = {
   stakingFee: "Staking Fee",
   nextUnlockIn: "Next Unlock In",
   index: "Index:",
+  transactionsWithCount: "Transactions ({count}):",
 } as const;

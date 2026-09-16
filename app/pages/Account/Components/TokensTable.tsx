@@ -32,14 +32,13 @@ type TokenCellProps = {
 };
 
 function TokenNameCell({token}: TokenCellProps) {
+  const {t} = useTranslation();
   let badge = null;
   const reason =
     labsBannedCollections[token?.current_token_data?.collection_id ?? ""];
   if (reason) {
-    let tooltipMessage = `This asset has been marked as a scam or dangerous, please avoid using this asset.`;
-    tooltipMessage += ` Reason: (${reason})`;
     badge = (
-      <StyledTooltip title={tooltipMessage}>
+      <StyledTooltip title={t("verified.tooltip.labsBannedReason", {reason})}>
         <Dangerous fontSize="small" color="error" />
       </StyledTooltip>
     );
@@ -136,6 +135,7 @@ const TokenCells = Object.freeze({
 
 // Mobile card component for tokens
 function TokenCard({token}: {token: TokenOwnership}) {
+  const {t} = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
   const augmentTo = useAugmentToWithGlobalSearchParams();
@@ -209,7 +209,7 @@ function TokenCard({token}: {token: TokenOwnership}) {
           </Typography>
           {reason && (
             <StyledTooltip
-              title={`This asset has been marked as a scam or dangerous. Reason: (${reason})`}
+              title={t("verified.tooltip.labsBannedReason", {reason})}
             >
               <Dangerous fontSize="small" color="error" />
             </StyledTooltip>

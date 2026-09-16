@@ -54,7 +54,7 @@ const IntervalBar = memo(function IntervalBar({
   timestamp,
   intervalType,
 }: IntervalBarProps) {
-  const {t} = useTranslation();
+  const {t, formatInteger} = useTranslation();
   const theme = useTheme();
   const {days, hours, minutes, seconds, completed} = useCountdown(timestamp);
   const displayTooltip = completed;
@@ -67,19 +67,32 @@ const IntervalBar = memo(function IntervalBar({
       case IntervalType.EPOCH:
         return (
           <span>
-            {hours}h {minutes}m {seconds}s
+            {t("interval.hms", {
+              hours: formatInteger(hours),
+              minutes: formatInteger(minutes),
+              seconds: formatInteger(seconds),
+            })}
           </span>
         );
       case IntervalType.UNLOCK_COUNTDOWN:
         return (
           <span>
             {days >= 10
-              ? `${days}d ${hours}h ${minutes}m`
-              : `${days}d ${hours}h ${minutes}m ${seconds}s`}
+              ? t("interval.dhm", {
+                  days: formatInteger(days),
+                  hours: formatInteger(hours),
+                  minutes: formatInteger(minutes),
+                })
+              : t("interval.dhms", {
+                  days: formatInteger(days),
+                  hours: formatInteger(hours),
+                  minutes: formatInteger(minutes),
+                  seconds: formatInteger(seconds),
+                })}
           </span>
         );
     }
-  }, [intervalType, days, hours, minutes, seconds]);
+  }, [intervalType, days, hours, minutes, seconds, t, formatInteger]);
 
   const intervalBar = (
     <Stack

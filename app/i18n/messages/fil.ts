@@ -454,6 +454,15 @@ export const fil = {
     hoursAgo: "{count}h ang nakalipas",
     daysAgo: "{count}d ang nakalipas",
     noValidatorsFound: "Walang nahanap na validator",
+    usd: "USD",
+    iconAlt: "Icon ng {name}",
+    nArguments: "{count} argument",
+    nArgumentsPlural: "{count} arguments",
+    hideNArguments: "Itago ang {count} argument",
+    hideNArgumentsPlural: "Itago ang {count} arguments",
+    showNArguments: "Ipakita ang {count} argument",
+    showNArgumentsPlural: "Ipakita ang {count} arguments",
+    octasParens: "({amount} octas)",
   },
   network: {
     selectAriaLabel: "Pumili ng network",
@@ -536,6 +545,9 @@ export const fil = {
   interval: {
     refreshHint:
       "I-refresh ang page para makita ang na-update na natitirang oras.",
+    hms: "{hours}o {minutes}m {seconds}s",
+    dhm: "{days}a {hours}o {minutes}m",
+    dhms: "{days}a {hours}o {minutes}m {seconds}s",
   },
   tabs: {
     transaction: {
@@ -713,6 +725,7 @@ export const fil = {
     stakingFee: "Staking fee",
     nextUnlockIn: "Susunod na unlock sa",
     index: "Index:",
+    transactionsWithCount: "Mga transaksyon ({count}):",
   },
   table: {
     hash: "#",
@@ -875,6 +888,8 @@ export const fil = {
       atPrice: "@ {price}",
       openCctpWormholeAria:
         "Buksan ang CCTP transfer sa WormholeScan sa bagong tab",
+      confidentialAmountHidden:
+        "Naka-encrypt on-chain ang halaga ng transfer at hindi maipapakita.",
     },
   },
   pages: {
@@ -923,6 +938,8 @@ export const fil = {
       supplyOffChain: "Na-verify off-chain na may fixed supply",
       supplyNone:
         "Walang naka-track na supply para sa coin na ito on-chain o off-chain",
+      confidentialSupplyTip:
+        "Mga token sa on-chain confidential-asset pool para sa naka-pair na fungible asset (pampublikong kabuuan). Pribadong nananatili ang indibidwal na balanse.",
     },
     fa: {
       entity: "Fungible asset",
@@ -935,6 +952,20 @@ export const fil = {
         "Tingnan ang {tab} para sa fungible asset {address} sa Aptos blockchain.",
       metaDescriptionFallback:
         "Tingnan ang {symbol} sa Aptos. Tingnan ang supply ng token, decimals, mga holder, metadata, at history ng transaksyon.",
+      confidentialSupplyTip:
+        "Mga token sa on-chain confidential-asset pool para sa metadata object na ito (pampublikong kabuuan). Pribadong nananatili ang indibidwal na balanse.",
+      dispatchable: "Dispatchable",
+      dispatchableTip:
+        "May naka-register na custom dispatch function para sa mga transfer (withdraw/deposit/balance/supply)",
+      hookWithdraw: "Withdraw",
+      hookDeposit: "Deposit",
+      hookDerivedBalance: "Derived na balanse",
+      hookDerivedSupply: "Derived na supply",
+      viewModuleSource: "i-click para tingnan ang source ng module",
+      hookTooltip: "{hook}: {path} — {action}",
+      nativeGasTokenInfo:
+        "Ito ang opisyal na native gas token sa Aptos. Ito ang fungible asset na bersyon ng APT. Ganap itong compatible sa coin version kapag gumagamit ng 0x1::coin functions. Tingnan ang 0x1::aptos_coin::AptosCoin para sa coin version.",
+      nativeUsdtInfo: "Ito ang opisyal na native USD₮ sa Aptos.",
     },
     tokens: {
       entity: "Token",
@@ -1458,6 +1489,14 @@ export const fil = {
     commissionChange: "Puwede nang baguhin ng operator ang rate ng komisyon",
     commissionUpdate:
       "Ang kasalukuyang rate ng komisyon ay {current}%. I-a-update ang rate ng komisyon sa {next}% sa kasalukuyang lockup period.",
+    epochN: "Epoch {epoch}",
+    percentComplete: "{percent}% tapos na",
+    epochTip:
+      "Ang epoch sa Aptos blockchain ay tagal ng oras, sa segundo, kung kailan bumoto ang mga validator sa ilang block. Ang epoch ng Aptos mainnet ay 7200 segundo (dalawang oras).",
+    nodeCount: "{count} Nodes",
+    countryCount: "{count} Bansa",
+    cityCount: "{count} Lungsod",
+    commissionRate: "{percent}% commission rate",
   },
   analytics: {
     deployedContracts: "Mga nai-deploy na contract",
@@ -1510,6 +1549,7 @@ export const fil = {
     activelyStaked: "Aktibong naka-stake",
     activelyStakedTip:
       "Halaga ng APT token na kasalukuyang hawak sa staking pool.",
+    totalTransactionsLabel: "KABUUANG TRANSAKSYON: {count}",
   },
   filter: {
     contractAddress: "Address ng contract",
@@ -1523,6 +1563,12 @@ export const fil = {
     clear: "I-clear ang {name}",
     clearAll: "I-clear lahat",
     entryFunction: "I-filter ayon sa entry function",
+    noResults:
+      "Walang transaksyong tumutugma sa filter. Walang ibinalik ang indexer na tumutugmang user transaction para sa network na ito.",
+    loadError:
+      "Hindi na-filter ang transaksyon ayon sa function. Maaaring invalid ang values o pansamantalang hindi available ang indexer.",
+    matchingOne: "{count} tumutugmang transaksyon",
+    matchingMany: "{count} tumutugmang transaksyon",
   },
   flags: {
     differences: "Mga pagkakaiba",
@@ -1818,6 +1864,13 @@ export const fil = {
       partner: "Partner / protocol fee ({symbol})",
       partnerTip:
         "Pagkakaiba ng na-withdraw na halaga at na-deposit na halaga para sa asset na ito — karaniwang transfer hook, DEX protocol fee, o partner skim.",
+      total: "Kabuuang gas na sinisingil",
+      totalTip:
+        "Kabuuan ng execution, I/O, at storage (bilang gas units). Tumutugma sa gas_used ng transaksyon.",
+      storageShortTip:
+        "Sinisingil para sa netong bagong state; may presyo sa octas.",
+      storageRefundShortTip:
+        "Kino-credit kapag na-release ang storage; hindi bahagi ng gas_used.",
     },
   },
   payload: {
@@ -1985,6 +2038,33 @@ export const fil = {
     openPetraVault: "Buksan sa Petra Vault",
     manageMultisig:
       "Pamahalaan ang multisig account na ito gamit ang Petra Vault",
+    balance: "Balanse",
+    balanceTip:
+      "Sinasalamin ng balanse na ito ang dami ng APT token sa iyong wallet.",
+    balanceTipWithUsd:
+      "Sinasalamin ng balanse na ito ang dami ng APT token sa iyong wallet at ang live na halaga sa USD sa rate na 1 APT = {price}.",
+    defiPositionsOn: "Mga DeFi position sa",
+    openPortfolioAria: "Buksan ang portfolio sa {name} sa bagong tab",
+    transactionCount: "{count} transaksyon",
+    transactionCountUpTo: "Ipinapakita ang hanggang {count} transaksyon",
+    matchingSentOne:
+      "{count} tumutugmang transaksyon (ipinadala ng account na ito)",
+    matchingSentMany:
+      "{count} tumutugmang transaksyon (ipinadala ng account na ito)",
+    filterNoResults:
+      "Walang nahanap na transaksyong ipinadala ng account na ito na tumutugma sa filter",
+    exportCsv: "I-export ang CSV ({count})",
+    exporting: "Ine-export...",
+    exportingProgress: "Ine-export... {percent}%",
+    exportNone: "Walang transaksyong ie-export.",
+    exportNoneFailed:
+      "Walang transaksyong ie-export. Maaaring nabigo ang lahat ng pagkuha.",
+    exportPartial:
+      "Na-export ang {exported} transaksyon. Hindi nakuha ang {failed} kaya hindi isinama sa export.",
+    exportRateLimit:
+      "Lumampas sa rate limit. Maghintay sandali at subukan muli.",
+    exportError: "Error sa pag-export ng transaksyon. Subukan muli.",
+    exportErrorDetail: "Error sa pag-export ng transaksyon: {message}",
   },
   confidential: {
     epoch: "Epoch",
@@ -2079,6 +2159,14 @@ export const fil = {
     rawJson: "Raw na sagot (JSON)",
     unexpectedShape:
       "Hindi inaasahan ang hugis ng sagot ng trace; raw JSON lang ang ipinapakita.",
+    userOnly: "Available lang ang call trace para sa transaksyon ng user.",
+    gasZero: "0 gas",
+    gasAmount: "{count} gas",
+    collapseCalls: "I-collapse ang nested calls",
+    expandCalls: "I-expand ang nested calls",
+    callFailed: "Nabigo ang call na ito",
+    caller: "Caller",
+    callee: "Callee",
   },
   decibel: {
     buy: "Bumili",
@@ -2197,5 +2285,17 @@ export const fil = {
     newSignaturesRequired: "Bagong kinakailangang mga lagda",
     previousMetadata: "Dating metadata",
     newMetadata: "Bagong metadata",
+    pendingTitle: "Mga nakabinbing transaksyon ({count})",
+    ownersTitle: "Mga may-ari ({count})",
+    transactionId: "Transaction ID: {id}",
+    transactionN: "Transaksyon {n}",
+    creatorLabel: "Tagalikha:",
+    creationTime: "Oras ng paglikha:",
+    votesRequired: "Mga boto: {count} / {required} kailangan",
+    voteApproved: "✓ Approved",
+    voteRejected: "✗ Rejected",
+    eventCounters: "Mga event counter",
+    rawData: "Hilaw na datos ng multisig",
+    noResource: "Walang multisig resource ang account na ito.",
   },
 } as const satisfies MessageTree;

@@ -103,6 +103,7 @@ function FilteredAccountTransactions({
   functionFilter,
   countPerPage,
 }: FilteredAccountTransactionsProps) {
+  const {t, formatInteger} = useTranslation();
   const currentPage = useCurrentPage();
   const offset = (currentPage - 1) * countPerPage;
   const onPageChange = useTransactionsPaginationCallback();
@@ -131,12 +132,7 @@ function FilteredAccountTransactions({
   }
 
   if (isError) {
-    return (
-      <Alert severity="error">
-        Failed to filter transactions by function. The filter values may be
-        invalid or the indexer may be temporarily unavailable.
-      </Alert>
-    );
+    return <Alert severity="error">{t("filter.loadError")}</Alert>;
   }
 
   if (versions.length === 0) {
@@ -147,8 +143,7 @@ function FilteredAccountTransactions({
             color: "text.secondary",
           }}
         >
-          No transactions found matching the filter criteria sent by this
-          account
+          {t("accountUi.filterNoResults")}
         </Typography>
       </Box>
     );
@@ -163,8 +158,13 @@ function FilteredAccountTransactions({
             color: "text.secondary",
           }}
         >
-          {txnCount.toLocaleString()} matching transaction
-          {txnCount !== 1 ? "s" : ""} (sent by this account)
+          {txnCount === 1
+            ? t("accountUi.matchingSentOne", {
+                count: formatInteger(txnCount),
+              })
+            : t("accountUi.matchingSentMany", {
+                count: formatInteger(txnCount),
+              })}
         </Typography>
       )}
       <Box sx={{width: "auto", overflowX: "auto"}}>
@@ -188,7 +188,7 @@ type AccountAllTransactionsProps = {
 export default function AccountAllTransactions({
   address,
 }: AccountAllTransactionsProps) {
-  const {t} = useTranslation();
+  const {t, formatInteger} = useTranslation();
   const {
     functionFilter,
     handleFunctionFilterChange,
@@ -234,7 +234,7 @@ export default function AccountAllTransactions({
           <AlertTitle>{t("pages.accountHistory.limitedTitle")}</AlertTitle>
           <InlineMarkup
             text={t("pages.accountHistory.limitedBody", {
-              count: MAX_DISPLAYABLE_TRANSACTIONS.toLocaleString(),
+              count: formatInteger(MAX_DISPLAYABLE_TRANSACTIONS),
             })}
           />
         </Alert>
@@ -274,9 +274,13 @@ export default function AccountAllTransactions({
               {countIsLoading ? (
                 <Skeleton width={160} />
               ) : isCountUnknown ? (
-                `Showing up to ${txnCount.toLocaleString()} transactions`
+                t("accountUi.transactionCountUpTo", {
+                  count: formatInteger(txnCount),
+                })
               ) : (
-                `${txnCount.toLocaleString()} transactions`
+                t("accountUi.transactionCount", {
+                  count: formatInteger(txnCount),
+                })
               )}
             </Typography>
             {!countIsLoading && txnCount > 0 && (
@@ -317,6 +321,7 @@ function CSVExportButton({
   address: string;
   totalTransactionCount: number;
 }) {
+  const {t, formatInteger} = useTranslation();
   const [isExporting, setIsExporting] = React.useState(false);
   const [exportProgress, setExportProgress] = React.useState(0);
   const logEvent = useLogEventWithBasic();
@@ -508,7 +513,7 @@ function CSVExportButton({
       const versions = await fetchAllTransactionVersions(maxTransactions);
 
       if (versions.length === 0) {
-        alert("No transactions found to export.");
+        alert(t("accountUi.exportNone"));
         setIsExporting(false);
         return;
       }
@@ -571,9 +576,7 @@ function CSVExportButton({
       }
 
       if (transactions.length === 0) {
-        alert(
-          "No transactions found to export. All transaction fetches may have failed.",
-        );
+        alert(t("accountUi.exportNoneFailed"));
         setIsExporting(false);
         return;
       }
@@ -585,8 +588,10 @@ function CSVExportButton({
 
       if (failedVersions.length > 0) {
         alert(
-          `Exported ${transactions.length} transactions successfully. ` +
-            `${failedVersions.length} transactions could not be fetched and were excluded from the export.`,
+          t("accountUi.exportPartial", {
+            exported: formatInteger(transactions.length),
+            failed: formatInteger(failedVersions.length),
+          }),
         );
       }
 
@@ -599,10 +604,10 @@ function CSVExportButton({
     } catch (error) {
       console.error("Error exporting transactions:", error);
       const errorMessage = isRateLimitError(error)
-        ? "Rate limit exceeded. Please wait a moment and try again."
+        ? t("accountUi.exportRateLimit")
         : error instanceof Error
-          ? `Error exporting transactions: ${error.message}`
-          : "Error exporting transactions. Please try again.";
+          ? t("accountUi.exportErrorDetail", {message: error.message})
+          : t("accountUi.exportError");
       alert(errorMessage);
       logEvent("export_transactions_csv_error", 0, {
         address: address,
@@ -627,9 +632,13 @@ function CSVExportButton({
     >
       {isExporting
         ? totalTransactionCount > 100
-          ? `Exporting... ${exportProgress}%`
-          : "Exporting..."
-        : `Export CSV (${Math.min(totalTransactionCount, MAX_DISPLAYABLE_TRANSACTIONS).toLocaleString()})`}
+          ? t("accountUi.exportingProgress", {percent: String(exportProgress)})
+          : t("accountUi.exporting")
+        : t("accountUi.exportCsv", {
+            count: formatInteger(
+              Math.min(totalTransactionCount, MAX_DISPLAYABLE_TRANSACTIONS),
+            ),
+          })}
     </Button>
   );
 }

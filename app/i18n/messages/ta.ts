@@ -453,6 +453,15 @@ export const ta = {
     hoursAgo: "{count}ம முன்",
     daysAgo: "{count}நா முன்",
     noValidatorsFound: "சரிபார்ப்பாளர்கள் காணப்படவில்லை",
+    usd: "USD",
+    iconAlt: "{name} சின்னம்",
+    nArguments: "{count} வாதம்",
+    nArgumentsPlural: "{count} வாதங்கள்",
+    hideNArguments: "{count} வாதத்தை மறை",
+    hideNArgumentsPlural: "{count} வாதங்களை மறை",
+    showNArguments: "{count} வாதத்தை காட்டு",
+    showNArgumentsPlural: "{count} வாதங்களை காட்டு",
+    octasParens: "({amount} octas)",
   },
   network: {
     selectAriaLabel: "நெட்வொர்க்கைத் தேர்வு செய்யவும்",
@@ -531,6 +540,9 @@ export const ta = {
   },
   interval: {
     refreshHint: "புதுப்பிக்கப்பட்ட மீதமுள்ள நேரத்தைக் காண பக்கத்தைப் புதுப்பிக்கவும்.",
+    hms: "{hours}ம {minutes}நி {seconds}வி",
+    dhm: "{days}நா {hours}ம {minutes}நி",
+    dhms: "{days}நா {hours}ம {minutes}நி {seconds}வி",
   },
   tabs: {
     transaction: {
@@ -707,6 +719,7 @@ export const ta = {
     stakingFee: "ஸ்டேக்கிங் கட்டணம்",
     nextUnlockIn: "அடுத்த திறப்பு இல்",
     index: "குறியீட்டு:",
+    transactionsWithCount: "பரிவர்த்தனைகள் ({count}):",
   },
   table: {
     hash: "#",
@@ -863,6 +876,8 @@ export const ta = {
       size: "அளவு {size}",
       atPrice: "@ {price}",
       openCctpWormholeAria: "WormholeScan இல் CCTP பரிமாற்றத்தை புதிய தாவலில் திற",
+      confidentialAmountHidden:
+        "பரிமாற்றத் தொகை சங்கிலியில் மறைகுறியாக்கப்பட்டுள்ளது, காட்ட முடியாது.",
     },
   },
   pages: {
@@ -908,6 +923,8 @@ export const ta = {
       supplyOffChain: "நிலையான வழங்கல் உள்ளதாக சங்கிலிக்கு வெளியே சரிபார்க்கப்பட்ட வழங்கல்",
       supplyNone:
         "இந்த நாணயத்திற்கு சங்கிலியிலும் சங்கிலிக்கு வெளியேயும் வழங்கல் கண்காணிக்கப்படவில்லை",
+      confidentialSupplyTip:
+        "இணைக்கப்பட்ட பங்கீட்டு சொத்தின் சங்கிலி மீதான இரகசிய சொத்து குளத்தில் உள்ள டோக்கன்கள் (பொது மொத்தம்). தனிப்பட்ட இருப்புகள் தனிப்பட்டவையாகவே இருக்கும்.",
     },
     fa: {
       entity: "பிரித்தெடுக்கக்கூடிய சொத்து",
@@ -919,6 +936,20 @@ export const ta = {
         "Aptos பிளாக்செயினில் பிரித்தெடுக்கக்கூடிய சொத்து {address}க்கான {tab}ஐக் காண்க.",
       metaDescriptionFallback:
         "Aptos இல் {symbol}ஐக் காண்க. டோக்கன் வழங்கல், தசமங்கள், வைத்திருப்பவர்கள், மெட்டாடேட்டா மற்றும் பரிவர்த்தனை வரலாற்றைப் பாருங்கள்.",
+      confidentialSupplyTip:
+        "இந்த மெட்டாடேட்டா பொருளின் சங்கிலி மீதான இரகசிய சொத்து குளத்தில் உள்ள டோக்கன்கள் (பொது மொத்தம்). தனிப்பட்ட இருப்புகள் தனிப்பட்டவையாகவே இருக்கும்.",
+      dispatchable: "அனுப்பத்தக்கது",
+      dispatchableTip:
+        "பரிமாற்றங்களுக்கான தனிப்பயன் அனுப்பு செயல்பாடுகள் பதிவுசெய்யப்பட்டுள்ளன (எடுப்பு/வைப்பு/இருப்பு/வழங்கல்)",
+      hookWithdraw: "எடுப்பு",
+      hookDeposit: "வைப்பு",
+      hookDerivedBalance: "பெறப்பட்ட இருப்பு",
+      hookDerivedSupply: "பெறப்பட்ட வழங்கல்",
+      viewModuleSource: "தொகுதி மூலத்தைக் காண கிளிக் செய்யவும்",
+      hookTooltip: "{hook}: {path} — {action}",
+      nativeGasTokenInfo:
+        "இது Aptos இல் அதிகாரப்பூர்வ சொந்த கேஸ் டோக்கன். இது APT இன் பங்கீட்டு சொத்து பதிப்பு. 0x1::coin செயல்பாடுகளைப் பயன்படுத்தும்போது நாணயப் பதிப்புடன் முழுமையாக இணக்கமானது. நாணயப் பதிப்புக்கு 0x1::aptos_coin::AptosCoin ஐக் காண்க.",
+      nativeUsdtInfo: "இது Aptos இல் அதிகாரப்பூர்வ சொந்த USD₮.",
     },
     tokens: {
       entity: "டோக்கன்",
@@ -1420,6 +1451,14 @@ export const ta = {
     commissionChange: "கமிஷன் விகிதங்கள் இப்போது இயக்குபவரால் மாற்றப்படலாம்",
     commissionUpdate:
       "தற்போதைய கமிஷன் விகிதம் {current}%. தற்போதைய பூட்டு காலத்தில் கமிஷன் விகிதம் {next}% ஆக புதுப்பிக்கப்படும்.",
+    epochN: "காலம் {epoch}",
+    percentComplete: "{percent}% முடிந்தது",
+    epochTip:
+      "Aptos பிளாக்செயினில் ஒரு காலம் என்பது சரிபார்ப்பவர்கள் பல தொகுதிகளுக்கு வாக்களிக்கும் வினாடிகளில் அளவிடப்படும் நேரம். Aptos முதன்மை வலையின் காலம் 7200 வினாடிகள் (இரண்டு மணிநேரம்).",
+    nodeCount: "{count} முனைகள்",
+    countryCount: "{count} நாடுகள்",
+    cityCount: "{count} நகரங்கள்",
+    commissionRate: "{percent}% கமிஷன் விகிதம்",
   },
   analytics: {
     deployedContracts: "நிறுவப்பட்ட காண்ட்ராக்ட்கள்",
@@ -1471,6 +1510,7 @@ export const ta = {
     activelyStaked: "செயலில் ஸ்டேக் செய்யப்பட்டது",
     activelyStakedTip:
       "ஸ்டேக்கிங் குளங்களில் தற்போது வைக்கப்பட்டுள்ள APT டோக்கன்களின் தொகை.",
+    totalTransactionsLabel: "மொத்த பரிவர்த்தனைகள்: {count}",
   },
   filter: {
     contractAddress: "காண்ட்ராக்ட் முகவரி",
@@ -1484,6 +1524,12 @@ export const ta = {
     clear: "{name}ஐ அழி",
     clearAll: "அனைத்தையும் அழி",
     entryFunction: "நுழைவு செயல்பாட்டால் வடிகட்டு",
+    noResults:
+      "வடிகட்டிக்கு பொருந்தும் பரிவர்த்தனைகள் இல்லை. இந்த வலைக்கான பொருந்தும் பயனர் பரிவர்த்தனைகளை அட்டவணையாளர் திருப்பவில்லை.",
+    loadError:
+      "செயல்பாட்டின் அடிப்படையில் பரிவர்த்தனைகளை வடிகட்ட முடியவில்லை. மதிப்புகள் தவறாக இருக்கலாம் அல்லது அட்டவணையாளர் தற்காலிகமாக கிடைக்காமல் இருக்கலாம்.",
+    matchingOne: "{count} பொருந்தும் பரிவர்த்தனை",
+    matchingMany: "{count} பொருந்தும் பரிவர்த்தனைகள்",
   },
   flags: {
     differences: "வேறுபாடுகள்",
@@ -1779,6 +1825,12 @@ export const ta = {
       partner: "பங்குதாரர் / நெறிமுறை கட்டணம் ({symbol})",
       partnerTip:
         "இந்த சொத்துக்கு திரும்பப் பெறப்பட்ட தொகைக்கும் வைப்பு செய்யப்பட்ட தொகைக்கும் உள்ள வேறுபாடு — பொதுவாக பரிமாற்ற ஹூக், DEX நெறிமுறை கட்டணம் அல்லது பங்குதாரர் கழிவு.",
+      total: "வசூலிக்கப்பட்ட மொத்த கேஸ்",
+      totalTip:
+        "இயக்கம், I/O மற்றும் சேமிப்பின் கூட்டுத்தொகை (கேஸ் அலகுகளில்). பரிவர்த்தனையின் gas_used உடன் பொருந்துகிறது.",
+      storageShortTip: "நிகர புதிய நிலைக்கு வசூல்; octas இல் விலை.",
+      storageRefundShortTip:
+        "சேமிப்பு விடுவிக்கப்படும்போது வரவு; gas_used இன் பகுதி அல்ல.",
     },
   },
   payload: {
@@ -1940,6 +1992,28 @@ export const ta = {
       "திரும்பப் பெறுதலை இயக்க உங்கள் வாலட்டை இணைத்து நெறிமுறையின் காண்ட்ராக்டுடன் நேரடியாக தொடர்பு கொள்ளவும். கையொப்பமிடுவதற்கு முன் பரிவர்த்தனை விவரங்களை கவனமாக சரிபார்க்கவும்.",
     openPetraVault: "Petra Vault இல் திற",
     manageMultisig: "Petra Vault மூலம் இந்த மல்டிசிக் கணக்கை நிர்வகிக்கவும்",
+    balance: "இருப்பு",
+    balanceTip: "இந்த இருப்பு உங்கள் வாலட்டில் உள்ள APT டோக்கன்களின் அளவைக் காட்டுகிறது.",
+    balanceTipWithUsd:
+      "இந்த இருப்பு உங்கள் வாலட்டில் உள்ள APT டோக்கன் அளவையும் 1 APT = {price} என்ற விகிதத்தில் நேரடி USD மதிப்பையும் காட்டுகிறது.",
+    defiPositionsOn: "DeFi நிலைகள்:",
+    openPortfolioAria: "புதிய தாவலில் {name} இல் போர்ட்ஃபோலியோவைத் திற",
+    transactionCount: "{count} பரிவர்த்தனைகள்",
+    transactionCountUpTo: "அதிகபட்சம் {count} பரிவர்த்தனைகள் காட்டப்படுகின்றன",
+    matchingSentOne: "{count} பொருந்தும் பரிவர்த்தனை (இந்த கணக்கு அனுப்பியது)",
+    matchingSentMany: "{count} பொருந்தும் பரிவர்த்தனைகள் (இந்த கணக்கு அனுப்பியவை)",
+    filterNoResults: "இந்த கணக்கு அனுப்பிய, வடிகட்டிக்கு பொருந்தும் பரிவர்த்தனைகள் இல்லை",
+    exportCsv: "CSV ஏற்றுமதி ({count})",
+    exporting: "ஏற்றுமதி செய்கிறது...",
+    exportingProgress: "ஏற்றுமதி செய்கிறது... {percent}%",
+    exportNone: "ஏற்றுமதி செய்ய பரிவர்த்தனைகள் இல்லை.",
+    exportNoneFailed:
+      "ஏற்றுமதி செய்ய பரிவர்த்தனைகள் இல்லை. அனைத்து பெறுதல்களும் தோல்வியடைந்திருக்கலாம்.",
+    exportPartial:
+      "{exported} பரிவர்த்தனைகள் ஏற்றுமதி செய்யப்பட்டன. {failed} பெற முடியவில்லை, ஏற்றுமதியிலிருந்து விலக்கப்பட்டன.",
+    exportRateLimit: "விகித வரம்பு மீறப்பட்டது. சிறிது காத்திருந்து மீண்டும் முயலவும்.",
+    exportError: "பரிவர்த்தனைகளை ஏற்றுமதி செய்வதில் பிழை. மீண்டும் முயலவும்.",
+    exportErrorDetail: "பரிவர்த்தனைகளை ஏற்றுமதி செய்வதில் பிழை: {message}",
   },
   confidential: {
     epoch: "யுகம்",
@@ -2032,6 +2106,14 @@ export const ta = {
     rawJson: "மூல பதில் (JSON)",
     unexpectedShape:
       "ட்ரேஸ் பதிலுக்கு எதிர்பாராத வடிவம் இருந்தது; மூல JSON மட்டுமே காட்டப்படுகிறது.",
+    userOnly: "அழைப்பு தடம் பயனர் பரிவர்த்தனைகளுக்கு மட்டுமே கிடைக்கும்.",
+    gasZero: "0 கேஸ்",
+    gasAmount: "{count} கேஸ்",
+    collapseCalls: "உள்ளமை அழைப்புகளை சுருக்கு",
+    expandCalls: "உள்ளமை அழைப்புகளை விரிவாக்கு",
+    callFailed: "இந்த அழைப்பு தோல்வியடைந்தது",
+    caller: "அழைப்பாளர்",
+    callee: "அழைக்கப்பட்டவர்",
   },
   decibel: {
     buy: "வாங்கு",
@@ -2150,5 +2232,17 @@ export const ta = {
     newSignaturesRequired: "புதிய தேவையான கையொப்பங்கள்",
     previousMetadata: "முந்தைய மெட்டாடேட்டா",
     newMetadata: "புதிய மெட்டாடேட்டா",
+    pendingTitle: "நிலுவையிலுள்ள பரிவர்த்தனைகள் ({count})",
+    ownersTitle: "உரிமையாளர்கள் ({count})",
+    transactionId: "பரிவர்த்தனை ஐடி: {id}",
+    transactionN: "பரிவர்த்தனை {n}",
+    creatorLabel: "உருவாக்கியவர்:",
+    creationTime: "உருவாக்கிய நேரம்:",
+    votesRequired: "வாக்குகள்: {count} / {required} தேவை",
+    voteApproved: "✓ அங்கீகரிக்கப்பட்டது",
+    voteRejected: "✗ நிராகரிக்கப்பட்டது",
+    eventCounters: "நிகழ்வு எண்ணிக்கைகள்",
+    rawData: "மூல பல கையொப்ப தரவு",
+    noResource: "இந்தக் கணக்கில் பல கையொப்ப வளம் இல்லை.",
   },
 } as const satisfies MessageTree;

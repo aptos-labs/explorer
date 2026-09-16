@@ -10,6 +10,7 @@ import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {Link} from "../../../routing";
+import {useTranslation} from "../../../i18n";
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
 
 function VersionValue({data}: {data: Block}) {
@@ -85,9 +86,13 @@ type OverviewTabProps = {
 };
 
 export default function OverviewTab({data}: OverviewTabProps) {
+  const {t, formatInteger} = useTranslation();
   const blockTxn: TransactionResponse | undefined = (
     data.transactions ?? []
   ).find(isBlockMetadataTransactionResponse);
+  const txnCount = formatInteger(
+    Number(BigInt(data.last_version) - BigInt(data.first_version) + 1n),
+  );
 
   return (
     blockTxn && (
@@ -103,7 +108,7 @@ export default function OverviewTab({data}: OverviewTabProps) {
             tooltip={getLearnMoreTooltip("block_height")}
           />
           <ContentRow
-            title={`Transactions (${BigInt(data.last_version) - BigInt(data.first_version) + 1n}):`}
+            title={t("fields.transactionsWithCount", {count: txnCount})}
             value={<VersionValue data={data} />}
             tooltip={getLearnMoreTooltip("version")}
           />

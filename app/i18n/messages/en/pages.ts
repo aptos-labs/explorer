@@ -40,6 +40,8 @@ export const pages = {
     supplyOnChain: "Supply tracked on-chain, may change over time",
     supplyOffChain: "Supply verified off-chain to have a fixed supply",
     supplyNone: "No supply is tracked for this coin on-chain or off-chain",
+    confidentialSupplyTip:
+      "Tokens held in the on-chain confidential-asset pool for the paired fungible asset (public aggregate). Individual balances stay private.",
   },
   fa: {
     entity: "Fungible Asset",
@@ -51,6 +53,20 @@ export const pages = {
       "View {tab} for fungible asset {address} on the Aptos blockchain.",
     metaDescriptionFallback:
       "View {symbol} on Aptos. See token supply, decimals, holders, metadata, and transaction history.",
+    confidentialSupplyTip:
+      "Tokens held in the on-chain confidential-asset pool for this metadata object (public aggregate). Individual balances stay private.",
+    dispatchable: "Dispatchable",
+    dispatchableTip:
+      "Custom dispatch functions are registered for transfers (withdraw/deposit/balance/supply)",
+    hookWithdraw: "Withdraw",
+    hookDeposit: "Deposit",
+    hookDerivedBalance: "Derived balance",
+    hookDerivedSupply: "Derived supply",
+    viewModuleSource: "click to view module source",
+    hookTooltip: "{hook}: {path} — {action}",
+    nativeGasTokenInfo:
+      "This is the official native gas token on Aptos.  This is the fungible asset version of APT.  It is fully compatible with the coin version when using 0x1::coin functions.  See 0x1::aptos_coin::AptosCoin for the coin version.",
+    nativeUsdtInfo: "This is the official native USD₮ on Aptos.",
   },
   tokens: {
     entity: "Token",

@@ -5,18 +5,16 @@ import {useTranslation} from "../../../i18n";
 import {DoubleMetricCard} from "./MetricCard";
 
 export default function ActiveNodes() {
-  const {t} = useTranslation();
+  const {t, formatInteger} = useTranslation();
   const {latestNodeCount} = useGetFullnodeCount();
   const {numberOfActiveValidators} = useGetValidatorSet();
 
   return (
     <DoubleMetricCard
       data1={
-        numberOfActiveValidators
-          ? numberOfActiveValidators.toLocaleString("en-US")
-          : "-"
+        numberOfActiveValidators ? formatInteger(numberOfActiveValidators) : "-"
       }
-      data2={latestNodeCount ? latestNodeCount.toLocaleString("en-US") : "-"}
+      data2={latestNodeCount ? formatInteger(latestNodeCount) : "-"}
       label1={t("analytics.validators")}
       label2={t("analytics.fullnodes")}
       cardLabel={t("analytics.activeNodes")}

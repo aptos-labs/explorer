@@ -5,6 +5,7 @@ import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
+import {useTranslation} from "../../../i18n";
 
 const MULTISIG_ACCOUNT_RESOURCE = "0x1::multisig_account::MultisigAccount";
 
@@ -108,6 +109,7 @@ function MultisigContent({
 }: {
   multisigResource: Types.MoveResource;
 }): React.JSX.Element {
+  const {t, formatInteger, formatDateTime} = useTranslation();
   const theme = useTheme();
   const multisigData: MultisigAccountData =
     multisigResource.data as MultisigAccountData; // Use any for now to handle unknown structure
@@ -150,7 +152,9 @@ function MultisigContent({
       {multisigData.owners && Array.isArray(multisigData.owners) && (
         <Box sx={{mt: 2, mb: 2}}>
           <Typography variant="h6" sx={{mb: 1}}>
-            Owners ({multisigData.owners.length})
+            {t("multisig.ownersTitle", {
+              count: formatInteger(multisigData.owners.length),
+            })}
           </Typography>
           {multisigData.owners.map((owner: string, index: number) => (
             <Stack
@@ -198,7 +202,9 @@ function MultisigContent({
           return (
             <Box sx={{mt: 2, mb: 2}}>
               <Typography variant="h6" sx={{mb: 1}}>
-                Pending Transactions ({transactions.length})
+                {t("multisig.pendingTitle", {
+                  count: formatInteger(transactions.length),
+                })}
               </Typography>
               {transactions.map(
                 (
@@ -227,31 +233,44 @@ function MultisigContent({
                     }}
                   >
                     <Typography variant="subtitle2" sx={{mb: 1}}>
-                      Transaction ID: {tx.key || `Transaction ${index + 1}`}
+                      {t("multisig.transactionId", {
+                        id:
+                          tx.key ||
+                          t("multisig.transactionN", {n: String(index + 1)}),
+                      })}
                     </Typography>
                     {tx.value && (
                       <>
                         <Typography variant="body2" sx={{mb: 1}}>
-                          Creator: <code>{tx.value.creator || "Unknown"}</code>
+                          {t("multisig.creatorLabel")}{" "}
+                          <code>{tx.value.creator || t("common.unknown")}</code>
                         </Typography>
                         {tx.value.creation_time_secs && (
                           <Typography variant="body2" sx={{mb: 1}}>
-                            Creation Time:{" "}
-                            {new Date(
-                              parseInt(tx.value.creation_time_secs, 10) * 1000,
-                            ).toLocaleString()}
+                            {t("multisig.creationTime")}{" "}
+                            {formatDateTime(
+                              new Date(
+                                parseInt(tx.value.creation_time_secs, 10) *
+                                  1000,
+                              ),
+                            )}
                           </Typography>
                         )}
                         {tx.value.votes?.data && (
                           <>
                             <Typography variant="body2" sx={{mb: 1}}>
-                              Votes: {tx.value.votes.data.length} /{" "}
-                              {safeGet(
-                                multisigData,
-                                "num_signatures_required",
-                                "?",
-                              )}{" "}
-                              required
+                              {t("multisig.votesRequired", {
+                                count: formatInteger(
+                                  tx.value.votes.data.length,
+                                ),
+                                required: String(
+                                  safeGet(
+                                    multisigData,
+                                    "num_signatures_required",
+                                    "?",
+                                  ),
+                                ),
+                              })}
                             </Typography>
                             {tx.value.votes.data.map(
                               (
@@ -271,7 +290,9 @@ function MultisigContent({
                                   }}
                                 >
                                   {vote.key}:{" "}
-                                  {vote.value ? "✓ Approved" : "✗ Rejected"}
+                                  {vote.value
+                                    ? t("multisig.voteApproved")
+                                    : t("multisig.voteRejected")}
                                 </Typography>
                               ),
                             )}
@@ -289,7 +310,7 @@ function MultisigContent({
       })()}
       <Box sx={{mt: 3}}>
         <Typography variant="h6" sx={{mb: 2}}>
-          Event Counters
+          {t("multisig.eventCounters")}
         </Typography>
         <Box
           sx={{
@@ -336,7 +357,7 @@ function MultisigContent({
       </Box>
       <Box sx={{mt: 3}}>
         <Typography variant="h6" sx={{mb: 2}}>
-          Raw Multisig Data
+          {t("multisig.rawData")}
         </Typography>
         <JsonViewCard data={multisigData} />
       </Box>
@@ -349,6 +370,7 @@ type MultisigTabProps = {
 };
 
 export default function MultisigTab({resourceData}: MultisigTabProps) {
+  const {t} = useTranslation();
   const multisigResource = resourceData?.find(
     (resource) => resource.type === MULTISIG_ACCOUNT_RESOURCE,
   );
@@ -357,7 +379,7 @@ export default function MultisigTab({resourceData}: MultisigTabProps) {
     return (
       <ContentBox>
         <Typography variant="body1" color="textSecondary">
-          This account does not have a multisig resource.
+          {t("multisig.noResource")}
         </Typography>
       </ContentBox>
     );

@@ -449,6 +449,15 @@ export const am = {
     hoursAgo: "ከ{count}ሰዓ በፊት",
     daysAgo: "ከ{count}ቀ በፊት",
     noValidatorsFound: "ማረጋገጫ አልተገኘም",
+    usd: "USD",
+    iconAlt: "የ{name} አዶ",
+    nArguments: "{count} አርግመንት",
+    nArgumentsPlural: "{count} አርግመንቶች",
+    hideNArguments: "{count} አርግመንት ደብቅ",
+    hideNArgumentsPlural: "{count} አርግመንቶችን ደብቅ",
+    showNArguments: "{count} አርግመንት አሳይ",
+    showNArgumentsPlural: "{count} አርግመንቶችን አሳይ",
+    octasParens: "({amount} octas)",
   },
   network: {
     selectAriaLabel: "አውታረ መረብ ምረጥ",
@@ -523,6 +532,9 @@ export const am = {
   },
   interval: {
     refreshHint: "የተዘመነውን የቀረ ጊዜ ለማየት እባክዎ ገጹን ያድሱ።",
+    hms: "{hours}ሰ {minutes}ደ {seconds}ሰከ",
+    dhm: "{days}ቀ {hours}ሰ {minutes}ደ",
+    dhms: "{days}ቀ {hours}ሰ {minutes}ደ {seconds}ሰከ",
   },
   tabs: {
     transaction: {
@@ -699,6 +711,7 @@ export const am = {
     stakingFee: "የስቴኪንግ ክፍያ",
     nextUnlockIn: "ቀጣይ መክፈት በ",
     index: "መረጃ ጠቋሚ፦",
+    transactionsWithCount: "ግብይቶች ({count})፦",
   },
   table: {
     hash: "#",
@@ -851,6 +864,7 @@ export const am = {
       size: "መጠን {size}",
       atPrice: "@ {price}",
       openCctpWormholeAria: "የCCTP ማስተላለፍን በWormholeScan በአዲስ ትር ክፈት",
+      confidentialAmountHidden: "የዝውውር መጠን በሰንሰለት ላይ ተመስጥሯል እና ሊታይ አይችልም።",
     },
   },
   pages: {
@@ -894,6 +908,8 @@ export const am = {
       supplyOnChain: "አቅርቦት በሰንሰለት ላይ ይከታተላል፣ በጊዜ ሊቀየር ይችላል",
       supplyOffChain: "አቅርቦት ከሰንሰለት ውጭ ቋሚ እንደሆነ ተረጋግጧል",
       supplyNone: "ለዚህ ኮይን በሰንሰለትም ሆነ ከሰንሰለት ውጭ የሚከታተል አቅርቦት የለም",
+      confidentialSupplyTip:
+        "ለተጣመረው ተለዋዋጭ ንብረት በሰንሰለት ላይ በሚስጥር ንብረት ገንዳ ውስጥ የተያዙ ቶከኖች (ሕዝባዊ ድምር)። የግል ቀሪ ሂሳቦች የግል ሆነው ይቀራሉ።",
     },
     fa: {
       entity: "ተለዋዋጭ ንብረት",
@@ -904,6 +920,19 @@ export const am = {
       metaDescription: "በAptos ብሎክቼይን ላይ ለተለዋዋጭ ንብረት {address} {tab} ይመልከቱ።",
       metaDescriptionFallback:
         "{symbol} በAptos ላይ ይመልከቱ። የቶከን አቅርቦት፣ አስርዮሽዎች፣ ያዞች፣ ሜታዳታ እና የግብይት ታሪክ ይመልከቱ።",
+      confidentialSupplyTip:
+        "ለዚህ የሜታዳታ ነገር በሰንሰለት ላይ በሚስጥር ንብረት ገንዳ ውስጥ የተያዙ ቶከኖች (ሕዝባዊ ድምር)። የግል ቀሪ ሂሳቦች የግል ሆነው ይቀራሉ።",
+      dispatchable: "ሊላክ የሚችል",
+      dispatchableTip: "ለዝውውር ብጁ የመላክ ተግባራት ተመዝግበዋል (ማውጣት/ማስገባት/ቀሪ/አቅርቦት)",
+      hookWithdraw: "ማውጣት",
+      hookDeposit: "ማስገባት",
+      hookDerivedBalance: "የተገኘ ቀሪ",
+      hookDerivedSupply: "የተገኘ አቅርቦት",
+      viewModuleSource: "የሞጁል ምንጭ ለማየት ጠቅ ያድርጉ",
+      hookTooltip: "{hook}: {path} — {action}",
+      nativeGasTokenInfo:
+        "ይህ በAptos ላይ ያለው ይፋዊ ተወላጅ የጋዝ ቶከን ነው። የAPT የተለዋዋጭ ንብረት ስሪት ነው። የ0x1::coin ተግባራትን ሲጠቀሙ ከሳንቲም ስሪት ጋር ሙሉ በሙሉ ይስማማል። ለሳንቲም ስሪት 0x1::aptos_coin::AptosCoin ይመልከቱ።",
+      nativeUsdtInfo: "ይህ በAptos ላይ ያለው ይፋዊ ተወላጅ USD₮ ነው።",
     },
     tokens: {
       entity: "ቶከን",
@@ -1375,6 +1404,14 @@ export const am = {
     commissionChange: "የኮሚሽን ተመኖች አሁን በኦፕሬተሩ ሊቀየሩ ይችላሉ",
     commissionUpdate:
       "የአሁኑ የኮሚሽን ተመን {current}% ነው። የኮሚሽን ተመኑ በአሁኑ የመቆለፊያ ጊዜ ወደ {next}% ይዘምናል።",
+    epochN: "ዘመን {epoch}",
+    percentComplete: "{percent}% ተጠናቋል",
+    epochTip:
+      "በAptos ብሎክቼይን ውስጥ ዘመን ማረጋገጫዎች በበርካታ ብሎኮች ላይ ድምጽ በሚሰጡበት በሰከንዶች የሚለካ ጊዜ ነው። የAptos ዋና መረብ ዘመን 7200 ሰከንድ (ሁለት ሰዓት) ነው።",
+    nodeCount: "{count} ኖዶች",
+    countryCount: "{count} አገሮች",
+    cityCount: "{count} ከተሞች",
+    commissionRate: "{percent}% የኮሚሽን መጠን",
   },
   analytics: {
     deployedContracts: "የተዘረጉ ኮንትራክቶች",
@@ -1421,6 +1458,7 @@ export const am = {
     activeFullnodesTip: "ግምታዊ የfullnodes ብዛት።",
     activelyStaked: "በንቃት የተስቴከ",
     activelyStakedTip: "አሁን በስቴኪንግ ገንዳዎች ውስጥ የተያዙ የAPT ቶከኖች መጠን።",
+    totalTransactionsLabel: "ጠቅላላ ግብይቶች፦ {count}",
   },
   filter: {
     contractAddress: "የኮንትራክት አድራሻ",
@@ -1434,6 +1472,12 @@ export const am = {
     clear: "{name} አጽዳ",
     clearAll: "ሁሉንም አጽዳ",
     entryFunction: "በመግቢያ ተግባር አጣራ",
+    noResults:
+      "ከማጣሪያው ጋር የሚመሳሰሉ ግብይቶች አልተገኙም። ኢንዴክሰሩ ለዚህ መረብ የሚመሳሰሉ የተጠቃሚ ግብይቶችን አላመለሰም።",
+    loadError:
+      "ግብይቶችን በተግባር ማጣራት አልተሳካም። እሴቶች ልክ ያልሆኑ ወይም ኢንዴክሰሩ ለጊዜው ላይገኝ ይችላል።",
+    matchingOne: "{count} የሚመሳሰል ግብይት",
+    matchingMany: "{count} የሚመሳሰሉ ግብይቶች",
   },
   flags: {
     differences: "ልዩነቶች",
@@ -1722,6 +1766,10 @@ export const am = {
       partner: "የአጋር / ፕሮቶኮል ክፍያ ({symbol})",
       partnerTip:
         "ለዚህ ንብረት በወጣው እና በተቀመጠው መጠን መካከል ያለ ልዩነት — ብዙውን ጊዜ የማስተላለፍ hook፣ የDEX ፕሮቶኮል ክፍያ ወይም የአጋር ቅናሽ።",
+      total: "ጠቅላላ የተከፈለ ጋዝ",
+      totalTip: "የማስፈጸም፣ I/O እና ማከማቻ ድምር (በጋዝ አሃዶች)። ከግብይቱ gas_used ጋር ይስማማል።",
+      storageShortTip: "ለአዲስ ንጹህ ሁኔታ ይከፈላል፤ በoctas ዋጋ ተሰጥቷል።",
+      storageRefundShortTip: "ማከማቻ ሲለቀቅ ይመዘገባል፤ የgas_used አካል አይደለም።",
     },
   },
   payload: {
@@ -1878,6 +1926,26 @@ export const am = {
       "ዋሌትዎን ያገናኙ እና ማውጣቱን ለማስፈጸም ከፕሮቶኮሉ ኮንትራክት ጋር በቀጥታ ይስሩ። ከመፈረም በፊት የግብይት ዝርዝሮችን በጥንቃቄ ያረጋግጡ።",
     openPetraVault: "በPetra Vault ክፈት",
     manageMultisig: "ይህን የሙልቲሲግ መለያ በPetra Vault ያስተዳድሩ",
+    balance: "ቀሪ ሂሳብ",
+    balanceTip: "ይህ ቀሪ ሂሳብ በኪስ ቦርሳዎ ውስጥ ያለውን የAPT ቶከን መጠን ያንፀባርቃል።",
+    balanceTipWithUsd:
+      "ይህ ቀሪ ሂሳብ በኪስ ቦርሳዎ ውስጥ ያለውን የAPT ቶከን መጠን እና በ1 APT = {price} ተመን ያለውን የቀጥታ የUSD ዋጋ ያንፀባርቃል።",
+    defiPositionsOn: "የDeFi አቀማመጦች በ",
+    openPortfolioAria: "በአዲስ ትር ላይ በ{name} ላይ ፖርትፎሊዮን ክፈት",
+    transactionCount: "{count} ግብይቶች",
+    transactionCountUpTo: "እስከ {count} ግብይቶች እየታዩ ነው",
+    matchingSentOne: "{count} የሚመሳሰል ግብይት (በዚህ መለያ የተላከ)",
+    matchingSentMany: "{count} የሚመሳሰሉ ግብይቶች (በዚህ መለያ የተላኩ)",
+    filterNoResults: "በዚህ መለያ የተላኩ ከማጣሪያው ጋር የሚመሳሰሉ ግብይቶች አልተገኙም",
+    exportCsv: "CSV ላክ ({count})",
+    exporting: "እየተላከ ነው...",
+    exportingProgress: "እየተላከ ነው... {percent}%",
+    exportNone: "ለመላክ ግብይቶች የሉም።",
+    exportNoneFailed: "ለመላክ ግብይቶች የሉም። ሁሉም ማግኘቶች ሳይሳኩ ሊቀሩ ይችላሉ።",
+    exportPartial: "{exported} ግብይቶች ተልከዋል። {failed} ማግኘት አልተቻለምና ከመላኩ ተወግደዋል።",
+    exportRateLimit: "የመጠን ገደብ ተሻገረ። ትንሽ ይጠብቁና እንደገና ይሞክሩ።",
+    exportError: "ግብይቶችን በመላክ ላይ ስህተት። እንደገና ይሞክሩ።",
+    exportErrorDetail: "ግብይቶችን በመላክ ላይ ስህተት፦ {message}",
   },
   confidential: {
     epoch: "ኤፖክ",
@@ -1963,6 +2031,14 @@ export const am = {
     txnFailed: "ግብይት አልተሳካም{detail}። ያልተሳካው ጥሪ ከታች ተደምቋል።",
     rawJson: "ጥሬ ምላሽ (JSON)",
     unexpectedShape: "የትሬስ ምላሽ ያልተጠበቀ ቅርጽ ነበረው፤ ጥሬ JSON ብቻ በማሳየት ላይ።",
+    userOnly: "የጥሪ ፍለጋ ለተጠቃሚ ግብይቶች ብቻ ይገኛል።",
+    gasZero: "0 ጋዝ",
+    gasAmount: "{count} ጋዝ",
+    collapseCalls: "የተደራረቡ ጥሪዎችን አጥፋ",
+    expandCalls: "የተደራረቡ ጥሪዎችን ዘርጋ",
+    callFailed: "ይህ ጥሪ አልተሳካም",
+    caller: "ጠሪ",
+    callee: "የተጠራ",
   },
   decibel: {
     buy: "ግዛ",
@@ -2080,5 +2156,17 @@ export const am = {
     newSignaturesRequired: "አዲስ የሚያስፈልጉ ፊርማዎች",
     previousMetadata: "ቀዳሚ ሜታዳታ",
     newMetadata: "አዲስ ሜታዳታ",
+    pendingTitle: "በመጠባበቅ ላይ ያሉ ግብይቶች ({count})",
+    ownersTitle: "ባለቤቶች ({count})",
+    transactionId: "የግብይት መታወቂያ፦ {id}",
+    transactionN: "ግብይት {n}",
+    creatorLabel: "ፈጣሪ፦",
+    creationTime: "የተፈጠረበት ጊዜ፦",
+    votesRequired: "ድምጾች፦ {count} / {required} ያስፈልጋል",
+    voteApproved: "✓ ተፈቅዷል",
+    voteRejected: "✗ ተቀባይነት አላገኘም",
+    eventCounters: "የክስተት ቆጣሪዎች",
+    rawData: "ጥሬ የብዙ ፊርማ ውሂብ",
+    noResource: "ይህ መለያ የብዙ ፊርማ ሀብት የለውም።",
   },
 } as const satisfies MessageTree;

@@ -77,6 +77,12 @@ export const payments = {
     partner: "Partner / protocol fee ({symbol})",
     partnerTip:
       "Difference between the amount withdrawn and the amount deposited for this asset — typically a transfer hook, DEX protocol fee, or partner skim.",
+    total: "Total gas charged",
+    totalTip:
+      "Sum of execution, I/O, and storage (as gas units). Matches gas_used on the transaction.",
+    storageShortTip: "Charged for net new state; priced in octas.",
+    storageRefundShortTip:
+      "Credited when storage is released; not part of gas_used.",
   },
 } as const;
 

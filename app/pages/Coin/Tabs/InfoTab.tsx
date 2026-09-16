@@ -13,6 +13,7 @@ import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {assertNever, getAssetSymbol} from "../../../utils";
+import {useTranslation} from "../../../i18n";
 import type {CoinData} from "../Components/CoinData";
 
 type InfoTabProps = {
@@ -30,6 +31,7 @@ export default function InfoTab({
   pairedFa,
   coinData,
 }: InfoTabProps) {
+  const {t, formatNumber} = useTranslation();
   const faMetadataAddress = pairedFa ?? coinData?.faAddress ?? null;
 
   const {
@@ -51,23 +53,21 @@ export default function InfoTab({
   switch (supplyType) {
     case SupplyType.ON_CHAIN:
       supplyIcon = (
-        <Tooltip title={"Supply tracked on-chain, may change over time"}>
+        <Tooltip title={t("pages.coins.supplyOnChain")}>
           <VerifiedOutlined />
         </Tooltip>
       );
       break;
     case SupplyType.VERIFIED_OFF_CHAIN:
       supplyIcon = (
-        <Tooltip title={"Supply verified off-chain to have a fixed supply"}>
+        <Tooltip title={t("pages.coins.supplyOffChain")}>
           <VerifiedTwoTone />
         </Tooltip>
       );
       break;
     case SupplyType.NO_SUPPLY_TRACKED:
       supplyIcon = (
-        <Tooltip
-          title={"No supply is tracked for this coin on-chain or off-chain"}
-        >
+        <Tooltip title={t("pages.coins.supplyNone")}>
           <QuestionMarkOutlined />
         </Tooltip>
       );
@@ -128,11 +128,11 @@ export default function InfoTab({
                   value={
                     <>
                       $
-                      {marketCap.toLocaleString([], {
+                      {formatNumber(marketCap, {
                         maximumFractionDigits: 2,
                         minimumFractionDigits: 2,
                       })}{" "}
-                      USD
+                      {t("common.usd")}
                     </>
                   }
                 />
@@ -150,11 +150,7 @@ export default function InfoTab({
                 ) : confidentialSupplyLoading ? (
                   "…"
                 ) : confidentialSupply !== null ? (
-                  <Tooltip
-                    title={
-                      "Tokens held in the on-chain confidential-asset pool for the paired fungible asset (public aggregate). Individual balances stay private."
-                    }
-                  >
+                  <Tooltip title={t("pages.coins.confidentialSupplyTip")}>
                     <span>
                       {getFormattedBalanceStr(
                         confidentialSupply.toString(),
@@ -174,7 +170,7 @@ export default function InfoTab({
             value={
               coinData?.logoUrl && (
                 <img
-                  alt={`${data?.data?.name} icon`}
+                  alt={t("common.iconAlt", {name: data?.data?.name ?? ""})}
                   width={100}
                   src={coinData?.logoUrl}
                 />

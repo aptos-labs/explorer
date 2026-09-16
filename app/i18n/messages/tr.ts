@@ -453,6 +453,15 @@ export const tr = {
     hoursAgo: "{count}sa önce",
     daysAgo: "{count}g önce",
     noValidatorsFound: "Doğrulayıcı bulunamadı",
+    usd: "USD",
+    iconAlt: "{name} simgesi",
+    nArguments: "{count} argüman",
+    nArgumentsPlural: "{count} argüman",
+    hideNArguments: "{count} argümanı gizle",
+    hideNArgumentsPlural: "{count} argümanı gizle",
+    showNArguments: "{count} argümanı göster",
+    showNArgumentsPlural: "{count} argümanı göster",
+    octasParens: "({amount} octas)",
   },
   network: {
     selectAriaLabel: "Ağ seç",
@@ -532,6 +541,9 @@ export const tr = {
   },
   interval: {
     refreshHint: "Kalan sürenin güncel halini görmek için sayfayı yenileyin.",
+    hms: "{hours}sa {minutes}dk {seconds}sn",
+    dhm: "{days}g {hours}sa {minutes}dk",
+    dhms: "{days}g {hours}sa {minutes}dk {seconds}sn",
   },
   tabs: {
     transaction: {
@@ -709,6 +721,7 @@ export const tr = {
     stakingFee: "Staking Ücreti",
     nextUnlockIn: "Sonraki Kilit Açma",
     index: "Dizin:",
+    transactionsWithCount: "İşlemler ({count}):",
   },
   table: {
     hash: "#",
@@ -868,6 +881,8 @@ export const tr = {
       size: "boyut {size}",
       atPrice: "@ {price}",
       openCctpWormholeAria: "CCTP transferini WormholeScan'de yeni sekmede aç",
+      confidentialAmountHidden:
+        "Aktarım tutarı zincir üzerinde şifrelidir ve görüntülenemez.",
     },
   },
   pages: {
@@ -915,6 +930,8 @@ export const tr = {
       supplyOnChain: "Arz zincir üzerinde izlenir, zamanla değişebilir",
       supplyOffChain: "Arz, sabit arz için zincir dışında doğrulanmıştır",
       supplyNone: "Bu coin için zincir üzerinde veya dışında izlenen arz yok",
+      confidentialSupplyTip:
+        "Eşlenmiş değiştirilebilir varlığın zincir üstü gizli varlık havuzundaki tokenler (kamuya açık toplam). Bireysel bakiyeler gizli kalır.",
     },
     fa: {
       entity: "Fungible Varlık",
@@ -926,6 +943,20 @@ export const tr = {
         "Aptos blockchain'de {address} fungible varlığının {tab} görünümünü açın.",
       metaDescriptionFallback:
         "Aptos'ta {symbol} görün. Token arzını, ondalıkları, sahipleri, meta veriyi ve işlem geçmişini görün.",
+      confidentialSupplyTip:
+        "Bu meta veri nesnesinin zincir üstü gizli varlık havuzundaki tokenler (kamuya açık toplam). Bireysel bakiyeler gizli kalır.",
+      dispatchable: "Gönderilebilir",
+      dispatchableTip:
+        "Aktarımlar için özel gönderim işlevleri kayıtlı (çekme/yatırma/bakiye/arz)",
+      hookWithdraw: "Çekme",
+      hookDeposit: "Yatırma",
+      hookDerivedBalance: "Türetilmiş bakiye",
+      hookDerivedSupply: "Türetilmiş arz",
+      viewModuleSource: "modül kaynağını görmek için tıklayın",
+      hookTooltip: "{hook}: {path} — {action}",
+      nativeGasTokenInfo:
+        "Bu Aptos’taki resmi yerel gaz tokendir. APT’nin değiştirilebilir varlık sürümüdür. 0x1::coin işlevleri kullanılırken coin sürümüyle tam uyumludur. Coin sürümü için 0x1::aptos_coin::AptosCoin’e bakın.",
+      nativeUsdtInfo: "Bu Aptos’taki resmi yerel USD₮’dir.",
     },
     tokens: {
       entity: "Token",
@@ -1437,6 +1468,14 @@ export const tr = {
       "Komisyon oranları artık operatör tarafından değiştirilebilir",
     commissionUpdate:
       "Mevcut komisyon oranı %{current}. Komisyon oranı, mevcut kilit döneminde %{next} olarak güncellenecek.",
+    epochN: "Dönem {epoch}",
+    percentComplete: "%{percent} tamamlandı",
+    epochTip:
+      "Aptos blok zincirinde dönem, doğrulayıcıların bir dizi bloğu oyladığı saniye cinsinden bir süredir. Aptos ana ağ dönemi 7200 saniyedir (iki saat).",
+    nodeCount: "{count} düğüm",
+    countryCount: "{count} ülke",
+    cityCount: "{count} şehir",
+    commissionRate: "%{percent} komisyon oranı",
   },
   analytics: {
     deployedContracts: "Dağıtılan Sözleşmeler",
@@ -1488,6 +1527,7 @@ export const tr = {
     activelyStaked: "Aktif Stake",
     activelyStakedTip:
       "Şu anda staking havuzlarında tutulan APT token miktarı.",
+    totalTransactionsLabel: "TOPLAM İŞLEM: {count}",
   },
   filter: {
     contractAddress: "Sözleşme Adresi",
@@ -1501,6 +1541,12 @@ export const tr = {
     clear: "{name} filtresini temizle",
     clearAll: "Tümünü temizle",
     entryFunction: "Entry Function'a göre filtrele",
+    noResults:
+      "Filtreyle eşleşen işlem bulunamadı. Dizinleyici bu ağ için eşleşen kullanıcı işlemi döndürmedi.",
+    loadError:
+      "İşlemler işleve göre süzülemedi. Değerler geçersiz olabilir veya dizinleyici geçici olarak kullanılamıyor olabilir.",
+    matchingOne: "{count} eşleşen işlem",
+    matchingMany: "{count} eşleşen işlem",
   },
   flags: {
     differences: "Farklar",
@@ -1794,6 +1840,13 @@ export const tr = {
       partner: "Ortak / protokol ücreti ({symbol})",
       partnerTip:
         "Bu varlık için çekilen tutar ile yatırılan tutar arasındaki fark — genellikle bir transfer kancası, DEX protokol ücreti veya ortak kesintisi.",
+      total: "Tahsil edilen toplam gaz",
+      totalTip:
+        "Yürütme, G/Ç ve depolama toplamı (gaz birimi). İşlemin gas_used değeriyle eşleşir.",
+      storageShortTip:
+        "Net yeni durum için tahsil edilir; octas cinsinden fiyatlanır.",
+      storageRefundShortTip:
+        "Depolama serbest bırakıldığında alacak yazılır; gas_used’ın parçası değildir.",
     },
   },
   payload: {
@@ -1957,6 +2010,29 @@ export const tr = {
       "Çekimi yürütmek için cüzdanınızı bağlayın ve protokolün sözleşmesiyle doğrudan etkileşime geçin. İmzalamadan önce işlem ayrıntılarını dikkatle doğrulayın.",
     openPetraVault: "Petra Vault'ta aç",
     manageMultisig: "Bu multisig hesabı Petra Vault ile yönetin",
+    balance: "Bakiye",
+    balanceTip: "Bu bakiye cüzdanınızdaki APT token miktarını yansıtır.",
+    balanceTipWithUsd:
+      "Bu bakiye cüzdanınızdaki APT token miktarını ve 1 APT = {price} kuruyla anlık USD değerini yansıtır.",
+    defiPositionsOn: "DeFi pozisyonları:",
+    openPortfolioAria: "{name} üzerindeki portföyü yeni sekmede aç",
+    transactionCount: "{count} işlem",
+    transactionCountUpTo: "En fazla {count} işlem gösteriliyor",
+    matchingSentOne: "{count} eşleşen işlem (bu hesap tarafından gönderildi)",
+    matchingSentMany: "{count} eşleşen işlem (bu hesap tarafından gönderildi)",
+    filterNoResults:
+      "Bu hesabın gönderdiği, filtreyle eşleşen işlem bulunamadı",
+    exportCsv: "CSV dışa aktar ({count})",
+    exporting: "Dışa aktarılıyor...",
+    exportingProgress: "Dışa aktarılıyor... {percent}%",
+    exportNone: "Dışa aktarılacak işlem yok.",
+    exportNoneFailed:
+      "Dışa aktarılacak işlem yok. Tüm getirmeler başarısız olmuş olabilir.",
+    exportPartial:
+      "{exported} işlem dışa aktarıldı. {failed} getirilemedi ve dışa aktarmadan çıkarıldı.",
+    exportRateLimit: "Hız sınırı aşıldı. Biraz bekleyip yeniden deneyin.",
+    exportError: "İşlemler dışa aktarılırken hata. Yeniden deneyin.",
+    exportErrorDetail: "İşlemler dışa aktarılırken hata: {message}",
   },
   confidential: {
     epoch: "Epoch",
@@ -2051,6 +2127,14 @@ export const tr = {
     rawJson: "Ham yanıt (JSON)",
     unexpectedShape:
       "İz yanıtının beklenmeyen bir şekli vardı; yalnızca ham JSON gösteriliyor.",
+    userOnly: "Çağrı izi yalnızca kullanıcı işlemleri için kullanılabilir.",
+    gasZero: "0 gaz",
+    gasAmount: "{count} gaz",
+    collapseCalls: "İç içe çağrıları daralt",
+    expandCalls: "İç içe çağrıları genişlet",
+    callFailed: "Bu çağrı başarısız oldu",
+    caller: "Çağıran",
+    callee: "Çağrılan",
   },
   decibel: {
     buy: "Al",
@@ -2168,5 +2252,17 @@ export const tr = {
     newSignaturesRequired: "Yeni Gerekli İmzalar",
     previousMetadata: "Önceki Meta Veri",
     newMetadata: "Yeni Meta Veri",
+    pendingTitle: "Bekleyen işlemler ({count})",
+    ownersTitle: "Sahipler ({count})",
+    transactionId: "İşlem kimliği: {id}",
+    transactionN: "İşlem {n}",
+    creatorLabel: "Oluşturan:",
+    creationTime: "Oluşturma zamanı:",
+    votesRequired: "Oylar: {count} / {required} gerekli",
+    voteApproved: "✓ Onaylandı",
+    voteRejected: "✗ Reddedildi",
+    eventCounters: "Olay sayaçları",
+    rawData: "Ham çoklu imza verisi",
+    noResource: "Bu hesabın çoklu imza kaynağı yok.",
   },
 } as const satisfies MessageTree;

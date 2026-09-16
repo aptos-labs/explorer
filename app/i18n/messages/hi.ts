@@ -452,6 +452,15 @@ export const hi = {
     hoursAgo: "{count} घं पहले",
     daysAgo: "{count} दि पहले",
     noValidatorsFound: "कोई वैलिडेटर नहीं मिला",
+    usd: "USD",
+    iconAlt: "{name} आइकन",
+    nArguments: "{count} आर्गुमेंट",
+    nArgumentsPlural: "{count} आर्गुमेंट",
+    hideNArguments: "{count} आर्गुमेंट छिपाएँ",
+    hideNArgumentsPlural: "{count} आर्गुमेंट छिपाएँ",
+    showNArguments: "{count} आर्गुमेंट दिखाएँ",
+    showNArgumentsPlural: "{count} आर्गुमेंट दिखाएँ",
+    octasParens: "({amount} octas)",
   },
   network: {
     selectAriaLabel: "नेटवर्क चुनें",
@@ -529,6 +538,9 @@ export const hi = {
   },
   interval: {
     refreshHint: "अद्यतन शेष समय देखने के लिए पेज रिफ़्रेश करें।",
+    hms: "{hours}घं {minutes}मि {seconds}से",
+    dhm: "{days}दि {hours}घं {minutes}मि",
+    dhms: "{days}दि {hours}घं {minutes}मि {seconds}से",
   },
   tabs: {
     transaction: {
@@ -705,6 +717,7 @@ export const hi = {
     stakingFee: "स्टेकिंग शुल्क",
     nextUnlockIn: "अगला अनलॉक इसमें",
     index: "इंडेक्स:",
+    transactionsWithCount: "लेन-देन ({count}):",
   },
   table: {
     hash: "#",
@@ -859,6 +872,8 @@ export const hi = {
       size: "आकार {size}",
       atPrice: "@ {price}",
       openCctpWormholeAria: "WormholeScan पर CCTP ट्रांसफर नए टैब में खोलें",
+      confidentialAmountHidden:
+        "स्थानांतरण राशि ऑन-चेन एन्क्रिप्टेड है और दिखाई नहीं जा सकती।",
     },
   },
   pages: {
@@ -902,6 +917,8 @@ export const hi = {
       supplyOnChain: "आपूर्ति ऑन-चेन ट्रैक होती है, समय के साथ बदल सकती है",
       supplyOffChain: "आपूर्ति ऑफ-चेन सत्यापित है कि यह निश्चित है",
       supplyNone: "इस कॉइन की आपूर्ति ऑन-चेन या ऑफ-चेन ट्रैक नहीं होती",
+      confidentialSupplyTip:
+        "पेयर किए गए फंजिबल एसेट के ऑन-चेन गोपनीय एसेट पूल में रखे टोकन (सार्वजनिक योग)। व्यक्तिगत शेष निजी रहते हैं।",
     },
     fa: {
       entity: "फंजिबल एसेट",
@@ -912,6 +929,20 @@ export const hi = {
       metaDescription: "Aptos ब्लॉकचेन पर फंजिबल एसेट {address} का {tab} देखें।",
       metaDescriptionFallback:
         "Aptos पर {symbol} देखें। टोकन आपूर्ति, दशमलव, होल्डर, मेटाडेटा और लेन-देन इतिहास देखें।",
+      confidentialSupplyTip:
+        "इस मेटाडेटा ऑब्जेक्ट के ऑन-चेन गोपनीय एसेट पूल में रखे टोकन (सार्वजनिक योग)। व्यक्तिगत शेष निजी रहते हैं।",
+      dispatchable: "डिस्पैच योग्य",
+      dispatchableTip:
+        "स्थानांतरण के लिए कस्टम डिस्पैच फ़ंक्शन पंजीकृत हैं (निकासी/जमा/शेष/आपूर्ति)",
+      hookWithdraw: "निकासी",
+      hookDeposit: "जमा",
+      hookDerivedBalance: "व्युत्पन्न शेष",
+      hookDerivedSupply: "व्युत्पन्न आपूर्ति",
+      viewModuleSource: "मॉड्यूल स्रोत देखने के लिए क्लिक करें",
+      hookTooltip: "{hook}: {path} — {action}",
+      nativeGasTokenInfo:
+        "यह Aptos पर आधिकारिक नेटिव गैस टोकन है। यह APT का फंजिबल एसेट संस्करण है। 0x1::coin फ़ंक्शन का उपयोग करते समय यह कॉइन संस्करण के साथ पूर्णतः संगत है। कॉइन संस्करण के लिए 0x1::aptos_coin::AptosCoin देखें।",
+      nativeUsdtInfo: "यह Aptos पर आधिकारिक नेटिव USD₮ है।",
     },
     tokens: {
       entity: "टोकन",
@@ -1393,6 +1424,14 @@ export const hi = {
     commissionChange: "अब ऑपरेटर कमीशन दर बदल सकता है",
     commissionUpdate:
       "वर्तमान कमीशन दर {current}% है। वर्तमान लॉकअप अवधि पर दर {next}% हो जाएगी।",
+    epochN: "युग {epoch}",
+    percentComplete: "{percent}% पूर्ण",
+    epochTip:
+      "Aptos ब्लॉकचेन में युग सेकंड में एक अवधि है, जिसके दौरान वैलिडेटर कई ब्लॉकों पर मतदान करते हैं। Aptos मेननेट युग 7200 सेकंड (दो घंटे) है।",
+    nodeCount: "{count} नोड",
+    countryCount: "{count} देश",
+    cityCount: "{count} शहर",
+    commissionRate: "{percent}% कमीशन दर",
   },
   analytics: {
     deployedContracts: "कॉन्ट्रैक्ट डिप्लॉय",
@@ -1439,6 +1478,7 @@ export const hi = {
     activeFullnodesTip: "फुलनोड की अनुमानित संख्या।",
     activelyStaked: "सक्रिय स्टेक",
     activelyStakedTip: "स्टेकिंग पूल में वर्तमान APT टोकन की मात्रा।",
+    totalTransactionsLabel: "कुल लेन-देन: {count}",
   },
   filter: {
     contractAddress: "कॉन्ट्रैक्ट पता",
@@ -1452,6 +1492,12 @@ export const hi = {
     clear: "{name} साफ़ करें",
     clearAll: "सभी साफ़ करें",
     entryFunction: "एंट्री फ़ंक्शन से फ़िल्टर",
+    noResults:
+      "फ़िल्टर से मेल खाने वाले कोई लेन-देन नहीं मिले। इंडेक्सर ने इस नेटवर्क के लिए कोई मेल खाते उपयोगकर्ता लेन-देन नहीं लौटाए।",
+    loadError:
+      "फ़ंक्शन से लेन-देन फ़िल्टर करने में विफल। मान अमान्य हो सकते हैं या इंडेक्सर अस्थायी रूप से अनुपलब्ध हो सकता है।",
+    matchingOne: "{count} मेल खाता लेन-देन",
+    matchingMany: "{count} मेल खाते लेन-देन",
   },
   flags: {
     differences: "अंतर",
@@ -1742,6 +1788,11 @@ export const hi = {
       partner: "पार्टनर / प्रोटोकॉल शुल्क ({symbol})",
       partnerTip:
         "इस एसेट की निकाली और जमा राशि का अंतर — आमतौर पर ट्रांसफर हुक, DEX प्रोटोकॉल शुल्क, या पार्टनर स्किम।",
+      total: "कुल लिया गया गैस",
+      totalTip:
+        "निष्पादन, I/O और स्टोरेज का योग (गैस इकाइयों में)। लेन-देन के gas_used से मेल खाता है।",
+      storageShortTip: "शुद्ध नई स्थिति के लिए शुल्क; octas में मूल्य।",
+      storageRefundShortTip: "स्टोरेज मुक्त होने पर जमा; gas_used का भाग नहीं।",
     },
   },
   payload: {
@@ -1901,6 +1952,28 @@ export const hi = {
       "निकासी निष्पादित करने के लिए वॉलेट कनेक्ट करें और प्रोटोकॉल कॉन्ट्रैक्ट से सीधे इंटरैक्ट करें। साइन से पहले विवरण ध्यान से जाँचें।",
     openPetraVault: "Petra Vault में खोलें",
     manageMultisig: "Petra Vault से इस मल्टीसिग खाते का प्रबंधन करें",
+    balance: "शेष",
+    balanceTip: "यह शेष आपके वॉलेट में रखे APT टोकन की मात्रा दर्शाता है।",
+    balanceTipWithUsd:
+      "यह शेष आपके वॉलेट में रखे APT टोकन की मात्रा और 1 APT = {price} की दर से उनका लाइव USD मूल्य दर्शाता है।",
+    defiPositionsOn: "DeFi पोज़िशन:",
+    openPortfolioAria: "नए टैब में {name} पर पोर्टफोलियो खोलें",
+    transactionCount: "{count} लेन-देन",
+    transactionCountUpTo: "अधिकतम {count} लेन-देन दिखाए जा रहे हैं",
+    matchingSentOne: "{count} मेल खाता लेन-देन (इस खाते ने भेजा)",
+    matchingSentMany: "{count} मेल खाते लेन-देन (इस खाते ने भेजे)",
+    filterNoResults: "इस खाते द्वारा भेजे गए कोई लेन-देन फ़िल्टर से मेल नहीं खाते",
+    exportCsv: "CSV निर्यात करें ({count})",
+    exporting: "निर्यात हो रहा है...",
+    exportingProgress: "निर्यात हो रहा है... {percent}%",
+    exportNone: "निर्यात करने के लिए कोई लेन-देन नहीं मिला।",
+    exportNoneFailed:
+      "निर्यात करने के लिए कोई लेन-देन नहीं मिला। सभी फ़ेच विफल हो सकते हैं।",
+    exportPartial:
+      "{exported} लेन-देन सफलतापूर्वक निर्यात हुए। {failed} प्राप्त नहीं हो सके और निर्यात से हटा दिए गए।",
+    exportRateLimit: "दर सीमा पार हो गई। थोड़ी देर प्रतीक्षा करें और फिर कोशिश करें।",
+    exportError: "लेन-देन निर्यात करने में त्रुटि। फिर कोशिश करें।",
+    exportErrorDetail: "लेन-देन निर्यात करने में त्रुटि: {message}",
   },
   confidential: {
     epoch: "एपोक",
@@ -1989,6 +2062,14 @@ export const hi = {
     rawJson: "कच्ची प्रतिक्रिया (JSON)",
     unexpectedShape:
       "ट्रेस प्रतिक्रिया का आकार अप्रत्याशित था; केवल कच्चा JSON दिखा रहे हैं।",
+    userOnly: "कॉल ट्रेस केवल उपयोगकर्ता लेन-देन के लिए उपलब्ध है।",
+    gasZero: "0 गैस",
+    gasAmount: "{count} गैस",
+    collapseCalls: "नेस्टेड कॉल संकुचित करें",
+    expandCalls: "नेस्टेड कॉल विस्तारित करें",
+    callFailed: "यह कॉल विफल हुई",
+    caller: "कॉलर",
+    callee: "कॉली",
   },
   decibel: {
     buy: "खरीदें",
@@ -2106,5 +2187,17 @@ export const hi = {
     newSignaturesRequired: "नए आवश्यक हस्ताक्षर",
     previousMetadata: "पिछला मेटाडेटा",
     newMetadata: "नया मेटाडेटा",
+    pendingTitle: "लंबित लेन-देन ({count})",
+    ownersTitle: "स्वामी ({count})",
+    transactionId: "लेन-देन आईडी: {id}",
+    transactionN: "लेन-देन {n}",
+    creatorLabel: "निर्माता:",
+    creationTime: "निर्माण समय:",
+    votesRequired: "वोट: {count} / {required} आवश्यक",
+    voteApproved: "✓ स्वीकृत",
+    voteRejected: "✗ अस्वीकृत",
+    eventCounters: "इवेंट काउंटर",
+    rawData: "कच्चा मल्टीसिग डेटा",
+    noResource: "इस खाते के पास मल्टीसिग संसाधन नहीं है।",
   },
 } as const satisfies MessageTree;

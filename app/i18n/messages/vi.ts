@@ -451,6 +451,15 @@ export const vi = {
     hoursAgo: "{count} giờ trước",
     daysAgo: "{count} ngày trước",
     noValidatorsFound: "Không tìm thấy validator",
+    usd: "USD",
+    iconAlt: "Biểu tượng {name}",
+    nArguments: "{count} đối số",
+    nArgumentsPlural: "{count} đối số",
+    hideNArguments: "Ẩn {count} đối số",
+    hideNArgumentsPlural: "Ẩn {count} đối số",
+    showNArguments: "Hiện {count} đối số",
+    showNArgumentsPlural: "Hiện {count} đối số",
+    octasParens: "({amount} octas)",
   },
   network: {
     selectAriaLabel: "Chọn mạng",
@@ -529,6 +538,9 @@ export const vi = {
   },
   interval: {
     refreshHint: "Vui lòng làm mới trang để xem thời gian còn lại đã cập nhật.",
+    hms: "{hours}g {minutes}p {seconds}s",
+    dhm: "{days}n {hours}g {minutes}p",
+    dhms: "{days}n {hours}g {minutes}p {seconds}s",
   },
   tabs: {
     transaction: {
@@ -705,6 +717,7 @@ export const vi = {
     stakingFee: "Phí staking",
     nextUnlockIn: "Mở khóa tiếp theo sau",
     index: "Chỉ mục:",
+    transactionsWithCount: "Giao dịch ({count}):",
   },
   table: {
     hash: "#",
@@ -861,6 +874,8 @@ export const vi = {
       size: "khối lượng {size}",
       atPrice: "@ {price}",
       openCctpWormholeAria: "Mở chuyển CCTP trên WormholeScan trong tab mới",
+      confidentialAmountHidden:
+        "Số tiền chuyển đã được mã hóa on-chain và không thể hiển thị.",
     },
   },
   pages: {
@@ -907,6 +922,8 @@ export const vi = {
       supplyOffChain: "Cung đã xác minh off-chain là cung cố định",
       supplyNone:
         "Không có cung được theo dõi cho coin này on-chain hay off-chain",
+      confidentialSupplyTip:
+        "Token trong pool tài sản bí mật on-chain của tài sản fungible ghép đôi (tổng công khai). Số dư riêng vẫn riêng tư.",
     },
     fa: {
       entity: "Tài sản fungible",
@@ -919,6 +936,20 @@ export const vi = {
         "Xem {tab} của tài sản fungible {address} trên blockchain Aptos.",
       metaDescriptionFallback:
         "Xem {symbol} trên Aptos. Xem cung token, số thập phân, người nắm giữ, metadata và lịch sử giao dịch.",
+      confidentialSupplyTip:
+        "Token trong pool tài sản bí mật on-chain của đối tượng metadata này (tổng công khai). Số dư riêng vẫn riêng tư.",
+      dispatchable: "Có thể điều phối",
+      dispatchableTip:
+        "Đã đăng ký hàm điều phối tùy chỉnh cho chuyển khoản (rút/nạp/số dư/cung)",
+      hookWithdraw: "Rút",
+      hookDeposit: "Nạp",
+      hookDerivedBalance: "Số dư suy ra",
+      hookDerivedSupply: "Cung suy ra",
+      viewModuleSource: "nhấp để xem mã nguồn mô-đun",
+      hookTooltip: "{hook}: {path} — {action}",
+      nativeGasTokenInfo:
+        "Đây là token gas gốc chính thức trên Aptos. Đây là phiên bản tài sản fungible của APT. Tương thích đầy đủ với phiên bản coin khi dùng hàm 0x1::coin. Xem 0x1::aptos_coin::AptosCoin cho phiên bản coin.",
+      nativeUsdtInfo: "Đây là USD₮ gốc chính thức trên Aptos.",
     },
     tokens: {
       entity: "Token",
@@ -1423,6 +1454,14 @@ export const vi = {
     commissionChange: "Tỷ lệ hoa hồng hiện có thể được operator thay đổi",
     commissionUpdate:
       "Tỷ lệ hoa hồng hiện tại là {current}%. Tỷ lệ hoa hồng sẽ được cập nhật thành {next}% vào kỳ khóa hiện tại.",
+    epochN: "Kỷ nguyên {epoch}",
+    percentComplete: "Hoàn thành {percent}%",
+    epochTip:
+      "Một kỷ nguyên trên chuỗi khối Aptos là khoảng thời gian tính bằng giây khi các trình xác thực bỏ phiếu cho một số khối. Kỷ nguyên mainnet Aptos là 7200 giây (hai giờ).",
+    nodeCount: "{count} nút",
+    countryCount: "{count} quốc gia",
+    cityCount: "{count} thành phố",
+    commissionRate: "{percent}% hoa hồng",
   },
   analytics: {
     deployedContracts: "Hợp đồng đã triển khai",
@@ -1472,6 +1511,7 @@ export const vi = {
     activeFullnodesTip: "Số fullnode xấp xỉ.",
     activelyStaked: "Đang được stake",
     activelyStakedTip: "Lượng token APT hiện đang nằm trong các pool staking.",
+    totalTransactionsLabel: "TỔNG GIAO DỊCH: {count}",
   },
   filter: {
     contractAddress: "Địa chỉ hợp đồng",
@@ -1485,6 +1525,12 @@ export const vi = {
     clear: "Xóa {name}",
     clearAll: "Xóa tất cả",
     entryFunction: "Lọc theo hàm entry",
+    noResults:
+      "Không tìm thấy giao dịch khớp bộ lọc. Bộ lập chỉ mục không trả về giao dịch người dùng khớp cho mạng này.",
+    loadError:
+      "Lọc giao dịch theo hàm thất bại. Giá trị có thể không hợp lệ hoặc bộ lập chỉ mục tạm thời không khả dụng.",
+    matchingOne: "{count} giao dịch khớp",
+    matchingMany: "{count} giao dịch khớp",
   },
   flags: {
     differences: "Khác biệt",
@@ -1778,6 +1824,12 @@ export const vi = {
       partner: "Phí đối tác / giao thức ({symbol})",
       partnerTip:
         "Chênh lệch giữa số rút và số nạp cho tài sản này — thường là hook chuyển, phí giao thức DEX hoặc khoản đối tác giữ lại.",
+      total: "Tổng gas đã tính",
+      totalTip:
+        "Tổng thực thi, I/O và lưu trữ (theo đơn vị gas). Khớp gas_used của giao dịch.",
+      storageShortTip: "Tính cho trạng thái ròng mới; định giá bằng octas.",
+      storageRefundShortTip:
+        "Ghi có khi giải phóng lưu trữ; không thuộc gas_used.",
     },
   },
   payload: {
@@ -1941,6 +1993,29 @@ export const vi = {
       "Kết nối ví và tương tác trực tiếp với hợp đồng của giao thức để thực hiện rút. Kiểm tra kỹ chi tiết giao dịch trước khi ký.",
     openPetraVault: "Mở trong Petra Vault",
     manageMultisig: "Quản lý tài khoản multisig này với Petra Vault",
+    balance: "Số dư",
+    balanceTip: "Số dư này phản ánh lượng token APT trong ví của bạn.",
+    balanceTipWithUsd:
+      "Số dư này phản ánh lượng token APT trong ví và giá trị USD thời gian thực với tỷ giá 1 APT = {price}.",
+    defiPositionsOn: "Vị thế DeFi trên",
+    openPortfolioAria: "Mở danh mục trên {name} trong thẻ mới",
+    transactionCount: "{count} giao dịch",
+    transactionCountUpTo: "Hiển thị tối đa {count} giao dịch",
+    matchingSentOne: "{count} giao dịch khớp (do tài khoản này gửi)",
+    matchingSentMany: "{count} giao dịch khớp (do tài khoản này gửi)",
+    filterNoResults:
+      "Không tìm thấy giao dịch do tài khoản này gửi khớp bộ lọc",
+    exportCsv: "Xuất CSV ({count})",
+    exporting: "Đang xuất...",
+    exportingProgress: "Đang xuất... {percent}%",
+    exportNone: "Không có giao dịch để xuất.",
+    exportNoneFailed:
+      "Không có giao dịch để xuất. Có thể tất cả lần lấy dữ liệu đều thất bại.",
+    exportPartial:
+      "Đã xuất {exported} giao dịch. Không lấy được {failed} giao dịch nên đã loại khỏi bản xuất.",
+    exportRateLimit: "Vượt giới hạn tốc độ. Hãy đợi một lát rồi thử lại.",
+    exportError: "Lỗi khi xuất giao dịch. Hãy thử lại.",
+    exportErrorDetail: "Lỗi khi xuất giao dịch: {message}",
   },
   confidential: {
     epoch: "Epoch",
@@ -2035,6 +2110,14 @@ export const vi = {
     rawJson: "Phản hồi thô (JSON)",
     unexpectedShape:
       "Phản hồi trace có hình dạng không mong đợi; chỉ hiện JSON thô.",
+    userOnly: "Dấu vết lời gọi chỉ có cho giao dịch người dùng.",
+    gasZero: "0 gas",
+    gasAmount: "{count} gas",
+    collapseCalls: "Thu gọn lời gọi lồng nhau",
+    expandCalls: "Mở rộng lời gọi lồng nhau",
+    callFailed: "Lời gọi này thất bại",
+    caller: "Bên gọi",
+    callee: "Bên được gọi",
   },
   decibel: {
     buy: "Mua",
@@ -2153,5 +2236,17 @@ export const vi = {
     newSignaturesRequired: "Số chữ ký yêu cầu mới",
     previousMetadata: "Metadata trước",
     newMetadata: "Metadata mới",
+    pendingTitle: "Giao dịch đang chờ ({count})",
+    ownersTitle: "Chủ sở hữu ({count})",
+    transactionId: "ID giao dịch: {id}",
+    transactionN: "Giao dịch {n}",
+    creatorLabel: "Người tạo:",
+    creationTime: "Thời gian tạo:",
+    votesRequired: "Phiếu: {count} / {required} cần",
+    voteApproved: "✓ Đã duyệt",
+    voteRejected: "✗ Từ chối",
+    eventCounters: "Bộ đếm sự kiện",
+    rawData: "Dữ liệu đa chữ ký thô",
+    noResource: "Tài khoản này không có tài nguyên đa chữ ký.",
   },
 } as const satisfies MessageTree;

@@ -448,6 +448,15 @@ export const zhHant = {
     hoursAgo: "{count} 小時前",
     daysAgo: "{count} 天前",
     noValidatorsFound: "未找到驗證者",
+    usd: "USD",
+    iconAlt: "{name} 圖示",
+    nArguments: "{count} 個參數",
+    nArgumentsPlural: "{count} 個參數",
+    hideNArguments: "隱藏 {count} 個參數",
+    hideNArgumentsPlural: "隱藏 {count} 個參數",
+    showNArguments: "顯示 {count} 個參數",
+    showNArgumentsPlural: "顯示 {count} 個參數",
+    octasParens: "({amount} octa)",
   },
   network: {
     selectAriaLabel: "選擇網路",
@@ -521,6 +530,9 @@ export const zhHant = {
   },
   interval: {
     refreshHint: "請重新整理頁面以查看更新後的剩餘時間。",
+    hms: "{hours}小時 {minutes}分 {seconds}秒",
+    dhm: "{days}天 {hours}小時 {minutes}分",
+    dhms: "{days}天 {hours}小時 {minutes}分 {seconds}秒",
   },
   tabs: {
     transaction: {
@@ -697,6 +709,7 @@ export const zhHant = {
     stakingFee: "質押費用",
     nextUnlockIn: "距離下次解鎖",
     index: "索引：",
+    transactionsWithCount: "交易（{count}）：",
   },
   table: {
     hash: "#",
@@ -849,6 +862,7 @@ export const zhHant = {
       size: "數量 {size}",
       atPrice: "@ {price}",
       openCctpWormholeAria: "在新標籤頁打開 WormholeScan 上的 CCTP 轉帳",
+      confidentialAmountHidden: "轉帳金額在鏈上加密，無法顯示。",
     },
   },
   pages: {
@@ -892,6 +906,8 @@ export const zhHant = {
       supplyOnChain: "供應量在鏈上追蹤，可能隨時間變化",
       supplyOffChain: "供應量已在鏈下驗證為固定供應",
       supplyNone: "此代幣在鏈上或鏈下均未追蹤供應量",
+      confidentialSupplyTip:
+        "配對同質化資產在鏈上機密資產池中持有的代幣（公開合計）。個人餘額保持私密。",
     },
     fa: {
       entity: "同質化資產",
@@ -902,6 +918,19 @@ export const zhHant = {
       metaDescription: "查看 Aptos 區塊鏈上同質化資產 {address} 的{tab}。",
       metaDescriptionFallback:
         "在 Aptos 上查看 {symbol}。查看代幣供應量、小數位、持有者、中繼資料和交易歷史。",
+      confidentialSupplyTip:
+        "此中繼資料物件在鏈上機密資產池中持有的代幣（公開合計）。個人餘額保持私密。",
+      dispatchable: "可調度",
+      dispatchableTip: "已為轉帳註冊自訂調度函式（提取/存入/餘額/供應量）",
+      hookWithdraw: "提取",
+      hookDeposit: "存入",
+      hookDerivedBalance: "衍生餘額",
+      hookDerivedSupply: "衍生供應量",
+      viewModuleSource: "點選以查看模組原始碼",
+      hookTooltip: "{hook}: {path} — {action}",
+      nativeGasTokenInfo:
+        "這是 Aptos 上的官方原生 Gas 代幣。這是 APT 的同質化資產版本。在使用 0x1::coin 函式時與代幣版本完全相容。代幣版本見 0x1::aptos_coin::AptosCoin。",
+      nativeUsdtInfo: "這是 Aptos 上的官方原生 USD₮。",
     },
     tokens: {
       entity: "Token",
@@ -1366,6 +1395,14 @@ export const zhHant = {
     commissionChange: "現在營運者可以更改佣金率",
     commissionUpdate:
       "目前佣金率為 {current}%。佣金率將在目前鎖定期更新為 {next}%。",
+    epochN: "紀元 {epoch}",
+    percentComplete: "已完成 {percent}%",
+    epochTip:
+      "Aptos 區塊鏈中的紀元是一段時間（以秒計），期間驗證者對若干區塊進行投票。Aptos 主網紀元設為 7200 秒（兩小時）。",
+    nodeCount: "{count} 個節點",
+    countryCount: "{count} 個國家",
+    cityCount: "{count} 個城市",
+    commissionRate: "{percent}% 佣金率",
   },
   analytics: {
     deployedContracts: "已部署合約",
@@ -1409,6 +1446,7 @@ export const zhHant = {
     activeFullnodesTip: "全節點的大致數量。",
     activelyStaked: "主動質押",
     activelyStakedTip: "目前質押池中持有的 APT 代幣數量。",
+    totalTransactionsLabel: "總交易數：{count}",
   },
   filter: {
     contractAddress: "合約位址",
@@ -1422,6 +1460,11 @@ export const zhHant = {
     clear: "清除 {name}",
     clearAll: "全部清除",
     entryFunction: "按入口函式篩選",
+    noResults:
+      "找不到符合篩選條件的交易。索引器未傳回此網路上符合的使用者交易。",
+    loadError: "依函式篩選交易失敗。篩選值可能無效，或索引器暫時無法使用。",
+    matchingOne: "{count} 筆符合的交易",
+    matchingMany: "{count} 筆符合的交易",
   },
   flags: {
     differences: "差異",
@@ -1708,6 +1751,11 @@ export const zhHant = {
       partner: "合作方 / 協議費用（{symbol}）",
       partnerTip:
         "此資產提取金額與存入金額之差 — 通常是轉帳鉤子、DEX 協議費或合作方抽成。",
+      total: "收取的 Gas 總量",
+      totalTip:
+        "執行、I/O 和儲存的總和（以 Gas 單位計）。與交易上的 gas_used 一致。",
+      storageShortTip: "因淨新增狀態而收取；以 octa 計價。",
+      storageRefundShortTip: "釋放儲存時計入；不屬於 gas_used。",
     },
   },
   payload: {
@@ -1862,6 +1910,27 @@ export const zhHant = {
       "連線錢包並直接與協議合約互動以執行提取。簽名前請仔細核驗交易詳情。",
     openPetraVault: "在 Petra Vault 中打開",
     manageMultisig: "使用 Petra Vault 管理此多簽帳戶",
+    balance: "餘額",
+    balanceTip: "此餘額反映錢包中持有的 APT 代幣數量。",
+    balanceTipWithUsd:
+      "此餘額反映錢包中持有的 APT 代幣數量，以及按 1 APT = {price} 計算的即時美元價值。",
+    defiPositionsOn: "DeFi 倉位來自",
+    openPortfolioAria: "在新分頁開啟 {name} 上的投資組合",
+    transactionCount: "{count} 筆交易",
+    transactionCountUpTo: "最多顯示 {count} 筆交易",
+    matchingSentOne: "{count} 筆符合的交易（由此帳戶發送）",
+    matchingSentMany: "{count} 筆符合的交易（由此帳戶發送）",
+    filterNoResults: "找不到由此帳戶發送且符合篩選條件的交易",
+    exportCsv: "匯出 CSV（{count}）",
+    exporting: "正在匯出...",
+    exportingProgress: "正在匯出... {percent}%",
+    exportNone: "沒有可匯出的交易。",
+    exportNoneFailed: "沒有可匯出的交易。所有交易擷取可能均已失敗。",
+    exportPartial:
+      "已成功匯出 {exported} 筆交易。{failed} 筆交易無法擷取，已從匯出中排除。",
+    exportRateLimit: "超出速率限制。請稍候再試。",
+    exportError: "匯出交易時發生錯誤。請重試。",
+    exportErrorDetail: "匯出交易時發生錯誤：{message}",
   },
   confidential: {
     epoch: "紀元",
@@ -1946,6 +2015,14 @@ export const zhHant = {
     txnFailed: "交易失敗{detail}。失敗的呼叫已在下方高亮。",
     rawJson: "原始響應（JSON）",
     unexpectedShape: "追蹤響應形狀異常；僅顯示原始 JSON。",
+    userOnly: "呼叫追蹤僅適用於使用者交易。",
+    gasZero: "0 gas",
+    gasAmount: "{count} gas",
+    collapseCalls: "摺疊巢狀呼叫",
+    expandCalls: "展開巢狀呼叫",
+    callFailed: "此呼叫失敗",
+    caller: "呼叫方",
+    callee: "被呼叫方",
   },
   decibel: {
     buy: "買入",
@@ -2063,5 +2140,17 @@ export const zhHant = {
     newSignaturesRequired: "新的所需簽名數",
     previousMetadata: "先前中繼資料",
     newMetadata: "新中繼資料",
+    pendingTitle: "待處理交易（{count}）",
+    ownersTitle: "擁有者（{count}）",
+    transactionId: "交易 ID：{id}",
+    transactionN: "交易 {n}",
+    creatorLabel: "建立者：",
+    creationTime: "建立時間：",
+    votesRequired: "投票：{count} / {required} 票所需",
+    voteApproved: "✓ 已核准",
+    voteRejected: "✗ 已拒絕",
+    eventCounters: "事件計數器",
+    rawData: "原始多重簽章資料",
+    noResource: "此帳戶沒有多重簽章資源。",
   },
 } as const satisfies MessageTree;
