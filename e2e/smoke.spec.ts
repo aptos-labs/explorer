@@ -22,19 +22,23 @@ test.describe("smoke", () => {
     await expect(page).toHaveURL(/\/blocks/);
   });
 
-  test("header language icon is available on desktop", async ({page}) => {
+  test("header language control is available on desktop", async ({page}) => {
     await page.goto("/");
     await expect(page.getByRole("button", {name: "Language"})).toBeVisible();
+    await expect(page.getByRole("button", {name: "Language"})).toContainText(
+      "EN",
+    );
   });
 
-  test("language control is in the overflow menu on a narrow viewport", async ({
+  test("header language and network controls stay in the toolbar on a narrow viewport", async ({
     page,
   }) => {
     await page.setViewportSize({width: 375, height: 812});
     await page.goto("/");
-    await expect(page.getByRole("button", {name: "Language"})).toHaveCount(0);
+    await expect(page.getByRole("button", {name: "Language"})).toBeVisible();
+    await expect(page.getByLabel("Select network")).toBeVisible();
     await page.getByRole("button", {name: "Navigation menu"}).click();
-    await expect(page.getByRole("menuitem", {name: "Language"})).toBeVisible();
+    await expect(page.getByRole("menuitem", {name: /Language/})).toBeVisible();
   });
 
   // Covers FEAT-CHROME-001 / FEAT-NETWORK-001 — compact header menus on phones
@@ -91,6 +95,17 @@ test.describe("smoke", () => {
   }) => {
     await page.setViewportSize({width: 375, height: 812});
     await page.goto("/guide");
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - window.innerWidth,
+    );
+    expect(overflow).toBeLessThanOrEqual(1);
+  });
+
+  test("home page does not overflow horizontally on a narrow viewport", async ({
+    page,
+  }) => {
+    await page.setViewportSize({width: 375, height: 812});
+    await page.goto("/");
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - window.innerWidth,
     );

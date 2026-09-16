@@ -1,8 +1,8 @@
 import CheckIcon from "@mui/icons-material/Check";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import {
+  Button,
   FormControl,
-  IconButton,
   InputLabel,
   ListItemIcon,
   ListItemText,
@@ -10,11 +10,13 @@ import {
   MenuItem,
   Select,
   type SelectChangeEvent,
+  Tooltip,
 } from "@mui/material";
 import type {MouseEvent} from "react";
 import {useState} from "react";
 import {
   type LocalePreference,
+  localeShortLabel,
   LOCALE_META,
   normalizeLocalePreference,
   SUPPORTED_LOCALES,
@@ -108,7 +110,7 @@ function LocaleOptionsMenu({
 }
 
 export function LanguageOverflowMenuItem({onPicked}: {onPicked: () => void}) {
-  const {t} = useTranslation();
+  const {t, locale} = useTranslation();
   const {persistLocalePreference} = usePersistLocalePreference();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
@@ -132,7 +134,10 @@ export function LanguageOverflowMenuItem({onPicked}: {onPicked: () => void}) {
         <ListItemIcon sx={{minWidth: "1.75rem"}}>
           <LanguageOutlinedIcon fontSize="small" />
         </ListItemIcon>
-        <ListItemText>{t("settings.language.title")}</ListItemText>
+        <ListItemText
+          primary={t("settings.language.title")}
+          secondary={LOCALE_META[locale].nativeName}
+        />
       </MenuItem>
       <LocaleOptionsMenu
         anchorEl={anchorEl}
@@ -153,7 +158,7 @@ export default function LanguageSelect({
 }: {
   variant?: "header" | "settings";
 }) {
-  const {t} = useTranslation();
+  const {t, locale} = useTranslation();
   const {localePreference, persistLocalePreference} =
     usePersistLocalePreference();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -161,6 +166,7 @@ export default function LanguageSelect({
   const label = isSettings
     ? t("settings.language.label")
     : t("settings.language.title");
+  const shortLabel = localeShortLabel(locale);
 
   const handleSelectChange = (event: SelectChangeEvent) => {
     persistLocalePreference(event.target.value);
@@ -198,18 +204,33 @@ export default function LanguageSelect({
 
   return (
     <>
-      <IconButton
-        onClick={(event) => setAnchorEl(event.currentTarget)}
-        aria-label={label}
-        aria-haspopup="menu"
-        aria-expanded={anchorEl ? "true" : undefined}
-        sx={{
-          color: "inherit",
-          flexShrink: 0,
-        }}
-      >
-        <LanguageOutlinedIcon fontSize="small" />
-      </IconButton>
+      <Tooltip title={label} disableTouchListener>
+        <Button
+          color="inherit"
+          size="small"
+          onClick={(event) => setAnchorEl(event.currentTarget)}
+          aria-label={label}
+          aria-haspopup="menu"
+          aria-expanded={anchorEl ? "true" : undefined}
+          startIcon={<LanguageOutlinedIcon fontSize="small" />}
+          sx={{
+            color: "inherit",
+            flexShrink: 0,
+            minWidth: 0,
+            minHeight: {xs: 40, lg: 36},
+            px: {xs: 0.75, lg: 1},
+            touchAction: "manipulation",
+            textTransform: "none",
+            fontWeight: 700,
+            fontSize: "0.8125rem",
+            letterSpacing: "0.02em",
+            "& .MuiButton-startIcon": {mx: 0, mr: 0.5},
+            "& .MuiButton-startIcon > svg": {fontSize: "1.15rem"},
+          }}
+        >
+          {shortLabel}
+        </Button>
+      </Tooltip>
       <LocaleOptionsMenu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
