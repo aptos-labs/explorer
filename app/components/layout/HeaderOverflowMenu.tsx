@@ -22,9 +22,10 @@ import {LanguageOverflowMenuItem} from "./LanguageSelect";
 /**
  * Compact-viewport header menu (`xs`–`md`, below the `lg` breakpoint).
  * Mirrors inline `Nav` links, User Guide, Settings, language, the theme toggle,
- * and the wallet connector. On wide viewports (`lg+`) the toolbar shows those
- * controls directly (`LanguageSelect` icon, `ColorModeToggleButton`, Help,
- * Settings icon, `Nav`, `WalletConnector`).
+ * and the wallet connector. On every viewport the toolbar already shows
+ * `NetworkSelect` and `LanguageSelect` (globe + short locale code). On wide
+ * viewports (`lg+`) it also shows Help, Settings, `ColorModeToggleButton`,
+ * `Nav`, and `WalletConnector` inline.
  *
  * Previously named `NavMobile`, then `HeaderOverflowMenu` when it briefly
  * rendered on all viewports as a preferences drop-down.

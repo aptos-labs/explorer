@@ -117,6 +117,9 @@ export default function Header() {
           overflow: "visible",
           zIndex: (theme) => theme.zIndex.appBar,
           isolation: "isolate",
+          pt: "env(safe-area-inset-top, 0px)",
+          pl: "env(safe-area-inset-left, 0px)",
+          pr: "env(safe-area-inset-right, 0px)",
           // Keep blur on a non-interactive layer. Applying backdrop-filter on
           // the sticky AppBar itself makes iOS Safari skip taps on children
           // (hamburger + network select).
@@ -142,7 +145,7 @@ export default function Header() {
         }}
       >
         <FeatureBar />
-        <Container maxWidth={false} sx={{minWidth: 0}}>
+        <Container maxWidth={false} sx={{minWidth: 0, px: {xs: 1, sm: 2}}}>
           <Toolbar
             sx={{
               height: "5rem",
@@ -150,6 +153,7 @@ export default function Header() {
               minWidth: 0,
               width: "100%",
               columnGap: {xs: 0.5, lg: 0.5, xl: 1},
+              flexWrap: "nowrap",
             }}
             disableGutters
           >
@@ -157,6 +161,7 @@ export default function Header() {
               component={Link}
               onClick={scrollTop}
               to="/"
+              aria-label={t("chrome.appName")}
               sx={{
                 display: "flex",
                 alignItems: "center",
@@ -168,21 +173,25 @@ export default function Header() {
                 color: "inherit",
               }}
             >
-              {isDark ? (
-                <LogoIconDark width="3rem" height="3rem" aria-hidden="true" />
-              ) : (
-                <LogoIconLight width="3rem" height="3rem" aria-hidden="true" />
-              )}
-              <Typography
-                variant="h6"
+              <Box
+                aria-hidden="true"
                 sx={{
-                  fontWeight: 600,
-                  display: {xs: "block", sm: "none", lg: "block", xl: "none"},
-                  fontSize: "1rem",
+                  width: {xs: 40, sm: 48},
+                  height: {xs: 40, sm: 48},
+                  flexShrink: 0,
+                  "& svg": {display: "block", width: "100%", height: "100%"},
                 }}
               >
-                {t("chrome.appNameShort")}
-              </Typography>
+                {isDark ? (
+                  <LogoIconDark width="100%" height="100%" aria-hidden="true" />
+                ) : (
+                  <LogoIconLight
+                    width="100%"
+                    height="100%"
+                    aria-hidden="true"
+                  />
+                )}
+              </Box>
               <Typography
                 variant="h6"
                 sx={{
@@ -197,6 +206,7 @@ export default function Header() {
 
             <Nav />
             <NetworkSelect />
+            <LanguageSelect />
             {showShareButton && <ShareButton />}
             {!isOnMobile && (
               <IconButton
@@ -224,7 +234,6 @@ export default function Header() {
                 <SettingsOutlinedIcon fontSize="small" />
               </IconButton>
             )}
-            {!isOnMobile && <LanguageSelect />}
             {!isOnMobile && <ColorModeToggleButton />}
 
             <HeaderOverflowMenu />

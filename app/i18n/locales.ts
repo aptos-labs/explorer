@@ -273,3 +273,25 @@ export const LOCALE_META: Record<
     dir: "ltr",
   },
 };
+
+/**
+ * Compact header chip for the current catalog. CJK locales use a single
+ * distinctive character; Portuguese variants use region codes so Brazil and
+ * Portugal stay distinguishable; everything else is the uppercase primary tag.
+ */
+export function localeShortLabel(locale: SupportedLocale): string {
+  switch (locale) {
+    case "zh":
+      return "简";
+    case "zh-Hant":
+      return "繁";
+    case "pt":
+      return "BR";
+    case "pt-PT":
+      return "PT";
+    default: {
+      const primary = locale.split("-")[0] ?? locale;
+      return primary.toUpperCase();
+    }
+  }
+}

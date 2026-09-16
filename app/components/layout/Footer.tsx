@@ -124,6 +124,7 @@ export default function Footer() {
         background: theme.palette.background.default,
         color: theme.palette.text.primary,
         mt: 8,
+        pb: "env(safe-area-inset-bottom, 0px)",
       }}
     >
       <Container maxWidth="xl" sx={{paddingTop: "2rem", paddingBottom: "2rem"}}>

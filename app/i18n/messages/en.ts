@@ -184,7 +184,7 @@ export const en = {
     chrome: {
       title: "Finding your way around",
       paragraphs: [
-        "The **header** is on every page: logo (home), main navigation, network selector, optional share button, [user guide](/guide), [settings](/settings), light/dark theme, and wallet connect. On smaller screens, navigation, settings, theme, and wallet live in the menu button.",
+        "The **header** is on every page: logo (home), main navigation, network selector, language selector, optional share button, [user guide](/guide), [settings](/settings), light/dark theme, and wallet connect. Network and language stay in the header on every screen size, including the installed PWA. On smaller screens, navigation, settings, theme, and wallet live in the menu button.",
         "Under the header, most detail pages show a **back** control (when you have in-app history) and a **search** field. The home page (`/`) is a larger search surface with the same matching rules.",
         "The **footer** has Privacy, Terms, [token verification instructions](/verification), this guide, and **Clear Cache** (clears the browser search result cache, not the blockchain).",
       ],
@@ -217,7 +217,7 @@ export const en = {
     networks: {
       title: "Networks",
       paragraphs: [
-        "Use the network dropdown in the header. In-app links keep your current network so you do not silently jump back to mainnet.",
+        "Use the network dropdown in the header — it stays visible on desktop, phones, and the installed PWA. In-app links keep your current network so you do not silently jump back to mainnet.",
         "**Mainnet** is production. **Testnet** and **devnet** are for development (devnet is reset often). **Local** talks to a node on your machine (typically `http://127.0.0.1:8080/v1`). Hidden or preview networks may appear when the explorer is built with a feature flag.",
         "If you select Local and the node is not running, a modal explains how to start `aptos node run-local-testnet` and offers a switch back to Mainnet.",
         "Some features are mainnet-only (analytics, some price estimates, Sentio traces). GraphQL/indexer tabs may be missing on networks that do not publish an indexer.",
@@ -325,11 +325,11 @@ export const en = {
         "Open [Settings](/settings). Preferences are stored **in this browser**, not on Aptos Labs servers.",
       ],
       bullets: [
-        "**Language** — Browser default or an explicit language. This controls translated chrome, settings copy, and this guide. On-chain data (addresses, function names, events) stays as the chain stores it.",
+        "**Language** — Header globe control (it shows a short code for the current language) or Settings. Browser default or an explicit language. This controls translated chrome, settings copy, and this guide. On-chain data (addresses, function names, events) stays as the chain stores it.",
         "**Move bytecode decompilation** — off by default. Read the disclaimer before enabling. When off, Decompiled and Disassembly views are hidden.",
         "**API key overrides** — optional per-network [geomi.dev](https://geomi.dev) keys so your browser is not stuck on the shared anonymous rate limit. Keys are sent as `Authorization: Bearer`. Geomi `AG-*` client keys must allow this site’s Origin. Check **Remember on this device** only on a machine you trust; otherwise keys last for the tab session.",
         "**Theme** — light or dark from the header sun/moon control. Stored in a cookie (`color_scheme`) and follows the system if you have not chosen.",
-        "**Network** — header selector; encoded in `?network=` rather than settings.",
+        "**Network** — header dropdown (visible on phones and in the installed PWA); encoded in `?network=` rather than settings.",
       ],
       more: [
         "Save applies API keys and decompilation (and language) together: cached clients are dropped and queries refresh. **Restore Defaults** clears these explorer preferences in this browser.",

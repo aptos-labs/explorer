@@ -48,6 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Header network and language switching**: The language control is now a globe + current-locale code in the header on every viewport (desktop, phone, and installed PWA), next to the network dropdown, instead of an unlabeled icon that only appeared from `lg` up. Compact menus still include a labeled Language item that shows the current native name. The network selector keeps a status dot (mainnet / testnet / devnet) so the current chain is scannable. Phone and `lg` headers drop the wordmark so logo + network + language (+ Share in PWA, plus help/settings/theme/wallet on `lg`) stay on-screen without sideways scroll. Installed PWA chrome pads the iOS safe area (`viewport-fit=cover`).
 - **English UI copy in message catalogs**: Remaining explorer chrome — tabs, field labels, table headers, error pages, entity titles, search result templates, verification copy, analytics chart labels, and related tooltips — now reads from the English i18n catalogs. Visible English is unchanged; other locales can be added later without rewriting components.
 
 ### Fixed
