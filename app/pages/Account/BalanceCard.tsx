@@ -18,6 +18,7 @@ import {getFormattedBalanceStr} from "../../components/IndividualPageContent/Con
 import {BalanceCardSkeleton} from "../../components/PageLoadSkeletons";
 import StyledTooltip from "../../components/StyledTooltip";
 import {useNetworkName} from "../../global-config/GlobalConfig";
+import {useTranslation} from "../../i18n";
 
 type BalanceCardProps = {
   address: string;
@@ -40,6 +41,7 @@ const portfolioProviders: Record<
 };
 
 export default function BalanceCard({address}: BalanceCardProps) {
+  const {t, locale, formatNumber} = useTranslation();
   const theme = useTheme();
   const balance = useGetAccountAPTBalance(address);
   const networkName = useNetworkName();
@@ -91,7 +93,7 @@ export default function BalanceCard({address}: BalanceCardProps) {
             fontWeight: 700,
           }}
         >
-          {`${getFormattedBalanceStr(balance.data)} APT`}
+          {`${getFormattedBalanceStr(balance.data, undefined, undefined, locale)} APT`}
         </Typography>
 
         {/* USD value */}
@@ -102,8 +104,8 @@ export default function BalanceCard({address}: BalanceCardProps) {
               fontSize: 14,
             }}
           >
-            ${balanceUSD.toLocaleString(undefined, {maximumFractionDigits: 2})}{" "}
-            USD
+            ${formatNumber(balanceUSD, {maximumFractionDigits: 2})}{" "}
+            {t("common.usd")}
           </Typography>
         )}
 
@@ -120,10 +122,19 @@ export default function BalanceCard({address}: BalanceCardProps) {
               fontSize: 12,
             }}
           >
-            Balance
+            {t("accountUi.balance")}
           </Typography>
           <StyledTooltip
-            title={`This balance reflects the amount of APT tokens held in your wallet${networkName === "mainnet" ? ` and their live value in USD at a rate of 1 APT = $${price?.toFixed(2)}` : ""}.`}
+            title={
+              networkName === "mainnet"
+                ? t("accountUi.balanceTipWithUsd", {
+                    price: `$${formatNumber(price ?? 0, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}`,
+                  })
+                : t("accountUi.balanceTip")
+            }
           >
             <InfoOutlinedIcon
               sx={{fontSize: 15, color: theme.palette.text.secondary}}
@@ -145,7 +156,7 @@ export default function BalanceCard({address}: BalanceCardProps) {
               fontSize: 12,
             }}
           >
-            DeFi positions on
+            {t("accountUi.defiPositionsOn")}
           </Typography>
           <FormControl size="small" sx={{minWidth: 100}}>
             <Select
@@ -184,7 +195,9 @@ export default function BalanceCard({address}: BalanceCardProps) {
             underline="none"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={`Open portfolio on ${selectedProvider.label} in new tab`}
+            aria-label={t("accountUi.openPortfolioAria", {
+              name: selectedProvider.label,
+            })}
             sx={{
               fontSize: 12,
             }}

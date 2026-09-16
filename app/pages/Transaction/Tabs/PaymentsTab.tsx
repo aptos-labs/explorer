@@ -250,7 +250,7 @@ function StepCard({
   coinData: CoinList;
   index: number;
 }) {
-  const {t} = useTranslation();
+  const {t, locale, formatInteger} = useTranslation();
   const theme = useTheme();
   return (
     <Paper
@@ -266,7 +266,7 @@ function StepCard({
         >
           <Chip
             size="small"
-            label={t("payments.step", {n: index + 1})}
+            label={t("payments.step", {n: formatInteger(index + 1)})}
             sx={{fontWeight: 700}}
           />
           <Chip
@@ -329,7 +329,7 @@ function StepCard({
             {step.amount.visibility === "encrypted" ? (
               <Typography variant="body2" sx={{color: "text.secondary", mt: 1}}>
                 {t("payments.ciphertextNote", {
-                  amount: formatPaymentAmount(step.amount),
+                  amount: formatPaymentAmount(step.amount, locale),
                 })}
               </Typography>
             ) : null}
@@ -338,7 +338,7 @@ function StepCard({
         {step.partnerFee ? (
           <Alert severity="warning">
             {t("payments.partnerFee", {
-              amount: formatPaymentAmount(step.partnerFee),
+              amount: formatPaymentAmount(step.partnerFee, locale),
             })}
           </Alert>
         ) : null}
@@ -421,7 +421,7 @@ function FeesPanel({fees}: {fees: PaymentFeeLine[]}) {
 export default function PaymentsTab({
   transaction,
 }: PaymentsTabProps): React.JSX.Element {
-  const {t} = useTranslation();
+  const {t, locale} = useTranslation();
   const theme = useTheme();
   const colors = getSemanticColors(theme.palette.mode);
   const {account} = useWallet();
@@ -438,8 +438,9 @@ export default function PaymentsTab({
         connectedWallet: connectedWallet || undefined,
         indexerActivities: indexer?.fungible_asset_activities,
         coinData: coinData?.data,
+        locale,
       }),
-    [transaction, connectedWallet, indexer, coinData],
+    [transaction, connectedWallet, indexer, coinData, locale],
   );
 
   if (transaction.type !== TransactionTypeName.User) {

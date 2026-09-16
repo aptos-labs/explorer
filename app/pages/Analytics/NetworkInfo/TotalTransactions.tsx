@@ -5,8 +5,10 @@ import {
   useAptosClient,
   useNetworkValue,
 } from "../../../global-config/GlobalConfig";
+import {useTranslation} from "../../../i18n";
 
 export default function TotalTransactions() {
+  const {t, formatInteger} = useTranslation();
   const networkValue = useNetworkValue();
   const aptosClient = useAptosClient();
   const {data: ledgerData} = useQuery({
@@ -26,11 +28,11 @@ export default function TotalTransactions() {
           alignSelf: "flex-end",
         }}
       >
-        {`TOTAL TRANSACTIONS: ${
-          ledgerVersion
-            ? parseInt(ledgerVersion, 10).toLocaleString("en-US")
-            : "-"
-        }`}
+        {t("analytics.totalTransactionsLabel", {
+          count: ledgerVersion
+            ? formatInteger(parseInt(ledgerVersion, 10))
+            : "-",
+        })}
       </Typography>
     </Stack>
   );

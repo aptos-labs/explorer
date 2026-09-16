@@ -9,7 +9,9 @@ import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
+import IntegerValue from "../../../components/IndividualPageContent/ContentValue/IntegerValue";
 import {Link} from "../../../routing";
+import {useTranslation} from "../../../i18n";
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
 
 function VersionValue({data}: {data: Block}) {
@@ -17,11 +19,11 @@ function VersionValue({data}: {data: Block}) {
   return (
     <>
       <Link to={`/txn/${first_version}`} underline="none">
-        {first_version}
+        <IntegerValue value={first_version} />
       </Link>
       {" - "}
       <Link to={`/txn/${last_version}`} underline="none">
-        {last_version}
+        <IntegerValue value={last_version} />
       </Link>
     </>
   );
@@ -50,19 +52,19 @@ function BlockMetadataRows({
       />
       <ContentRow
         titleKey="fields.epoch"
-        value={txn.epoch}
+        value={<IntegerValue value={txn.epoch} />}
         tooltip={getLearnMoreTooltip("epoch")}
       />
       <ContentRow
         titleKey="fields.round"
-        value={txn.round}
+        value={<IntegerValue value={txn.round} />}
         tooltip={getLearnMoreTooltip("round")}
       />
       <ContentRow
         titleKey="fields.previousBlock"
         value={
           <Link to={`/block/${previousBlock}`} underline="none">
-            {previousBlock}
+            <IntegerValue value={previousBlock} />
           </Link>
         }
         tooltip={getLearnMoreTooltip("block")}
@@ -71,7 +73,7 @@ function BlockMetadataRows({
         titleKey="fields.nextBlock"
         value={
           <Link to={`/block/${nextBlock}`} underline="none">
-            {nextBlock}
+            <IntegerValue value={nextBlock} />
           </Link>
         }
         tooltip={getLearnMoreTooltip("block")}
@@ -85,9 +87,13 @@ type OverviewTabProps = {
 };
 
 export default function OverviewTab({data}: OverviewTabProps) {
+  const {t, formatInteger} = useTranslation();
   const blockTxn: TransactionResponse | undefined = (
     data.transactions ?? []
   ).find(isBlockMetadataTransactionResponse);
+  const txnCount = formatInteger(
+    Number(BigInt(data.last_version) - BigInt(data.first_version) + 1n),
+  );
 
   return (
     blockTxn && (
@@ -99,11 +105,11 @@ export default function OverviewTab({data}: OverviewTabProps) {
         <ContentBox>
           <ContentRow
             titleKey="fields.blockHeight"
-            value={data.block_height}
+            value={<IntegerValue value={data.block_height} />}
             tooltip={getLearnMoreTooltip("block_height")}
           />
           <ContentRow
-            title={`Transactions (${BigInt(data.last_version) - BigInt(data.first_version) + 1n}):`}
+            title={t("fields.transactionsWithCount", {count: txnCount})}
             value={<VersionValue data={data} />}
             tooltip={getLearnMoreTooltip("version")}
           />

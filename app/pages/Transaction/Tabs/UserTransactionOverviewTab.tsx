@@ -11,9 +11,12 @@ import {
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
-import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import CurrencyValue, {
+  APTCurrencyValue,
+} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GasFeeValue from "../../../components/IndividualPageContent/ContentValue/GasFeeValue";
 import GasValue from "../../../components/IndividualPageContent/ContentValue/GasValue";
+import IntegerValue from "../../../components/IndividualPageContent/ContentValue/IntegerValue";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {LearnMoreTooltip} from "../../../components/IndividualPageContent/LearnMoreTooltip";
 import StyledTooltip from "../../../components/StyledTooltip";
@@ -943,7 +946,11 @@ export default function UserTransactionOverviewTab({
       <ContentBox sx={{padding: 4}}>
         <ContentRow
           titleKey="fields.version"
-          value={<Box sx={{fontWeight: 600}}>{transactionData.version}</Box>}
+          value={
+            <Box sx={{fontWeight: 600}}>
+              <IntegerValue value={transactionData.version} />
+            </Box>
+          }
           tooltip={getLearnMoreTooltip("version")}
         />
         <ContentRow
@@ -990,7 +997,7 @@ export default function UserTransactionOverviewTab({
         {!transactionData?.replay_protection_nonce && (
           <ContentRow
             titleKey="fields.sequenceNumber"
-            value={transactionData.sequence_number}
+            value={<IntegerValue value={transactionData.sequence_number} />}
             tooltip={getLearnMoreTooltip("sequence_number")}
           />
         )}
@@ -1162,7 +1169,7 @@ const SwapActionContent = ({
         }}
       >
         <TxnCopy messageKey="txn.action.swapped" />
-        <span>{action.amountIn / 10 ** inDecimals}</span>
+        <CurrencyValue amount={String(action.amountIn)} decimals={inDecimals} />
         <HashButton
           hash={action.assetIn}
           type={
@@ -1184,7 +1191,10 @@ const SwapActionContent = ({
         }}
       >
         <TxnCopy messageKey="txn.action.for" />
-        <span>{action.amountOut / 10 ** outDecimals}</span>
+        <CurrencyValue
+          amount={String(action.amountOut)}
+          decimals={outDecimals}
+        />
         <HashButton
           hash={action.assetOut}
           type={
@@ -1242,7 +1252,7 @@ const LiquidityAssetContent = ({
 
   return (
     <React.Fragment>
-      {asset.amount / 10 ** decimals}
+      <CurrencyValue amount={String(asset.amount)} decimals={decimals} />
       <HashButton
         hash={asset.asset}
         type={
@@ -1388,7 +1398,7 @@ const LiquidStakingContent = ({
 
   return (
     <React.Fragment>
-      {asset.amount / 10 ** decimals}
+      <CurrencyValue amount={String(asset.amount)} decimals={decimals} />
       <HashButton
         hash={asset.asset}
         type={
@@ -1616,8 +1626,14 @@ const objectTransferAction = (action: ObjectTransfer, i: number) => {
   );
 };
 
-const CONFIDENTIAL_TRANSFER_AMOUNT_TOOLTIP =
-  "Transfer amount is encrypted on-chain and cannot be displayed.";
+function ConfidentialAmountTooltip({children}: {children: React.ReactElement}) {
+  const {t} = useTranslation();
+  return (
+    <StyledTooltip title={t("txn.action.confidentialAmountHidden")}>
+      {children}
+    </StyledTooltip>
+  );
+}
 
 const confidentialAssetAction = (
   coinData: {data: CoinDescription[]} | undefined,
@@ -1650,9 +1666,9 @@ const confidentialAssetAction = (
       return (
         <Box key={`action-${i}`} sx={actionBoxSx}>
           <Box sx={rowSx}>
-            <StyledTooltip title={CONFIDENTIAL_TRANSFER_AMOUNT_TOOLTIP}>
+            <ConfidentialAmountTooltip>
               <TxnCopy messageKey="txn.action.confidentiallyTransferred" />
-            </StyledTooltip>
+            </ConfidentialAmountTooltip>
             <FungibleAssetChip metadata={action.metadata} coinData={coinData} />
           </Box>
           <Box sx={rowSx}>
@@ -1878,7 +1894,9 @@ const legacyTokenDepositAction = (action: LegacyTokenDeposit, i: number) => {
         }}
       >
         <TxnCopy messageKey="txn.action.depositNft" />
-        <span>{action.amount}</span>
+        <span>
+          <IntegerValue value={action.amount} />
+        </span>
         <TxnCopy messageKey="txn.action.of" />
         <span>{action.id.token_data_id.name}</span>
         <TxnCopy messageKey="txn.action.nfts" />
@@ -1922,7 +1940,9 @@ const legacyTokenWithdrawAction = (action: LegacyTokenWithdraw, i: number) => {
         }}
       >
         <TxnCopy messageKey="txn.action.withdrawNft" />
-        <span>{action.amount}</span>
+        <span>
+          <IntegerValue value={action.amount} />
+        </span>
         <TxnCopy messageKey="txn.action.of" />
         <span>{action.id.token_data_id.name}</span>
         <TxnCopy messageKey="txn.action.nfts" />
@@ -3531,7 +3551,7 @@ const DecibelDepositWithdrawContent = ({
 
   return (
     <React.Fragment>
-      {Number(action.amount) / 10 ** decimals}
+      <CurrencyValue amount={String(action.amount)} decimals={decimals} />
       <HashButton
         hash={action.asset}
         type={

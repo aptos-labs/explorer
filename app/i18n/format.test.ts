@@ -1,5 +1,16 @@
 import {describe, expect, it} from "vitest";
-import {formatDateTime, formatInteger, formatNumber} from "./format";
+import {
+  decimalSeparator,
+  formatBigInt,
+  formatCompactNumber,
+  formatDateTime,
+  formatInteger,
+  formatIntegerString,
+  formatMonthDay,
+  formatNumber,
+  formatRelativeTime,
+  formatTimestamp,
+} from "./format";
 
 describe("formatInteger", () => {
   it("formats with grouping separators for the locale", () => {
@@ -76,5 +87,63 @@ describe("formatDateTime", () => {
       "1.234,5",
     );
     expect(formatDateTime(date, "zh-Hant")).toContain("2026");
+  });
+});
+
+describe("formatBigInt and formatIntegerString", () => {
+  it("groups integers beyond Number.MAX_SAFE_INTEGER", () => {
+    expect(formatBigInt(10_000_000_000_000_001n, "en")).toBe(
+      "10,000,000,000,000,001",
+    );
+    expect(formatIntegerString("10000000000000001", "de")).toBe(
+      "10.000.000.000.000.001",
+    );
+  });
+
+  it("uses Indian grouping for Hindi", () => {
+    expect(formatIntegerString("1234567", "hi")).toBe("12,34,567");
+  });
+});
+
+describe("formatCompactNumber", () => {
+  it("uses locale compact notation", () => {
+    expect(formatCompactNumber(1_500_000, "en", 1)).toBe("1.5M");
+    expect(formatCompactNumber(1_500_000, "de", 1)).toMatch(/1,5/);
+  });
+});
+
+describe("decimalSeparator", () => {
+  it("returns the locale decimal mark", () => {
+    expect(decimalSeparator("en")).toBe(".");
+    expect(decimalSeparator("de")).toBe(",");
+  });
+});
+
+describe("formatTimestamp", () => {
+  it("includes seconds, fractional seconds, and a UTC zone label", () => {
+    const formatted = formatTimestamp(
+      new Date("2026-09-14T12:00:05.123Z"),
+      "en",
+    );
+    expect(formatted).toMatch(/2026/);
+    expect(formatted).toMatch(/12:00:05/);
+    expect(formatted).toMatch(/UTC|GMT/i);
+  });
+});
+
+describe("formatMonthDay", () => {
+  it("formats UTC month and day for chart labels", () => {
+    const date = new Date("2026-09-14T00:00:00.000Z");
+    expect(formatMonthDay(date, "en")).toBe("Sep 14");
+    expect(formatMonthDay(date, "de")).toMatch(/14/);
+  });
+});
+
+describe("formatRelativeTime", () => {
+  it("uses Intl relative time for the locale", () => {
+    const now = new Date("2026-09-14T12:00:00.000Z");
+    const past = new Date("2026-09-14T11:00:00.000Z");
+    expect(formatRelativeTime(past, "en", now)).toMatch(/hour/i);
+    expect(formatRelativeTime(past, "de", now)).toMatch(/Stunde/i);
   });
 });

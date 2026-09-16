@@ -56,7 +56,7 @@ function VersionSelect({
   onChange: (version: number | undefined) => void;
   options: ModulePublishTransaction[];
 }) {
-  const {t} = useTranslation();
+  const {t, formatInteger} = useTranslation();
   const theme = useTheme();
 
   const handleChange = (event: SelectChangeEvent<string>) => {
@@ -90,7 +90,7 @@ function VersionSelect({
         {options.map((txn) => (
           <MenuItem key={txn.version} value={txn.version.toString()}>
             <Typography variant="body2">
-              v{txn.version.toLocaleString()}
+              {t("modules.versionN", {version: formatInteger(txn.version)})}
             </Typography>
           </MenuItem>
         ))}
@@ -319,7 +319,7 @@ export default function ModuleDiffView({
   onBaseVersionChange,
   onCompareVersionChange,
 }: ModuleDiffViewProps) {
-  const {t} = useTranslation();
+  const {t, formatInteger} = useTranslation();
   const theme = useTheme();
   const decompilationEnabled = useDecompilationEnabled();
   const [activeView, setActiveView] =
@@ -416,10 +416,10 @@ export default function ModuleDiffView({
   }
 
   const baseLabel = baseVersion
-    ? `v${baseVersion.toLocaleString()}`
+    ? t("modules.versionN", {version: formatInteger(baseVersion)})
     : t("modules.latest");
   const compareLabel = compareVersion
-    ? `v${compareVersion.toLocaleString()}`
+    ? t("modules.versionN", {version: formatInteger(compareVersion)})
     : t("modules.latest");
 
   const diff = useMemo(

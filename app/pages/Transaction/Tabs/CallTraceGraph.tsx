@@ -15,6 +15,7 @@ import {
 import type React from "react";
 import {memo, useMemo, useState} from "react";
 import HashButton, {HashType} from "../../../components/HashButton";
+import {useTranslation} from "../../../i18n";
 import {Link} from "../../../routing";
 import type {SentioCallTraceNode} from "../../../utils/sentioCallTrace";
 import {
@@ -35,13 +36,6 @@ type TraceSubtreeProps = {
   failureMap: WeakMap<SentioCallTraceNode, boolean>;
 };
 
-function formatGas(gas: number): string {
-  if (gas === 0) {
-    return "0 gas";
-  }
-  return `${gas.toLocaleString()} gas`;
-}
-
 const TraceSubtree = memo(function TraceSubtree({
   node,
   depth,
@@ -50,7 +44,12 @@ const TraceSubtree = memo(function TraceSubtree({
   txFailed,
   failureMap,
 }: TraceSubtreeProps): React.JSX.Element {
+  const {t, formatInteger} = useTranslation();
   const theme = useTheme();
+  const gasLabel =
+    node.gasUsed === 0
+      ? t("trace.gasZero")
+      : t("trace.gasAmount", {count: formatInteger(node.gasUsed)});
   const [open, setOpen] = useState(defaultExpanded);
   const hasKids = node.calls.length > 0;
   const caller = normalizeSentioAddress(node.from);
@@ -114,7 +113,7 @@ const TraceSubtree = memo(function TraceSubtree({
               <IconButton
                 aria-expanded={open}
                 aria-label={
-                  open ? "Collapse nested calls" : "Expand nested calls"
+                  open ? t("trace.collapseCalls") : t("trace.expandCalls")
                 }
                 size="medium"
                 sx={{
@@ -132,7 +131,7 @@ const TraceSubtree = memo(function TraceSubtree({
               <ErrorOutlineIcon
                 fontSize="small"
                 sx={{color: errorColor, mt: {xs: 0.5, sm: 0.25}}}
-                titleAccess="This call failed"
+                titleAccess={t("trace.callFailed")}
               />
             ) : null}
           </Box>
@@ -212,7 +211,7 @@ const TraceSubtree = memo(function TraceSubtree({
                     color: "text.secondary",
                   }}
                 >
-                  Caller
+                  {t("trace.caller")}
                 </Typography>
                 {caller ? (
                   <Box sx={{minWidth: 0, maxWidth: "100%"}}>
@@ -251,7 +250,7 @@ const TraceSubtree = memo(function TraceSubtree({
                     color: "text.secondary",
                   }}
                 >
-                  Callee
+                  {t("trace.callee")}
                 </Typography>
                 {callee ? (
                   <Box sx={{minWidth: 0, maxWidth: "100%"}}>
@@ -286,7 +285,7 @@ const TraceSubtree = memo(function TraceSubtree({
               alignSelf: "flex-start",
             }}
           >
-            {formatGas(node.gasUsed)}
+            {gasLabel}
           </Typography>
         </Stack>
         <Typography
@@ -298,7 +297,7 @@ const TraceSubtree = memo(function TraceSubtree({
             pr: 0.5,
           }}
         >
-          {formatGas(node.gasUsed)}
+          {gasLabel}
         </Typography>
       </Stack>
       {hasKids ? (

@@ -84,5 +84,7 @@ export const txn = {
     size: "size {size}",
     atPrice: "@ {price}",
     openCctpWormholeAria: "Open CCTP transfer on WormholeScan in new tab",
+    confidentialAmountHidden:
+      "Transfer amount is encrypted on-chain and cannot be displayed.",
   },
 } as const;

@@ -42,7 +42,7 @@ function stringifyCopyValue(value: unknown): string {
   if (typeof value === "number" && value === Infinity) return "Infinity";
   if (typeof value === "number" && Number.isNaN(value)) return "NaN";
   if (typeof value === "bigint") return value.toString();
-  if (value instanceof Date) return value.toLocaleString();
+  if (value instanceof Date) return value.toISOString();
 
   const copyText = JSON.stringify(
     value,

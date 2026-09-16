@@ -22,6 +22,7 @@ import {useGetTransaction} from "../../api/hooks/useGetTransaction";
 import HashButton, {HashType} from "../../components/HashButton";
 import {useTranslation} from "../../i18n";
 import GasFeeValue from "../../components/IndividualPageContent/ContentValue/GasFeeValue";
+import IntegerValue from "../../components/IndividualPageContent/ContentValue/IntegerValue";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
@@ -58,7 +59,9 @@ type TransactionCellProps = {
 function SequenceNumberCell({transaction}: TransactionCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
-      {"sequence_number" in transaction && transaction.sequence_number}
+      {"sequence_number" in transaction && (
+        <IntegerValue value={transaction.sequence_number} />
+      )}
     </GeneralTableCell>
   );
 }
@@ -72,7 +75,9 @@ function TransactionVersionStatusCell({transaction}: TransactionCellProps) {
           color="primary"
           underline="none"
         >
-          {"version" in transaction && transaction.version}
+          {"version" in transaction && (
+            <IntegerValue value={transaction.version} />
+          )}
         </Link>
         {"success" in transaction && (
           <TableTransactionStatus success={transaction.success} />
@@ -91,9 +96,10 @@ function TransactionTypeCell({transaction}: TransactionCellProps) {
 }
 
 function TransactionTimestampCell({transaction}: TransactionCellProps) {
+  const {locale} = useTranslation();
   const timestamp =
     "timestamp" in transaction ? (
-      getTableFormattedTimestamp(transaction.timestamp)
+      getTableFormattedTimestamp(transaction.timestamp, locale)
     ) : (
       // Genesis transaction
       <Typography variant="subtitle2" align="center">
@@ -230,7 +236,7 @@ function TransactionDetailDialog({
   transaction,
   address,
 }: TransactionDetailDialogProps) {
-  const {t} = useTranslation();
+  const {t, locale} = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
   const augmentTo = useAugmentToWithGlobalSearchParams();
@@ -239,7 +245,7 @@ function TransactionDetailDialog({
   const version = "version" in transaction ? transaction.version : null;
   const timestamp =
     "timestamp" in transaction
-      ? getTableFormattedTimestamp(transaction.timestamp)
+      ? getTableFormattedTimestamp(transaction.timestamp, locale)
       : "-";
   const counterparty = getTransactionCounterparty(transaction);
   const sender =
@@ -291,7 +297,7 @@ function TransactionDetailDialog({
             {t("txn.entity")}
           </Typography>
           <Link to={`/txn/${version}`} color="primary" sx={{fontWeight: 600}}>
-            {version}
+            <IntegerValue value={version} />
           </Link>
           {"success" in transaction && (
             <TableTransactionStatus success={transaction.success} />
@@ -531,14 +537,14 @@ type TransactionCardProps = {
 };
 
 function TransactionCard({transaction, address}: TransactionCardProps) {
-  const {t} = useTranslation();
+  const {t, locale} = useTranslation();
   const theme = useTheme();
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
   const version = "version" in transaction ? transaction.version : null;
   const timestamp =
     "timestamp" in transaction
-      ? getTableFormattedTimestamp(transaction.timestamp)
+      ? getTableFormattedTimestamp(transaction.timestamp, locale)
       : "-";
   const counterparty = getTransactionCounterparty(transaction);
 
@@ -592,7 +598,7 @@ function TransactionCard({transaction, address}: TransactionCardProps) {
             <Typography
               sx={{fontWeight: 600, fontSize: "0.9rem", color: "primary.main"}}
             >
-              {version}
+              <IntegerValue value={version} />
             </Typography>
             <TableTransactionType type={transaction.type} />
             {"success" in transaction && !transaction.success && (

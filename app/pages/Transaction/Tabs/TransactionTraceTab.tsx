@@ -64,7 +64,7 @@ export default function TransactionTraceTab({
               color: "text.secondary",
             }}
           >
-            Call trace is only available for user transactions.
+            {t("trace.userOnly")}
           </Typography>
         </ContentBox>
       </Box>

@@ -450,6 +450,16 @@ export const th = {
     hoursAgo: "{count} ชั่วโมงที่แล้ว",
     daysAgo: "{count} วันที่แล้ว",
     noValidatorsFound: "ไม่พบตัวตรวจสอบ",
+    usd: "USD",
+    iconAlt: "ไอคอน {name}",
+    nArguments: "{count} อาร์กิวเมนต์",
+    nArgumentsPlural: "{count} อาร์กิวเมนต์",
+    hideNArguments: "ซ่อน {count} อาร์กิวเมนต์",
+    hideNArgumentsPlural: "ซ่อน {count} อาร์กิวเมนต์",
+    showNArguments: "แสดง {count} อาร์กิวเมนต์",
+    showNArgumentsPlural: "แสดง {count} อาร์กิวเมนต์",
+    octasParens: "({amount} octas)",
+    gasUnits: "{count} หน่วยแก๊ส",
   },
   network: {
     selectAriaLabel: "เลือกเครือข่าย",
@@ -524,6 +534,9 @@ export const th = {
   },
   interval: {
     refreshHint: "โปรดรีเฟรชหน้าเพื่อดูเวลาที่เหลือที่อัปเดตแล้ว",
+    hms: "{hours} ชม. {minutes} นาที {seconds} วินาที",
+    dhm: "{days} วัน {hours} ชม. {minutes} นาที",
+    dhms: "{days} วัน {hours} ชม. {minutes} นาที {seconds} วินาที",
   },
   tabs: {
     transaction: {
@@ -700,6 +713,7 @@ export const th = {
     stakingFee: "ค่าธรรมเนียม staking",
     nextUnlockIn: "ปลดล็อกครั้งถัดไปใน",
     index: "ดัชนี:",
+    transactionsWithCount: "ธุรกรรม ({count}):",
   },
   table: {
     hash: "#",
@@ -852,6 +866,7 @@ export const th = {
       size: "ขนาด {size}",
       atPrice: "@ {price}",
       openCctpWormholeAria: "เปิดการโอน CCTP บน WormholeScan ในแท็บใหม่",
+      confidentialAmountHidden: "จำนวนที่โอนถูกเข้ารหัสบนเชนและไม่สามารถแสดงได้",
     },
   },
   pages: {
@@ -895,6 +910,8 @@ export const th = {
       supplyOnChain: "อุปทานติดตามบนเชน อาจเปลี่ยนตามเวลา",
       supplyOffChain: "อุปทานยืนยันนอกเชนว่าคงที่",
       supplyNone: "ไม่มีการติดตามอุปทานของเหรียญนี้ทั้งบนเชนและนอกเชน",
+      confidentialSupplyTip:
+        "โทเค็นในพูลสินทรัพย์ลับบนเชนของสินทรัพย์ทดแทนที่จับคู่ (ผลรวมสาธารณะ) ยอดรายบุคคลยังคงเป็นส่วนตัว",
     },
     fa: {
       entity: "สินทรัพย์ที่แลกเปลี่ยนได้",
@@ -905,6 +922,20 @@ export const th = {
       metaDescription: "ดู {tab} ของสินทรัพย์ที่แลกเปลี่ยนได้ {address} บนบล็อกเชน Aptos",
       metaDescriptionFallback:
         "ดู {symbol} บน Aptos ดูอุปทานโทเค็น ทศนิยม ผู้ถือ เมตาดาตา และประวัติธุรกรรม",
+      confidentialSupplyTip:
+        "โทเค็นในพูลสินทรัพย์ลับบนเชนของอ็อบเจกต์เมทาดาทานี้ (ผลรวมสาธารณะ) ยอดรายบุคคลยังคงเป็นส่วนตัว",
+      dispatchable: "ส่งต่อได้",
+      dispatchableTip:
+        "ลงทะเบียนฟังก์ชันดิสแพตช์แบบกำหนดเองสำหรับการโอน (ถอน/ฝาก/ยอด/อุปทาน)",
+      hookWithdraw: "ถอน",
+      hookDeposit: "ฝาก",
+      hookDerivedBalance: "ยอดที่คำนวณได้",
+      hookDerivedSupply: "อุปทานที่คำนวณได้",
+      viewModuleSource: "คลิกเพื่อดูซอร์สโมดูล",
+      hookTooltip: "{hook}: {path} — {action}",
+      nativeGasTokenInfo:
+        "นี่คือโทเค็นแก๊สเนทีฟอย่างเป็นทางการบน Aptos เป็นเวอร์ชันสินทรัพย์ทดแทนของ APT เข้ากันได้เต็มที่กับเวอร์ชันคอยน์เมื่อใช้ฟังก์ชัน 0x1::coin ดู 0x1::aptos_coin::AptosCoin สำหรับเวอร์ชันคอยน์",
+      nativeUsdtInfo: "นี่คือ USD₮ เนทีฟอย่างเป็นทางการบน Aptos",
     },
     tokens: {
       entity: "โทเค็น",
@@ -1379,6 +1410,14 @@ export const th = {
     commissionChange: "อัตราค่าคอมมิชชันตอนนี้ผู้ดำเนินการเปลี่ยนได้",
     commissionUpdate:
       "อัตราค่าคอมมิชชันปัจจุบันคือ {current}% อัตราจะอัปเดตเป็น {next}% เมื่อสิ้นระยะล็อกปัจจุบัน",
+    epochN: "ยุค {epoch}",
+    percentComplete: "เสร็จ {percent}%",
+    epochTip:
+      "ยุคบนบล็อกเชน Aptos คือช่วงเวลาเป็นวินาทีที่ผู้ตรวจสอบโหวตบล็อกจำนวนหนึ่ง ยุคเมนเน็ต Aptos คือ 7200 วินาที (สองชั่วโมง)",
+    nodeCount: "{count} โหนด",
+    countryCount: "{count} ประเทศ",
+    cityCount: "{count} เมือง",
+    commissionRate: "อัตราค่าคอมมิชชัน {percent}%",
   },
   analytics: {
     deployedContracts: "สัญญาที่ปรับใช้",
@@ -1425,6 +1464,7 @@ export const th = {
     activeFullnodesTip: "จำนวน fullnode โดยประมาณ",
     activelyStaked: "กำลัง Stake",
     activelyStakedTip: "จำนวนโทเค็น APT ที่ถือในพูล staking ขณะนี้",
+    totalTransactionsLabel: "ธุรกรรมทั้งหมด: {count}",
   },
   filter: {
     contractAddress: "ที่อยู่สัญญา",
@@ -1438,6 +1478,12 @@ export const th = {
     clear: "ล้าง {name}",
     clearAll: "ล้างทั้งหมด",
     entryFunction: "กรองตาม Entry Function",
+    noResults:
+      "ไม่พบธุรกรรมที่ตรงกับตัวกรอง อินเด็กเซอร์ไม่ได้คืนธุรกรรมผู้ใช้ที่ตรงกันสำหรับเครือข่ายนี้",
+    loadError:
+      "กรองธุรกรรมตามฟังก์ชันไม่สำเร็จ ค่าอาจไม่ถูกต้องหรืออินเด็กเซอร์ใช้การไม่ได้ชั่วคราว",
+    matchingOne: "{count} ธุรกรรมที่ตรงกัน",
+    matchingMany: "{count} ธุรกรรมที่ตรงกัน",
   },
   flags: {
     differences: "ความแตกต่าง",
@@ -1726,6 +1772,11 @@ export const th = {
       partner: "ค่าธรรมเนียมพาร์ทเนอร์ / โปรโตคอล ({symbol})",
       partnerTip:
         "ผลต่างระหว่างจำนวนที่ถอนกับจำนวนที่ฝากสำหรับสินทรัพย์นี้ — โดยทั่วไปเป็น transfer hook ค่าธรรมเนียมโปรโตคอล DEX หรือการหักของพาร์ทเนอร์",
+      total: "แก๊สที่คิดทั้งหมด",
+      totalTip:
+        "ผลรวมของการดำเนินการ I/O และพื้นที่จัดเก็บ (เป็นหน่วยแก๊ส) ตรงกับ gas_used ของธุรกรรม",
+      storageShortTip: "คิดสำหรับสถานะสุทธิใหม่ ราคาเป็น octas",
+      storageRefundShortTip: "เครดิตเมื่อปล่อยพื้นที่จัดเก็บ ไม่ใช่ส่วนหนึ่งของ gas_used",
     },
   },
   payload: {
@@ -1883,6 +1934,27 @@ export const th = {
       "เชื่อมกระเป๋าและโต้ตอบกับสัญญาของโปรโตคอลโดยตรงเพื่อดำเนินการถอน ตรวจสอบรายละเอียดธุรกรรมอย่างระมัดระวังก่อนลงนาม",
     openPetraVault: "เปิดใน Petra Vault",
     manageMultisig: "จัดการบัญชี multisig นี้ด้วย Petra Vault",
+    balance: "ยอดคงเหลือ",
+    balanceTip: "ยอดนี้สะท้อนปริมาณโทเค็น APT ในวอลเล็ตของคุณ",
+    balanceTipWithUsd:
+      "ยอดนี้สะท้อนปริมาณโทเค็น APT ในวอลเล็ตและมูลค่า USD แบบเรียลไทม์ที่อัตรา 1 APT = {price}",
+    defiPositionsOn: "สถานะ DeFi บน",
+    openPortfolioAria: "เปิดพอร์ตโฟลิโอบน {name} ในแท็บใหม่",
+    transactionCount: "{count} ธุรกรรม",
+    transactionCountUpTo: "แสดงสูงสุด {count} ธุรกรรม",
+    matchingSentOne: "{count} ธุรกรรมที่ตรงกัน (บัญชีนี้เป็นผู้ส่ง)",
+    matchingSentMany: "{count} ธุรกรรมที่ตรงกัน (บัญชีนี้เป็นผู้ส่ง)",
+    filterNoResults: "ไม่พบธุรกรรมที่บัญชีนี้ส่งซึ่งตรงกับตัวกรอง",
+    exportCsv: "ส่งออก CSV ({count})",
+    exporting: "กำลังส่งออก...",
+    exportingProgress: "กำลังส่งออก... {percent}%",
+    exportNone: "ไม่มีธุรกรรมที่จะส่งออก",
+    exportNoneFailed: "ไม่มีธุรกรรมที่จะส่งออก อาจดึงข้อมูลทั้งหมดไม่สำเร็จ",
+    exportPartial:
+      "ส่งออก {exported} ธุรกรรมสำเร็จ ไม่สามารถดึง {failed} รายการจึงถูกตัดออก",
+    exportRateLimit: "เกินขีดจำกัดอัตรา โปรดรอสักครู่แล้วลองใหม่",
+    exportError: "ส่งออกธุรกรรมผิดพลาด โปรดลองใหม่",
+    exportErrorDetail: "ส่งออกธุรกรรมผิดพลาด: {message}",
   },
   confidential: {
     epoch: "Epoch",
@@ -1967,6 +2039,14 @@ export const th = {
     txnFailed: "ธุรกรรมล้มเหลว{detail} การเรียกที่ล้มเหลวถูกไฮไลต์ด้านล่าง",
     rawJson: "การตอบกลับดิบ (JSON)",
     unexpectedShape: "การตอบกลับร่องรอยมีรูปทรงที่ไม่คาดคิด; แสดงเฉพาะ JSON ดิบ",
+    userOnly: "การติดตามการเรียกใช้ได้เฉพาะธุรกรรมของผู้ใช้",
+    gasZero: "0 gas",
+    gasAmount: "{count} gas",
+    collapseCalls: "ยุบการเรียกที่ซ้อนกัน",
+    expandCalls: "ขยายการเรียกที่ซ้อนกัน",
+    callFailed: "การเรียกนี้ล้มเหลว",
+    caller: "ผู้เรียก",
+    callee: "ผู้ถูกเรียก",
   },
   decibel: {
     buy: "ซื้อ",
@@ -2084,5 +2164,17 @@ export const th = {
     newSignaturesRequired: "ลายเซ็นที่ต้องใช้ใหม่",
     previousMetadata: "เมตาดาตาก่อนหน้า",
     newMetadata: "เมตาดาตาใหม่",
+    pendingTitle: "ธุรกรรมที่รอดำเนินการ ({count})",
+    ownersTitle: "เจ้าของ ({count})",
+    transactionId: "รหัสธุรกรรม: {id}",
+    transactionN: "ธุรกรรม {n}",
+    creatorLabel: "ผู้สร้าง:",
+    creationTime: "เวลาที่สร้าง:",
+    votesRequired: "คะแนน: {count} / {required} ที่ต้องการ",
+    voteApproved: "✓ อนุมัติ",
+    voteRejected: "✗ ปฏิเสธ",
+    eventCounters: "ตัวนับเหตุการณ์",
+    rawData: "ข้อมูลมัลติซิกดิบ",
+    noResource: "บัญชีนี้ไม่มีทรัพยากรมัลติซิก",
   },
 } as const satisfies MessageTree;

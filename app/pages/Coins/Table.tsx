@@ -65,8 +65,10 @@ function getInitialFilter(networkName: string): CoinVerificationFilterType {
     : CoinVerificationFilterType.ALL;
 }
 
-// Helper to format price
-function formatPrice(price: number | string | null | undefined): string {
+function formatPrice(
+  price: number | string | null | undefined,
+  formatNumber: (value: number, options?: Intl.NumberFormatOptions) => string,
+): string {
   if (price === null || price === undefined) {
     return "—";
   }
@@ -75,35 +77,35 @@ function formatPrice(price: number | string | null | undefined): string {
     return "—";
   }
   if (numPrice < 0.0001) {
-    return `$${numPrice.toExponential(2)}`;
+    return `$${formatNumber(numPrice, {
+      notation: "scientific",
+      maximumFractionDigits: 2,
+    })}`;
   }
   if (numPrice < 1) {
-    return `$${numPrice.toFixed(6)}`;
+    return `$${formatNumber(numPrice, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 6,
+    })}`;
   }
-  return `$${numPrice.toLocaleString(undefined, {
+  return `$${formatNumber(numPrice, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })}`;
 }
 
-// Helper to format market cap
-function formatMarketCap(marketCap: number | null | undefined): string {
+function formatMarketCap(
+  marketCap: number | null | undefined,
+  formatNumber: (value: number, options?: Intl.NumberFormatOptions) => string,
+  formatCompactNumber: (value: number, fractionDigits?: number) => string,
+): string {
   if (marketCap === null || marketCap === undefined || marketCap === 0) {
     return "—";
   }
-  if (marketCap >= 1e12) {
-    return `$${(marketCap / 1e12).toFixed(2)}T`;
-  }
-  if (marketCap >= 1e9) {
-    return `$${(marketCap / 1e9).toFixed(2)}B`;
-  }
-  if (marketCap >= 1e6) {
-    return `$${(marketCap / 1e6).toFixed(2)}M`;
-  }
   if (marketCap >= 1e3) {
-    return `$${(marketCap / 1e3).toFixed(2)}K`;
+    return `$${formatCompactNumber(marketCap, 2)}`;
   }
-  return `$${marketCap.toLocaleString(undefined, {
+  return `$${formatNumber(marketCap, {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0,
   })}`;
@@ -160,7 +162,7 @@ function CoinCard({
   coin: CoinWithMarketData;
   networkName: string;
 }) {
-  const {t} = useTranslation();
+  const {t, formatNumber, formatCompactNumber} = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
   const augmentTo = useAugmentToWithGlobalSearchParams();
@@ -303,7 +305,7 @@ function CoinCard({
               Price
             </Typography>
             <Typography sx={{fontSize: "0.85rem", fontWeight: 500}}>
-              {formatPrice(displayPrice)}
+              {formatPrice(displayPrice, formatNumber)}
             </Typography>
           </Box>
           <Box sx={{textAlign: "right"}}>
@@ -314,7 +316,11 @@ function CoinCard({
               Market Cap
             </Typography>
             <Typography sx={{fontSize: "0.85rem", fontWeight: 500}}>
-              {formatMarketCap(coin.marketCap)}
+              {formatMarketCap(
+                coin.marketCap,
+                formatNumber,
+                formatCompactNumber,
+              )}
             </Typography>
           </Box>
         </Stack>
@@ -439,6 +445,7 @@ const PriceCell = React.memo(function PriceCell({
   price: number | string | null;
 }) {
   const inMainnet = useGetInMainnet();
+  const {formatNumber} = useTranslation();
 
   if (!inMainnet) {
     return <GeneralTableCell sx={{textAlign: "right"}}>—</GeneralTableCell>;
@@ -446,7 +453,7 @@ const PriceCell = React.memo(function PriceCell({
 
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      {formatPrice(price)}
+      {formatPrice(price, formatNumber)}
     </GeneralTableCell>
   );
 });
@@ -457,6 +464,7 @@ const MarketCapCell = React.memo(function MarketCapCell({
   marketCap: number | null | undefined;
 }) {
   const inMainnet = useGetInMainnet();
+  const {formatNumber, formatCompactNumber} = useTranslation();
 
   if (!inMainnet) {
     return <GeneralTableCell sx={{textAlign: "right"}}>—</GeneralTableCell>;
@@ -464,7 +472,7 @@ const MarketCapCell = React.memo(function MarketCapCell({
 
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      {formatMarketCap(marketCap)}
+      {formatMarketCap(marketCap, formatNumber, formatCompactNumber)}
     </GeneralTableCell>
   );
 });
@@ -478,7 +486,7 @@ export default function CoinsListTable({
   coins,
   isLoading,
 }: CoinsListTableProps) {
-  const {t} = useTranslation();
+  const {t, formatInteger} = useTranslation();
   const theme = useTheme();
   const networkName = useNetworkName();
   const inMainnet = useGetInMainnet();
@@ -830,7 +838,9 @@ export default function CoinsListTable({
             mb: 2,
           }}
         >
-          {t("accountUi.coinsFound", {count: filteredCoins.length})}
+          {t("accountUi.coinsFound", {
+            count: formatInteger(filteredCoins.length),
+          })}
           {isMarketDataLoading && t("accountUi.loadingMarketData")}
         </Typography>
         <Box>
@@ -898,7 +908,9 @@ export default function CoinsListTable({
           mb: 2,
         }}
       >
-        {t("accountUi.coinsFound", {count: filteredCoins.length})}
+        {t("accountUi.coinsFound", {
+          count: formatInteger(filteredCoins.length),
+        })}
         {isMarketDataLoading && t("accountUi.loadingMarketData")}
       </Typography>
       <Box

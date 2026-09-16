@@ -13,6 +13,7 @@ import * as React from "react";
 import {useMemo, useSyncExternalStore} from "react";
 import type {Types} from "~/types/aptos";
 import HashButton, {HashType} from "../../components/HashButton";
+import IntegerValue from "../../components/IndividualPageContent/ContentValue/IntegerValue";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
@@ -63,18 +64,22 @@ function useNow(): Date {
   );
 }
 
-function formatAge(seconds: number, t: TFunction = englishT): string {
+function formatAge(
+  seconds: number,
+  t: TFunction = englishT,
+  formatInteger: (value: number) => string = (value) => String(value),
+): string {
   if (seconds < 60) {
-    return t("common.secondsAgo", {count: seconds});
+    return t("common.secondsAgo", {count: formatInteger(seconds)});
   } else if (seconds < 3600) {
     const mins = Math.floor(seconds / 60);
-    return t("common.minutesAgo", {count: mins});
+    return t("common.minutesAgo", {count: formatInteger(mins)});
   } else if (seconds < 86400) {
     const hrs = Math.floor(seconds / 3600);
-    return t("common.hoursAgo", {count: hrs});
+    return t("common.hoursAgo", {count: formatInteger(hrs)});
   } else {
     const days = Math.floor(seconds / 86400);
-    return t("common.daysAgo", {count: days});
+    return t("common.daysAgo", {count: formatInteger(days)});
   }
 }
 
@@ -82,12 +87,13 @@ function calcAge(
   blockTimestamp: Date,
   now: Date,
   t: TFunction = englishT,
+  formatInteger: (value: number) => string = (value) => String(value),
 ): string {
   const durationInSec = Math.max(
     0,
     Math.floor(getTimeDiffInSeconds(blockTimestamp, now)),
   );
-  return formatAge(durationInSec, t);
+  return formatAge(durationInSec, t, formatInteger);
 }
 
 type BlockCellProps = {
@@ -98,14 +104,14 @@ function BlockHeightCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
       <Link to={`/block/${block.block_height}`} underline="none">
-        {block.block_height}
+        <IntegerValue value={block.block_height} />
       </Link>
     </GeneralTableCell>
   );
 }
 
 function BlockAgeCell({block}: BlockCellProps) {
-  const {t} = useTranslation();
+  const {t, formatInteger} = useTranslation();
   const now = useNow();
   const blockTimestamp = useMemo(
     () => parseTimestamp(block.block_timestamp),
@@ -113,7 +119,7 @@ function BlockAgeCell({block}: BlockCellProps) {
   );
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
-      {calcAge(blockTimestamp, now, t)}
+      {calcAge(blockTimestamp, now, t, formatInteger)}
     </GeneralTableCell>
   );
 }
@@ -129,11 +135,13 @@ function BlockHashCell({block}: BlockCellProps) {
 function CountVersionCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      {(
-        BigInt(block.last_version) -
-        BigInt(block.first_version) +
-        BigInt(1)
-      ).toString()}
+      <IntegerValue
+        value={(
+          BigInt(block.last_version) -
+          BigInt(block.first_version) +
+          BigInt(1)
+        ).toString()}
+      />
     </GeneralTableCell>
   );
 }
@@ -142,7 +150,7 @@ function FirstVersionCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
       <Link to={`/txn/${block.first_version}`} underline="none">
-        {block.first_version}
+        <IntegerValue value={block.first_version} />
       </Link>
     </GeneralTableCell>
   );
@@ -152,7 +160,7 @@ function LastVersionCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
       <Link to={`/txn/${block.last_version}`} underline="none">
-        {block.last_version}
+        <IntegerValue value={block.last_version} />
       </Link>
     </GeneralTableCell>
   );
@@ -202,7 +210,7 @@ type BlockCardProps = {
 };
 
 const BlockCard = React.memo(function BlockCard({block}: BlockCardProps) {
-  const {t} = useTranslation();
+  const {t, formatInteger, formatIntegerString} = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
   const augmentTo = useAugmentToWithGlobalSearchParams();
@@ -211,7 +219,7 @@ const BlockCard = React.memo(function BlockCard({block}: BlockCardProps) {
     () => parseTimestamp(block.block_timestamp),
     [block.block_timestamp],
   );
-  const age = calcAge(blockTimestamp, now, t);
+  const age = calcAge(blockTimestamp, now, t, formatInteger);
 
   const numTransactions = (
     BigInt(block.last_version) -
@@ -257,7 +265,9 @@ const BlockCard = React.memo(function BlockCard({block}: BlockCardProps) {
         <Typography
           sx={{fontWeight: 600, fontSize: "0.95rem", color: "primary.main"}}
         >
-          {t("table.blockHeight", {height: block.block_height})}
+          {t("table.blockHeight", {
+            height: formatIntegerString(block.block_height),
+          })}
         </Typography>
         <Typography
           variant="caption"
@@ -293,7 +303,7 @@ const BlockCard = React.memo(function BlockCard({block}: BlockCardProps) {
             {t("common.transactions")}
           </Typography>
           <Typography sx={{fontSize: "0.85rem", fontWeight: 600}}>
-            {numTransactions}
+            <IntegerValue value={numTransactions} />
           </Typography>
         </Box>
         <Box sx={{textAlign: "center"}}>
@@ -303,7 +313,7 @@ const BlockCard = React.memo(function BlockCard({block}: BlockCardProps) {
           <Typography
             sx={{fontSize: "0.85rem", fontWeight: 500, color: "primary.main"}}
           >
-            {block.first_version}
+            {formatIntegerString(block.first_version)}
           </Typography>
         </Box>
         <Box sx={{textAlign: "right"}}>
@@ -313,7 +323,7 @@ const BlockCard = React.memo(function BlockCard({block}: BlockCardProps) {
           <Typography
             sx={{fontSize: "0.85rem", fontWeight: 500, color: "primary.main"}}
           >
-            {block.last_version}
+            {formatIntegerString(block.last_version)}
           </Typography>
         </Box>
       </Stack>

@@ -47,7 +47,7 @@ export default function Nav() {
       component="nav"
       aria-label={t("chrome.navAriaLabel")}
       sx={{
-        display: {xs: "none", lg: "flex"},
+        display: "flex",
         alignItems: "center",
         // Keep the lg+ toolbar's min-content under the viewport width. The
         // previous xl gap (64px) made the document ~1700px wide at 1536px.

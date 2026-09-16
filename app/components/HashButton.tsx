@@ -61,7 +61,15 @@ function getHashLinkStr(input: string, type: HashType): string {
   }
 }
 
-function HashLink(hash: string, type: HashType) {
+function isNumericTransactionVersion(hash: string, type: HashType): boolean {
+  return type === HashType.TRANSACTION && /^-?\d+$/.test(hash);
+}
+
+function HashLink({hash, type}: {hash: string; type: HashType}) {
+  const {formatIntegerString} = useTranslation();
+  const display = isNumericTransactionVersion(hash, type)
+    ? formatIntegerString(hash)
+    : hash;
   switch (type) {
     case HashType.ACCOUNT:
     case HashType.TRANSACTION:
@@ -70,11 +78,11 @@ function HashLink(hash: string, type: HashType) {
     case HashType.FUNGIBLE_ASSET:
       return (
         <Link to={getHashLinkStr(hash, type)} color="inherit">
-          {hash}
+          {display}
         </Link>
       );
     case HashType.OTHERS:
-      return <>{hash}</>;
+      return <>{display}</>;
     default:
       return assertNever(type);
   }
@@ -206,7 +214,7 @@ const HashButtonInner = memo(function HashButtonInner({
   img,
   ...props
 }: HashButtonInnerProps) {
-  const {t} = useTranslation();
+  const {t, formatIntegerString} = useTranslation();
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
@@ -233,8 +241,11 @@ const HashButtonInner = memo(function HashButtonInner({
   // The regex matches one or more emoji characters, with optional variation selectors
   const imgIsEmoji = img && /^\p{Emoji}(?:\p{Emoji}|\uFE0F)*$/u.test(img);
 
-  const truncateHash =
-    size === "large" ? truncateAddressMiddle(hash) : truncateAddress(hash);
+  const truncateHash = isNumericTransactionVersion(hash, type)
+    ? formatIntegerString(hash)
+    : size === "large"
+      ? truncateAddressMiddle(hash)
+      : truncateAddress(hash);
 
   let icon = null;
   if (img && imgIsEmoji) {
@@ -329,7 +340,7 @@ const HashButtonInner = memo(function HashButtonInner({
             },
           }}
         >
-          {HashLink(hash, type)}
+          <HashLink hash={hash} type={type} />
           <IconButton
             aria-label={t("common.collapseHash")}
             onClick={hashCollapse}

@@ -16,6 +16,7 @@ import {useGetNetworkStatus} from "../../api/hooks/useGetNetworkStatus";
 import {useGetNodeReleaseFromCommit} from "../../api/hooks/useGetNodeReleaseFromCommit";
 import type {NetworkName} from "../../lib/constants";
 import {translateNetworkName, useTranslation} from "../../i18n";
+import IntegerValue from "../../components/IndividualPageContent/ContentValue/IntegerValue";
 
 function StatusRow({label, value}: {label: string; value: ReactNode}) {
   return (
@@ -55,7 +56,7 @@ function StatusRow({label, value}: {label: string; value: ReactNode}) {
 }
 
 export function NetworkCard({network}: {network: NetworkName}) {
-  const {t} = useTranslation();
+  const {t, formatInteger} = useTranslation();
   const queryClient = useQueryClient();
   const {data, isFetching, isError} = useGetNetworkStatus(network);
 
@@ -118,16 +119,22 @@ export function NetworkCard({network}: {network: NetworkName}) {
 
         {data && (
           <>
-            <StatusRow label={t("deployments.epoch")} value={data.epoch} />
+            <StatusRow
+              label={t("deployments.epoch")}
+              value={<IntegerValue value={data.epoch} />}
+            />
             <StatusRow
               label={t("deployments.blockHeight")}
-              value={data.blockHeight}
+              value={<IntegerValue value={data.blockHeight} />}
             />
             <StatusRow
               label={t("deployments.ledgerVersion")}
-              value={data.ledgerVersion}
+              value={<IntegerValue value={data.ledgerVersion} />}
             />
-            <StatusRow label={t("deployments.chainId")} value={data.chainId} />
+            <StatusRow
+              label={t("deployments.chainId")}
+              value={<IntegerValue value={data.chainId} />}
+            />
             <StatusRow
               label={t("deployments.frameworkRelease")}
               value={(() => {
@@ -136,14 +143,14 @@ export function NetworkCard({network}: {network: NetworkName}) {
                 const display =
                   mapped ??
                   t("deployments.gasUnmapped", {
-                    version: data.gasFeatureVersion,
+                    version: formatInteger(data.gasFeatureVersion),
                   });
                 const tooltip = mapped
                   ? t("deployments.gasMappedTip", {
-                      version: data.gasFeatureVersion,
+                      version: formatInteger(data.gasFeatureVersion),
                     })
                   : t("deployments.gasUnmappedTip", {
-                      version: data.gasFeatureVersion,
+                      version: formatInteger(data.gasFeatureVersion),
                     });
                 return (
                   <Tooltip title={tooltip}>
@@ -157,7 +164,7 @@ export function NetworkCard({network}: {network: NetworkName}) {
               value={
                 data.bytecodeFormatVersion !== null ? (
                   <Tooltip title={t("tooltips.bytecodeFormat")}>
-                    <span>v{data.bytecodeFormatVersion}</span>
+                    <span>v{formatInteger(data.bytecodeFormatVersion)}</span>
                   </Tooltip>
                 ) : null
               }

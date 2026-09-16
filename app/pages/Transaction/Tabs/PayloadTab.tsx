@@ -22,7 +22,7 @@ function EncryptedPayloadSummary({
 }: {
   payload: Types.TransactionPayload_EncryptedTransactionPayload;
 }) {
-  const {t} = useTranslation();
+  const {t, formatIntegerString} = useTranslation();
   const claimed = formatClaimedEntryFunction(payload.claimed_entry_fun);
   const stateColor =
     payload.encrypted_state === "decrypted"
@@ -48,7 +48,9 @@ function EncryptedPayloadSummary({
       </Stack>
       {payload.encryption_epoch != null && payload.encryption_epoch !== "" && (
         <Typography variant="body2" color="text.secondary">
-          {t("payload.encryptionEpoch", {epoch: payload.encryption_epoch})}
+          {t("payload.encryptionEpoch", {
+            epoch: formatIntegerString(String(payload.encryption_epoch)),
+          })}
         </Typography>
       )}
       {claimed && (

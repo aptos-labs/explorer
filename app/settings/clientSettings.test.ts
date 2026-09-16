@@ -1,9 +1,12 @@
 import {describe, expect, it} from "vitest";
 import {
   clearExplorerClientSettings,
+  DECOMPILATION_STORAGE_KEY,
   defaultExplorerClientSettings,
   EXPLORER_SETTINGS_STORAGE_KEY,
+  isExplorerSettingsStorageKey,
   loadExplorerClientSettings,
+  LOCALE_STORAGE_KEY,
   normalizeGeomiDevApiKeyOverride,
   persistExplorerClientSettings,
   sanitizeExplorerClientSettings,
@@ -380,6 +383,18 @@ describe("clientSettings", () => {
       expect(loadExplorerClientSettings(freshStorages).localePreference).toBe(
         "en",
       );
+    });
+
+    it("treats locale and decompilation keys as settings storage", () => {
+      expect(isExplorerSettingsStorageKey(null)).toBe(true);
+      expect(isExplorerSettingsStorageKey(EXPLORER_SETTINGS_STORAGE_KEY)).toBe(
+        true,
+      );
+      expect(isExplorerSettingsStorageKey(LOCALE_STORAGE_KEY)).toBe(true);
+      expect(isExplorerSettingsStorageKey(DECOMPILATION_STORAGE_KEY)).toBe(
+        true,
+      );
+      expect(isExplorerSettingsStorageKey("unrelated")).toBe(false);
     });
 
     it("fails gracefully when storage writes throw", () => {

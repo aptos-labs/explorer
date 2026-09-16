@@ -2,6 +2,7 @@ import {Box} from "@mui/material";
 import type {Types} from "~/types/aptos";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
+import IntegerValue from "../../../components/IndividualPageContent/ContentValue/IntegerValue";
 import {TransactionStatus} from "../../../components/TransactionStatus";
 import {getLearnMoreTooltip} from "../helpers";
 import TransactionBlockRow from "./Components/TransactionBlockRow";
@@ -24,7 +25,11 @@ export default function GenesisTransactionOverviewTab({
       <ContentBox>
         <ContentRow
           titleKey="fields.version"
-          value={<Box sx={{fontWeight: 600}}>{transactionData.version}</Box>}
+          value={
+            <Box sx={{fontWeight: 600}}>
+              <IntegerValue value={transactionData.version} />
+            </Box>
+          }
           tooltip={getLearnMoreTooltip("version")}
         />
         <ContentRow

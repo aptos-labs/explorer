@@ -137,7 +137,7 @@ export function HoldersTable({
   data: FACombinedData;
   offset?: number;
 }) {
-  const {t} = useTranslation();
+  const {t, locale} = useTranslation();
   return (
     <Table aria-label={t("common.assetHoldersAria")} data-entity-type="holder">
       <TableHead>
@@ -162,6 +162,8 @@ export function HoldersTable({
                 {getFormattedBalanceStr(
                   holder.amount.toString(),
                   data.coinData?.decimals ?? data.metadata?.decimals,
+                  undefined,
+                  locale,
                 ) +
                   " " +
                   (data.coinData?.symbol ?? data.metadata?.symbol)}

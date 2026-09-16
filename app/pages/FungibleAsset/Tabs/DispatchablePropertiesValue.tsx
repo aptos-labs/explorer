@@ -5,14 +5,15 @@ import type {
   DispatchHook,
   FaDispatchInfo,
 } from "../../../api/hooks/useGetFaIsDispatchable";
+import {useTranslation} from "../../../i18n";
 import {Link} from "../../../routing";
 import {truncateAddress} from "../../utils";
 
-const HOOK_LABEL: Record<DispatchHook, string> = {
-  withdraw: "Withdraw",
-  deposit: "Deposit",
-  derived_balance: "Derived balance",
-  derived_supply: "Derived supply",
+const HOOK_KEYS: Record<DispatchHook, string> = {
+  withdraw: "pages.fa.hookWithdraw",
+  deposit: "pages.fa.hookDeposit",
+  derived_balance: "pages.fa.hookDerivedBalance",
+  derived_supply: "pages.fa.hookDerivedSupply",
 };
 
 function functionPathLabel(fn: DispatchFunctionInfo): string {
@@ -33,18 +34,14 @@ export default function DispatchablePropertiesValue({
 }: {
   info: FaDispatchInfo;
 }) {
+  const {t} = useTranslation();
   return (
     <Stack direction="column" spacing={1} sx={{alignItems: "flex-start"}}>
-      <Tooltip
-        title={
-          "Custom dispatch functions are registered for transfers (withdraw/deposit/balance/supply)"
-        }
-        arrow
-      >
+      <Tooltip title={t("pages.fa.dispatchableTip")} arrow>
         <Chip
           size="small"
           icon={<CheckCircleOutlineIcon fontSize="small" />}
-          label={"Dispatchable"}
+          label={t("pages.fa.dispatchable")}
           variant="outlined"
           color={"success"}
         />
@@ -56,30 +53,37 @@ export default function DispatchablePropertiesValue({
           useFlexGap
           sx={{flexWrap: "wrap", fontSize: "0.8rem"}}
         >
-          {info.functions.map((fn) => (
-            <Tooltip
-              key={fn.hook}
-              title={`${HOOK_LABEL[fn.hook]}: ${functionFullPath(fn)} — click to view module source`}
-              arrow
-            >
-              <Box
-                component="span"
-                sx={{display: "inline-flex", alignItems: "center"}}
+          {info.functions.map((fn) => {
+            const hookLabel = t(HOOK_KEYS[fn.hook]);
+            return (
+              <Tooltip
+                key={fn.hook}
+                title={t("pages.fa.hookTooltip", {
+                  hook: hookLabel,
+                  path: functionFullPath(fn),
+                  action: t("pages.fa.viewModuleSource"),
+                })}
+                arrow
               >
                 <Box
                   component="span"
-                  sx={{color: "text.secondary", mr: 0.5}}
-                >{`${HOOK_LABEL[fn.hook]}:`}</Box>
-                <Link
-                  to={`/account/${fn.moduleAddress}/modules/code/${fn.moduleName}`}
-                  color="primary"
-                  underline="hover"
+                  sx={{display: "inline-flex", alignItems: "center"}}
                 >
-                  {functionPathLabel(fn)}
-                </Link>
-              </Box>
-            </Tooltip>
-          ))}
+                  <Box
+                    component="span"
+                    sx={{color: "text.secondary", mr: 0.5}}
+                  >{`${hookLabel}:`}</Box>
+                  <Link
+                    to={`/account/${fn.moduleAddress}/modules/code/${fn.moduleName}`}
+                    color="primary"
+                    underline="hover"
+                  >
+                    {functionPathLabel(fn)}
+                  </Link>
+                </Box>
+              </Tooltip>
+            );
+          })}
         </Stack>
       )}
     </Stack>

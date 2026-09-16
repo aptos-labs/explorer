@@ -1,4 +1,7 @@
 import type React from "react";
+import {decimalSeparator, formatBigInt} from "../../../i18n/format";
+import {DEFAULT_LOCALE} from "../../../i18n/locales";
+import {useTranslation} from "../../../i18n";
 
 const APTOS_DECIMALS = 8;
 
@@ -13,30 +16,33 @@ export function getFormattedBalanceStr(
   balance: string,
   decimals?: number,
   fixedDecimalPlaces?: number,
+  locale: string = DEFAULT_LOCALE,
 ): string {
-  // If balance is zero or decimals is 0, just return it
-  if (balance === "0" || (decimals !== undefined && decimals === 0)) {
+  if (balance === "0") {
     return balance;
   }
 
-  const len = balance.length;
-  decimals = decimals || APTOS_DECIMALS;
-
-  // If length is less than decimals, pad with 0s to decimals length and return
-  if (len <= decimals) {
-    return `0.${trimRight("0".repeat(decimals - len) + balance) || "0"}`;
+  const resolvedDecimals = decimals ?? APTOS_DECIMALS;
+  if (resolvedDecimals === 0) {
+    return formatBigInt(BigInt(balance), locale);
   }
 
-  // Otherwise, insert decimal point at len - decimals
-  const leftSide = BigInt(balance.slice(0, len - decimals)).toLocaleString(
-    "en-US",
+  const len = balance.length;
+  const decimal = decimalSeparator(locale);
+
+  if (len <= resolvedDecimals) {
+    return `0${decimal}${trimRight("0".repeat(resolvedDecimals - len) + balance) || "0"}`;
+  }
+
+  const leftSide = formatBigInt(
+    BigInt(balance.slice(0, len - resolvedDecimals)),
+    locale,
   );
-  let rightSide = balance.slice(len - decimals);
+  let rightSide = balance.slice(len - resolvedDecimals);
   if (BigInt(rightSide) === BigInt(0)) {
     return leftSide;
   }
 
-  // remove trailing 0s
   rightSide = trimRight(rightSide);
   if (
     fixedDecimalPlaces !== undefined &&
@@ -49,7 +55,7 @@ export function getFormattedBalanceStr(
     return leftSide;
   }
 
-  return `${leftSide}.${trimRight(rightSide)}`;
+  return `${leftSide}${decimal}${trimRight(rightSide)}`;
 }
 
 type CurrencyValueProps = {
@@ -65,7 +71,13 @@ export default function CurrencyValue({
   fixedDecimalPlaces,
   currencyCode,
 }: CurrencyValueProps) {
-  const number = getFormattedBalanceStr(amount, decimals, fixedDecimalPlaces);
+  const {locale} = useTranslation();
+  const number = getFormattedBalanceStr(
+    amount,
+    decimals,
+    fixedDecimalPlaces,
+    locale,
+  );
   if (currencyCode) {
     return (
       <span>
@@ -82,7 +94,6 @@ export function APTCurrencyValue({
   decimals,
   fixedDecimalPlaces,
 }: CurrencyValueProps) {
-  // remove leading "-" when it's a negative number
   let amount = amountStr;
   if (amountStr.startsWith("-")) {
     amount = amountStr.substring(1);

@@ -18,7 +18,7 @@ export default function TimestampValue({
   timestamp,
 }: TimestampValueProps) {
   const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
-  const {t} = useTranslation();
+  const {t, locale} = useTranslation();
   const theme = useTheme();
   const color = theme.palette.text.secondary;
 
@@ -26,7 +26,11 @@ export default function TimestampValue({
     return <EmptyValue />;
   }
 
-  const timestamp_display = parseTimestampString(timestamp, ensureMilliSeconds);
+  const timestamp_display = parseTimestampString(
+    timestamp,
+    ensureMilliSeconds,
+    locale,
+  );
 
   const copyTimestamp = async () => {
     await navigator.clipboard.writeText(timestamp);

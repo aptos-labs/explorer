@@ -452,6 +452,16 @@ export const id = {
     hoursAgo: "{count} jam lalu",
     daysAgo: "{count} hr lalu",
     noValidatorsFound: "Tidak ada validator",
+    usd: "USD",
+    iconAlt: "Ikon {name}",
+    nArguments: "{count} argumen",
+    nArgumentsPlural: "{count} argumen",
+    hideNArguments: "Sembunyikan {count} argumen",
+    hideNArgumentsPlural: "Sembunyikan {count} argumen",
+    showNArguments: "Tampilkan {count} argumen",
+    showNArgumentsPlural: "Tampilkan {count} argumen",
+    octasParens: "({amount} octas)",
+    gasUnits: "{count} unit gas",
   },
   network: {
     selectAriaLabel: "Pilih jaringan",
@@ -533,6 +543,9 @@ export const id = {
   },
   interval: {
     refreshHint: "Segarkan halaman untuk melihat sisa waktu yang diperbarui.",
+    hms: "{hours}j {minutes}m {seconds}d",
+    dhm: "{days}h {hours}j {minutes}m",
+    dhms: "{days}h {hours}j {minutes}m {seconds}d",
   },
   tabs: {
     transaction: {
@@ -710,6 +723,7 @@ export const id = {
     stakingFee: "Biaya staking",
     nextUnlockIn: "Buka berikutnya dalam",
     index: "Indeks:",
+    transactionsWithCount: "Transaksi ({count}):",
   },
   table: {
     hash: "#",
@@ -866,6 +880,8 @@ export const id = {
       size: "ukuran {size}",
       atPrice: "@ {price}",
       openCctpWormholeAria: "Buka transfer CCTP di WormholeScan di tab baru",
+      confidentialAmountHidden:
+        "Jumlah transfer dienkripsi on-chain dan tidak dapat ditampilkan.",
     },
   },
   pages: {
@@ -911,6 +927,8 @@ export const id = {
       supplyOffChain: "Pasokan diverifikasi off-chain sebagai pasokan tetap",
       supplyNone:
         "Tidak ada pasokan yang dilacak untuk koin ini on-chain atau off-chain",
+      confidentialSupplyTip:
+        "Token dalam kumpulan aset rahasia on-chain untuk aset fungible berpasangan (agregat publik). Saldo individu tetap privat.",
     },
     fa: {
       entity: "Aset fungible",
@@ -922,6 +940,20 @@ export const id = {
         "Lihat {tab} untuk aset fungible {address} di blockchain Aptos.",
       metaDescriptionFallback:
         "Lihat {symbol} di Aptos. Lihat pasokan token, desimal, pemegang, metadata, dan riwayat transaksi.",
+      confidentialSupplyTip:
+        "Token dalam kumpulan aset rahasia on-chain untuk objek metadata ini (agregat publik). Saldo individu tetap privat.",
+      dispatchable: "Dapat didispatch",
+      dispatchableTip:
+        "Fungsi dispatch kustom terdaftar untuk transfer (penarikan/setoran/saldo/pasokan)",
+      hookWithdraw: "Penarikan",
+      hookDeposit: "Setoran",
+      hookDerivedBalance: "Saldo turunan",
+      hookDerivedSupply: "Pasokan turunan",
+      viewModuleSource: "klik untuk melihat sumber modul",
+      hookTooltip: "{hook}: {path} — {action}",
+      nativeGasTokenInfo:
+        "Ini token gas native resmi di Aptos. Ini versi aset fungible dari APT. Sepenuhnya kompatibel dengan versi coin saat memakai fungsi 0x1::coin. Lihat 0x1::aptos_coin::AptosCoin untuk versi coin.",
+      nativeUsdtInfo: "Ini USD₮ native resmi di Aptos.",
     },
     tokens: {
       entity: "Token",
@@ -1432,6 +1464,14 @@ export const id = {
     commissionChange: "Tingkat komisi kini dapat diubah oleh operator",
     commissionUpdate:
       "Tingkat komisi saat ini {current}%. Tingkat komisi akan diperbarui menjadi {next}% pada periode kunci saat ini.",
+    epochN: "Epoch {epoch}",
+    percentComplete: "{percent}% selesai",
+    epochTip:
+      "Epoch di blockchain Aptos adalah durasi dalam detik saat validator memberikan suara pada sejumlah blok. Epoch mainnet Aptos adalah 7200 detik (dua jam).",
+    nodeCount: "{count} node",
+    countryCount: "{count} negara",
+    cityCount: "{count} kota",
+    commissionRate: "komisi {percent}%",
   },
   analytics: {
     deployedContracts: "Kontrak terdeploy",
@@ -1483,6 +1523,7 @@ export const id = {
     activelyStaked: "Sedang distake",
     activelyStakedTip:
       "Jumlah token APT yang saat ini dipegang di pool staking.",
+    totalTransactionsLabel: "TOTAL TRANSAKSI: {count}",
   },
   filter: {
     contractAddress: "Alamat kontrak",
@@ -1496,6 +1537,12 @@ export const id = {
     clear: "Hapus {name}",
     clearAll: "Hapus semua",
     entryFunction: "Saring menurut fungsi entri",
+    noResults:
+      "Tidak ada transaksi yang cocok dengan filter. Pengindeks tidak mengembalikan transaksi pengguna yang cocok untuk jaringan ini.",
+    loadError:
+      "Gagal memfilter transaksi berdasarkan fungsi. Nilai mungkin tidak valid atau pengindeks sementara tidak tersedia.",
+    matchingOne: "{count} transaksi yang cocok",
+    matchingMany: "{count} transaksi yang cocok",
   },
   flags: {
     differences: "Perbedaan",
@@ -1791,6 +1838,13 @@ export const id = {
       partner: "Biaya mitra / protokol ({symbol})",
       partnerTip:
         "Selisih jumlah ditarik dan disetor untuk aset ini — biasanya hook transfer, biaya protokol DEX, atau potongan mitra.",
+      total: "Total gas yang dikenakan",
+      totalTip:
+        "Jumlah eksekusi, I/O, dan penyimpanan (dalam unit gas). Cocok dengan gas_used transaksi.",
+      storageShortTip:
+        "Dikenakan untuk status bersih baru; dihargai dalam octas.",
+      storageRefundShortTip:
+        "Dikreditkan saat penyimpanan dilepas; bukan bagian dari gas_used.",
     },
   },
   payload: {
@@ -1955,6 +2009,29 @@ export const id = {
       "Hubungkan dompet dan berinteraksi langsung dengan kontrak protokol untuk mengeksekusi penarikan. Verifikasi detail transaksi dengan saksama sebelum menandatangani.",
     openPetraVault: "Buka di Petra Vault",
     manageMultisig: "Kelola akun multisig ini dengan Petra Vault",
+    balance: "Saldo",
+    balanceTip: "Saldo ini mencerminkan jumlah token APT di dompet Anda.",
+    balanceTipWithUsd:
+      "Saldo ini mencerminkan jumlah token APT di dompet Anda dan nilai USD langsung pada kurs 1 APT = {price}.",
+    defiPositionsOn: "Posisi DeFi di",
+    openPortfolioAria: "Buka portofolio di {name} di tab baru",
+    transactionCount: "{count} transaksi",
+    transactionCountUpTo: "Menampilkan hingga {count} transaksi",
+    matchingSentOne: "{count} transaksi yang cocok (dikirim akun ini)",
+    matchingSentMany: "{count} transaksi yang cocok (dikirim akun ini)",
+    filterNoResults:
+      "Tidak ada transaksi yang dikirim akun ini yang cocok dengan filter",
+    exportCsv: "Ekspor CSV ({count})",
+    exporting: "Mengekspor...",
+    exportingProgress: "Mengekspor... {percent}%",
+    exportNone: "Tidak ada transaksi untuk diekspor.",
+    exportNoneFailed:
+      "Tidak ada transaksi untuk diekspor. Semua pengambilan mungkin gagal.",
+    exportPartial:
+      "{exported} transaksi berhasil diekspor. {failed} tidak dapat diambil dan dikecualikan dari ekspor.",
+    exportRateLimit: "Batas laju terlampaui. Tunggu sebentar lalu coba lagi.",
+    exportError: "Kesalahan mengekspor transaksi. Coba lagi.",
+    exportErrorDetail: "Kesalahan mengekspor transaksi: {message}",
   },
   confidential: {
     epoch: "Epoch",
@@ -2048,6 +2125,14 @@ export const id = {
     rawJson: "Respons mentah (JSON)",
     unexpectedShape:
       "Respons jejak berbentuk tak terduga; hanya menampilkan JSON mentah.",
+    userOnly: "Jejak panggilan hanya tersedia untuk transaksi pengguna.",
+    gasZero: "0 gas",
+    gasAmount: "{count} gas",
+    collapseCalls: "Ciutkan panggilan bersarang",
+    expandCalls: "Bentangkan panggilan bersarang",
+    callFailed: "Panggilan ini gagal",
+    caller: "Pemanggil",
+    callee: "Dipanggil",
   },
   decibel: {
     buy: "Beli",
@@ -2166,5 +2251,17 @@ export const id = {
     newSignaturesRequired: "Tanda tangan baru yang diperlukan",
     previousMetadata: "Metadata sebelumnya",
     newMetadata: "Metadata baru",
+    pendingTitle: "Transaksi tertunda ({count})",
+    ownersTitle: "Pemilik ({count})",
+    transactionId: "ID transaksi: {id}",
+    transactionN: "Transaksi {n}",
+    creatorLabel: "Pembuat:",
+    creationTime: "Waktu pembuatan:",
+    votesRequired: "Suara: {count} / {required} diperlukan",
+    voteApproved: "✓ Disetujui",
+    voteRejected: "✗ Ditolak",
+    eventCounters: "Penghitung peristiwa",
+    rawData: "Data multisig mentah",
+    noResource: "Akun ini tidak memiliki sumber daya multisig.",
   },
 } as const satisfies MessageTree;

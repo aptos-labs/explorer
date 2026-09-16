@@ -5,7 +5,7 @@ import type {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
 import ChartTitle from "../Components/ChartTitle";
 import LineChart from "../Components/LineChart";
 import {getLabels} from "../utils";
-import {englishT} from "../../../i18n";
+import {useTranslation} from "../../../i18n";
 
 export function getDataset(data: DailyBlockGapData[], days: number): number[] {
   return data
@@ -22,7 +22,8 @@ export default function DailyBlockGapChart({
   data,
   days,
 }: DailyBlockGapChartProps) {
-  const labels = getLabels(data, days);
+  const {locale, t, formatNumber} = useTranslation();
+  const labels = getLabels(data, days, locale);
   const dataset = getDataset(data, days);
 
   return (
@@ -38,10 +39,9 @@ export default function DailyBlockGapChart({
         tooltipsLabelFunc={(context: TooltipItem<"line">) => {
           const yValue = context.parsed.y;
           if (yValue === null || yValue === undefined) {
-            return englishT("common.na");
+            return t("common.na");
           }
-          const milliseconds = Number(yValue.toFixed(1));
-          return `${milliseconds} ms`;
+          return `${formatNumber(yValue, {maximumFractionDigits: 1})} ms`;
         }}
       />
     </CardOutline>

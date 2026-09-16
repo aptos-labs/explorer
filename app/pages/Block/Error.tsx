@@ -11,7 +11,7 @@ type ErrorProps = {
 
 export default function BlockError({error, height}: ErrorProps) {
   const theme = useTheme();
-  const {t} = useTranslation();
+  const {t, formatIntegerString} = useTranslation();
 
   if (error.type === ResponseErrorType.NOT_FOUND) {
     return (
@@ -41,7 +41,9 @@ export default function BlockError({error, height}: ErrorProps) {
               }}
             >
               {error.message && `${error.message} `}
-              {t("notFound.blockBody", {height})}
+              {t("notFound.blockBody", {
+                height: formatIntegerString(height),
+              })}
             </Typography>
           </Stack>
         </Stack>
@@ -74,7 +76,9 @@ export default function BlockError({error, height}: ErrorProps) {
                 color: "text.secondary",
               }}
             >
-              {t("notFound.blockLoadBody", {height})}
+              {t("notFound.blockLoadBody", {
+                height: formatIntegerString(height),
+              })}
               <br />
               {error.message}
               <br />

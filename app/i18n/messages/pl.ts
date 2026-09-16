@@ -453,6 +453,16 @@ export const pl = {
     hoursAgo: "{count}godz. temu",
     daysAgo: "{count}d temu",
     noValidatorsFound: "Nie znaleziono walidatorów",
+    usd: "USD",
+    iconAlt: "Ikona {name}",
+    nArguments: "{count} argument",
+    nArgumentsPlural: "{count} argumentów",
+    hideNArguments: "Ukryj {count} argument",
+    hideNArgumentsPlural: "Ukryj {count} argumentów",
+    showNArguments: "Pokaż {count} argument",
+    showNArgumentsPlural: "Pokaż {count} argumentów",
+    octasParens: "({amount} octas)",
+    gasUnits: "{count} jednostek gazu",
   },
   network: {
     selectAriaLabel: "Wybierz sieć",
@@ -533,6 +543,9 @@ export const pl = {
   },
   interval: {
     refreshHint: "Odśwież stronę, aby zobaczyć zaktualizowany pozostały czas.",
+    hms: "{hours}h {minutes}m {seconds}s",
+    dhm: "{days}d {hours}h {minutes}m",
+    dhms: "{days}d {hours}h {minutes}m {seconds}s",
   },
   tabs: {
     transaction: {
@@ -710,6 +723,7 @@ export const pl = {
     stakingFee: "Opłata za staking",
     nextUnlockIn: "Następne odblokowanie za",
     index: "Indeks:",
+    transactionsWithCount: "Transakcje ({count}):",
   },
   table: {
     hash: "#",
@@ -867,6 +881,8 @@ export const pl = {
       atPrice: "@ {price}",
       openCctpWormholeAria:
         "Otwórz transfer CCTP w WormholeScan w nowej karcie",
+      confidentialAmountHidden:
+        "Kwota transferu jest zaszyfrowana on-chain i nie może zostać wyświetlona.",
     },
   },
   pages: {
@@ -911,6 +927,8 @@ export const pl = {
       supplyOnChain: "Podaż śledzona on-chain, może się zmieniać z czasem",
       supplyOffChain: "Podaż zweryfikowana off-chain jako stała",
       supplyNone: "Dla tej monety nie śledzi się podaży on-chain ani off-chain",
+      confidentialSupplyTip:
+        "Tokeny w puli poufnych aktywów on-chain dla sparowanego aktywa zamiennego (suma publiczna). Salda indywidualne pozostają prywatne.",
     },
     fa: {
       entity: "Aktywo zbywalne",
@@ -922,6 +940,20 @@ export const pl = {
         "Zobacz {tab} aktywa zbywalnego {address} w blockchainie Aptos.",
       metaDescriptionFallback:
         "Zobacz {symbol} w Aptos. Podaż tokena, miejsca dziesiętne, posiadacze, metadane i historia transakcji.",
+      confidentialSupplyTip:
+        "Tokeny w puli poufnych aktywów on-chain dla tego obiektu metadanych (suma publiczna). Salda indywidualne pozostają prywatne.",
+      dispatchable: "Dispatchable",
+      dispatchableTip:
+        "Niestandardowe funkcje dispatch są zarejestrowane dla transferów (wypłata/wpłata/saldo/podaż)",
+      hookWithdraw: "Wypłata",
+      hookDeposit: "Wpłata",
+      hookDerivedBalance: "Saldo pochodne",
+      hookDerivedSupply: "Podaż pochodna",
+      viewModuleSource: "kliknij, aby zobaczyć kod modułu",
+      hookTooltip: "{hook}: {path} — {action}",
+      nativeGasTokenInfo:
+        "To oficjalny natywny token gazu w Aptos. To wersja fungible asset APT. Jest w pełni zgodna z wersją coin przy użyciu funkcji 0x1::coin. Zobacz 0x1::aptos_coin::AptosCoin dla wersji coin.",
+      nativeUsdtInfo: "To oficjalne natywne USD₮ w Aptos.",
     },
     tokens: {
       entity: "Token",
@@ -1434,6 +1466,14 @@ export const pl = {
     commissionChange: "Stawki prowizji może teraz zmieniać operator",
     commissionUpdate:
       "Bieżąca stawka prowizji to {current}%. Stawka zostanie zaktualizowana do {next}% w bieżącym okresie blokady.",
+    epochN: "Epoka {epoch}",
+    percentComplete: "Ukończono {percent}%",
+    epochTip:
+      "Epoka w blockchainie Aptos to odcinek czasu w sekundach, w którym walidatorzy głosują nad pewną liczbą bloków. Epoka sieci głównej Aptos wynosi 7200 sekund (dwie godziny).",
+    nodeCount: "{count} węzłów",
+    countryCount: "{count} krajów",
+    cityCount: "{count} miast",
+    commissionRate: "{percent}% prowizji",
   },
   analytics: {
     deployedContracts: "Wdrożone kontrakty",
@@ -1484,6 +1524,7 @@ export const pl = {
     activeFullnodesTip: "Przybliżona liczba fullnode'ów.",
     activelyStaked: "Aktywnie stakowane",
     activelyStakedTip: "Ilość tokenów APT obecnie w pulach stakingu.",
+    totalTransactionsLabel: "ŁĄCZNIE TRANSAKCJI: {count}",
   },
   filter: {
     contractAddress: "Adres kontraktu",
@@ -1497,6 +1538,12 @@ export const pl = {
     clear: "Wyczyść {name}",
     clearAll: "Wyczyść wszystko",
     entryFunction: "Filtruj po funkcji wejściowej",
+    noResults:
+      "Nie znaleziono transakcji pasujących do filtra. Indekser nie zwrócił pasujących transakcji użytkownika dla tej sieci.",
+    loadError:
+      "Nie udało się odfiltrować transakcji według funkcji. Wartości mogą być nieprawidłowe albo indekser jest chwilowo niedostępny.",
+    matchingOne: "{count} pasująca transakcja",
+    matchingMany: "{count} pasujących transakcji",
   },
   flags: {
     differences: "Różnice",
@@ -1793,6 +1840,12 @@ export const pl = {
       partner: "Opłata partnera / protokołu ({symbol})",
       partnerTip:
         "Różnica między kwotą wypłaconą a wpłaconą dla tego aktywa — zwykle hook transferu, opłata protokołu DEX lub prowizja partnera.",
+      total: "Łącznie naliczony gaz",
+      totalTip:
+        "Suma wykonania, I/O i pamięci (w jednostkach gazu). Zgadza się z gas_used transakcji.",
+      storageShortTip: "Naliczane za nowy stan netto; wyceniane w octas.",
+      storageRefundShortTip:
+        "Zaliczenie przy zwolnieniu pamięci; nie jest częścią gas_used.",
     },
   },
   payload: {
@@ -1958,6 +2011,31 @@ export const pl = {
       "Połącz portfel i wejdź w interakcję bezpośrednio z kontraktem protokołu, aby wykonać wypłatę. Przed podpisaniem dokładnie sprawdź szczegóły transakcji.",
     openPetraVault: "Otwórz w Petra Vault",
     manageMultisig: "Zarządzaj tym kontem multisig w Petra Vault",
+    balance: "Saldo",
+    balanceTip: "To saldo odzwierciedla ilość tokenów APT w portfelu.",
+    balanceTipWithUsd:
+      "To saldo odzwierciedla ilość tokenów APT w portfelu oraz ich bieżącą wartość w USD przy kursie 1 APT = {price}.",
+    defiPositionsOn: "Pozycje DeFi na",
+    openPortfolioAria: "Otwórz portfel na {name} w nowej karcie",
+    transactionCount: "{count} transakcji",
+    transactionCountUpTo: "Wyświetlanie maksymalnie {count} transakcji",
+    matchingSentOne: "{count} pasująca transakcja (wysłana przez to konto)",
+    matchingSentMany:
+      "{count} pasujących transakcji (wysłanych przez to konto)",
+    filterNoResults:
+      "Nie znaleziono transakcji wysłanych przez to konto pasujących do filtra",
+    exportCsv: "Eksportuj CSV ({count})",
+    exporting: "Eksportowanie...",
+    exportingProgress: "Eksportowanie... {percent}%",
+    exportNone: "Brak transakcji do wyeksportowania.",
+    exportNoneFailed:
+      "Brak transakcji do wyeksportowania. Wszystkie pobrania mogły się nie powieść.",
+    exportPartial:
+      "Wyeksportowano {exported} transakcji. {failed} nie udało się pobrać i pominięto je w eksporcie.",
+    exportRateLimit:
+      "Przekroczono limit zapytań. Poczekaj chwilę i spróbuj ponownie.",
+    exportError: "Błąd eksportu transakcji. Spróbuj ponownie.",
+    exportErrorDetail: "Błąd eksportu transakcji: {message}",
   },
   confidential: {
     epoch: "Epoka",
@@ -2052,6 +2130,14 @@ export const pl = {
     rawJson: "Surowa odpowiedź (JSON)",
     unexpectedShape:
       "Odpowiedź śladu miała nieoczekiwany kształt; pokazano tylko surowy JSON.",
+    userOnly: "Ślad wywołań jest dostępny tylko dla transakcji użytkownika.",
+    gasZero: "0 gas",
+    gasAmount: "{count} gas",
+    collapseCalls: "Zwiń zagnieżdżone wywołania",
+    expandCalls: "Rozwiń zagnieżdżone wywołania",
+    callFailed: "To wywołanie nie powiodło się",
+    caller: "Wywołujący",
+    callee: "Wywoływany",
   },
   decibel: {
     buy: "Kup",
@@ -2170,5 +2256,17 @@ export const pl = {
     newSignaturesRequired: "Nowe wymagane podpisy",
     previousMetadata: "Poprzednie metadane",
     newMetadata: "Nowe metadane",
+    pendingTitle: "Oczekujące transakcje ({count})",
+    ownersTitle: "Właściciele ({count})",
+    transactionId: "ID transakcji: {id}",
+    transactionN: "Transakcja {n}",
+    creatorLabel: "Twórca:",
+    creationTime: "Czas utworzenia:",
+    votesRequired: "Głosy: {count} / {required} wymagane",
+    voteApproved: "✓ Zatwierdzono",
+    voteRejected: "✗ Odrzucono",
+    eventCounters: "Liczniki zdarzeń",
+    rawData: "Surowe dane multisig",
+    noResource: "To konto nie ma zasobu multisig.",
   },
 } as const satisfies MessageTree;

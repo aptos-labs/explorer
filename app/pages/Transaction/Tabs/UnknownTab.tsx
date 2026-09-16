@@ -2,6 +2,7 @@ import {Alert, Box} from "@mui/material";
 import type {Types} from "~/types/aptos";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
+import IntegerValue from "../../../components/IndividualPageContent/ContentValue/IntegerValue";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {TransactionStatus} from "../../../components/TransactionStatus";
@@ -26,7 +27,11 @@ export default function UnknownTab({transaction}: UnknownTabProps) {
         <Alert severity="warning">{`Unknown transaction type: "${transaction.type}"`}</Alert>
         <ContentRow
           titleKey="fields.version"
-          value={<Box sx={{fontWeight: 600}}>{transactionData.version}</Box>}
+          value={
+            <Box sx={{fontWeight: 600}}>
+              <IntegerValue value={transactionData.version} />
+            </Box>
+          }
           tooltip={getLearnMoreTooltip("version")}
         />
         <ContentRow

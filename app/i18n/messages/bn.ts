@@ -451,6 +451,16 @@ export const bn = {
     hoursAgo: "{count}ঘণ্টা আগে",
     daysAgo: "{count}দিন আগে",
     noValidatorsFound: "কোনো ভ্যালিডেটর পাওয়া যায়নি",
+    usd: "USD",
+    iconAlt: "{name} আইকন",
+    nArguments: "{count} আর্গুমেন্ট",
+    nArgumentsPlural: "{count} আর্গুমেন্ট",
+    hideNArguments: "{count} আর্গুমেন্ট লুকান",
+    hideNArgumentsPlural: "{count} আর্গুমেন্ট লুকান",
+    showNArguments: "{count} আর্গুমেন্ট দেখান",
+    showNArgumentsPlural: "{count} আর্গুমেন্ট দেখান",
+    octasParens: "({amount} octas)",
+    gasUnits: "{count} গ্যাস ইউনিট",
   },
   network: {
     selectAriaLabel: "নেটওয়ার্ক নির্বাচন করুন",
@@ -527,6 +537,9 @@ export const bn = {
   },
   interval: {
     refreshHint: "হালনাগাদকৃত অবশিষ্ট সময় দেখতে পৃষ্ঠা রিফ্রেশ করুন।",
+    hms: "{hours}ঘ {minutes}মি {seconds}সে",
+    dhm: "{days}দি {hours}ঘ {minutes}মি",
+    dhms: "{days}দি {hours}ঘ {minutes}মি {seconds}সে",
   },
   tabs: {
     transaction: {
@@ -703,6 +716,7 @@ export const bn = {
     stakingFee: "স্টেকিং ফি",
     nextUnlockIn: "পরবর্তী আনলক",
     index: "সূচক:",
+    transactionsWithCount: "লেনদেন ({count}):",
   },
   table: {
     hash: "#",
@@ -858,6 +872,8 @@ export const bn = {
       size: "আকার {size}",
       atPrice: "@ {price}",
       openCctpWormholeAria: "নতুন ট্যাবে WormholeScan-এ CCTP স্থানান্তর খুলুন",
+      confidentialAmountHidden:
+        "স্থানান্তরের পরিমাণ চেইনে এনক্রিপ্ট করা এবং দেখানো যায় না।",
     },
   },
   pages: {
@@ -901,6 +917,8 @@ export const bn = {
       supplyOnChain: "সরবরাহ অন-চেইন ট্র্যাক করা হয়, সময়ের সাথে বদলাতে পারে",
       supplyOffChain: "সরবরাহ অফ-চেইন যাচাইকৃত স্থির সরবরাহ",
       supplyNone: "এই কয়েনের জন্য অন-চেইন বা অফ-চেইন কোনো সরবরাহ ট্র্যাক করা হয় না",
+      confidentialSupplyTip:
+        "জোড়া ফাঞ্জিবল অ্যাসেটের অন-চেইন গোপন অ্যাসেট পুলে রাখা টোকেন (সর্বজনীন যোগফল)। ব্যক্তিগত ব্যালেন্স গোপন থাকে।",
     },
     fa: {
       entity: "ফাঞ্জিবল অ্যাসেট",
@@ -911,6 +929,20 @@ export const bn = {
       metaDescription: "Aptos ব্লকচেইনে ফাঞ্জিবল অ্যাসেট {address}-এর {tab} দেখুন।",
       metaDescriptionFallback:
         "Aptos-এ {symbol} দেখুন। টোকেন সরবরাহ, দশমিক, ধারক, মেটাডেটা ও লেনদেনের ইতিহাস দেখুন।",
+      confidentialSupplyTip:
+        "এই মেটাডেটা অবজেক্টের অন-চেইন গোপন অ্যাসেট পুলে রাখা টোকেন (সর্বজনীন যোগফল)। ব্যক্তিগত ব্যালেন্স গোপন থাকে।",
+      dispatchable: "ডিসপ্যাচেবল",
+      dispatchableTip:
+        "স্থানান্তরের জন্য কাস্টম ডিসপ্যাচ ফাংশন নিবন্ধিত (উত্তোলন/জমা/ব্যালেন্স/সরবরাহ)",
+      hookWithdraw: "উত্তোলন",
+      hookDeposit: "জমা",
+      hookDerivedBalance: "অনুমিত ব্যালেন্স",
+      hookDerivedSupply: "অনুমিত সরবরাহ",
+      viewModuleSource: "মডিউল সোর্স দেখতে ক্লিক করুন",
+      hookTooltip: "{hook}: {path} — {action}",
+      nativeGasTokenInfo:
+        "এটি Aptos-এর অফিসিয়াল নেটিভ গ্যাস টোকেন। এটি APT-এর ফাঞ্জিবল অ্যাসেট সংস্করণ। 0x1::coin ফাংশন ব্যবহার করলে এটি কয়েন সংস্করণের সাথে পুরোপুরি সামঞ্জস্যপূর্ণ। কয়েন সংস্করণের জন্য 0x1::aptos_coin::AptosCoin দেখুন।",
+      nativeUsdtInfo: "এটি Aptos-এর অফিসিয়াল নেটিভ USD₮।",
     },
     tokens: {
       entity: "টোকেন",
@@ -1393,6 +1425,14 @@ export const bn = {
     commissionChange: "অপারেটর এখন কমিশন হার বদলাতে পারে",
     commissionUpdate:
       "বর্তমান কমিশন হার {current}%। বর্তমান লকআপ পিরিয়ডে কমিশন হার {next}%-এ আপডেট হবে।",
+    epochN: "যুগ {epoch}",
+    percentComplete: "{percent}% সম্পন্ন",
+    epochTip:
+      "Aptos ব্লকচেইনে একটি যুগ হলো সেকেন্ডে মাপা সময়কাল, যখন ভ্যালিডেটররা কয়েকটি ব্লকে ভোট দেয়। Aptos মেইননেট যুগ ৭২০০ সেকেন্ড (দুই ঘণ্টা)।",
+    nodeCount: "{count} নোড",
+    countryCount: "{count} দেশ",
+    cityCount: "{count} শহর",
+    commissionRate: "{percent}% কমিশন হার",
   },
   analytics: {
     deployedContracts: "ডিপ্লয় করা কন্ট্রাক্ট",
@@ -1439,6 +1479,7 @@ export const bn = {
     activeFullnodesTip: "ফুলনোডের আনুমানিক সংখ্যা।",
     activelyStaked: "সক্রিয়ভাবে স্টেক করা",
     activelyStakedTip: "স্টেকিং পুলে বর্তমানে থাকা APT টোকেনের পরিমাণ।",
+    totalTransactionsLabel: "মোট লেনদেন: {count}",
   },
   filter: {
     contractAddress: "কন্ট্রাক্ট ঠিকানা",
@@ -1452,6 +1493,12 @@ export const bn = {
     clear: "{name} মুছুন",
     clearAll: "সব মুছুন",
     entryFunction: "এন্ট্রি ফাংশন দিয়ে ফিল্টার",
+    noResults:
+      "ফিল্টারের সাথে মিল থাকা কোনো লেনদেন পাওয়া যায়নি। ইন্ডেক্সার এই নেটওয়ার্কের জন্য কোনো মিল থাকা ব্যবহারকারী লেনদেন ফেরত দেয়নি।",
+    loadError:
+      "ফাংশন অনুযায়ী লেনদেন ফিল্টার করা যায়নি। মান অবৈধ হতে পারে বা ইন্ডেক্সার সাময়িকভাবে অনুপলব্ধ।",
+    matchingOne: "{count} মিল থাকা লেনদেন",
+    matchingMany: "{count} মিল থাকা লেনদেন",
   },
   flags: {
     differences: "পার্থক্য",
@@ -1742,6 +1789,11 @@ export const bn = {
       partner: "পার্টনার / প্রোটোকল ফি ({symbol})",
       partnerTip:
         "এই অ্যাসেটের উত্তোলন ও জমার পার্থক্য — সাধারণত ট্রান্সফার হুক, DEX প্রোটোকল ফি বা পার্টনার স্কিম।",
+      total: "মোট নেওয়া গ্যাস",
+      totalTip:
+        "নির্বাহ, I/O ও স্টোরেজের যোগফল (গ্যাস এককে)। লেনদেনের gas_used-এর সাথে মেলে।",
+      storageShortTip: "নতুন নিট অবস্থার জন্য চার্জ; octas-এ মূল্য।",
+      storageRefundShortTip: "স্টোরেজ ছাড়লে জমা হয়; gas_used-এর অংশ নয়।",
     },
   },
   payload: {
@@ -1900,6 +1952,27 @@ export const bn = {
       "উত্তোলন নির্বাহ করতে ওয়ালেট সংযোগ করুন এবং সরাসরি প্রোটোকলের কন্ট্রাক্টের সাথে ইন্টারঅ্যাক্ট করুন। স্বাক্ষরের আগে লেনদেনের বিবরণ সাবধানে যাচাই করুন।",
     openPetraVault: "Petra Vault-এ খুলুন",
     manageMultisig: "Petra Vault দিয়ে এই মাল্টিসিগ অ্যাকাউন্ট পরিচালনা করুন",
+    balance: "ব্যালেন্স",
+    balanceTip: "এই ব্যালেন্স আপনার ওয়ালেটে থাকা APT টোকেনের পরিমাণ দেখায়।",
+    balanceTipWithUsd:
+      "এই ব্যালেন্স আপনার ওয়ালেটে থাকা APT টোকেনের পরিমাণ এবং 1 APT = {price} হারে তাদের লাইভ USD মূল্য দেখায়।",
+    defiPositionsOn: "DeFi পজিশন:",
+    openPortfolioAria: "নতুন ট্যাবে {name}-এ পোর্টফোলিও খুলুন",
+    transactionCount: "{count} লেনদেন",
+    transactionCountUpTo: "সর্বোচ্চ {count} লেনদেন দেখানো হচ্ছে",
+    matchingSentOne: "{count} মিল থাকা লেনদেন (এই অ্যাকাউন্ট পাঠিয়েছে)",
+    matchingSentMany: "{count} মিল থাকা লেনদেন (এই অ্যাকাউন্ট পাঠিয়েছে)",
+    filterNoResults: "এই অ্যাকাউন্টের পাঠানো কোনো লেনদেন ফিল্টারের সাথে মেলেনি",
+    exportCsv: "CSV রপ্তানি ({count})",
+    exporting: "রপ্তানি হচ্ছে...",
+    exportingProgress: "রপ্তানি হচ্ছে... {percent}%",
+    exportNone: "রপ্তানির জন্য কোনো লেনদেন নেই।",
+    exportNoneFailed: "রপ্তানির জন্য কোনো লেনদেন নেই। সব আনা ব্যর্থ হতে পারে।",
+    exportPartial:
+      "{exported} লেনদেন রপ্তানি হয়েছে। {failed} আনা যায়নি এবং রপ্তানি থেকে বাদ দেওয়া হয়েছে।",
+    exportRateLimit: "হার সীমা অতিক্রম হয়েছে। কিছুক্ষণ অপেক্ষা করে আবার চেষ্টা করুন।",
+    exportError: "লেনদেন রপ্তানিতে ত্রুটি। আবার চেষ্টা করুন।",
+    exportErrorDetail: "লেনদেন রপ্তানিতে ত্রুটি: {message}",
   },
   confidential: {
     epoch: "এপক",
@@ -1986,6 +2059,14 @@ export const bn = {
     txnFailed: "লেনদেন ব্যর্থ{detail}। ব্যর্থ কল নিচে হাইলাইট করা।",
     rawJson: "কাঁচা প্রতিক্রিয়া (JSON)",
     unexpectedShape: "ট্রেস প্রতিক্রিয়ার আকার অপ্রত্যাশিত; শুধু কাঁচা JSON দেখানো হচ্ছে।",
+    userOnly: "কল ট্রেস শুধুমাত্র ব্যবহারকারী লেনদেনের জন্য উপলব্ধ।",
+    gasZero: "0 গ্যাস",
+    gasAmount: "{count} গ্যাস",
+    collapseCalls: "নেস্টেড কল ভাঁজ করুন",
+    expandCalls: "নেস্টেড কল প্রসারিত করুন",
+    callFailed: "এই কল ব্যর্থ হয়েছে",
+    caller: "কলার",
+    callee: "কলি",
   },
   decibel: {
     buy: "কিনুন",
@@ -2103,5 +2184,17 @@ export const bn = {
     newSignaturesRequired: "নতুন প্রয়োজনীয় স্বাক্ষর",
     previousMetadata: "পূর্ববর্তী মেটাডেটা",
     newMetadata: "নতুন মেটাডেটা",
+    pendingTitle: "অপেক্ষমাণ লেনদেন ({count})",
+    ownersTitle: "মালিক ({count})",
+    transactionId: "লেনদেন আইডি: {id}",
+    transactionN: "লেনদেন {n}",
+    creatorLabel: "স্রষ্টা:",
+    creationTime: "তৈরির সময়:",
+    votesRequired: "ভোট: {count} / {required} প্রয়োজন",
+    voteApproved: "✓ অনুমোদিত",
+    voteRejected: "✗ প্রত্যাখ্যাত",
+    eventCounters: "ইভেন্ট কাউন্টার",
+    rawData: "কাঁচা মাল্টিসিগ ডেটা",
+    noResource: "এই অ্যাকাউন্টের মাল্টিসিগ রিসোর্স নেই।",
   },
 } as const satisfies MessageTree;

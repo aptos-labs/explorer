@@ -214,6 +214,14 @@ export const staking = {
     "Commission rates are now subject to change by the operator",
   commissionUpdate:
     "The current commission rate is {current}%. The commission rate will be updated to {next}% at the current lockup period.",
+  epochN: "Epoch {epoch}",
+  percentComplete: "{percent}% complete",
+  epochTip:
+    "An epoch in the Aptos blockchain is defined as a duration of time, in seconds, during which a number of blocks are voted on by the validators. The Aptos mainnet epoch is set as 7200 seconds (two hours).",
+  nodeCount: "{count} Nodes",
+  countryCount: "{count} Countries",
+  cityCount: "{count} Cities",
+  commissionRate: "{percent}% commission rate",
 } as const;
 
 export const analytics = {
@@ -264,6 +272,7 @@ export const analytics = {
   activeFullnodesTip: "Approximate number of fullnodes.",
   activelyStaked: "Actively Staked",
   activelyStakedTip: "Amount of APT tokens currently held in staking pools.",
+  totalTransactionsLabel: "TOTAL TRANSACTIONS: {count}",
 } as const;
 
 export const searchExtra = {
@@ -306,6 +315,12 @@ export const filter = {
   clear: "Clear {name}",
   clearAll: "Clear all",
   entryFunction: "Filter by Entry Function",
+  noResults:
+    "No transactions found matching the filter. The indexer returned no matching user transactions for this network.",
+  loadError:
+    "Failed to filter transactions by function. The filter values may be invalid or the indexer may be temporarily unavailable.",
+  matchingOne: "{count} matching transaction",
+  matchingMany: "{count} matching transactions",
 } as const;
 
 export const flags = {

@@ -452,6 +452,16 @@ export const ko = {
     hoursAgo: "{count}시간 전",
     daysAgo: "{count}일 전",
     noValidatorsFound: "밸리데이터를 찾을 수 없습니다",
+    usd: "USD",
+    iconAlt: "{name} 아이콘",
+    nArguments: "인자 {count}개",
+    nArgumentsPlural: "인자 {count}개",
+    hideNArguments: "인자 {count}개 숨기기",
+    hideNArgumentsPlural: "인자 {count}개 숨기기",
+    showNArguments: "인자 {count}개 표시",
+    showNArgumentsPlural: "인자 {count}개 표시",
+    octasParens: "({amount} octa)",
+    gasUnits: "{count} 가스 유닛",
   },
   network: {
     selectAriaLabel: "네트워크 선택",
@@ -528,6 +538,9 @@ export const ko = {
   },
   interval: {
     refreshHint: "남은 업데이트된 시간을 보려면 페이지를 새로고침하세요.",
+    hms: "{hours}시간 {minutes}분 {seconds}초",
+    dhm: "{days}일 {hours}시간 {minutes}분",
+    dhms: "{days}일 {hours}시간 {minutes}분 {seconds}초",
   },
   tabs: {
     transaction: {
@@ -704,6 +717,7 @@ export const ko = {
     stakingFee: "스테이킹 수수료",
     nextUnlockIn: "다음 언락까지",
     index: "인덱스:",
+    transactionsWithCount: "트랜잭션({count}):",
   },
   table: {
     hash: "#",
@@ -860,6 +874,8 @@ export const ko = {
       size: "수량 {size}",
       atPrice: "@ {price}",
       openCctpWormholeAria: "새 탭에서 WormholeScan의 CCTP 전송 열기",
+      confidentialAmountHidden:
+        "전송 금액은 온체인에서 암호화되어 표시할 수 없습니다.",
     },
   },
   pages: {
@@ -907,6 +923,8 @@ export const ko = {
       supplyOffChain: "오프체인에서 고정 공급량으로 검증된 공급량입니다",
       supplyNone:
         "이 코인의 공급량은 온체인 또는 오프체인에서 추적되지 않습니다",
+      confidentialSupplyTip:
+        "페어링된 대체 가능 자산의 온체인 기밀 자산 풀에 보유된 토큰(공개 합계)입니다. 개별 잔액은 비공개로 유지됩니다.",
     },
     fa: {
       entity: "대체 가능 자산",
@@ -919,6 +937,20 @@ export const ko = {
         "Aptos 블록체인에서 대체 가능 자산 {address}의 {tab}을(를) 봅니다.",
       metaDescriptionFallback:
         "Aptos에서 {symbol}을(를) 봅니다. 토큰 공급량, 소수점 자릿수, 보유자, 메타데이터, 트랜잭션 기록을 확인하세요.",
+      confidentialSupplyTip:
+        "이 메타데이터 객체의 온체인 기밀 자산 풀에 보유된 토큰(공개 합계)입니다. 개별 잔액은 비공개로 유지됩니다.",
+      dispatchable: "디스패치 가능",
+      dispatchableTip:
+        "전송을 위한 사용자 지정 디스패치 함수가 등록되어 있습니다(출금/입금/잔액/공급량)",
+      hookWithdraw: "출금",
+      hookDeposit: "입금",
+      hookDerivedBalance: "파생 잔액",
+      hookDerivedSupply: "파생 공급량",
+      viewModuleSource: "클릭하여 모듈 소스 보기",
+      hookTooltip: "{hook}: {path} — {action}",
+      nativeGasTokenInfo:
+        "Aptos의 공식 네이티브 가스 토큰입니다. APT의 대체 가능 자산 버전입니다. 0x1::coin 함수를 사용할 때 코인 버전과 완전히 호환됩니다. 코인 버전은 0x1::aptos_coin::AptosCoin을 보세요.",
+      nativeUsdtInfo: "Aptos의 공식 네이티브 USD₮입니다.",
     },
     tokens: {
       entity: "토큰",
@@ -1414,6 +1446,14 @@ export const ko = {
     commissionChange: "이제 운영자가 수수료율을 변경할 수 있습니다",
     commissionUpdate:
       "현재 수수료율은 {current}%입니다. 현재 락업 기간에 수수료율이 {next}%로 업데이트됩니다.",
+    epochN: "에포크 {epoch}",
+    percentComplete: "{percent}% 완료",
+    epochTip:
+      "Aptos 블록체인의 에포크는 밸리데이터가 여러 블록에 투표하는 초 단위 기간입니다. Aptos 메인넷 에포크는 7200초(2시간)입니다.",
+    nodeCount: "노드 {count}개",
+    countryCount: "국가 {count}개",
+    cityCount: "도시 {count}개",
+    commissionRate: "수수료율 {percent}%",
   },
   analytics: {
     deployedContracts: "배포된 컨트랙트",
@@ -1462,6 +1502,7 @@ export const ko = {
     activeFullnodesTip: "대략적인 풀노드 수입니다.",
     activelyStaked: "활성 스테이킹",
     activelyStakedTip: "현재 스테이킹 풀에 보유된 APT 토큰 양입니다.",
+    totalTransactionsLabel: "총 트랜잭션: {count}",
   },
   filter: {
     contractAddress: "컨트랙트 주소",
@@ -1475,6 +1516,12 @@ export const ko = {
     clear: "{name} 지우기",
     clearAll: "모두 지우기",
     entryFunction: "엔트리 함수로 필터",
+    noResults:
+      "필터와 일치하는 트랜잭션이 없습니다. 인덱서가 이 네트워크에서 일치하는 사용자 트랜잭션을 반환하지 않았습니다.",
+    loadError:
+      "함수로 트랜잭션을 필터링하지 못했습니다. 값이 잘못되었거나 인덱서를 일시적으로 사용할 수 없을 수 있습니다.",
+    matchingOne: "일치하는 트랜잭션 {count}개",
+    matchingMany: "일치하는 트랜잭션 {count}개",
   },
   flags: {
     differences: "차이",
@@ -1768,6 +1815,12 @@ export const ko = {
       partner: "파트너 / 프로토콜 수수료 ({symbol})",
       partnerTip:
         "이 자산에서 출금된 금액과 예치된 금액의 차이 — 보통 전송 훅, DEX 프로토콜 수수료, 또는 파트너 수수료입니다.",
+      total: "청구된 가스 합계",
+      totalTip:
+        "실행, I/O, 스토리지의 합계(가스 단위)입니다. 트랜잭션의 gas_used와 일치합니다.",
+      storageShortTip: "순증가 상태에 대해 청구되며 octa로 가격이 매겨집니다.",
+      storageRefundShortTip:
+        "스토리지가 해제될 때 적립됩니다. gas_used에 포함되지 않습니다.",
     },
   },
   payload: {
@@ -1929,6 +1982,29 @@ export const ko = {
       "지갑을 연결하고 프로토콜 컨트랙트와 직접 상호작용하여 출금을 실행하세요. 서명하기 전에 트랜잭션 세부 정보를 주의 깊게 확인하세요.",
     openPetraVault: "Petra Vault에서 열기",
     manageMultisig: "Petra Vault로 이 멀티시그 계정 관리",
+    balance: "잔액",
+    balanceTip: "이 잔액은 지갑에 보유한 APT 토큰 양을 반영합니다.",
+    balanceTipWithUsd:
+      "이 잔액은 지갑에 보유한 APT 토큰 양과 1 APT = {price} 기준 실시간 달러 가치를 반영합니다.",
+    defiPositionsOn: "DeFi 포지션:",
+    openPortfolioAria: "새 탭에서 {name} 포트폴리오 열기",
+    transactionCount: "트랜잭션 {count}개",
+    transactionCountUpTo: "최대 {count}개 트랜잭션 표시",
+    matchingSentOne: "일치하는 트랜잭션 {count}개(이 계정이 전송)",
+    matchingSentMany: "일치하는 트랜잭션 {count}개(이 계정이 전송)",
+    filterNoResults:
+      "이 계정이 전송한 거래 중 필터 조건과 일치하는 트랜잭션이 없습니다",
+    exportCsv: "CSV 내보내기({count})",
+    exporting: "내보내는 중...",
+    exportingProgress: "내보내는 중... {percent}%",
+    exportNone: "내보낼 트랜잭션이 없습니다.",
+    exportNoneFailed:
+      "내보낼 트랜잭션이 없습니다. 모든 트랜잭션 가져오기가 실패했을 수 있습니다.",
+    exportPartial:
+      "트랜잭션 {exported}개를 내보냈습니다. {failed}개는 가져올 수 없어 내보내기에서 제외되었습니다.",
+    exportRateLimit: "요청 한도를 초과했습니다. 잠시 후 다시 시도하세요.",
+    exportError: "트랜잭션을 내보내는 중 오류가 발생했습니다. 다시 시도하세요.",
+    exportErrorDetail: "트랜잭션을 내보내는 중 오류가 발생했습니다: {message}",
   },
   confidential: {
     epoch: "에포크",
@@ -2021,6 +2097,14 @@ export const ko = {
     rawJson: "원시 응답 (JSON)",
     unexpectedShape:
       "트레이스 응답 형태가 예상과 다릅니다. 원시 JSON만 표시합니다.",
+    userOnly: "호출 추적은 사용자 트랜잭션에서만 사용할 수 있습니다.",
+    gasZero: "0 gas",
+    gasAmount: "{count} gas",
+    collapseCalls: "중첩 호출 접기",
+    expandCalls: "중첩 호출 펼치기",
+    callFailed: "이 호출이 실패했습니다",
+    caller: "호출자",
+    callee: "피호출자",
   },
   decibel: {
     buy: "매수",
@@ -2139,5 +2223,17 @@ export const ko = {
     newSignaturesRequired: "새 필요 서명 수",
     previousMetadata: "이전 메타데이터",
     newMetadata: "새 메타데이터",
+    pendingTitle: "대기 중인 트랜잭션({count})",
+    ownersTitle: "소유자({count})",
+    transactionId: "트랜잭션 ID: {id}",
+    transactionN: "트랜잭션 {n}",
+    creatorLabel: "생성자:",
+    creationTime: "생성 시간:",
+    votesRequired: "투표: {count} / {required} 필요",
+    voteApproved: "✓ 승인됨",
+    voteRejected: "✗ 거절됨",
+    eventCounters: "이벤트 카운터",
+    rawData: "원시 멀티시그 데이터",
+    noResource: "이 계정에는 멀티시그 리소스가 없습니다.",
   },
 } as const satisfies MessageTree;

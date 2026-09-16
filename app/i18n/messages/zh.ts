@@ -448,6 +448,16 @@ export const zh = {
     hoursAgo: "{count} 小时前",
     daysAgo: "{count} 天前",
     noValidatorsFound: "未找到验证者",
+    usd: "USD",
+    iconAlt: "{name} 图标",
+    nArguments: "{count} 个参数",
+    nArgumentsPlural: "{count} 个参数",
+    hideNArguments: "隐藏 {count} 个参数",
+    hideNArgumentsPlural: "隐藏 {count} 个参数",
+    showNArguments: "显示 {count} 个参数",
+    showNArgumentsPlural: "显示 {count} 个参数",
+    octasParens: "({amount} octa)",
+    gasUnits: "{count} 个 Gas 单位",
   },
   network: {
     selectAriaLabel: "选择网络",
@@ -521,6 +531,9 @@ export const zh = {
   },
   interval: {
     refreshHint: "请刷新页面以查看更新后的剩余时间。",
+    hms: "{hours}小时 {minutes}分 {seconds}秒",
+    dhm: "{days}天 {hours}小时 {minutes}分",
+    dhms: "{days}天 {hours}小时 {minutes}分 {seconds}秒",
   },
   tabs: {
     transaction: {
@@ -697,6 +710,7 @@ export const zh = {
     stakingFee: "质押费用",
     nextUnlockIn: "距离下次解锁",
     index: "索引：",
+    transactionsWithCount: "交易（{count}）：",
   },
   table: {
     hash: "#",
@@ -849,6 +863,7 @@ export const zh = {
       size: "数量 {size}",
       atPrice: "@ {price}",
       openCctpWormholeAria: "在新标签页打开 WormholeScan 上的 CCTP 转账",
+      confidentialAmountHidden: "转账金额在链上加密，无法显示。",
     },
   },
   pages: {
@@ -892,6 +907,8 @@ export const zh = {
       supplyOnChain: "供应量在链上追踪，可能随时间变化",
       supplyOffChain: "供应量已在链下验证为固定供应",
       supplyNone: "此代币在链上或链下均未追踪供应量",
+      confidentialSupplyTip:
+        "配对同质化资产在链上机密资产池中持有的代币（公开合计）。个人余额保持私密。",
     },
     fa: {
       entity: "同质化资产",
@@ -902,6 +919,19 @@ export const zh = {
       metaDescription: "查看 Aptos 区块链上同质化资产 {address} 的{tab}。",
       metaDescriptionFallback:
         "在 Aptos 上查看 {symbol}。查看通证供应量、小数位、持有者、元数据和交易历史。",
+      confidentialSupplyTip:
+        "此元数据对象在链上机密资产池中持有的代币（公开合计）。个人余额保持私密。",
+      dispatchable: "可调度",
+      dispatchableTip: "已为转账注册自定义调度函数（提取/存入/余额/供应量）",
+      hookWithdraw: "提取",
+      hookDeposit: "存入",
+      hookDerivedBalance: "派生余额",
+      hookDerivedSupply: "派生供应量",
+      viewModuleSource: "点击查看模块源码",
+      hookTooltip: "{hook}: {path} — {action}",
+      nativeGasTokenInfo:
+        "这是 Aptos 上的官方原生 Gas 代币。这是 APT 的同质化资产版本。在使用 0x1::coin 函数时与代币版本完全兼容。代币版本见 0x1::aptos_coin::AptosCoin。",
+      nativeUsdtInfo: "这是 Aptos 上的官方原生 USD₮。",
     },
     tokens: {
       entity: "通证",
@@ -1366,6 +1396,14 @@ export const zh = {
     commissionChange: "现在运营者可以更改佣金率",
     commissionUpdate:
       "当前佣金率为 {current}%。佣金率将在当前锁定期更新为 {next}%。",
+    epochN: "纪元 {epoch}",
+    percentComplete: "已完成 {percent}%",
+    epochTip:
+      "Aptos 区块链中的纪元是一段时间（以秒计），期间验证者对若干区块进行投票。Aptos 主网纪元设为 7200 秒（两小时）。",
+    nodeCount: "{count} 个节点",
+    countryCount: "{count} 个国家",
+    cityCount: "{count} 个城市",
+    commissionRate: "{percent}% 佣金率",
   },
   analytics: {
     deployedContracts: "已部署合约",
@@ -1409,6 +1447,7 @@ export const zh = {
     activeFullnodesTip: "全节点的大致数量。",
     activelyStaked: "主动质押",
     activelyStakedTip: "当前质押池中持有的 APT 代币数量。",
+    totalTransactionsLabel: "总交易数：{count}",
   },
   filter: {
     contractAddress: "合约地址",
@@ -1422,6 +1461,10 @@ export const zh = {
     clear: "清除 {name}",
     clearAll: "全部清除",
     entryFunction: "按入口函数筛选",
+    noResults: "未找到符合筛选条件的交易。索引器未返回此网络上匹配的用户交易。",
+    loadError: "按函数筛选交易失败。筛选值可能无效，或索引器暂时不可用。",
+    matchingOne: "{count} 笔匹配交易",
+    matchingMany: "{count} 笔匹配交易",
   },
   flags: {
     differences: "差异",
@@ -1708,6 +1751,11 @@ export const zh = {
       partner: "合作方 / 协议费用（{symbol}）",
       partnerTip:
         "此资产提取金额与存入金额之差 — 通常是转账钩子、DEX 协议费或合作方抽成。",
+      total: "收取的 Gas 总量",
+      totalTip:
+        "执行、I/O 和存储的总和（以 Gas 单位计）。与交易上的 gas_used 一致。",
+      storageShortTip: "因净新增状态而收取；以 octa 计价。",
+      storageRefundShortTip: "释放存储时计入；不属于 gas_used。",
     },
   },
   payload: {
@@ -1862,6 +1910,27 @@ export const zh = {
       "连接钱包并直接与协议合约交互以执行提取。签名前请仔细核验交易详情。",
     openPetraVault: "在 Petra Vault 中打开",
     manageMultisig: "使用 Petra Vault 管理此多重签名账户",
+    balance: "余额",
+    balanceTip: "此余额反映钱包中持有的 APT 代币数量。",
+    balanceTipWithUsd:
+      "此余额反映钱包中持有的 APT 代币数量，以及按 1 APT = {price} 计算的实时美元价值。",
+    defiPositionsOn: "DeFi 仓位来自",
+    openPortfolioAria: "在新标签页打开 {name} 上的投资组合",
+    transactionCount: "{count} 笔交易",
+    transactionCountUpTo: "最多显示 {count} 笔交易",
+    matchingSentOne: "{count} 笔匹配交易（由此账户发送）",
+    matchingSentMany: "{count} 笔匹配交易（由此账户发送）",
+    filterNoResults: "未找到由此账户发送且符合筛选条件的交易",
+    exportCsv: "导出 CSV（{count}）",
+    exporting: "正在导出...",
+    exportingProgress: "正在导出... {percent}%",
+    exportNone: "没有可导出的交易。",
+    exportNoneFailed: "没有可导出的交易。所有交易获取可能均已失败。",
+    exportPartial:
+      "已成功导出 {exported} 笔交易。{failed} 笔交易无法获取，已从导出中排除。",
+    exportRateLimit: "超出速率限制。请稍候再试。",
+    exportError: "导出交易出错。请重试。",
+    exportErrorDetail: "导出交易出错：{message}",
   },
   confidential: {
     epoch: "纪元",
@@ -1946,6 +2015,14 @@ export const zh = {
     txnFailed: "交易失败{detail}。失败的调用已在下方高亮。",
     rawJson: "原始响应（JSON）",
     unexpectedShape: "追踪响应形状异常；仅显示原始 JSON。",
+    userOnly: "调用追踪仅适用于用户交易。",
+    gasZero: "0 gas",
+    gasAmount: "{count} gas",
+    collapseCalls: "折叠嵌套调用",
+    expandCalls: "展开嵌套调用",
+    callFailed: "此调用失败",
+    caller: "调用方",
+    callee: "被调用方",
   },
   decibel: {
     buy: "买入",
@@ -2063,5 +2140,17 @@ export const zh = {
     newSignaturesRequired: "新的所需签名数",
     previousMetadata: "先前元数据",
     newMetadata: "新元数据",
+    pendingTitle: "待处理交易（{count}）",
+    ownersTitle: "所有者（{count}）",
+    transactionId: "交易 ID：{id}",
+    transactionN: "交易 {n}",
+    creatorLabel: "创建者：",
+    creationTime: "创建时间：",
+    votesRequired: "投票：{count} / {required} 票所需",
+    voteApproved: "✓ 已批准",
+    voteRejected: "✗ 已拒绝",
+    eventCounters: "事件计数器",
+    rawData: "原始多重签名数据",
+    noResource: "此账户没有多重签名资源。",
   },
 } as const satisfies MessageTree;

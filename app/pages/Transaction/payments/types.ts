@@ -119,4 +119,5 @@ export type IdentifyPaymentsInput = {
   indexerActivities?: import("../utils").FungibleAssetActivity[];
   coinData?: import("../../../api/hooks/useGetCoinList").CoinDescription[];
   source?: PaymentFlowSource;
+  locale?: string;
 };

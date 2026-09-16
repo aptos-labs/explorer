@@ -22,7 +22,7 @@ export default function AmountTextField({
   onAmountChange,
   balance,
 }: AmountTextFieldProps) {
-  const {t} = useTranslation();
+  const {t, locale} = useTranslation();
   return (
     <FormControl fullWidth>
       <Stack
@@ -45,7 +45,7 @@ export default function AmountTextField({
         placeholder={
           balance
             ? t("staking.balancePlaceholder", {
-                balance: getFormattedBalanceStr(balance, undefined, 1),
+                balance: getFormattedBalanceStr(balance, undefined, 1, locale),
               })
             : ""
         }

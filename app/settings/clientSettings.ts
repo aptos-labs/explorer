@@ -15,8 +15,8 @@ export interface ExplorerClientSettings {
 }
 
 export const EXPLORER_SETTINGS_STORAGE_KEY = "aptos-explorer-settings";
-const DECOMPILATION_STORAGE_KEY = "aptos-explorer-enable-decompilation";
-const LOCALE_STORAGE_KEY = "aptos-explorer-locale";
+export const DECOMPILATION_STORAGE_KEY = "aptos-explorer-enable-decompilation";
+export const LOCALE_STORAGE_KEY = "aptos-explorer-locale";
 
 const ALL_NETWORK_NAMES = Object.keys(networks) as NetworkName[];
 
@@ -26,6 +26,16 @@ export const defaultExplorerClientSettings: ExplorerClientSettings = {
   enableDecompilation: false,
   localePreference: "auto",
 };
+
+/** Keys that `ExplorerSettingsProvider` reloads on cross-tab `storage` events. */
+export function isExplorerSettingsStorageKey(key: string | null): boolean {
+  return (
+    key === null ||
+    key === EXPLORER_SETTINGS_STORAGE_KEY ||
+    key === DECOMPILATION_STORAGE_KEY ||
+    key === LOCALE_STORAGE_KEY
+  );
+}
 
 type StorageLike = Pick<Storage, "getItem" | "setItem" | "removeItem">;
 

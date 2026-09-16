@@ -15,7 +15,6 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import {formatDistanceToNow} from "date-fns";
 import {useTranslation} from "../../i18n";
 import type {ReleaseResult} from "../../api/hooks/useGetReleases";
 
@@ -39,6 +38,7 @@ function PrereleaseBadge() {
 }
 
 function RelativeDate({iso}: {iso: string | null}) {
+  const {formatDateTime} = useTranslation();
   if (!iso) return null;
   return (
     <Typography
@@ -47,7 +47,7 @@ function RelativeDate({iso}: {iso: string | null}) {
         color: "text.secondary",
       }}
     >
-      {formatDistanceToNow(new Date(iso), {addSuffix: true})}
+      {formatDateTime(new Date(iso))}
     </Typography>
   );
 }

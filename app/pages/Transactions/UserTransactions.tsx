@@ -10,6 +10,7 @@ import useGetUserTransactionVersions, {
 import PageNumberPagination, {
   useCurrentPage,
 } from "../../components/PageNumberPagination";
+import {useTranslation} from "../../i18n";
 import FunctionFilter from "./Components/FunctionFilter";
 import {UserTransactionsTable} from "./TransactionsTable";
 
@@ -22,6 +23,7 @@ export function FilteredUserTransactionsByFunction({
 }: {
   functionFilter: FunctionFilterParams;
 }) {
+  const {t, formatInteger} = useTranslation();
   const currentPage = useCurrentPage();
   const offset = (currentPage - 1) * LIMIT;
 
@@ -47,12 +49,7 @@ export function FilteredUserTransactionsByFunction({
   }
 
   if (isError) {
-    return (
-      <Alert severity="error">
-        Failed to filter transactions by function. The filter values may be
-        invalid or the indexer may be temporarily unavailable.
-      </Alert>
-    );
+    return <Alert severity="error">{t("filter.loadError")}</Alert>;
   }
 
   if (versions.length === 0) {
@@ -63,8 +60,7 @@ export function FilteredUserTransactionsByFunction({
             color: "text.secondary",
           }}
         >
-          No transactions found matching the filter. The indexer returned no
-          matching user transactions for this network.
+          {t("filter.noResults")}
         </Typography>
       </Box>
     );
@@ -79,8 +75,9 @@ export function FilteredUserTransactionsByFunction({
             color: "text.secondary",
           }}
         >
-          {txnCount.toLocaleString()} matching transaction
-          {txnCount !== 1 ? "s" : ""}
+          {txnCount === 1
+            ? t("filter.matchingOne", {count: formatInteger(txnCount)})
+            : t("filter.matchingMany", {count: formatInteger(txnCount)})}
         </Typography>
       )}
       <Box sx={{width: "auto", overflowX: "auto"}}>

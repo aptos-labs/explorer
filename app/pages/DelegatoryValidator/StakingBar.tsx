@@ -68,7 +68,7 @@ function StakingBarContent({
 }: ValidatorStakingBarProps & {
   validator: ValidatorData;
 }) {
-  const {t} = useTranslation();
+  const {t, formatNumber} = useTranslation();
   const theme = useTheme();
   const logEvent = useLogEventWithBasic();
   const isOnMobile = !useMediaQuery(theme.breakpoints.up("md"));
@@ -82,6 +82,10 @@ function StakingBarContent({
     validatorVotingPower,
     totalVotingPower,
   );
+  const networkPercentageLabel = formatNumber(parseFloat(networkPercentage), {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
@@ -130,7 +134,7 @@ function StakingBarContent({
 
   const delegatedStakePercentage = (
     <Stack direction="column" spacing={0.5}>
-      <Typography sx={{fontWeight: 600}}>{networkPercentage}%</Typography>
+      <Typography sx={{fontWeight: 600}}>{networkPercentageLabel}%</Typography>
       <Typography variant="body2" color={theme.palette.text.secondary}>
         {t("staking.ofNetwork")}
       </Typography>

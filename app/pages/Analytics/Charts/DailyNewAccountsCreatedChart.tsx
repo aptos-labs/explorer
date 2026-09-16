@@ -4,6 +4,7 @@ import BarChart from "../Components/BarChart";
 import type {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
 import ChartTitle from "../Components/ChartTitle";
 import {getLabels} from "../utils";
+import {useTranslation} from "../../../i18n";
 
 function getDataset(data: DailyNewAccountData[], days: number): number[] {
   return data.slice(-days).map((dailyData) => dailyData.new_account_count);
@@ -18,7 +19,8 @@ export default function DailyNewAccountsCreatedChart({
   data,
   days,
 }: DailyNewAccountsCreatedChartProps) {
-  const labels = getLabels(data, days);
+  const {locale} = useTranslation();
+  const labels = getLabels(data, days, locale);
   const dataset = getDataset(data, days);
 
   return (

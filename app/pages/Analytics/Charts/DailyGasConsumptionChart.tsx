@@ -6,7 +6,7 @@ import type {ChartRangeDays} from "../Components/ChartRangeDaysSelect";
 import ChartTitle from "../Components/ChartTitle";
 import LineChart from "../Components/LineChart";
 import {getLabels} from "../utils";
-import {englishT} from "../../../i18n";
+import {useTranslation} from "../../../i18n";
 
 export function getDataset(data: DailyGasCostData[], days: number): number[] {
   return data.slice(-days).map((dailyData) => Number(dailyData.gas_cost));
@@ -21,7 +21,8 @@ export default function DailyGasConsumptionChart({
   data,
   days,
 }: DailyGasConsumptionChartProps) {
-  const labels = getLabels(data, days);
+  const {locale, t} = useTranslation();
+  const labels = getLabels(data, days, locale);
   const dataset = getDataset(data, days);
   return (
     <CardOutline>
@@ -36,10 +37,15 @@ export default function DailyGasConsumptionChart({
         tooltipsLabelFunc={(context: TooltipItem<"line">) => {
           const yValue = context.parsed.y;
           if (yValue === null || yValue === undefined) {
-            return englishT("common.na");
+            return t("common.na");
           }
           const priceInteger = Math.round(yValue).toString();
-          const priceInAPT = getFormattedBalanceStr(priceInteger, 0);
+          const priceInAPT = getFormattedBalanceStr(
+            priceInteger,
+            0,
+            undefined,
+            locale,
+          );
           return `${priceInAPT} APT`;
         }}
       />

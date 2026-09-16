@@ -3,6 +3,7 @@ import type {Types} from "~/types/aptos";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
+import IntegerValue from "../../../components/IndividualPageContent/ContentValue/IntegerValue";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {TransactionStatus} from "../../../components/TransactionStatus";
 import {getLearnMoreTooltip} from "../helpers";
@@ -27,7 +28,11 @@ export default function BlockMetadataOverviewTab({
       <ContentBox sx={{padding: 4}}>
         <ContentRow
           titleKey="fields.version"
-          value={<Box sx={{fontWeight: 600}}>{transactionData.version}</Box>}
+          value={
+            <Box sx={{fontWeight: 600}}>
+              <IntegerValue value={transactionData.version} />
+            </Box>
+          }
           tooltip={getLearnMoreTooltip("version")}
         />
         <ContentRow
@@ -55,12 +60,12 @@ export default function BlockMetadataOverviewTab({
         <TransactionBlockRow version={transactionData.version} />
         <ContentRow
           titleKey="fields.epoch"
-          value={transactionData.epoch}
+          value={<IntegerValue value={transactionData.epoch} />}
           tooltip={getLearnMoreTooltip("epoch")}
         />
         <ContentRow
           titleKey="fields.round"
-          value={transactionData.round}
+          value={<IntegerValue value={transactionData.round} />}
           tooltip={getLearnMoreTooltip("round")}
         />
         <ContentRow

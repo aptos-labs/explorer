@@ -453,6 +453,16 @@ export const ja = {
     hoursAgo: "{count}時間前",
     daysAgo: "{count}日前",
     noValidatorsFound: "バリデータが見つかりません",
+    usd: "USD",
+    iconAlt: "{name} のアイコン",
+    nArguments: "{count} 個の引数",
+    nArgumentsPlural: "{count} 個の引数",
+    hideNArguments: "{count} 個の引数を隠す",
+    hideNArgumentsPlural: "{count} 個の引数を隠す",
+    showNArguments: "{count} 個の引数を表示",
+    showNArgumentsPlural: "{count} 個の引数を表示",
+    octasParens: "({amount} octa)",
+    gasUnits: "{count} ガスユニット",
   },
   network: {
     selectAriaLabel: "ネットワークを選択",
@@ -531,6 +541,9 @@ export const ja = {
   },
   interval: {
     refreshHint: "残り時間の更新を見るにはページを更新してください。",
+    hms: "{hours}時間 {minutes}分 {seconds}秒",
+    dhm: "{days}日 {hours}時間 {minutes}分",
+    dhms: "{days}日 {hours}時間 {minutes}分 {seconds}秒",
   },
   tabs: {
     transaction: {
@@ -707,6 +720,7 @@ export const ja = {
     stakingFee: "ステーキング手数料",
     nextUnlockIn: "次のアンロックまで",
     index: "インデックス:",
+    transactionsWithCount: "トランザクション（{count}）:",
   },
   table: {
     hash: "#",
@@ -864,6 +878,8 @@ export const ja = {
       size: "サイズ {size}",
       atPrice: "@ {price}",
       openCctpWormholeAria: "WormholeScan で CCTP 送金を新しいタブで開く",
+      confidentialAmountHidden:
+        "転送額はオンチェーンで暗号化されており、表示できません。",
     },
   },
   pages: {
@@ -913,6 +929,8 @@ export const ja = {
       supplyOffChain: "供給量はオフチェーンで固定供給と検証されています",
       supplyNone:
         "このコインの供給量はオンチェーンでもオフチェーンでも追跡されていません",
+      confidentialSupplyTip:
+        "ペアのファンジブル資産について、オンチェーンの機密資産プールに保有されているトークン（公開合計）。個別残高は非公開のままです。",
     },
     fa: {
       entity: "ファンジブルアセット",
@@ -925,6 +943,20 @@ export const ja = {
         "Aptos ブロックチェーン上のファンジブルアセット {address} の {tab} を表示します。",
       metaDescriptionFallback:
         "Aptos 上の {symbol} を表示します。トークン供給量、小数桁、保有者、メタデータ、トランザクション履歴を確認できます。",
+      confidentialSupplyTip:
+        "このメタデータ オブジェクトについて、オンチェーンの機密資産プールに保有されているトークン（公開合計）。個別残高は非公開のままです。",
+      dispatchable: "ディスパッチ可能",
+      dispatchableTip:
+        "転送用のカスタム ディスパッチ関数が登録されています（出金/入金/残高/供給量）",
+      hookWithdraw: "出金",
+      hookDeposit: "入金",
+      hookDerivedBalance: "派生残高",
+      hookDerivedSupply: "派生供給量",
+      viewModuleSource: "クリックしてモジュールのソースを表示",
+      hookTooltip: "{hook}: {path} — {action}",
+      nativeGasTokenInfo:
+        "これは Aptos の公式ネイティブ ガス トークンです。APT のファンジブル資産版です。0x1::coin 関数を使う場合、コイン版と完全に互換します。コイン版は 0x1::aptos_coin::AptosCoin を参照してください。",
+      nativeUsdtInfo: "これは Aptos の公式ネイティブ USD₮ です。",
     },
     tokens: {
       entity: "トークン",
@@ -1432,6 +1464,14 @@ export const ja = {
     commissionChange: "手数料率はオペレーターが変更できるようになりました",
     commissionUpdate:
       "現在の手数料率は {current}% です。現在のロックアップ期間に手数料率は {next}% に更新されます。",
+    epochN: "エポック {epoch}",
+    percentComplete: "{percent}% 完了",
+    epochTip:
+      "Aptos ブロックチェーンのエポックは、バリデータが複数のブロックに投票する秒単位の期間です。Aptos メインネットのエポックは 7200 秒（2 時間）です。",
+    nodeCount: "{count} ノード",
+    countryCount: "{count} か国",
+    cityCount: "{count} 都市",
+    commissionRate: "手数料率 {percent}%",
   },
   analytics: {
     deployedContracts: "デプロイ済みコントラクト",
@@ -1480,6 +1520,7 @@ export const ja = {
     activelyStaked: "アクティブにステーク中",
     activelyStakedTip:
       "ステーキングプールに現在保有されている APT トークン量。",
+    totalTransactionsLabel: "総トランザクション数: {count}",
   },
   filter: {
     contractAddress: "コントラクトアドレス",
@@ -1493,6 +1534,12 @@ export const ja = {
     clear: "{name} をクリア",
     clearAll: "すべてクリア",
     entryFunction: "エントリ関数でフィルター",
+    noResults:
+      "フィルターに一致するトランザクションはありません。インデクサはこのネットワークで一致するユーザー トランザクションを返しませんでした。",
+    loadError:
+      "関数によるトランザクションのフィルターに失敗しました。値が無効か、インデクサが一時的に利用できない可能性があります。",
+    matchingOne: "{count} 件の一致するトランザクション",
+    matchingMany: "{count} 件の一致するトランザクション",
   },
   flags: {
     differences: "差分",
@@ -1788,6 +1835,12 @@ export const ja = {
       partner: "パートナー / プロトコル手数料（{symbol}）",
       partnerTip:
         "この資産について出金額と入金額の差 — 通常は transfer hook、DEX プロトコル手数料、またはパートナーのスキムです。",
+      total: "課金されたガス合計",
+      totalTip:
+        "実行、I/O、ストレージの合計（ガス単位）。トランザクションの gas_used と一致します。",
+      storageShortTip: "純増分の状態に対する課金。octa 建て。",
+      storageRefundShortTip:
+        "ストレージ解放時に計上。gas_used には含まれません。",
     },
   },
   payload: {
@@ -1954,6 +2007,34 @@ export const ja = {
       "ウォレットを接続し、プロトコルのコントラクトと直接やり取りして出金を実行します。署名前にトランザクション詳細を十分確認してください。",
     openPetraVault: "Petra Vault で開く",
     manageMultisig: "このマルチシグアカウントを Petra Vault で管理",
+    balance: "残高",
+    balanceTip: "この残高は、ウォレットが保有する APT トークンの量を示します。",
+    balanceTipWithUsd:
+      "この残高は、ウォレットが保有する APT トークンの量と、1 APT = {price} で換算したリアルタイムの米ドル価値を示します。",
+    defiPositionsOn: "DeFi ポジション：",
+    openPortfolioAria: "新しいタブで {name} のポートフォリオを開く",
+    transactionCount: "{count} 件のトランザクション",
+    transactionCountUpTo: "最大 {count} 件のトランザクションを表示",
+    matchingSentOne:
+      "{count} 件の一致するトランザクション（このアカウントが送信）",
+    matchingSentMany:
+      "{count} 件の一致するトランザクション（このアカウントが送信）",
+    filterNoResults:
+      "このアカウントが送信した、フィルター条件に一致するトランザクションはありません",
+    exportCsv: "CSV をエクスポート（{count}）",
+    exporting: "エクスポート中...",
+    exportingProgress: "エクスポート中... {percent}%",
+    exportNone: "エクスポートするトランザクションがありません。",
+    exportNoneFailed:
+      "エクスポートするトランザクションがありません。すべての取得が失敗した可能性があります。",
+    exportPartial:
+      "{exported} 件のトランザクションをエクスポートしました。{failed} 件は取得できず、エクスポートから除外されました。",
+    exportRateLimit:
+      "レート制限を超えました。しばらく待ってから再試行してください。",
+    exportError:
+      "トランザクションのエクスポート中にエラーが発生しました。再試行してください。",
+    exportErrorDetail:
+      "トランザクションのエクスポート中にエラーが発生しました: {message}",
   },
   confidential: {
     epoch: "エポック",
@@ -2047,6 +2128,14 @@ export const ja = {
     rawJson: "生レスポンス（JSON）",
     unexpectedShape:
       "トレースレスポンスの形が想定外です。生 JSON のみ表示します。",
+    userOnly: "コールトレースはユーザー トランザクションでのみ利用できます。",
+    gasZero: "0 gas",
+    gasAmount: "{count} gas",
+    collapseCalls: "ネストされた呼び出しを折りたたむ",
+    expandCalls: "ネストされた呼び出しを展開",
+    callFailed: "この呼び出しは失敗しました",
+    caller: "呼び出し元",
+    callee: "呼び出し先",
   },
   decibel: {
     buy: "買い",
@@ -2164,5 +2253,17 @@ export const ja = {
     newSignaturesRequired: "新しい必要署名数",
     previousMetadata: "以前のメタデータ",
     newMetadata: "新しいメタデータ",
+    pendingTitle: "保留中のトランザクション（{count}）",
+    ownersTitle: "所有者（{count}）",
+    transactionId: "トランザクション ID: {id}",
+    transactionN: "トランザクション {n}",
+    creatorLabel: "作成者:",
+    creationTime: "作成時刻:",
+    votesRequired: "投票: {count} / {required} 必要",
+    voteApproved: "✓ 承認",
+    voteRejected: "✗ 却下",
+    eventCounters: "イベント カウンター",
+    rawData: "生のマルチシグ データ",
+    noResource: "このアカウントにはマルチシグ リソースがありません。",
   },
 } as const satisfies MessageTree;

@@ -452,6 +452,16 @@ export const ur = {
     hoursAgo: "{count}گھنٹے پہلے",
     daysAgo: "{count}دن پہلے",
     noValidatorsFound: "کوئی ویلیڈیٹر نہیں ملا",
+    usd: "USD",
+    iconAlt: "{name} آئیکن",
+    nArguments: "{count} آرگیومنٹ",
+    nArgumentsPlural: "{count} آرگیومنٹس",
+    hideNArguments: "{count} آرگیومنٹ چھپائیں",
+    hideNArgumentsPlural: "{count} آرگیومنٹس چھپائیں",
+    showNArguments: "{count} آرگیومنٹ دکھائیں",
+    showNArgumentsPlural: "{count} آرگیومنٹس دکھائیں",
+    octasParens: "({amount} octas)",
+    gasUnits: "{count} گیس یونٹس",
   },
   network: {
     selectAriaLabel: "نیٹ ورک منتخب کریں",
@@ -531,6 +541,9 @@ export const ur = {
   },
   interval: {
     refreshHint: "باقی وقت کی تازہ قیمت دیکھنے کے لیے صفحہ ریفریش کریں۔",
+    hms: "{hours}گھ {minutes}م {seconds}س",
+    dhm: "{days}د {hours}گھ {minutes}م",
+    dhms: "{days}د {hours}گھ {minutes}م {seconds}س",
   },
   tabs: {
     transaction: {
@@ -708,6 +721,7 @@ export const ur = {
     stakingFee: "اسٹیکنگ فیس",
     nextUnlockIn: "اگلا ان لاک اس میں",
     index: "انڈیکس:",
+    transactionsWithCount: "لین دین ({count}):",
   },
   table: {
     hash: "#",
@@ -864,6 +878,8 @@ export const ur = {
       size: "سائز {size}",
       atPrice: "@ {price}",
       openCctpWormholeAria: "نیا ٹیب میں WormholeScan پر CCTP ٹرانسفر کھولیں",
+      confidentialAmountHidden:
+        "منتقلی کی رقم آن چین مرموز ہے اور دکھائی نہیں جا سکتی۔",
     },
   },
   pages: {
@@ -909,6 +925,8 @@ export const ur = {
       supplyOnChain: "سپلائی آن چین ٹریک ہوتی ہے، وقت کے ساتھ بدل سکتی ہے",
       supplyOffChain: "سپلائی آف چین تصدیق شدہ ہے کہ فکسڈ ہے",
       supplyNone: "اس کوائن کی آن چین یا آف چین کوئی سپلائی ٹریک نہیں",
+      confidentialSupplyTip:
+        "جوڑے ہوئے فنگیبل اثاثے کے آن چین خفیہ اثاثہ پول میں رکھے ٹوکنز (عوامی مجموعہ)۔ انفرادی بیلنس نجی رہتے ہیں۔",
     },
     fa: {
       entity: "فنگیبل اثاثہ",
@@ -920,6 +938,20 @@ export const ur = {
         "Aptos بلاک چین پر فنگیبل اثاثہ {address} کے لیے {tab} دیکھیں۔",
       metaDescriptionFallback:
         "Aptos پر {symbol} دیکھیں۔ ٹوکن سپلائی، اعشاریے، ہولڈرز، میٹا ڈیٹا، اور ٹرانزیکشن تاریخ۔",
+      confidentialSupplyTip:
+        "اس میٹا ڈیٹا آبجیکٹ کے آن چین خفیہ اثاثہ پول میں رکھے ٹوکنز (عوامی مجموعہ)۔ انفرادی بیلنس نجی رہتے ہیں۔",
+      dispatchable: "ڈسپیچ ایبل",
+      dispatchableTip:
+        "منتقلیوں کے لیے کسٹم ڈسپیچ فنکشنز رجسٹر ہیں (نکاسی/جمع/بیلنس/سپلائی)",
+      hookWithdraw: "نکاسی",
+      hookDeposit: "جمع",
+      hookDerivedBalance: "ماخوذ بیلنس",
+      hookDerivedSupply: "ماخوذ سپلائی",
+      viewModuleSource: "ماڈیول سورس دیکھنے کے لیے کلک کریں",
+      hookTooltip: "{hook}: {path} — {action}",
+      nativeGasTokenInfo:
+        "یہ Aptos پر سرکاری مقامی گیس ٹوکن ہے۔ یہ APT کا فنگیبل اثاثہ ورژن ہے۔ 0x1::coin فنکشنز استعمال کرتے وقت یہ کوائن ورژن کے ساتھ مکمل طور پر مطابقت رکھتا ہے۔ کوائن ورژن کے لیے 0x1::aptos_coin::AptosCoin دیکھیں۔",
+      nativeUsdtInfo: "یہ Aptos پر سرکاری مقامی USD₮ ہے۔",
     },
     tokens: {
       entity: "ٹوکن",
@@ -1414,6 +1446,14 @@ export const ur = {
     commissionChange: "کمیشن شرحیں اب آپریٹر بدل سکتا ہے",
     commissionUpdate:
       "موجودہ کمیشن شرح {current}% ہے۔ موجودہ لاک اپ مدت پر کمیشن شرح {next}% ہو جائے گی۔",
+    epochN: "عہد {epoch}",
+    percentComplete: "{percent}% مکمل",
+    epochTip:
+      "Aptos بلاک چین میں عہد سیکنڈز میں ایک مدت ہے جس میں تصدیق کنندگان کئی بلاکس پر ووٹ دیتے ہیں۔ Aptos مین نیٹ کا عہد 7200 سیکنڈ (دو گھنٹے) ہے۔",
+    nodeCount: "{count} نوڈز",
+    countryCount: "{count} ممالک",
+    cityCount: "{count} شہر",
+    commissionRate: "{percent}% کمیشن کی شرح",
   },
   analytics: {
     deployedContracts: "تعینات کنٹریکٹس",
@@ -1461,6 +1501,7 @@ export const ur = {
     activeFullnodesTip: "Fullnodes کی تخمینی تعداد۔",
     activelyStaked: "فعال طور پر اسٹیک",
     activelyStakedTip: "اسٹیکنگ پولز میں فی الحال APT ٹوکنز کی مقدار۔",
+    totalTransactionsLabel: "کل لین دین: {count}",
   },
   filter: {
     contractAddress: "کنٹریکٹ پتہ",
@@ -1474,6 +1515,12 @@ export const ur = {
     clear: "{name} صاف کریں",
     clearAll: "سب صاف کریں",
     entryFunction: "انٹری فنکشن سے فلٹر کریں",
+    noResults:
+      "فلٹر سے مماثل کوئی لین دین نہیں ملا۔ انڈیکسر نے اس نیٹ ورک کے لیے کوئی مماثل صارف لین دین نہیں لوٹایا۔",
+    loadError:
+      "فنکشن کے لحاظ سے لین دین فلٹر کرنے میں ناکامی۔ اقدار غلط ہو سکتی ہیں یا انڈیکسر عارضی طور پر دستیاب نہیں۔",
+    matchingOne: "{count} مماثل لین دین",
+    matchingMany: "{count} مماثل لین دین",
   },
   flags: {
     differences: "فرق",
@@ -1768,6 +1815,11 @@ export const ur = {
       partner: "پارٹنر / پروٹوکول فیس ({symbol})",
       partnerTip:
         "اس اثاثے کی نکالی اور جمع رقم کا فرق — عام طور پر ٹرانسفر ہک، DEX پروٹوکول فیس، یا پارٹنر کٹوتی۔",
+      total: "کل وصول شدہ گیس",
+      totalTip:
+        "نفاذ، I/O، اور اسٹوریج کا مجموعہ (گیس یونٹس میں)۔ لین دین کے gas_used سے میل کھاتا ہے۔",
+      storageShortTip: "خالص نئی حالت کے لیے وصول؛ octas میں قیمت۔",
+      storageRefundShortTip: "اسٹوریج جاری ہونے پر جمع؛ gas_used کا حصہ نہیں۔",
     },
   },
   payload: {
@@ -1930,6 +1982,30 @@ export const ur = {
       "نکالنے کے لیے والیٹ منسلک کریں اور پروٹوکول کے کنٹریکٹ سے براہ راست تعامل کریں۔ دستخط سے پہلے ٹرانزیکشن تفصیلات غور سے چیک کریں۔",
     openPetraVault: "Petra Vault میں کھولیں",
     manageMultisig: "Petra Vault سے اس ملٹی سگ اکاؤنٹ کا انتظام کریں",
+    balance: "بیلنس",
+    balanceTip:
+      "یہ بیلنس آپ کے والٹ میں موجود APT ٹوکنز کی مقدار ظاہر کرتا ہے۔",
+    balanceTipWithUsd:
+      "یہ بیلنس آپ کے والٹ میں موجود APT ٹوکنز کی مقدار اور 1 APT = {price} کی شرح پر ان کی لائیو USD قیمت ظاہر کرتا ہے۔",
+    defiPositionsOn: "DeFi پوزیشنز از",
+    openPortfolioAria: "نئے ٹیب میں {name} پر پورٹ فولیو کھولیں",
+    transactionCount: "{count} لین دین",
+    transactionCountUpTo: "زیادہ سے زیادہ {count} لین دین دکھائے جا رہے ہیں",
+    matchingSentOne: "{count} مماثل لین دین (اس اکاؤنٹ نے بھیجا)",
+    matchingSentMany: "{count} مماثل لین دین (اس اکاؤنٹ نے بھیجے)",
+    filterNoResults: "اس اکاؤنٹ کی جانب سے فلٹر سے مماثل کوئی لین دین نہیں ملا",
+    exportCsv: "CSV برآمد کریں ({count})",
+    exporting: "برآمد ہو رہا ہے...",
+    exportingProgress: "برآمد ہو رہا ہے... {percent}%",
+    exportNone: "برآمد کرنے کے لیے کوئی لین دین نہیں ملا۔",
+    exportNoneFailed:
+      "برآمد کرنے کے لیے کوئی لین دین نہیں ملا۔ تمام حصول ناکام ہو سکتے ہیں۔",
+    exportPartial:
+      "{exported} لین دین کامیابی سے برآمد ہوئے۔ {failed} حاصل نہیں ہو سکے اور برآمد سے خارج کر دیے گئے۔",
+    exportRateLimit:
+      "شرح کی حد تجاوز ہو گئی۔ تھوڑی دیر انتظار کریں اور دوبارہ کوشش کریں۔",
+    exportError: "لین دین برآمد کرنے میں خرابی۔ دوبارہ کوشش کریں۔",
+    exportErrorDetail: "لین دین برآمد کرنے میں خرابی: {message}",
   },
   confidential: {
     epoch: "Epoch",
@@ -2019,6 +2095,14 @@ export const ur = {
     rawJson: "خام جواب (JSON)",
     unexpectedShape:
       "ٹریس جواب کی شکل غیر متوقع تھی؛ صرف خام JSON دکھایا جا رہا ہے۔",
+    userOnly: "کال ٹریس صرف صارف کے لین دین کے لیے دستیاب ہے۔",
+    gasZero: "0 گیس",
+    gasAmount: "{count} گیس",
+    collapseCalls: "تو در تو کالیں سکیڑیں",
+    expandCalls: "تو در تو کالیں پھیلائیں",
+    callFailed: "یہ کال ناکام ہوئی",
+    caller: "کالر",
+    callee: "کال کیے گئے",
   },
   decibel: {
     buy: "خریدیں",
@@ -2137,5 +2221,17 @@ export const ur = {
     newSignaturesRequired: "نئے مطلوبہ دستخط",
     previousMetadata: "پچھلا میٹا ڈیٹا",
     newMetadata: "نیا میٹا ڈیٹا",
+    pendingTitle: "زیر التوا لین دین ({count})",
+    ownersTitle: "مالکان ({count})",
+    transactionId: "لین دین آئی ڈی: {id}",
+    transactionN: "لین دین {n}",
+    creatorLabel: "تخلیق کار:",
+    creationTime: "تخلیق کا وقت:",
+    votesRequired: "ووٹ: {count} / {required} درکار",
+    voteApproved: "✓ منظور",
+    voteRejected: "✗ مسترد",
+    eventCounters: "ایونٹ کاؤنٹرز",
+    rawData: "خام ملٹی سگ ڈیٹا",
+    noResource: "اس اکاؤنٹ کے پاس ملٹی سگ ریسورس نہیں ہے۔",
   },
 } as const satisfies MessageTree;

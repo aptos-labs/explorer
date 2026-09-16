@@ -15,7 +15,19 @@ export {
   normalizeLocalePreference,
   resolveLocale,
 } from "./detectLocale";
-export {formatDateTime, formatInteger, formatNumber} from "./format";
+export {
+  decimalSeparator,
+  formatBigInt,
+  formatCompactNumber,
+  formatDateTime,
+  formatInteger,
+  formatIntegerString,
+  formatMonthDay,
+  formatNumber,
+  formatRelativeTime,
+  formatTimestamp,
+  intlLocale,
+} from "./format";
 export {InlineMarkup} from "./InlineMarkup";
 export {isInternalHref, parseInlineMarkup} from "./inlineMarkup";
 export {

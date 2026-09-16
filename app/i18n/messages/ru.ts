@@ -454,6 +454,16 @@ export const ru = {
     hoursAgo: "{count} ч назад",
     daysAgo: "{count} д назад",
     noValidatorsFound: "Валидаторы не найдены",
+    usd: "USD",
+    iconAlt: "Значок {name}",
+    nArguments: "{count} аргумент",
+    nArgumentsPlural: "{count} аргументов",
+    hideNArguments: "Скрыть {count} аргумент",
+    hideNArgumentsPlural: "Скрыть {count} аргументов",
+    showNArguments: "Показать {count} аргумент",
+    showNArgumentsPlural: "Показать {count} аргументов",
+    octasParens: "({amount} octa)",
+    gasUnits: "{count} ед. газа",
   },
   network: {
     selectAriaLabel: "Выбрать сеть",
@@ -533,6 +543,9 @@ export const ru = {
   interval: {
     refreshHint:
       "Обновите страницу, чтобы увидеть актуальное оставшееся время.",
+    hms: "{hours}ч {minutes}м {seconds}с",
+    dhm: "{days}д {hours}ч {minutes}м",
+    dhms: "{days}д {hours}ч {minutes}м {seconds}с",
   },
   tabs: {
     transaction: {
@@ -710,6 +723,7 @@ export const ru = {
     stakingFee: "Комиссия за стейкинг",
     nextUnlockIn: "До следующей разблокировки",
     index: "Индекс:",
+    transactionsWithCount: "Транзакции ({count}):",
   },
   table: {
     hash: "#",
@@ -869,6 +883,8 @@ export const ru = {
       atPrice: "@ {price}",
       openCctpWormholeAria:
         "Открыть перевод CCTP на WormholeScan в новой вкладке",
+      confidentialAmountHidden:
+        "Сумма перевода зашифрована в сети и не может быть показана.",
     },
   },
   pages: {
@@ -915,6 +931,8 @@ export const ru = {
       supplyOffChain: "Предложение подтверждено вне цепи как фиксированное",
       supplyNone:
         "Для этой монеты предложение не отслеживается ни ончейн, ни вне цепи",
+      confidentialSupplyTip:
+        "Токены в ончейн-пуле конфиденциальных активов для связанного взаимозаменяемого актива (публичная сумма). Индивидуальные балансы остаются закрытыми.",
     },
     fa: {
       entity: "Взаимозаменяемый актив",
@@ -927,6 +945,20 @@ export const ru = {
         "Просмотрите {tab} взаимозаменяемого актива {address} в блокчейне Aptos.",
       metaDescriptionFallback:
         "Просмотрите {symbol} в Aptos. Смотрите предложение токена, десятичные знаки, держателей, метаданные и историю транзакций.",
+      confidentialSupplyTip:
+        "Токены в ончейн-пуле конфиденциальных активов для этого объекта метаданных (публичная сумма). Индивидуальные балансы остаются закрытыми.",
+      dispatchable: "Dispatchable",
+      dispatchableTip:
+        "Для переводов зарегистрированы пользовательские функции диспетчеризации (вывод/ввод/баланс/предложение)",
+      hookWithdraw: "Вывод",
+      hookDeposit: "Ввод",
+      hookDerivedBalance: "Производный баланс",
+      hookDerivedSupply: "Производное предложение",
+      viewModuleSource: "нажмите, чтобы открыть исходный код модуля",
+      hookTooltip: "{hook}: {path} — {action}",
+      nativeGasTokenInfo:
+        "Это официальный нативный газовый токен в Aptos. Это версия APT как взаимозаменяемого актива. Она полностью совместима с coin-версией при использовании функций 0x1::coin. См. 0x1::aptos_coin::AptosCoin для coin-версии.",
+      nativeUsdtInfo: "Это официальный нативный USD₮ в Aptos.",
     },
     tokens: {
       entity: "Токен",
@@ -1432,6 +1464,14 @@ export const ru = {
     commissionChange: "Ставки комиссии теперь может менять оператор",
     commissionUpdate:
       "Текущая комиссия — {current}%. Комиссия будет обновлена до {next}% в текущем периоде блокировки.",
+    epochN: "Эпоха {epoch}",
+    percentComplete: "Завершено {percent}%",
+    epochTip:
+      "Эпоха в блокчейне Aptos — это промежуток времени в секундах, в течение которого валидаторы голосуют по нескольким блокам. Эпоха основной сети Aptos составляет 7200 секунд (два часа).",
+    nodeCount: "{count} узлов",
+    countryCount: "{count} стран",
+    cityCount: "{count} городов",
+    commissionRate: "{percent}% комиссия",
   },
   analytics: {
     deployedContracts: "Развёрнутые контракты",
@@ -1484,6 +1524,7 @@ export const ru = {
     activelyStaked: "В активном стейке",
     activelyStakedTip:
       "Количество токенов APT, сейчас находящихся в пулах стейкинга.",
+    totalTransactionsLabel: "ВСЕГО ТРАНЗАКЦИЙ: {count}",
   },
   filter: {
     contractAddress: "Адрес контракта",
@@ -1497,6 +1538,12 @@ export const ru = {
     clear: "Очистить {name}",
     clearAll: "Очистить всё",
     entryFunction: "Фильтр по entry-функции",
+    noResults:
+      "Транзакций, соответствующих фильтру, не найдено. Индексатор не вернул подходящих пользовательских транзакций для этой сети.",
+    loadError:
+      "Не удалось отфильтровать транзакции по функции. Значения могут быть неверными или индексатор временно недоступен.",
+    matchingOne: "{count} подходящая транзакция",
+    matchingMany: "{count} подходящих транзакций",
   },
   flags: {
     differences: "Различия",
@@ -1791,6 +1838,12 @@ export const ru = {
       partner: "Комиссия партнёра / протокола ({symbol})",
       partnerTip:
         "Разница между выведенной и внесённой суммой этого актива — обычно хук перевода, комиссия протокола DEX или срез партнёра.",
+      total: "Всего начисленного газа",
+      totalTip:
+        "Сумма исполнения, I/O и хранения (в единицах газа). Совпадает с gas_used транзакции.",
+      storageShortTip: "Взимается за чистое новое состояние; цена в octa.",
+      storageRefundShortTip:
+        "Зачисляется при освобождении хранилища; не входит в gas_used.",
     },
   },
   payload: {
@@ -1957,6 +2010,30 @@ export const ru = {
     openPetraVault: "Открыть в Petra Vault",
     manageMultisig:
       "Управляйте этим аккаунтом с мультиподписью через Petra Vault",
+    balance: "Баланс",
+    balanceTip: "Этот баланс отражает количество токенов APT в вашем кошельке.",
+    balanceTipWithUsd:
+      "Этот баланс отражает количество токенов APT в вашем кошельке и их текущую стоимость в USD по курсу 1 APT = {price}.",
+    defiPositionsOn: "DeFi-позиции на",
+    openPortfolioAria: "Открыть портфель на {name} в новой вкладке",
+    transactionCount: "{count} транзакций",
+    transactionCountUpTo: "Показано не более {count} транзакций",
+    matchingSentOne: "{count} подходящая транзакция (отправлена этим счётом)",
+    matchingSentMany: "{count} подходящих транзакций (отправлены этим счётом)",
+    filterNoResults:
+      "Не найдено транзакций, отправленных этим счётом и соответствующих фильтру",
+    exportCsv: "Экспорт CSV ({count})",
+    exporting: "Экспорт...",
+    exportingProgress: "Экспорт... {percent}%",
+    exportNone: "Нет транзакций для экспорта.",
+    exportNoneFailed:
+      "Нет транзакций для экспорта. Возможно, все запросы не удались.",
+    exportPartial:
+      "Экспортировано {exported} транзакций. {failed} не удалось получить, они исключены из экспорта.",
+    exportRateLimit:
+      "Превышен лимит запросов. Подождите немного и повторите попытку.",
+    exportError: "Ошибка экспорта транзакций. Повторите попытку.",
+    exportErrorDetail: "Ошибка экспорта транзакций: {message}",
   },
   confidential: {
     epoch: "Эпоха",
@@ -2050,6 +2127,15 @@ export const ru = {
     rawJson: "Сырой ответ (JSON)",
     unexpectedShape:
       "Ответ трассировки имел неожиданную форму; показан только сырой JSON.",
+    userOnly:
+      "Трассировка вызовов доступна только для пользовательских транзакций.",
+    gasZero: "0 gas",
+    gasAmount: "{count} gas",
+    collapseCalls: "Свернуть вложенные вызовы",
+    expandCalls: "Развернуть вложенные вызовы",
+    callFailed: "Этот вызов завершился ошибкой",
+    caller: "Вызывающий",
+    callee: "Вызываемый",
   },
   decibel: {
     buy: "Покупка",
@@ -2168,5 +2254,17 @@ export const ru = {
     newSignaturesRequired: "Новые требуемые подписи",
     previousMetadata: "Предыдущие метаданные",
     newMetadata: "Новые метаданные",
+    pendingTitle: "Ожидающие транзакции ({count})",
+    ownersTitle: "Владельцы ({count})",
+    transactionId: "ID транзакции: {id}",
+    transactionN: "Транзакция {n}",
+    creatorLabel: "Создатель:",
+    creationTime: "Время создания:",
+    votesRequired: "Голоса: {count} / {required} требуется",
+    voteApproved: "✓ Одобрено",
+    voteRejected: "✗ Отклонено",
+    eventCounters: "Счётчики событий",
+    rawData: "Сырые данные мультиподписи",
+    noResource: "У этого счёта нет ресурса мультиподписи.",
   },
 } as const satisfies MessageTree;

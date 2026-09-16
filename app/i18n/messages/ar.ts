@@ -450,6 +450,16 @@ export const ar = {
     hoursAgo: "منذ {count} س",
     daysAgo: "منذ {count} ي",
     noValidatorsFound: "لم يُعثر على مدققين",
+    usd: "USD",
+    iconAlt: "أيقونة {name}",
+    nArguments: "{count} وسيط",
+    nArgumentsPlural: "{count} وسائط",
+    hideNArguments: "إخفاء {count} وسيط",
+    hideNArgumentsPlural: "إخفاء {count} وسائط",
+    showNArguments: "إظهار {count} وسيط",
+    showNArgumentsPlural: "إظهار {count} وسائط",
+    octasParens: "({amount} أوكتا)",
+    gasUnits: "{count} وحدات الغاز",
   },
   network: {
     selectAriaLabel: "اختيار الشبكة",
@@ -526,6 +536,9 @@ export const ar = {
   },
   interval: {
     refreshHint: "يُرجى تحديث الصفحة لعرض الوقت المتبقي المحدَّث.",
+    hms: "{hours}س {minutes}د {seconds}ث",
+    dhm: "{days}ي {hours}س {minutes}د",
+    dhms: "{days}ي {hours}س {minutes}د {seconds}ث",
   },
   tabs: {
     transaction: {
@@ -702,6 +715,7 @@ export const ar = {
     stakingFee: "رسوم الستاكينغ",
     nextUnlockIn: "الفتح التالي خلال",
     index: "الفهرس:",
+    transactionsWithCount: "المعاملات ({count}):",
   },
   table: {
     hash: "#",
@@ -855,6 +869,7 @@ export const ar = {
       size: "الحجم {size}",
       atPrice: "@ {price}",
       openCctpWormholeAria: "فتح تحويل CCTP على WormholeScan في تبويب جديد",
+      confidentialAmountHidden: "مبلغ التحويل مشفّر على السلسلة ولا يمكن عرضه.",
     },
   },
   pages: {
@@ -899,6 +914,8 @@ export const ar = {
       supplyOnChain: "المعروض متتبَّع على السلسلة، وقد يتغير مع الوقت",
       supplyOffChain: "المعروض موثَّق خارج السلسلة بأنه ثابت",
       supplyNone: "لا يُتتبَّع معروض لهذه العملة على السلسلة أو خارجها",
+      confidentialSupplyTip:
+        "الرموز المحتفظ بها في مجمع الأصول السرية على السلسلة للأصل القابل للاستبدال المقترن (مجموع عام). تبقى الأرصدة الفردية خاصة.",
     },
     fa: {
       entity: "أصل قابل للاستبدال",
@@ -910,6 +927,19 @@ export const ar = {
         "عرض {tab} للأصل القابل للاستبدال {address} على سلسلة كتل Aptos.",
       metaDescriptionFallback:
         "عرض {symbol} على Aptos. اطّلع على معروض الرمز والخانات العشرية والحاملين والبيانات الوصفية وسجل المعاملات.",
+      confidentialSupplyTip:
+        "الرموز المحتفظ بها في مجمع الأصول السرية على السلسلة لكائن البيانات الوصفية هذا (مجموع عام). تبقى الأرصدة الفردية خاصة.",
+      dispatchable: "قابل للإرسال",
+      dispatchableTip: "دوال إرسال مخصصة مسجّلة للتحويلات (سحب/إيداع/رصيد/عرض)",
+      hookWithdraw: "سحب",
+      hookDeposit: "إيداع",
+      hookDerivedBalance: "رصيد مشتق",
+      hookDerivedSupply: "عرض مشتق",
+      viewModuleSource: "انقر لعرض مصدر الوحدة",
+      hookTooltip: "{hook}: {path} — {action}",
+      nativeGasTokenInfo:
+        "هذا هو رمز الغاز الأصلي الرسمي على Aptos. هذه نسخة الأصل القابل للاستبدال من APT. وهو متوافق تمامًا مع نسخة العملة عند استخدام دوال 0x1::coin. راجع 0x1::aptos_coin::AptosCoin لنسخة العملة.",
+      nativeUsdtInfo: "هذا هو USD₮ الأصلي الرسمي على Aptos.",
     },
     tokens: {
       entity: "رمز",
@@ -1398,6 +1428,14 @@ export const ar = {
     commissionChange: "معدلات العمولة أصبحت قابلة للتغيير من المشغّل",
     commissionUpdate:
       "معدل العمولة الحالي {current}%. سيُحدَّث معدل العمولة إلى {next}% عند فترة القفل الحالية.",
+    epochN: "الحقبة {epoch}",
+    percentComplete: "اكتمل {percent}%",
+    epochTip:
+      "الحقبة في سلسلة Aptos هي مدة بالثواني يصوّت خلالها المدققون على عدد من الكتل. حقبة الشبكة الرئيسية لـ Aptos هي 7200 ثانية (ساعتان).",
+    nodeCount: "{count} عقد",
+    countryCount: "{count} بلدان",
+    cityCount: "{count} مدن",
+    commissionRate: "عمولة {percent}%",
   },
   analytics: {
     deployedContracts: "العقود المنشورة",
@@ -1445,6 +1483,7 @@ export const ar = {
     activeFullnodesTip: "العدد التقريبي للعقد الكاملة.",
     activelyStaked: "المرهون بنشاط",
     activelyStakedTip: "مقدار رموز APT المحتفظ بها حاليًا في برك الستاكينغ.",
+    totalTransactionsLabel: "إجمالي المعاملات: {count}",
   },
   filter: {
     contractAddress: "عنوان العقد",
@@ -1458,6 +1497,12 @@ export const ar = {
     clear: "مسح {name}",
     clearAll: "مسح الكل",
     entryFunction: "التصفية حسب دالة الدخول",
+    noResults:
+      "لم يتم العثور على معاملات تطابق التصفية. لم يُرجع المفهرس معاملات مستخدم مطابقة لهذه الشبكة.",
+    loadError:
+      "فشل تصفية المعاملات حسب الدالة. قد تكون القيم غير صالحة أو قد يكون المفهرس غير متاح مؤقتًا.",
+    matchingOne: "{count} معاملة مطابقة",
+    matchingMany: "{count} معاملات مطابقة",
   },
   flags: {
     differences: "الاختلافات",
@@ -1750,6 +1795,11 @@ export const ar = {
       partner: "رسوم الشريك / البروتوكول ({symbol})",
       partnerTip:
         "الفرق بين المبلغ المسحوب والمبلغ المودَع لهذا الأصل — عادةً خطاف تحويل أو رسوم بروتوكول DEX أو اقتطاع شريك.",
+      total: "إجمالي الغاز المحتسب",
+      totalTip:
+        "مجموع التنفيذ والإدخال/الإخراج والتخزين (بوحدات الغاز). يطابق gas_used في المعاملة.",
+      storageShortTip: "يُحتسب للحالة الصافية الجديدة؛ مسعّر بالأوكتا.",
+      storageRefundShortTip: "يُضاف عند تحرير التخزين؛ ليس جزءًا من gas_used.",
     },
   },
   payload: {
@@ -1911,6 +1961,28 @@ export const ar = {
       "اربط محفظتك وتفاعل مع عقد البروتوكول مباشرة لتنفيذ السحب. تحقق من تفاصيل المعاملة بعناية قبل التوقيع.",
     openPetraVault: "فتح في Petra Vault",
     manageMultisig: "أدِر هذا الحساب متعدد التوقيعات مع Petra Vault",
+    balance: "الرصيد",
+    balanceTip: "يعكس هذا الرصيد كمية رموز APT المحتفظ بها في محفظتك.",
+    balanceTipWithUsd:
+      "يعكس هذا الرصيد كمية رموز APT في محفظتك وقيمتها بالدولار الأمريكي لحظيًا بسعر 1 APT = {price}.",
+    defiPositionsOn: "مراكز التمويل اللامركزي على",
+    openPortfolioAria: "فتح المحفظة على {name} في تبويب جديد",
+    transactionCount: "{count} معاملات",
+    transactionCountUpTo: "عرض حتى {count} معاملات",
+    matchingSentOne: "{count} معاملة مطابقة (أرسلها هذا الحساب)",
+    matchingSentMany: "{count} معاملات مطابقة (أرسلها هذا الحساب)",
+    filterNoResults:
+      "لم يتم العثور على معاملات أرسلها هذا الحساب تطابق معايير التصفية",
+    exportCsv: "تصدير CSV ({count})",
+    exporting: "جارٍ التصدير...",
+    exportingProgress: "جارٍ التصدير... {percent}%",
+    exportNone: "لا توجد معاملات للتصدير.",
+    exportNoneFailed: "لا توجد معاملات للتصدير. ربما فشلت جميع عمليات الجلب.",
+    exportPartial:
+      "تم تصدير {exported} معاملات بنجاح. تعذر جلب {failed} واستُبعدت من التصدير.",
+    exportRateLimit: "تم تجاوز حد المعدل. انتظر لحظة ثم أعد المحاولة.",
+    exportError: "خطأ في تصدير المعاملات. أعد المحاولة.",
+    exportErrorDetail: "خطأ في تصدير المعاملات: {message}",
   },
   confidential: {
     epoch: "الحقبة",
@@ -1999,6 +2071,14 @@ export const ar = {
     rawJson: "الاستجابة الخام (JSON)",
     unexpectedShape:
       "كان لشكل استجابة التتبع شكل غير متوقع؛ يُعرض JSON الخام فقط.",
+    userOnly: "تتبع الاستدعاءات متاح فقط لمعاملات المستخدم.",
+    gasZero: "0 غاز",
+    gasAmount: "{count} غاز",
+    collapseCalls: "طي الاستدعاءات المتداخلة",
+    expandCalls: "توسيع الاستدعاءات المتداخلة",
+    callFailed: "فشل هذا الاستدعاء",
+    caller: "المُستدعي",
+    callee: "المُستدعى",
   },
   decibel: {
     buy: "شراء",
@@ -2116,5 +2196,17 @@ export const ar = {
     newSignaturesRequired: "التوقيعات المطلوبة الجديدة",
     previousMetadata: "البيانات الوصفية السابقة",
     newMetadata: "البيانات الوصفية الجديدة",
+    pendingTitle: "المعاملات المعلقة ({count})",
+    ownersTitle: "المالكون ({count})",
+    transactionId: "معرّف المعاملة: {id}",
+    transactionN: "المعاملة {n}",
+    creatorLabel: "المنشئ:",
+    creationTime: "وقت الإنشاء:",
+    votesRequired: "الأصوات: {count} / {required} مطلوبة",
+    voteApproved: "✓ موافق",
+    voteRejected: "✗ مرفوض",
+    eventCounters: "عدادات الأحداث",
+    rawData: "بيانات التوقيع المتعدد الخام",
+    noResource: "لا يحتوي هذا الحساب على مورد توقيع متعدد.",
   },
 } as const satisfies MessageTree;

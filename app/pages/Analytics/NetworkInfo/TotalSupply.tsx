@@ -5,7 +5,7 @@ import {useTranslation} from "../../../i18n";
 import MetricCard from "./MetricCard";
 
 export default function TotalSupply() {
-  const {t} = useTranslation();
+  const {t, locale} = useTranslation();
   const {
     isLoading,
     data: [totalSupply],
@@ -21,7 +21,7 @@ export default function TotalSupply() {
     <MetricCard
       data={
         totalSupply
-          ? getFormattedBalanceStr(totalSupply.toString(), undefined, 0)
+          ? getFormattedBalanceStr(totalSupply.toString(), undefined, 0, locale)
           : "-"
       }
       label={t("analytics.totalSupply")}

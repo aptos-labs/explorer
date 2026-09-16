@@ -10,6 +10,7 @@ import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {getAssetSymbol} from "../../../utils";
+import {useTranslation} from "../../../i18n";
 import type {FACombinedData} from "../Index";
 import DispatchablePropertiesValue from "./DispatchablePropertiesValue";
 
@@ -18,21 +19,18 @@ type InfoTabProps = {
   data: FACombinedData | undefined;
 };
 
-// TODO: put this extra information somewhere else
-const extraInfo: Record<string, string> = {
-  "0x000000000000000000000000000000000000000000000000000000000000000a":
-    "This is the official native gas token on Aptos.  This is the fungible asset version of APT.  It is fully compatible with the coin version when using 0x1::coin functions.  See 0x1::aptos_coin::AptosCoin for the coin version.",
-  "0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b":
-    "This is the official native USD₮ on Aptos.",
-};
-
 function ExtraInfo({address}: {address: string}) {
-  if (extraInfo[address]) {
+  const {t} = useTranslation();
+  const extraInfoKeys: Record<string, string> = {
+    "0x000000000000000000000000000000000000000000000000000000000000000a":
+      "pages.fa.nativeGasTokenInfo",
+    "0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b":
+      "pages.fa.nativeUsdtInfo",
+  };
+  const extraKey = extraInfoKeys[address];
+  if (extraKey) {
     return (
-      <ContentRow
-        titleKey="fields.additionalInformation"
-        value={extraInfo[address]}
-      />
+      <ContentRow titleKey="fields.additionalInformation" value={t(extraKey)} />
     );
   }
 
@@ -40,6 +38,7 @@ function ExtraInfo({address}: {address: string}) {
 }
 
 export default function InfoTab({address, data}: InfoTabProps) {
+  const {t, formatNumber, locale} = useTranslation();
   const {data: firstActivity} = useGetFirstCoinActivity(address);
   const {data: dispatchInfo} = useGetFaIsDispatchable(address);
   const {
@@ -59,7 +58,12 @@ export default function InfoTab({address, data}: InfoTabProps) {
   let formattedSupply: string | null = null;
   if (data?.supply !== undefined && data?.supply !== null && data?.metadata) {
     formattedSupply =
-      getFormattedBalanceStr(data?.supply.toString(), data.metadata?.decimals) +
+      getFormattedBalanceStr(
+        data?.supply.toString(),
+        data.metadata?.decimals,
+        undefined,
+        locale,
+      ) +
       " " +
       data.metadata?.symbol;
     marketCap =
@@ -69,7 +73,7 @@ export default function InfoTab({address, data}: InfoTabProps) {
 
   const icon_uri = data?.coinData?.logoUrl ?? data?.metadata?.icon_uri;
   const supplyIcon = (
-    <Tooltip title={"Supply tracked on-chain, may change over time"}>
+    <Tooltip title={t("pages.fa.supplyOnChain")}>
       <VerifiedOutlined />
     </Tooltip>
   );
@@ -112,15 +116,13 @@ export default function InfoTab({address, data}: InfoTabProps) {
               ) : confidentialSupplyLoading ? (
                 "…"
               ) : confidentialSupply !== null ? (
-                <Tooltip
-                  title={
-                    "Tokens held in the on-chain confidential-asset pool for this metadata object (public aggregate). Individual balances stay private."
-                  }
-                >
+                <Tooltip title={t("pages.fa.confidentialSupplyTip")}>
                   <span>
                     {getFormattedBalanceStr(
                       confidentialSupply.toString(),
                       data.metadata?.decimals,
+                      undefined,
+                      locale,
                     )}{" "}
                     {data.metadata?.symbol}
                   </span>
@@ -136,11 +138,11 @@ export default function InfoTab({address, data}: InfoTabProps) {
               value={
                 <>
                   $
-                  {marketCap.toLocaleString([], {
+                  {formatNumber(marketCap, {
                     maximumFractionDigits: 2,
                     minimumFractionDigits: 2,
                   })}{" "}
-                  USD
+                  {t("common.usd")}
                 </>
               }
             />
@@ -151,7 +153,9 @@ export default function InfoTab({address, data}: InfoTabProps) {
               icon_uri && (
                 <img
                   width={100}
-                  alt={`${data?.metadata?.name} icon (${icon_uri})`}
+                  alt={t("common.iconAlt", {
+                    name: `${data?.metadata?.name ?? ""} (${icon_uri})`,
+                  })}
                   src={icon_uri}
                 />
               )

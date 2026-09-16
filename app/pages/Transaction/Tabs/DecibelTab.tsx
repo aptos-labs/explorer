@@ -133,10 +133,16 @@ function AmountWithAsset({
   amount: string;
   coinData: CoinDescription[] | undefined;
 }) {
+  const {locale} = useTranslation();
   const {data: assetMetadata} = useGetAssetMetadata(asset);
   const assetCoin = findCoinData(coinData, asset);
   const decimals = assetCoin?.decimals ?? assetMetadata?.decimals ?? 0;
-  const displayAmount = getFormattedBalanceStr(amount, decimals);
+  const displayAmount = getFormattedBalanceStr(
+    amount,
+    decimals,
+    undefined,
+    locale,
+  );
 
   return (
     <Stack
@@ -198,9 +204,10 @@ function humanizeFunctionName(fnName: string): string {
 function formatDecibelPrice(
   raw: string,
   config: DecibelMarketConfig | undefined,
+  locale = "en",
 ): string {
   const decimals = config?.priceDecimals ?? 6;
-  const formatted = getFormattedBalanceStr(raw, decimals);
+  const formatted = getFormattedBalanceStr(raw, decimals, undefined, locale);
   const quote = config?.quoteAsset;
   if (quote === "USD" || quote === "USDC") return `$${formatted}`;
   if (quote) return `${formatted} ${quote}`;
@@ -210,9 +217,10 @@ function formatDecibelPrice(
 function formatDecibelSize(
   raw: string,
   config: DecibelMarketConfig | undefined,
+  locale = "en",
 ): string {
   const decimals = config?.szDecimals ?? 0;
-  const formatted = getFormattedBalanceStr(raw, decimals);
+  const formatted = getFormattedBalanceStr(raw, decimals, undefined, locale);
   const base = config?.baseAsset;
   if (base) return `${formatted} ${base}`;
   return formatted;
@@ -281,13 +289,13 @@ function LegTable({
   marketConfig: DecibelMarketConfig | undefined;
 }) {
   const theme = useTheme();
-  const {t} = useTranslation();
+  const {t, locale, formatInteger} = useTranslation();
   const displayLabel = labelKey ? t(labelKey) : label;
   if (legs.length === 0) return null;
 
   const formattedLegs = legs.map((leg) => ({
-    price: formatDecibelPrice(leg.price, marketConfig),
-    size: formatDecibelSize(leg.size, marketConfig),
+    price: formatDecibelPrice(leg.price, marketConfig, locale),
+    size: formatDecibelSize(leg.size, marketConfig, locale),
   }));
 
   let totalRawSize = BigInt(0);
@@ -300,7 +308,7 @@ function LegTable({
   }
   const totalSize =
     totalRawSize > BigInt(0)
-      ? formatDecibelSize(String(totalRawSize), marketConfig)
+      ? formatDecibelSize(String(totalRawSize), marketConfig, locale)
       : undefined;
 
   if (isMobile) {
@@ -318,7 +326,7 @@ function LegTable({
             variant="subtitle2"
             sx={{color: theme.palette[color].main}}
           >
-            {displayLabel} ({legs.length})
+            {displayLabel} ({formatInteger(legs.length)})
           </Typography>
           {totalSize && (
             <Typography
@@ -409,7 +417,7 @@ function LegTable({
                     color: "text.secondary",
                   }}
                 >
-                  {i + 1}
+                  {formatInteger(i + 1)}
                 </Typography>
               </GeneralTableCell>
               <GeneralTableCell>
@@ -437,6 +445,7 @@ function FillsDesktopTable({
   fills: DecibelBulkOrderFilledEvent[];
   marketConfig: DecibelMarketConfig | undefined;
 }) {
+  const {locale} = useTranslation();
   const hasOrigPrice = fills.some((f) => f.origPrice != null);
   return (
     <Table size="small">
@@ -464,19 +473,19 @@ function FillsDesktopTable({
             </GeneralTableCell>
             <GeneralTableCell>
               <MonoText>
-                {formatDecibelPrice(fill.price, marketConfig)}
+                {formatDecibelPrice(fill.price, marketConfig, locale)}
               </MonoText>
             </GeneralTableCell>
             <GeneralTableCell>
               <MonoText>
-                {formatDecibelSize(fill.filledSize, marketConfig)}
+                {formatDecibelSize(fill.filledSize, marketConfig, locale)}
               </MonoText>
             </GeneralTableCell>
             {hasOrigPrice && (
               <GeneralTableCell>
                 {fill.origPrice ? (
                   <MonoText>
-                    {formatDecibelPrice(fill.origPrice, marketConfig)}
+                    {formatDecibelPrice(fill.origPrice, marketConfig, locale)}
                   </MonoText>
                 ) : (
                   "—"
@@ -510,7 +519,7 @@ function BulkOrderInlineDetail({
   filledEvents: DecibelBulkOrderFilledEvent[];
   marketConfig: DecibelMarketConfig | undefined;
 }) {
-  const {t} = useTranslation();
+  const {t, locale, formatInteger} = useTranslation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const hasDetail = detail !== undefined;
@@ -604,7 +613,9 @@ function BulkOrderInlineDetail({
             <Box>
               <Typography variant="subtitle2" sx={{mb: 1}}>
                 {placedEvents.length > 1
-                  ? t("decibel.placedCount", {count: placedEvents.length})
+                  ? t("decibel.placedCount", {
+                      count: formatInteger(placedEvents.length),
+                    })
                   : t("decibel.placed")}
               </Typography>
               <Stack spacing={1.5}>
@@ -697,7 +708,9 @@ function BulkOrderInlineDetail({
           {hasFills && (
             <Box>
               <Typography variant="subtitle2" sx={{mb: 1}}>
-                {t("decibel.fills", {count: filledEvents.length})}
+                {t("decibel.fills", {
+                  count: formatInteger(filledEvents.length),
+                })}
               </Typography>
               {isMobile ? (
                 <Stack spacing={1}>
@@ -728,18 +741,30 @@ function BulkOrderInlineDetail({
                         </Stack>
                         <KeyValue labelKey="decibel.price">
                           <MonoText>
-                            {formatDecibelPrice(fill.price, marketConfig)}
+                            {formatDecibelPrice(
+                              fill.price,
+                              marketConfig,
+                              locale,
+                            )}
                           </MonoText>
                         </KeyValue>
                         <KeyValue labelKey="decibel.size">
                           <MonoText>
-                            {formatDecibelSize(fill.filledSize, marketConfig)}
+                            {formatDecibelSize(
+                              fill.filledSize,
+                              marketConfig,
+                              locale,
+                            )}
                           </MonoText>
                         </KeyValue>
                         {fill.origPrice != null && (
                           <KeyValue labelKey="decibel.origPrice">
                             <MonoText>
-                              {formatDecibelPrice(fill.origPrice, marketConfig)}
+                              {formatDecibelPrice(
+                                fill.origPrice,
+                                marketConfig,
+                                locale,
+                              )}
                             </MonoText>
                           </KeyValue>
                         )}
@@ -781,7 +806,7 @@ function OrderRow({
   order: DecibelOrder;
   marketConfig: DecibelMarketConfig | undefined;
 }) {
-  const {t} = useTranslation();
+  const {t, locale} = useTranslation();
   const icon = ORDER_TYPE_ICONS[order.orderType] ?? null;
   const label =
     t(`decibel.orderType.${order.orderType}`) ===
@@ -789,10 +814,10 @@ function OrderRow({
       ? (ORDER_TYPE_LABELS[order.orderType] ?? order.orderType)
       : t(`decibel.orderType.${order.orderType}`);
   const formattedSize = order.size
-    ? formatDecibelSize(order.size, marketConfig)
+    ? formatDecibelSize(order.size, marketConfig, locale)
     : "—";
   const formattedPrice = order.price
-    ? formatDecibelPrice(order.price, marketConfig)
+    ? formatDecibelPrice(order.price, marketConfig, locale)
     : order.orderType === "market"
       ? t("table.market")
       : "—";
@@ -840,7 +865,7 @@ function OrderCard({
   marketConfig: DecibelMarketConfig | undefined;
   children?: React.ReactNode;
 }) {
-  const {t} = useTranslation();
+  const {t, locale} = useTranslation();
   const icon = ORDER_TYPE_ICONS[order.orderType] ?? null;
   const orderTypeKey = `decibel.orderType.${order.orderType}`;
   const translated = t(orderTypeKey);
@@ -849,10 +874,10 @@ function OrderCard({
       ? (ORDER_TYPE_LABELS[order.orderType] ?? order.orderType)
       : translated;
   const formattedSize = order.size
-    ? formatDecibelSize(order.size, marketConfig)
+    ? formatDecibelSize(order.size, marketConfig, locale)
     : undefined;
   const formattedPrice = order.price
-    ? formatDecibelPrice(order.price, marketConfig)
+    ? formatDecibelPrice(order.price, marketConfig, locale)
     : order.orderType === "market"
       ? t("table.market")
       : "—";
