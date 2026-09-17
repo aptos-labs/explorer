@@ -115,49 +115,10 @@ export default function GuidePage() {
             minWidth: 0,
           }}
         >
-          <Paper
-            component="nav"
-            aria-label={t("guide.meta.tocLabel")}
-            variant="outlined"
-            sx={{
-              p: 2,
-              width: {xs: "100%", md: 260},
-              maxWidth: "100%",
-              boxSizing: "border-box",
-              flexShrink: 0,
-              position: {md: "sticky"},
-              top: {md: 112},
-            }}
-          >
-            <Typography
-              variant="subtitle2"
-              sx={{
-                fontWeight: 700,
-                mb: 1,
-              }}
-            >
-              {t("guide.meta.tocLabel")}
-            </Typography>
-            <Stack spacing={0.5}>
-              {GUIDE_SECTIONS.map((section) => (
-                <MuiLink
-                  key={section.id}
-                  href={`#${section.id}`}
-                  underline="hover"
-                  sx={{
-                    fontSize: "0.9rem",
-                    color: "text.primary",
-                  }}
-                >
-                  {t(`${section.messageKey}.title`)}
-                </MuiLink>
-              ))}
-            </Stack>
-          </Paper>
-
           <Box
             component="article"
             sx={{
+              order: {xs: 0, md: 1},
               minWidth: 0,
               flex: 1,
               maxWidth: "100%",
@@ -193,6 +154,47 @@ export default function GuidePage() {
               </Box>
             ))}
           </Box>
+
+          <Paper
+            component="nav"
+            aria-label={t("guide.meta.tocLabel")}
+            variant="outlined"
+            sx={{
+              order: {xs: -1, md: 2},
+              p: 2,
+              width: {xs: "100%", md: 260},
+              maxWidth: "100%",
+              boxSizing: "border-box",
+              flexShrink: 0,
+              position: {md: "sticky"},
+              top: {md: 112},
+            }}
+          >
+            <Typography
+              variant="subtitle2"
+              sx={{
+                fontWeight: 700,
+                mb: 1,
+              }}
+            >
+              {t("guide.meta.tocLabel")}
+            </Typography>
+            <Stack spacing={0.5}>
+              {GUIDE_SECTIONS.map((section) => (
+                <MuiLink
+                  key={section.id}
+                  href={`#${section.id}`}
+                  underline="hover"
+                  sx={{
+                    fontSize: "0.9rem",
+                    color: "text.primary",
+                  }}
+                >
+                  {t(`${section.messageKey}.title`)}
+                </MuiLink>
+              ))}
+            </Stack>
+          </Paper>
         </Stack>
       </Box>
     </Box>
