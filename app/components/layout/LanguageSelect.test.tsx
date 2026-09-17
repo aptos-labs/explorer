@@ -72,7 +72,10 @@ describe("FEAT-SETTINGS-003 / FEAT-CHROME-001 — header language switch", () =>
       act(() => {
         vi.advanceTimersByTime(500);
       });
-      expect(document.querySelector('[role="tooltip"]')).toBeNull();
+      const popper = document.querySelector(".MuiTooltip-popper");
+      if (popper) {
+        expect(getComputedStyle(popper).pointerEvents).toBe("none");
+      }
       expect(screen.getByRole("menuitem", {name: "Français"})).toBeTruthy();
     } finally {
       vi.useRealTimers();

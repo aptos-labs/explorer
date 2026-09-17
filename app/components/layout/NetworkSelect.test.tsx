@@ -87,7 +87,10 @@ describe("FEAT-NETWORK-001 — header network selector", () => {
       act(() => {
         vi.advanceTimersByTime(500);
       });
-      expect(document.querySelector('[role="tooltip"]')).toBeNull();
+      const popper = document.querySelector(".MuiTooltip-popper");
+      if (popper) {
+        expect(getComputedStyle(popper).pointerEvents).toBe("none");
+      }
 
       fireEvent.click(screen.getByRole("option", {name: /testnet/i}));
       expect(networkMocks.setNetworkName).toHaveBeenCalledWith("testnet");

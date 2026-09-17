@@ -948,7 +948,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **Param** | `?network=` in URL. |
 | **Behavior** | Navigate to same path with new network param, `replace: true`. |
 | **Visible control** | Header Select on every viewport (desktop, compact, installed PWA). A status dot (mainnet/testnet/devnet/other) sits in the closed control so the current chain is scannable. Tooltip uses **Select Network**. |
-| **Tooltip vs. menu** | The hover tooltip is dismissed as soon as the dropdown opens and is non-interactive, so its popper (which paints above the menu) never covers or swallows clicks on the first option. |
+| **Tooltip vs. menu** | The hover tooltip is forced closed when the dropdown opens and its popper is click-through, so it never covers or swallows clicks on the first option. |
 | **Mobile** | The header Select menu uses `disableScrollLock` so the dropdown opens on phone browsers instead of being dismissed by MUI's body scroll-lock. Compact width is capped so the language control stays on-screen. |
 | **Visible networks** | mainnet, testnet, devnet + localnet (`local`) shown separately. |
 | **Hidden networks** | `decibel`, `shelbynet` — in `networks` map but filtered from dropdown. Wallet adapter sees them as `"local"`. |
