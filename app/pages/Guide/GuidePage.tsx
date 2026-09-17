@@ -12,6 +12,7 @@ import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import {InlineMarkup, useTranslation} from "../../i18n";
 import PageHeader from "../layout/PageHeader";
 import {GUIDE_SECTIONS} from "./guideSections";
+import {useGuideActiveSection} from "./useGuideActiveSection";
 
 const guideBodyTypography = {
   fontSize: "1.0625rem",
@@ -75,9 +76,12 @@ function GuideBullets({items}: {items: string[]}) {
   );
 }
 
+const guideSectionIds = GUIDE_SECTIONS.map((section) => section.id);
+
 export default function GuidePage() {
   const theme = useTheme();
   const {t, tList} = useTranslation();
+  const activeSectionId = useGuideActiveSection(guideSectionIds);
 
   return (
     <Box sx={{width: "100%", maxWidth: "100%", minWidth: 0}}>
@@ -228,32 +232,42 @@ export default function GuidePage() {
               {t("guide.meta.tocLabel")}
             </Typography>
             <Stack spacing={0.25}>
-              {GUIDE_SECTIONS.map((section) => (
-                <MuiLink
-                  key={section.id}
-                  href={`#${section.id}`}
-                  underline="none"
-                  sx={{
-                    display: "block",
-                    py: 0.75,
-                    px: 1.25,
-                    borderRadius: 1,
-                    fontSize: "0.875rem",
-                    lineHeight: 1.45,
-                    color: "text.secondary",
-                    transition: theme.transitions.create([
-                      "background-color",
-                      "color",
-                    ]),
-                    "&:hover": {
-                      bgcolor: "action.hover",
-                      color: "text.primary",
-                    },
-                  }}
-                >
-                  {t(`${section.messageKey}.title`)}
-                </MuiLink>
-              ))}
+              {GUIDE_SECTIONS.map((section) => {
+                const isActive = activeSectionId === section.id;
+                return (
+                  <MuiLink
+                    key={section.id}
+                    href={`#${section.id}`}
+                    underline="none"
+                    aria-current={isActive ? "location" : undefined}
+                    sx={{
+                      display: "block",
+                      py: 0.75,
+                      px: 1.25,
+                      borderRadius: 1,
+                      fontSize: "0.875rem",
+                      lineHeight: 1.45,
+                      fontWeight: isActive ? 600 : 400,
+                      color: isActive ? "primary.main" : "text.secondary",
+                      bgcolor: isActive
+                        ? alpha(theme.palette.primary.main, 0.12)
+                        : "transparent",
+                      transition: theme.transitions.create([
+                        "background-color",
+                        "color",
+                      ]),
+                      "&:hover": {
+                        bgcolor: isActive
+                          ? alpha(theme.palette.primary.main, 0.16)
+                          : "action.hover",
+                        color: isActive ? "primary.main" : "text.primary",
+                      },
+                    }}
+                  >
+                    {t(`${section.messageKey}.title`)}
+                  </MuiLink>
+                );
+              })}
             </Stack>
           </Paper>
         </Stack>
