@@ -20,7 +20,6 @@ import {
   useTheme,
 } from "@mui/material";
 import React, {useMemo, useState} from "react";
-import {useTranslation} from "../../../i18n";
 import type {Types} from "~/types/aptos";
 import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
 import HashButton, {HashType} from "../../../components/HashButton";
@@ -31,6 +30,7 @@ import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import VirtualizedTableBody from "../../../components/Table/VirtualizedTableBody";
+import {useTranslation} from "../../../i18n";
 import {
   useAugmentToWithGlobalSearchParams,
   useNavigate,
@@ -47,6 +47,7 @@ import {
   useValidatorDelegationData,
   type ValidatorWithExtendedData,
 } from "./hooks/useValidatorDelegationData";
+import {RewardsEarnedValue} from "./RewardsEarnedValue";
 
 // Define column types
 type Column =
@@ -393,7 +394,6 @@ function RewardsEarnedCell({
   connected: boolean;
 }) {
   const theme = useTheme();
-  const rewardsAmount = Number(validator.apt_rewards_distributed) || 0;
 
   return (
     <GeneralTableCell
@@ -407,7 +407,7 @@ function RewardsEarnedCell({
         variant="body2"
         sx={{fontWeight: 600, color: theme.palette.success.main}}
       >
-        <APTCurrencyValue amount={rewardsAmount.toFixed(2)} decimals={0} />
+        <RewardsEarnedValue amount={validator.apt_rewards_distributed} />
       </Typography>
     </GeneralTableCell>
   );
@@ -748,12 +748,7 @@ function EnhancedDelegationValidatorCard({
               color: theme.palette.success.main,
             }}
           >
-            <APTCurrencyValue
-              amount={(Number(validator.apt_rewards_distributed) || 0).toFixed(
-                2,
-              )}
-              decimals={0}
-            />
+            <RewardsEarnedValue amount={validator.apt_rewards_distributed} />
           </Typography>
         </Box>
       </Stack>

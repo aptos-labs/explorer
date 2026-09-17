@@ -59,7 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **Validator staking fee lookup**: The pre-stake `get_add_stake_fee` view request now converts APT input to octas with exact decimal-string arithmetic. Floating-point multiplication could send a fractional Move `u64` argument (for example, `166921.01`) and crash the validator page with `Cannot convert … to a BigInt`.
+- **Delegation validators rewards crash**: Desktop rows and mobile cards now format rewards as decimal APT with locale-aware grouping and two fractional digits. Previously, values such as `166921.01` were passed to an integer-only currency formatter and crashed the page with `Cannot convert 166921.01 to a BigInt`.
 - **Mobile header hamburger and network dropdown**: On phone browsers the overflow menu and network Select both use MUI Modals, which default to locking `body` scroll. That lock (plus a 24×19px hamburger and `backdrop-filter` on the sticky AppBar) made taps appear to do nothing on iOS Safari. The hamburger is now a 48px `IconButton` with a 24×24 glyph (so the SVG cannot overflow the tap target), both menus set `disableScrollLock`, and the header blur sits on a non-interactive `::before` layer.
 - **Language preference across tabs**: Changing language writes `aptos-explorer-locale` immediately (independent of API keys and Settings **Save**). Other open tabs now reload that key on `storage` events, matching decompilation and API-key settings sync.
 
