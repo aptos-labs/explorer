@@ -103,7 +103,7 @@ export default function NetworkSelect() {
           startAdornment={
             <InputAdornment
               position="start"
-              sx={{ml: 0.5, mr: 0, pointerEvents: "none"}}
+              sx={{ml: 0.5, mr: 0.75, pointerEvents: "none"}}
             >
               <Box
                 data-network-status={networkName}
