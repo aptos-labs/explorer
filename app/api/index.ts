@@ -7,7 +7,6 @@ import {
   TypeTagU64,
 } from "@aptos-labs/ts-sdk";
 import type {Types} from "~/types/aptos";
-import {OCTA} from "../constants";
 import {emitRateLimit} from "../context/rate-limit/rateLimitEvents";
 import {isNumeric} from "../pages/utils";
 import {mapWithConcurrencyLimit} from "../utils/mapWithConcurrencyLimit";
@@ -316,10 +315,14 @@ export async function getAddStakeFee(
   validatorAddress: Types.Address,
   amount: string,
 ): Promise<Types.MoveValue[]> {
+  const [wholePart, fractionalPart = ""] = amount.split(".");
+  const octas = `${wholePart}${fractionalPart.padEnd(8, "0").slice(0, 8)}`;
   const payload: Types.ViewRequest = {
     function: "0x1::delegation_pool::get_add_stake_fee",
     type_arguments: [],
-    arguments: [validatorAddress, (Number(amount) * OCTA).toString()],
+    // Move expects an integer number of octas. Avoid floating-point arithmetic:
+    // 0.0016692101 APT, for example, can otherwise become "166921.01".
+    arguments: [validatorAddress, BigInt(octas).toString()],
   };
   return withResponseError(client.view(payload));
 }

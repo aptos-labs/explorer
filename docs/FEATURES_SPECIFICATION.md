@@ -643,7 +643,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | Aspect | Detail |
 |--------|--------|
 | **Display** | `ValidatorStakingBar` with metrics + "Stake" CTA. |
-| **Operations** | `add_stake`, `unlock`, `reactivate_stake`, `withdraw` via `0x1::delegation_pool`. |
+| **Operations** | `add_stake`, `unlock`, `reactivate_stake`, `withdraw` via `0x1::delegation_pool`. The pre-stake `get_add_stake_fee` view call converts the entered APT decimal amount to an integer octa string without floating-point arithmetic. |
 | **Dialog** | `StakeOperationDialog` with amount validation (`useAmountInput`, `getStakeOperationAPTRequirement`), wallet integration. |
 | **Mobile** | The "Stake" CTA is rendered in **both** layouts — full width below the metrics on mobile, inline on desktop. Dialogs are usable on narrow screens: `StyledDialog` is `fullWidth` with responsive margins, quick-amount buttons wrap, and the amount field requests a numeric keyboard (`inputMode="decimal"`). |
 
@@ -1469,6 +1469,7 @@ top of the HTML site.
 | `app/pages/DelegatoryValidator/resolveValidatorData.test.ts` | FEAT-VALDEL-001 (`resolveValidatorData`: StakePool-only fallback when validator lists are empty; prefer list stats; never-active indexer pool row; unpadded vs padded address match; missing list operator filled from StakePool) |
 | `app/pages/DelegatoryValidator/index.test.tsx` | FEAT-VALDEL-001 (`/validator/$address` renders title + staking bar + detail card when `useGetValidators` and the indexer pool list are empty but `0x1::stake::StakePool` exists, including when the resource is the SDK-unwrapped inner payload; invalid address, StakePool query error, loading skeletons, missing StakePool not-found, commission-change banner, connected-wallet My Deposits) |
 | `app/api/hooks/delegations/useGetDelegationNodeCommissionChange.test.ts` | FEAT-VALDEL-002 (commission-change view query is disabled when the validator address is empty and enabled when present) |
+| `app/api/index.test.ts` | FEAT-VALDEL-003 (`getAddStakeFee` serializes decimal APT input as an integer octa argument) |
 | `app/pages/DelegatoryValidator/MyDepositsSection.test.tsx` | FEAT-VALDEL-004 (My Deposits action buttons exist in both layouts: mobile card list — no table — and desktop table, with `UNSTAKE` / `RESTAKE` labels derived from the stake status) |
 | `app/pages/DelegatoryValidator/utils.test.ts` | FEAT-VALDEL-001 (`getLockedUtilSecs` reads `locked_until_secs` from REST-wrapped and SDK-unwrapped StakePool payloads and returns null instead of throwing when the field is missing), FEAT-VALDEL-004 (My Deposits reward replay across legacy/current delegation event names, pending-inactive withdrawal replay, same-version `event_index` ordering, zero-reward display helper, `getStakeOperationLabel` action labels shared by the desktop table and the mobile deposit cards) |
 | `app/api/hooks/useGetFaIsDispatchable.test.ts` | FEAT-FA-002 (FA dispatch detection: `0x1::fungible_asset::DispatchFunctionStore` presence + parsing of withdraw/deposit/derived_balance `FunctionInfo`, plus `derived_supply` from `0x1::fungible_asset::DeriveSupply`, with malformed-entry rejection; React hook wrapper loading/loaded states via mocked `useGetAccountResources`) |
