@@ -66,9 +66,9 @@ explorer/
 
 ## Internationalization
 
-Chrome (header, nav, footer, skip link), search tokens, settings copy, and the in-app user guide are translated in every shipped catalog. Remaining explorer UI copy lives in `app/i18n/messages/en.ts` and `app/i18n/messages/en/`. Full-UI locales (`zh`, `fil`, `es`, `fr`, `de`, `ja`, `ko`, `ru`, `pt`, `ar`, `hi`, `th`, `id`, `vi`, `tr`, `bn`, `sw`, `zh-Hant`, `it`, `ms`, `ta`, `pl`, `ur`, `pt-PT`, `ha`, `zu`, `am`) include those keys; other locales omit them and fall back to English. On-chain identifiers stay untranslated.
+Chrome (header, nav, footer, skip link), search tokens, settings copy, the in-app user guide, and remaining explorer UI copy are translated in every shipped catalog. Remaining explorer UI copy lives in `app/i18n/messages/en.ts` and `app/i18n/messages/en/`. Every non-English shipped locale is a **full-UI** catalog (`FULL_UI_LOCALES`) and includes those keys. On-chain identifiers stay untranslated. Missing keys still fall back to English at runtime.
 
-**Keep i18n working in future changes.** Do not land new user-visible chrome, settings, search, or guide strings as hardcoded English. Add those keys to `app/i18n/messages/en.ts` first, then the same keys in every shipped catalog. Remaining explorer UI keys go in `app/i18n/messages/en/` (and the English barrel) and must be added to every **full-UI** locale; other catalogs may omit them (English fallback). Use `useTranslation()` (`t` / `tList`) and locale-bound `formatNumber` / `formatInteger` / `formatDateTime` instead of ad-hoc `toLocaleString`. Language is selected from the header globe control (`LanguageSelect`, every viewport; shows a short code for the current catalog) or the hamburger Language item (compact), and from `/settings`; all write immediately to `aptos-explorer-locale`.
+**Keep i18n working in future changes.** Do not land new user-visible chrome, settings, search, or guide strings as hardcoded English. Add those keys to `app/i18n/messages/en.ts` first, then the same keys in every shipped catalog. Remaining explorer UI keys go in `app/i18n/messages/en/` (and the English barrel) and must be added to every **full-UI** locale (`FULL_UI_LOCALES`; currently every non-English shipped locale). A chrome-only catalog may omit those keys (English fallback). Use `useTranslation()` (`t` / `tList`) and locale-bound `formatNumber` / `formatInteger` / `formatDateTime` instead of ad-hoc `toLocaleString`. Language is selected from the header globe control (`LanguageSelect`, every viewport; shows a short code for the current catalog) or the hamburger Language item (compact), and from `/settings`; all write immediately to `aptos-explorer-locale`.
 
 **When the locale list changes** (add, remove, or rename a catalog), update this section in **`AGENTS.md` in the same PR** — including the shipped-locales table below. Also register the catalog in `SUPPORTED_LOCALES` / `LOCALE_META` (`app/i18n/locales.ts`) and `messageCatalogs` (`app/i18n/messages/index.ts`), add `app/i18n/messages/<id>.ts` (hyphenated ids: `zh-Hant.ts` exports `zhHant`, `pt-PT.ts` exports `ptPT`), extend browser-tag aliases in `app/i18n/detectLocale.ts` when needed, and update `docs/FEATURES_SPECIFICATION.md` (FEAT-I18N-001 / FEAT-SETTINGS-003) plus `CHANGELOG.md`. `app/i18n/agentsLocales.test.ts` fails if the table and `SUPPORTED_LOCALES` diverge.
 
@@ -105,10 +105,10 @@ IDs must match `SUPPORTED_LOCALES` in `app/i18n/locales.ts`. Native names match 
 | `it` | Italiano | Full UI catalog |
 | `ms` | Bahasa Melayu | Full UI catalog |
 | `ta` | தமிழ் | Full UI catalog |
-| `uk` | Українська | |
-| `nl` | Nederlands | |
+| `uk` | Українська | Full UI catalog |
+| `nl` | Nederlands | Full UI catalog |
 | `pl` | Polski | Full UI catalog |
-| `he` | עברית | RTL; `iw` maps here |
+| `he` | עברית | RTL; `iw` maps here; full UI catalog |
 | `ur` | اردو | RTL; full UI catalog |
 | `pt-PT` | Português (Portugal) | European Portuguese; full UI catalog |
 | `ha` | Hausa | Full UI catalog |
