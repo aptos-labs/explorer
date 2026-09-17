@@ -1,13 +1,3 @@
-export {englishT, englishTList} from "./english";
-export {translateNetworkName} from "./networkName";
-export {
-  I18nProvider,
-  createTranslator,
-  useTranslation,
-  type TFunction,
-  type TListFunction,
-  type TranslateVars,
-} from "./I18nProvider";
 export {
   canonicalSupportedLocale,
   isSupportedLocale,
@@ -15,6 +5,7 @@ export {
   normalizeLocalePreference,
   resolveLocale,
 } from "./detectLocale";
+export {englishT, englishTList} from "./english";
 export {
   decimalSeparator,
   formatBigInt,
@@ -28,25 +19,34 @@ export {
   formatTimestamp,
   intlLocale,
 } from "./format";
+export {
+  createTranslator,
+  I18nProvider,
+  type TFunction,
+  type TListFunction,
+  type TranslateVars,
+  useTranslation,
+} from "./I18nProvider";
 export {InlineMarkup} from "./InlineMarkup";
-export {isInternalHref, parseInlineMarkup} from "./inlineMarkup";
 export {
   DEFAULT_LOCALE,
   FULL_UI_LOCALES,
-  isFullUiLocale,
-  localeShortLabel,
-  LOCALE_META,
-  SUPPORTED_LOCALES,
   type FullUiLocale,
+  isFullUiLocale,
+  LOCALE_META,
   type LocalePreference,
+  localeShortLabel,
+  SUPPORTED_LOCALES,
   type SupportedLocale,
 } from "./locales";
 export {en, messageCatalogs} from "./messages";
+export {translateNetworkName} from "./networkName";
+export {isInternalHref, parseInlineMarkup} from "./parseInlineMarkup";
 export {
+  collectMessageKeys,
   getMessage,
   interpolate,
+  messagePlaceholders,
   translate,
   translateList,
-  collectMessageKeys,
-  messagePlaceholders,
 } from "./translate";

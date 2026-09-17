@@ -59,6 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **macOS dev SSR (`pnpm dev`)**: `InlineMarkup.tsx` and `inlineMarkup.ts` only differed by casing, so on case-insensitive APFS both `./InlineMarkup` and `./inlineMarkup` resolved to the parser module. The React component export was `undefined`, SSR threw "Element type is invalid", and the dev server returned 500. The parser is now `parseInlineMarkup.ts` (test file renamed to match).
 - **Mobile header hamburger and network dropdown**: On phone browsers the overflow menu and network Select both use MUI Modals, which default to locking `body` scroll. That lock (plus a 24×19px hamburger and `backdrop-filter` on the sticky AppBar) made taps appear to do nothing on iOS Safari. The hamburger is now a 48px `IconButton` with a 24×24 glyph (so the SVG cannot overflow the tap target), both menus set `disableScrollLock`, and the header blur sits on a non-interactive `::before` layer.
 - **Language preference across tabs**: Changing language writes `aptos-explorer-locale` immediately (independent of API keys and Settings **Save**). Other open tabs now reload that key on `storage` events, matching decompilation and API-key settings sync.
 

@@ -1,7 +1,7 @@
 import {Box, Link as MuiLink} from "@mui/material";
 import {Fragment, type ReactNode} from "react";
 import {Link} from "../routing";
-import {isInternalHref, parseInlineMarkup} from "./inlineMarkup";
+import {isInternalHref, parseInlineMarkup} from "./parseInlineMarkup";
 
 const codeSx = {
   fontFamily: "monospace",
