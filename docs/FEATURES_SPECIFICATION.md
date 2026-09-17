@@ -1377,7 +1377,7 @@ top of the HTML site.
 |--------|--------|
 | **Content** | Article-style guide covering what the explorer is, chrome, search, networks, transactions, accounts/objects, modules, blocks, validators, assets, analytics, releases, Run Script, configuration, wallet, verification, URLs/agents, glossary, and troubleshooting. Copy lives in i18n catalogs (English source plus shipped translations). |
 | **TOC** | Sticky "On this page" nav with hash links to each section; on `md+` viewports it sits in a right-hand column while the article body stays on the left. On compact viewports the TOC stays above the article. |
-| **Layout** | The guide column is width-constrained (`min-width: 0`, wrapping long tokens) so it does not extend the page sideways. |
+| **Layout** | The guide column is width-constrained (`min-width: 0`, wrapping long tokens) so it does not extend the page sideways. Body copy uses a ~42rem measure with relaxed line height; the TOC is a subtle sticky panel on the right from `md+`. |
 | **Navigation** | Header help icon (desktop), overflow menu (compact), footer link. WebMCP `open_guide` tool. |
 | **Metadata** | `PageMetadata` type `article`, canonical `/guide`. |
 

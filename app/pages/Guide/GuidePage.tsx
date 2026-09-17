@@ -1,15 +1,24 @@
 import {
+  alpha,
   Box,
   Divider,
   Link as MuiLink,
   Paper,
   Stack,
   Typography,
+  useTheme,
 } from "@mui/material";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import {InlineMarkup, useTranslation} from "../../i18n";
 import PageHeader from "../layout/PageHeader";
 import {GUIDE_SECTIONS} from "./guideSections";
+
+const guideBodyTypography = {
+  fontSize: "1.0625rem",
+  lineHeight: 1.7,
+} as const;
+
+const guideArticleMaxWidth = "42rem";
 
 function GuideParagraphs({texts}: {texts: string[]}) {
   if (texts.length === 0) {
@@ -23,8 +32,8 @@ function GuideParagraphs({texts}: {texts: string[]}) {
           variant="body1"
           component="p"
           sx={{
-            mb: 2,
-            maxWidth: "65ch",
+            ...guideBodyTypography,
+            mb: 2.5,
             overflowWrap: "anywhere",
           }}
         >
@@ -42,11 +51,22 @@ function GuideBullets({items}: {items: string[]}) {
   return (
     <Box
       component="ul"
-      sx={{pl: 3, mb: 2, maxWidth: "65ch", overflowWrap: "anywhere"}}
+      sx={{
+        pl: 2.75,
+        mb: 2.5,
+        overflowWrap: "anywhere",
+        "& li": {
+          mb: 1.25,
+          lineHeight: 1.7,
+          "&::marker": {
+            color: "text.secondary",
+          },
+        },
+      }}
     >
       {items.map((item) => (
-        <Box component="li" key={item} sx={{mb: 1}}>
-          <Typography variant="body1" component="span">
+        <Box component="li" key={item}>
+          <Typography variant="body1" component="span" sx={guideBodyTypography}>
             <InlineMarkup text={item} />
           </Typography>
         </Box>
@@ -56,6 +76,7 @@ function GuideBullets({items}: {items: string[]}) {
 }
 
 export default function GuidePage() {
+  const theme = useTheme();
   const {t, tList} = useTranslation();
 
   return (
@@ -96,9 +117,12 @@ export default function GuidePage() {
         <Typography
           variant="body1"
           sx={{
+            ...guideBodyTypography,
             color: "text.secondary",
-            mb: 4,
-            maxWidth: "65ch",
+            fontSize: "1.125rem",
+            lineHeight: 1.65,
+            mb: 5,
+            maxWidth: guideArticleMaxWidth,
             overflowWrap: "anywhere",
           }}
         >
@@ -107,7 +131,7 @@ export default function GuidePage() {
 
         <Stack
           direction={{xs: "column", md: "row"}}
-          spacing={4}
+          spacing={{xs: 3, md: 6}}
           sx={{
             alignItems: "flex-start",
             width: "100%",
@@ -121,7 +145,8 @@ export default function GuidePage() {
               order: {xs: 0, md: 1},
               minWidth: 0,
               flex: 1,
-              maxWidth: "100%",
+              width: "100%",
+              maxWidth: {md: guideArticleMaxWidth},
               overflowWrap: "anywhere",
             }}
           >
@@ -132,16 +157,26 @@ export default function GuidePage() {
                 id={section.id}
                 sx={{
                   scrollMarginTop: 112,
-                  mb: 2,
+                  mb: {xs: 4, md: 5},
                 }}
               >
-                {index > 0 ? <Divider sx={{mb: 4}} /> : null}
+                {index > 0 ? (
+                  <Divider
+                    sx={{
+                      mb: 4,
+                      borderColor: alpha(theme.palette.divider, 0.8),
+                    }}
+                  />
+                ) : null}
                 <Typography
                   variant="h4"
                   component="h2"
                   sx={{
-                    mb: 2,
+                    mb: 2.5,
                     fontWeight: 600,
+                    fontSize: {xs: "1.375rem", md: "1.5rem"},
+                    lineHeight: 1.35,
+                    letterSpacing: "-0.01em",
                   }}
                 >
                   {t(`${section.messageKey}.title`)}
@@ -161,33 +196,59 @@ export default function GuidePage() {
             variant="outlined"
             sx={{
               order: {xs: -1, md: 2},
-              p: 2,
-              width: {xs: "100%", md: 260},
+              p: 2.5,
+              width: {xs: "100%", md: 280},
               maxWidth: "100%",
               boxSizing: "border-box",
               flexShrink: 0,
               position: {md: "sticky"},
               top: {md: 112},
+              alignSelf: {md: "flex-start"},
+              borderRadius: 2,
+              bgcolor: alpha(
+                theme.palette.text.primary,
+                theme.palette.mode === "dark" ? 0.06 : 0.03,
+              ),
+              borderColor: alpha(theme.palette.divider, 0.9),
+              boxShadow: "none",
             }}
           >
             <Typography
-              variant="subtitle2"
+              variant="overline"
+              component="p"
               sx={{
+                display: "block",
                 fontWeight: 700,
-                mb: 1,
+                letterSpacing: "0.08em",
+                color: "text.secondary",
+                mb: 1.5,
+                lineHeight: 1.4,
               }}
             >
               {t("guide.meta.tocLabel")}
             </Typography>
-            <Stack spacing={0.5}>
+            <Stack spacing={0.25}>
               {GUIDE_SECTIONS.map((section) => (
                 <MuiLink
                   key={section.id}
                   href={`#${section.id}`}
-                  underline="hover"
+                  underline="none"
                   sx={{
-                    fontSize: "0.9rem",
-                    color: "text.primary",
+                    display: "block",
+                    py: 0.75,
+                    px: 1.25,
+                    borderRadius: 1,
+                    fontSize: "0.875rem",
+                    lineHeight: 1.45,
+                    color: "text.secondary",
+                    transition: theme.transitions.create([
+                      "background-color",
+                      "color",
+                    ]),
+                    "&:hover": {
+                      bgcolor: "action.hover",
+                      color: "text.primary",
+                    },
                   }}
                 >
                   {t(`${section.messageKey}.title`)}
