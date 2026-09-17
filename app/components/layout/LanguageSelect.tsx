@@ -15,9 +15,9 @@ import {
 import type {MouseEvent} from "react";
 import {useState} from "react";
 import {
+  LOCALE_META,
   type LocalePreference,
   localeShortLabel,
-  LOCALE_META,
   normalizeLocalePreference,
   SUPPORTED_LOCALES,
   useTranslation,
@@ -204,7 +204,19 @@ export default function LanguageSelect({
 
   return (
     <>
-      <Tooltip title={label} disableTouchListener>
+      {/* Keep the tooltip closed and non-interactive while the menu is open:
+          its popper renders above the menu and would block the first option. */}
+      <Tooltip
+        title={label}
+        disableTouchListener
+        disableInteractive
+        open={anchorEl ? false : undefined}
+        slotProps={{
+          popper: {
+            sx: {pointerEvents: "none"},
+          },
+        }}
+      >
         <Button
           color="inherit"
           size="small"

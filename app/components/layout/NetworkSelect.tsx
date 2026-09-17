@@ -9,6 +9,7 @@ import {
   useTheme,
 } from "@mui/material";
 import {useLocation} from "@tanstack/react-router";
+import {useState} from "react";
 import {hiddenNetworks, type NetworkName, networks} from "../../constants";
 import {useNetworkSelector} from "../../global-config";
 import {translateNetworkName, useTranslation} from "../../i18n";
@@ -35,6 +36,7 @@ export default function NetworkSelect() {
   const [networkName, setNetworkName] = useNetworkSelector();
   const navigate = useNavigate();
   const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleChange = (event: SelectChangeEvent) => {
     const newNetwork = event.target.value as NetworkName;
@@ -75,10 +77,26 @@ export default function NetworkSelect() {
       size="small"
       sx={{minWidth: 0, maxWidth: {xs: "42vw", sm: "none"}, flexShrink: 0}}
     >
-      <Tooltip title={t("network.selectTitle")} disableTouchListener>
+      {/* The tooltip popper sits above the menu (zIndex 1500 vs 1300), so it
+          must be closed and non-interactive while the dropdown is open or it
+          covers the first option and swallows the click. */}
+      <Tooltip
+        title={t("network.selectTitle")}
+        disableTouchListener
+        disableInteractive
+        open={menuOpen ? false : undefined}
+        slotProps={{
+          popper: {
+            sx: {pointerEvents: "none"},
+          },
+        }}
+      >
         <Select
           value={networkName}
           onChange={handleChange}
+          open={menuOpen}
+          onOpen={() => setMenuOpen(true)}
+          onClose={() => setMenuOpen(false)}
           displayEmpty
           inputProps={{"aria-label": t("network.selectAriaLabel")}}
           renderValue={renderValue}

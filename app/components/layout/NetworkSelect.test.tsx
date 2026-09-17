@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 // Covers FEAT-NETWORK-001 — header network dropdown must open on mobile browsers
 import {createTheme, ThemeProvider} from "@mui/material/styles";
-import {cleanup, fireEvent, render, screen} from "@testing-library/react";
+import {act, cleanup, fireEvent, render, screen} from "@testing-library/react";
 import {afterEach, describe, expect, it, vi} from "vitest";
 import getDesignTokens from "../../themes/theme";
 
@@ -67,6 +67,33 @@ describe("FEAT-NETWORK-001 — header network selector", () => {
     expect(screen.getByRole("option", {name: /localnet/i})).toBeTruthy();
     expect(document.body.style.overflow).not.toBe("hidden");
     expect(document.documentElement.style.overflow).not.toBe("hidden");
+  });
+
+  it("hides the hover tooltip once the dropdown is open so options stay clickable", () => {
+    vi.useFakeTimers();
+    try {
+      renderSelect();
+      const trigger = screen.getByLabelText("Select network");
+
+      fireEvent.mouseOver(trigger);
+      act(() => {
+        vi.advanceTimersByTime(500);
+      });
+      // Queried from the DOM rather than by role: the open menu marks the
+      // tooltip portal aria-hidden, but it is still painted over the options.
+      expect(document.querySelector('[role="tooltip"]')).toBeTruthy();
+
+      fireEvent.mouseDown(trigger);
+      act(() => {
+        vi.advanceTimersByTime(500);
+      });
+      expect(document.querySelector('[role="tooltip"]')).toBeNull();
+
+      fireEvent.click(screen.getByRole("option", {name: /testnet/i}));
+      expect(networkMocks.setNetworkName).toHaveBeenCalledWith("testnet");
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("updates the network and URL when an option is chosen", () => {
