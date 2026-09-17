@@ -162,6 +162,7 @@ export default function LanguageSelect({
   const {localePreference, persistLocalePreference} =
     usePersistLocalePreference();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [tooltipHovered, setTooltipHovered] = useState(false);
   const isSettings = variant === "settings";
   const label = isSettings
     ? t("settings.language.label")
@@ -204,23 +205,21 @@ export default function LanguageSelect({
 
   return (
     <>
-      {/* Keep the tooltip closed and non-interactive while the menu is open:
-          its popper renders above the menu and would block the first option. */}
       <Tooltip
         title={label}
         disableTouchListener
         disableInteractive
-        open={anchorEl ? false : undefined}
-        slotProps={{
-          popper: {
-            sx: {pointerEvents: "none"},
-          },
-        }}
+        open={tooltipHovered && !anchorEl}
       >
         <Button
           color="inherit"
           size="small"
-          onClick={(event) => setAnchorEl(event.currentTarget)}
+          onMouseEnter={() => setTooltipHovered(true)}
+          onMouseLeave={() => setTooltipHovered(false)}
+          onClick={(event) => {
+            setTooltipHovered(false);
+            setAnchorEl(event.currentTarget);
+          }}
           aria-label={label}
           aria-haspopup="menu"
           aria-expanded={anchorEl ? "true" : undefined}

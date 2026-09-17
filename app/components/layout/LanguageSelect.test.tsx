@@ -56,6 +56,28 @@ describe("FEAT-SETTINGS-003 / FEAT-CHROME-001 — header language switch", () =>
     ).toContain("FR");
   });
 
+  it("hides the hover tooltip when the pointer leaves the button", () => {
+    vi.useFakeTimers();
+    try {
+      renderHeaderButton();
+      const button = screen.getByRole("button", {name: "Language"});
+
+      fireEvent.mouseOver(button);
+      act(() => {
+        vi.advanceTimersByTime(500);
+      });
+      expect(document.querySelector('[role="tooltip"]')).toBeTruthy();
+
+      fireEvent.mouseLeave(button);
+      act(() => {
+        vi.advanceTimersByTime(500);
+      });
+      expect(document.querySelector('[role="tooltip"]')).toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("hides the hover tooltip once the menu is open so options stay clickable", () => {
     vi.useFakeTimers();
     try {
@@ -72,10 +94,7 @@ describe("FEAT-SETTINGS-003 / FEAT-CHROME-001 — header language switch", () =>
       act(() => {
         vi.advanceTimersByTime(500);
       });
-      const popper = document.querySelector(".MuiTooltip-popper");
-      if (popper) {
-        expect(getComputedStyle(popper).pointerEvents).toBe("none");
-      }
+      expect(document.querySelector('[role="tooltip"]')).toBeNull();
       expect(screen.getByRole("menuitem", {name: "Français"})).toBeTruthy();
     } finally {
       vi.useRealTimers();

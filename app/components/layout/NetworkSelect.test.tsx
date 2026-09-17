@@ -69,6 +69,28 @@ describe("FEAT-NETWORK-001 — header network selector", () => {
     expect(document.documentElement.style.overflow).not.toBe("hidden");
   });
 
+  it("hides the hover tooltip when the pointer leaves the control", () => {
+    vi.useFakeTimers();
+    try {
+      renderSelect();
+      const trigger = screen.getByLabelText("Select network");
+
+      fireEvent.mouseOver(trigger);
+      act(() => {
+        vi.advanceTimersByTime(500);
+      });
+      expect(document.querySelector('[role="tooltip"]')).toBeTruthy();
+
+      fireEvent.mouseLeave(trigger);
+      act(() => {
+        vi.advanceTimersByTime(500);
+      });
+      expect(document.querySelector('[role="tooltip"]')).toBeNull();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("hides the hover tooltip once the dropdown is open so options stay clickable", () => {
     vi.useFakeTimers();
     try {
@@ -79,18 +101,13 @@ describe("FEAT-NETWORK-001 — header network selector", () => {
       act(() => {
         vi.advanceTimersByTime(500);
       });
-      // Queried from the DOM rather than by role: the open menu marks the
-      // tooltip portal aria-hidden, but it is still painted over the options.
       expect(document.querySelector('[role="tooltip"]')).toBeTruthy();
 
       fireEvent.mouseDown(trigger);
       act(() => {
         vi.advanceTimersByTime(500);
       });
-      const popper = document.querySelector(".MuiTooltip-popper");
-      if (popper) {
-        expect(getComputedStyle(popper).pointerEvents).toBe("none");
-      }
+      expect(document.querySelector('[role="tooltip"]')).toBeNull();
 
       fireEvent.click(screen.getByRole("option", {name: /testnet/i}));
       expect(networkMocks.setNetworkName).toHaveBeenCalledWith("testnet");

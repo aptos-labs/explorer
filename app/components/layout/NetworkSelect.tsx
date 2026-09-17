@@ -37,6 +37,7 @@ export default function NetworkSelect() {
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [tooltipHovered, setTooltipHovered] = useState(false);
 
   const handleChange = (event: SelectChangeEvent) => {
     const newNetwork = event.target.value as NetworkName;
@@ -77,25 +78,24 @@ export default function NetworkSelect() {
       size="small"
       sx={{minWidth: 0, maxWidth: {xs: "42vw", sm: "none"}, flexShrink: 0}}
     >
-      {/* The tooltip popper sits above the menu (zIndex 1500 vs 1300), so it
-          must be closed and non-interactive while the dropdown is open or it
-          covers the first option and swallows the click. */}
+      {/* Tooltip popper zIndex (1500) sits above the menu (1300). Hide it when the
+          pointer leaves the control or the menu opens so it never covers options. */}
       <Tooltip
         title={t("network.selectTitle")}
         disableTouchListener
         disableInteractive
-        open={menuOpen ? false : undefined}
-        slotProps={{
-          popper: {
-            sx: {pointerEvents: "none"},
-          },
-        }}
+        open={tooltipHovered && !menuOpen}
       >
         <Select
           value={networkName}
           onChange={handleChange}
           open={menuOpen}
-          onOpen={() => setMenuOpen(true)}
+          onMouseEnter={() => setTooltipHovered(true)}
+          onMouseLeave={() => setTooltipHovered(false)}
+          onOpen={() => {
+            setTooltipHovered(false);
+            setMenuOpen(true);
+          }}
           onClose={() => setMenuOpen(false)}
           displayEmpty
           inputProps={{"aria-label": t("network.selectAriaLabel")}}
