@@ -204,7 +204,7 @@ export default function LanguageSelect({
 
   return (
     <>
-      <Tooltip title={label} disableTouchListener>
+      <Tooltip title={anchorEl ? "" : label} disableTouchListener>
         <Button
           color="inherit"
           size="small"

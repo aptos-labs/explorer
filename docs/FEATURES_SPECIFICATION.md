@@ -950,7 +950,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 |--------|--------|
 | **Param** | `?network=` in URL. |
 | **Behavior** | Navigate to same path with new network param, `replace: true`. |
-| **Visible control** | Header Select on every viewport (desktop, compact, installed PWA). A status dot (mainnet/testnet/devnet/other) sits in the closed control so the current chain is scannable. Tooltip uses **Select Network**. |
+| **Visible control** | Header Select on every viewport (desktop, compact, installed PWA). A status dot (mainnet/testnet/devnet/other) sits in the closed control so the current chain is scannable. Tooltip uses **Select Network** on the closed control only — it is hidden while the menu is open so it cannot cover **Mainnet**. |
 | **Mobile** | The header Select menu uses `disableScrollLock` so the dropdown opens on phone browsers instead of being dismissed by MUI's body scroll-lock. Compact width is capped so the language control stays on-screen. |
 | **Visible networks** | mainnet, testnet, devnet + localnet (`local`) shown separately. |
 | **Hidden networks** | `decibel`, `shelbynet` — in `networks` map but filtered from dropdown. Wallet adapter sees them as `"local"`. |
@@ -1453,7 +1453,7 @@ top of the HTML site.
 | `app/components/layout/HeaderOverflowMenu.test.tsx` | FEAT-CHROME-001 (compact hamburger opens without locking body scroll; 48px IconButton with 24×24 glyph; Language item shows the current native name) |
 | `app/components/layout/headerOverflow.test.ts` | FEAT-CHROME-001 (desktop toolbar overflow → compact chrome with hysteresis) |
 | `app/settings/ExplorerSettings.test.tsx` | FEAT-SETTINGS-003 (cross-tab `storage` events reload `aptos-explorer-locale`) |
-| `app/components/layout/NetworkSelect.test.tsx` | FEAT-NETWORK-001 (header network dropdown opens without locking body scroll; choosing an option updates the URL; status-dot mapping) |
+| `app/components/layout/NetworkSelect.test.tsx` | FEAT-NETWORK-001 (header network dropdown opens without locking body scroll; choosing an option updates the URL; status-dot mapping; Select Network tooltip does not cover Mainnet while the menu is open) |
 | `app/pages/Guide/guideSections.test.ts` | FEAT-GUIDE-001 (section ids, titles, body copy) |
 | `app/utils/routerParams.test.ts` | FEAT-ROUTING-003 (`pathSplatToSegments` normalization) |
 | `app/api/hooks/aptosFeatureFlagsUpstream.test.ts` | FEAT-RELEASES-001 (upstream Rust enum parse for unlisted feature flag names) |

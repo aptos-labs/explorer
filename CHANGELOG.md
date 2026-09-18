@@ -61,6 +61,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Network dropdown tooltip covered Mainnet**: Opening the header network select no longer leaves the **Select Network** tooltip sitting on top of the first option (Mainnet). The tooltip is hidden while the menu is open. The language globe tooltip uses the same rule.
+
 - **Delegation validators page crash (`Cannot convert … to a BigInt`)**: `/validators/delegation` formatted `apt_rewards_distributed` (already decimal APT) through `APTCurrencyValue` with `decimals={0}`, which calls `BigInt` on values such as `166921.92` and crashed the page. Rewards now render via locale-aware decimal formatting in both the desktop table and mobile cards.
 
 - **Mobile header hamburger and network dropdown**: On phone browsers the overflow menu and network Select both use MUI Modals, which default to locking `body` scroll. That lock (plus a 24×19px hamburger and `backdrop-filter` on the sticky AppBar) made taps appear to do nothing on iOS Safari. The hamburger is now a 48px `IconButton` with a 24×24 glyph (so the SVG cannot overflow the tap target), both menus set `disableScrollLock`, and the header blur sits on a non-interactive `::before` layer.

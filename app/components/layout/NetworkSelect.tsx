@@ -9,6 +9,7 @@ import {
   useTheme,
 } from "@mui/material";
 import {useLocation} from "@tanstack/react-router";
+import {useState} from "react";
 import {hiddenNetworks, type NetworkName, networks} from "../../constants";
 import {useNetworkSelector} from "../../global-config";
 import {translateNetworkName, useTranslation} from "../../i18n";
@@ -35,6 +36,8 @@ export default function NetworkSelect() {
   const [networkName, setNetworkName] = useNetworkSelector();
   const navigate = useNavigate();
   const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [tooltipHover, setTooltipHover] = useState(false);
 
   const handleChange = (event: SelectChangeEvent) => {
     const newNetwork = event.target.value as NetworkName;
@@ -75,10 +78,21 @@ export default function NetworkSelect() {
       size="small"
       sx={{minWidth: 0, maxWidth: {xs: "42vw", sm: "none"}, flexShrink: 0}}
     >
-      <Tooltip title={t("network.selectTitle")} disableTouchListener>
+      <Tooltip
+        title={t("network.selectTitle")}
+        open={!menuOpen && tooltipHover}
+        onOpen={() => setTooltipHover(true)}
+        onClose={() => setTooltipHover(false)}
+        disableTouchListener
+      >
         <Select
           value={networkName}
           onChange={handleChange}
+          onOpen={() => setMenuOpen(true)}
+          onClose={() => {
+            setMenuOpen(false);
+            setTooltipHover(false);
+          }}
           displayEmpty
           inputProps={{"aria-label": t("network.selectAriaLabel")}}
           renderValue={renderValue}
