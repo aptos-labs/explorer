@@ -25,6 +25,7 @@ import type {Types} from "~/types/aptos";
 import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
 import HashButton, {HashType} from "../../../components/HashButton";
 import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import {RewardsEarnedApt} from "./RewardsEarnedApt";
 import {StyledLearnMoreTooltip} from "../../../components/StyledTooltip";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
@@ -407,7 +408,7 @@ function RewardsEarnedCell({
         variant="body2"
         sx={{fontWeight: 600, color: theme.palette.success.main}}
       >
-        <APTCurrencyValue amount={rewardsAmount.toFixed(2)} decimals={0} />
+        <RewardsEarnedApt amount={rewardsAmount} />
       </Typography>
     </GeneralTableCell>
   );
@@ -748,11 +749,8 @@ function EnhancedDelegationValidatorCard({
               color: theme.palette.success.main,
             }}
           >
-            <APTCurrencyValue
-              amount={(Number(validator.apt_rewards_distributed) || 0).toFixed(
-                2,
-              )}
-              decimals={0}
+            <RewardsEarnedApt
+              amount={Number(validator.apt_rewards_distributed) || 0}
             />
           </Typography>
         </Box>
