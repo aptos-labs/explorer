@@ -57,6 +57,9 @@ export const sw = {
       result: "Matokeo",
     },
     noResults: "Hakuna matokeo",
+    emptyTitle: 'Hakuna matokeo ya "{query}"',
+    emptyHint:
+      "Jaribu anwani ya akaunti, heshi au toleo la muamala, urefu wa kitalu, jina la ANS, au aina ya sarafu.",
     group: {
       account: "Akaunti",
       asset: "Mali",
@@ -894,6 +897,15 @@ export const sw = {
       websiteSchema:
         "Chunguza miamala, akaunti, vitalu, na shughuli kwenye mnyororo wa Aptos.",
       searchSchemaName: "Utafutaji wa Aptos Explorer",
+      subtitle:
+        "Tafuta kwenye mnyororo, kisha nenda moja kwa moja kwenye miamala, vitalu, wathibitishaji, au takwimu.",
+      browseTransactions: "Vinjari miamala",
+      viewLatestBlocks: "Tazama vitalu vya hivi karibuni",
+      openAnalytics: "Fungua takwimu",
+      documentTitle: "Aptos Explorer - Kichunguzi cha blockchain",
+      searchDocumentTitle: "Utafutaji · {query}",
+      searchMetaDescription:
+        "Utafutaji wa Aptos Explorer wa “{query}”. Matokeo yanapakia kwenye ukurasa huu; tumia upau wa utafutaji kuboresha au kufuata viungo vilivyogunduliwa.",
     },
     transactions: {
       title: "Miamala",

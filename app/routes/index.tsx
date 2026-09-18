@@ -5,6 +5,7 @@ import Typography from "@mui/material/Typography";
 import {createFileRoute} from "@tanstack/react-router";
 import {useState} from "react";
 import {PageMetadata} from "../components/hooks/usePageMetadata";
+import {useTranslation} from "../i18n";
 import TotalTransactions from "../pages/Analytics/NetworkInfo/TotalTransactions";
 import SearchWithResults from "../pages/Search/SearchWithResults";
 import {Link} from "../routing";
@@ -21,16 +22,18 @@ const SEARCH_TITLE_MAX = 72;
 function LandingPage() {
   const {search: initialSearch} = Route.useSearch();
   const [searching, setSearching] = useState(!!initialSearch);
+  const {t} = useTranslation();
 
   const q = initialSearch?.trim() ?? "";
+  const titleQuery =
+    q.length > SEARCH_TITLE_MAX ? `${q.slice(0, SEARCH_TITLE_MAX)}…` : q;
+  const descriptionQuery = q.length > 200 ? `${q.slice(0, 200)}…` : q;
   const title = q
-    ? `Search · ${
-        q.length > SEARCH_TITLE_MAX ? `${q.slice(0, SEARCH_TITLE_MAX)}…` : q
-      }`
-    : "Aptos Explorer - Blockchain Explorer";
+    ? t("pages.home.searchDocumentTitle", {query: titleQuery})
+    : t("pages.home.documentTitle");
   const description = q
-    ? `Aptos Explorer search for “${q.length > 200 ? `${q.slice(0, 200)}…` : q}”. Results load inline on this page; use the search bar to refine or follow detected links.`
-    : "Explore transactions, accounts, blocks, validators, NFTs, and network activity on the Aptos blockchain. Real-time data, analytics, and the official block explorer for the Aptos Network.";
+    ? t("pages.home.searchMetaDescription", {query: descriptionQuery})
+    : t("pages.home.metaDescription");
 
   return (
     <>
@@ -54,7 +57,7 @@ function LandingPage() {
       />
       <Box>
         <Typography variant="h1" sx={{mb: 2, textAlign: "center"}}>
-          Aptos Explorer
+          {t("chrome.appName")}
         </Typography>
         <Typography
           variant="h5"
@@ -64,8 +67,7 @@ function LandingPage() {
             textAlign: "center",
           }}
         >
-          Search the chain, then jump straight to transactions, blocks,
-          validators, or analytics.
+          {t("pages.home.subtitle")}
         </Typography>
         <Box sx={{maxWidth: 980, mx: "auto", mb: 3}}>
           <SearchWithResults
@@ -86,13 +88,13 @@ function LandingPage() {
               }}
             >
               <Button component={Link} to="/transactions" variant="primary">
-                Browse Transactions
+                {t("pages.home.browseTransactions")}
               </Button>
               <Button component={Link} to="/blocks" variant="outlined">
-                View Latest Blocks
+                {t("pages.home.viewLatestBlocks")}
               </Button>
               <Button component={Link} to="/analytics" variant="outlined">
-                Open Analytics
+                {t("pages.home.openAnalytics")}
               </Button>
             </Stack>
           </>

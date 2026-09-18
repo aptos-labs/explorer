@@ -144,6 +144,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | Aspect | Detail |
 |--------|--------|
 | **Widgets** | Total transactions count, CTAs to transactions/blocks/analytics. |
+| **Copy** | Hero heading uses `chrome.appName`. Subtitle, CTA labels, document title, and search-result metadata read from `pages.home.*`. Empty inline search copy uses `search.emptyTitle` / `search.emptyHint`. All of these keys are in every full-UI catalog. |
 
 ---
 
@@ -1362,7 +1363,7 @@ top of the HTML site.
 | **Adding a locale** | Add a catalog file, register it in `SUPPORTED_LOCALES` / `messageCatalogs` / `LOCALE_META`, and update the shipped-locales table in `AGENTS.md` in the same PR (`app/i18n/agentsLocales.test.ts` fails if the list diverges). Also update FEAT-SETTINGS-003 and `CHANGELOG.md`. Generate TypeScript from JSON with `node scripts/i18n-json-to-catalog.mjs`. Missing keys fall back to English. |
 | **Provider** | `I18nProvider` (inside `ExplorerSettingsProvider`) resolves locale and updates `document.documentElement.lang` / `dir` (and `og:locale` when present) after hydration. `useTranslation()` falls back to English when no provider is mounted. |
 | **Formatting helpers** | Locale-bound `formatNumber`, `formatInteger`, `formatBigInt`, `formatIntegerString`, `formatCompactNumber`, `formatDateTime`, `formatTimestamp`, `formatMonthDay`, and `formatRelativeTime` wrap `Intl`. Locale metadata selects intended regional tags (for example `pt-BR`) so decimal separators, grouping (including Indian grouping), date order, compact suffixes, relative times, and 12/24-hour conventions follow the selected locale. Date/time output is pinned to UTC to remain deterministic between SSR and hydration. User-visible integers (including ledger versions, block heights, sequence numbers, and counts), decimals, timestamps, chart axes, and currency grouping go through these helpers rather than `toLocaleString("en-US")` or date-fns English relative time. |
-| **Remaining UI copy** | Account balance and CSV export, user-transaction filters, multisig pending/owners, call traces, fee-statement events, FA dispatchable properties, coin/FA supply tooltips, validator epoch/node counts, analytics totals, and gas-unit amounts read from catalogs rather than hardcoded English. |
+| **Remaining UI copy** | Account balance and CSV export, user-transaction filters, multisig pending/owners, call traces, fee-statement events, FA dispatchable properties, coin/FA supply tooltips, validator epoch/node counts, analytics totals, gas-unit amounts, and the home-page hero/CTAs/empty-search copy read from catalogs rather than hardcoded English. |
 
 ---
 
@@ -1442,7 +1443,7 @@ top of the HTML site.
 | `app/i18n/detectLocale.test.ts` | FEAT-I18N-001 (locale preference and browser-language resolution) |
 | `app/i18n/format.test.ts` | FEAT-I18N-001 (`Intl` number/date helpers) |
 | `app/i18n/inlineMarkup.test.ts` | FEAT-I18N-001 (bold/code/link markup and internal vs external hrefs) |
-| `app/i18n/messages.en.test.ts` | FEAT-I18N-001 / FEAT-GUIDE-001 (English chrome, guide, tabs, fields, errors, verification titles; shipped locale key/placeholder parity) |
+| `app/i18n/messages.en.test.ts` | FEAT-I18N-001 / FEAT-GUIDE-001 / FEAT-SEARCH-004 (English chrome, guide, tabs, fields, errors, verification titles, landing-page copy; shipped locale key/placeholder parity) |
 | `app/i18n/messages.catalogs.test.ts` | FEAT-I18N-001 (locale metadata; full-UI locales match English keys; any chrome-only locale is an English-key subset) |
 | `app/i18n/agentsLocales.test.ts` | FEAT-I18N-001 (`AGENTS.md` shipped-locales table matches `SUPPORTED_LOCALES` / `LOCALE_META`) |
 | `app/components/layout/LanguageSelect.test.tsx` | FEAT-SETTINGS-003 / FEAT-CHROME-001 (header language control shows the current locale code, lists catalogs, persists `aptos-explorer-locale`, and restores the catalog after remount) |

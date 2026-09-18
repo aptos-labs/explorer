@@ -58,6 +58,9 @@ export const uk = {
       result: "Результат",
     },
     noResults: "Немає результатів",
+    emptyTitle: "Немає результатів для «{query}»",
+    emptyHint:
+      "Спробуйте адресу акаунта, хеш або версію транзакції, висоту блоку, ім’я ANS або тип монети.",
     group: {
       account: "Акаунти",
       asset: "Активи",
@@ -894,6 +897,15 @@ export const uk = {
       websiteSchema:
         "Досліджуйте транзакції, акаунти, блоки й активність у блокчейні Aptos.",
       searchSchemaName: "Пошук Aptos Explorer",
+      subtitle:
+        "Шукайте в мережі, потім одразу переходьте до транзакцій, блоків, валідаторів або аналітики.",
+      browseTransactions: "Переглянути транзакції",
+      viewLatestBlocks: "Переглянути останні блоки",
+      openAnalytics: "Відкрити аналітику",
+      documentTitle: "Aptos Explorer - оглядач блокчейну",
+      searchDocumentTitle: "Пошук · {query}",
+      searchMetaDescription:
+        "Пошук Aptos Explorer за запитом «{query}». Результати завантажуються на цій сторінці; скористайтеся рядком пошуку, щоб уточнити запит або перейти за виявленими посиланнями.",
     },
     transactions: {
       title: "Транзакції",

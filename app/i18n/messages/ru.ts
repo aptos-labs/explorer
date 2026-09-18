@@ -58,6 +58,9 @@ export const ru = {
       result: "Результат",
     },
     noResults: "Нет результатов",
+    emptyTitle: "Нет результатов по запросу «{query}»",
+    emptyHint:
+      "Попробуйте адрес аккаунта, хеш или версию транзакции, высоту блока, имя ANS или тип монеты.",
     group: {
       account: "Аккаунты",
       asset: "Активы",
@@ -895,6 +898,15 @@ export const ru = {
       websiteSchema:
         "Просматривайте транзакции, аккаунты, блоки и активность в блокчейне Aptos.",
       searchSchemaName: "Поиск Aptos Explorer",
+      subtitle:
+        "Ищите по сети и сразу переходите к транзакциям, блокам, валидаторам или аналитике.",
+      browseTransactions: "Просмотреть транзакции",
+      viewLatestBlocks: "Посмотреть последние блоки",
+      openAnalytics: "Открыть аналитику",
+      documentTitle: "Aptos Explorer - обозреватель блокчейна",
+      searchDocumentTitle: "Поиск · {query}",
+      searchMetaDescription:
+        "Поиск Aptos Explorer по запросу «{query}». Результаты загружаются на этой странице; используйте строку поиска, чтобы уточнить запрос или перейти по найденным ссылкам.",
     },
     transactions: {
       title: "Транзакции",

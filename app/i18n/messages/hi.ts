@@ -56,6 +56,9 @@ export const hi = {
       result: "परिणाम",
     },
     noResults: "कोई परिणाम नहीं",
+    emptyTitle: '"{query}" के लिए कोई परिणाम नहीं',
+    emptyHint:
+      "खाता पता, लेन-देन हैश या संस्करण, ब्लॉक ऊँचाई, ANS नाम, या कॉइन प्रकार आज़माएँ।",
     group: {
       account: "खाते",
       asset: "एसेट",
@@ -884,6 +887,14 @@ export const hi = {
         "Aptos ब्लॉकचेन पर लेन-देन, खाते, ब्लॉक, वैलिडेटर और गतिविधि देखें। Aptos नेटवर्क का आधिकारिक ब्लॉक एक्सप्लोरर।",
       websiteSchema: "Aptos ब्लॉकचेन पर लेन-देन, खाते, ब्लॉक और गतिविधि देखें।",
       searchSchemaName: "Aptos Explorer खोज",
+      subtitle: "चेन खोजें, फिर सीधे लेन-देन, ब्लॉक, वैलिडेटर या विश्लेषण पर जाएँ।",
+      browseTransactions: "लेन-देन देखें",
+      viewLatestBlocks: "नवीनतम ब्लॉक देखें",
+      openAnalytics: "विश्लेषण खोलें",
+      documentTitle: "Aptos Explorer - ब्लॉकचेन एक्सप्लोरर",
+      searchDocumentTitle: "खोज · {query}",
+      searchMetaDescription:
+        "Aptos Explorer खोज “{query}” के लिए। परिणाम इसी पृष्ठ पर इनलाइन लोड होते हैं; खोज बार से परिष्कृत करें या पहचाने गए लिंक खोलें।",
     },
     transactions: {
       title: "लेन-देन",

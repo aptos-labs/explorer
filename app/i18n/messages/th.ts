@@ -56,6 +56,8 @@ export const th = {
       result: "ผลลัพธ์",
     },
     noResults: "ไม่มีผลลัพธ์",
+    emptyTitle: "ไม่มีผลลัพธ์สำหรับ “{query}”",
+    emptyHint: "ลองที่อยู่บัญชี แฮชหรือเวอร์ชันธุรกรรม ความสูงบล็อก ชื่อ ANS หรือชนิดเหรียญ",
     group: {
       account: "บัญชี",
       asset: "สินทรัพย์",
@@ -876,6 +878,14 @@ export const th = {
         "สำรวจธุรกรรม บัญชี บล็อก ตัวตรวจสอบ และกิจกรรมบนบล็อกเชน Aptos ตัวสำรวจบล็อกอย่างเป็นทางการของเครือข่าย Aptos",
       websiteSchema: "สำรวจธุรกรรม บัญชี บล็อก และกิจกรรมบนบล็อกเชน Aptos",
       searchSchemaName: "ค้นหา Aptos Explorer",
+      subtitle: "ค้นหาบนเชน แล้วไปที่ธุรกรรม บล็อก ตัวตรวจสอบ หรือการวิเคราะห์ได้ทันที",
+      browseTransactions: "เรียกดูธุรกรรม",
+      viewLatestBlocks: "ดูบล็อกล่าสุด",
+      openAnalytics: "เปิดการวิเคราะห์",
+      documentTitle: "Aptos Explorer - ตัวสำรวจบล็อกเชน",
+      searchDocumentTitle: "ค้นหา · {query}",
+      searchMetaDescription:
+        "การค้นหา Aptos Explorer สำหรับ “{query}” ผลลัพธ์โหลดในหน้านี้ ใช้แถบค้นหาเพื่อปรับหรือติดตามลิงก์ที่ตรวจพบ",
     },
     transactions: {
       title: "ธุรกรรม",

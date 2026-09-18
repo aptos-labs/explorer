@@ -56,6 +56,9 @@ export const am = {
       result: "ውጤት",
     },
     noResults: "ውጤት የለም",
+    emptyTitle: "ለ“{query}” ውጤት የለም",
+    emptyHint:
+      "የመለያ አድራሻ፣ የግብይት ሃሽ ወይም ስሪት፣ የብሎክ ቁመት፣ የANS ስም ወይም የሳንቲም አይነት ይሞክሩ።",
     group: {
       account: "መለያዎች",
       asset: "ንብረቶች",
@@ -875,6 +878,14 @@ export const am = {
         "በAptos ብሎክቼይን ላይ ግብይቶችን፣ መለያዎችን፣ ብሎኮችን፣ ማረጋገጫዎችን እና እንቅስቃሴን ያስሱ። ለAptos አውታረ መረብ ኦፊሴላዊ ብሎክ አሳሽ።",
       websiteSchema: "በAptos ብሎክቼይን ላይ ግብይቶችን፣ መለያዎችን፣ ብሎኮችን እና እንቅስቃሴን ያስሱ።",
       searchSchemaName: "የAptos Explorer ፍለጋ",
+      subtitle: "ሰንሰለቱን ይፈልጉ፣ ከዚያ በቀጥታ ወደ ግብይቶች፣ ብሎኮች፣ ማረጋገጫዎች ወይም ትንታኔ ይሂዱ።",
+      browseTransactions: "ግብይቶችን ይመልከቱ",
+      viewLatestBlocks: "የቅርብ ጊዜ ብሎኮች ይመልከቱ",
+      openAnalytics: "ትንታኔን ይክፈቱ",
+      documentTitle: "Aptos Explorer - የብሎክቼይን አሳሽ",
+      searchDocumentTitle: "ፍለጋ · {query}",
+      searchMetaDescription:
+        "የAptos Explorer ፍለጋ ለ“{query}”። ውጤቶች በዚህ ገጽ ላይ ይጫናሉ፤ ለማጥበብ ወይም የተገኙ አገናኞችን ለመከተል የፍለጋ አሞሌውን ይጠቀሙ።",
     },
     transactions: {
       title: "ግብይቶች",

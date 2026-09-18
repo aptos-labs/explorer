@@ -57,6 +57,9 @@ export const ja = {
       result: "結果",
     },
     noResults: "結果なし",
+    emptyTitle: "「{query}」の結果はありません",
+    emptyHint:
+      "アカウントアドレス、トランザクションハッシュまたはバージョン、ブロック高、ANS 名、コインタイプを試してください。",
     group: {
       account: "アカウント",
       asset: "アセット",
@@ -890,6 +893,15 @@ export const ja = {
       websiteSchema:
         "Aptos ブロックチェーン上のトランザクション、アカウント、ブロック、活動を調べます。",
       searchSchemaName: "Aptos Explorer 検索",
+      subtitle:
+        "チェーンを検索して、トランザクション、ブロック、バリデータ、分析へすぐ移動できます。",
+      browseTransactions: "トランザクションを見る",
+      viewLatestBlocks: "最新ブロックを表示",
+      openAnalytics: "分析を開く",
+      documentTitle: "Aptos Explorer - ブロックチェーンエクスプローラー",
+      searchDocumentTitle: "検索 · {query}",
+      searchMetaDescription:
+        "Aptos Explorer で「{query}」を検索しています。結果はこのページにインライン表示されます。検索バーで絞り込むか、検出されたリンクを開いてください。",
     },
     transactions: {
       title: "トランザクション",

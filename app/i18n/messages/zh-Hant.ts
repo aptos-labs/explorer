@@ -55,6 +55,8 @@ export const zhHant = {
       result: "結果",
     },
     noResults: "無結果",
+    emptyTitle: "沒有與「{query}」相符的結果",
+    emptyHint: "請嘗試帳戶地址、交易雜湊或版本、區塊高度、ANS 名稱或代幣類型。",
     group: {
       account: "帳戶",
       asset: "資產",
@@ -873,6 +875,14 @@ export const zhHant = {
         "在 Aptos 區塊鏈上探索交易、帳戶、區塊、驗證者和活動。Aptos 網路的官方區塊瀏覽器。",
       websiteSchema: "在 Aptos 區塊鏈上探索交易、帳戶、區塊和活動。",
       searchSchemaName: "Aptos Explorer 搜尋",
+      subtitle: "搜尋鏈上資料，然後直接前往交易、區塊、驗證者或分析。",
+      browseTransactions: "瀏覽交易",
+      viewLatestBlocks: "查看最新區塊",
+      openAnalytics: "開啟分析",
+      documentTitle: "Aptos Explorer - 區塊鏈瀏覽器",
+      searchDocumentTitle: "搜尋 · {query}",
+      searchMetaDescription:
+        "Aptos Explorer 搜尋「{query}」。結果會在本頁內嵌載入；使用搜尋列縮小範圍或開啟偵測到的連結。",
     },
     transactions: {
       title: "交易",

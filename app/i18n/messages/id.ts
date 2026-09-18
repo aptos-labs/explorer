@@ -57,6 +57,9 @@ export const id = {
       result: "Hasil",
     },
     noResults: "Tidak ada hasil",
+    emptyTitle: 'Tidak ada hasil untuk "{query}"',
+    emptyHint:
+      "Coba alamat akun, hash atau versi transaksi, tinggi blok, nama ANS, atau jenis koin.",
     group: {
       account: "Akun",
       asset: "Aset",
@@ -892,6 +895,15 @@ export const id = {
       websiteSchema:
         "Jelajahi transaksi, akun, blok, dan aktivitas di blockchain Aptos.",
       searchSchemaName: "Pencarian Aptos Explorer",
+      subtitle:
+        "Cari di rantai, lalu langsung ke transaksi, blok, validator, atau analitik.",
+      browseTransactions: "Jelajahi transaksi",
+      viewLatestBlocks: "Lihat blok terbaru",
+      openAnalytics: "Buka analitik",
+      documentTitle: "Aptos Explorer - Penjelajah blockchain",
+      searchDocumentTitle: "Pencarian · {query}",
+      searchMetaDescription:
+        "Pencarian Aptos Explorer untuk “{query}”. Hasil dimuat di halaman ini; gunakan bilah pencarian untuk mempersempit atau mengikuti tautan yang terdeteksi.",
     },
     transactions: {
       title: "Transaksi",

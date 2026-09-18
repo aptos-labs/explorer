@@ -56,6 +56,9 @@ export const vi = {
       result: "Kết quả",
     },
     noResults: "Không có kết quả",
+    emptyTitle: 'Không có kết quả cho "{query}"',
+    emptyHint:
+      "Thử địa chỉ tài khoản, hash hoặc phiên bản giao dịch, chiều cao khối, tên ANS, hoặc loại coin.",
     group: {
       account: "Tài khoản",
       asset: "Tài sản",
@@ -887,6 +890,15 @@ export const vi = {
       websiteSchema:
         "Khám phá giao dịch, tài khoản, khối và hoạt động trên blockchain Aptos.",
       searchSchemaName: "Tìm kiếm Aptos Explorer",
+      subtitle:
+        "Tìm trên chuỗi, rồi chuyển thẳng tới giao dịch, khối, validator hoặc phân tích.",
+      browseTransactions: "Duyệt giao dịch",
+      viewLatestBlocks: "Xem các khối mới nhất",
+      openAnalytics: "Mở phân tích",
+      documentTitle: "Aptos Explorer - Trình khám phá blockchain",
+      searchDocumentTitle: "Tìm kiếm · {query}",
+      searchMetaDescription:
+        "Tìm kiếm Aptos Explorer cho “{query}”. Kết quả tải ngay trên trang này; dùng thanh tìm kiếm để thu hẹp hoặc theo các liên kết được phát hiện.",
     },
     transactions: {
       title: "Giao dịch",

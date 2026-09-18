@@ -106,6 +106,8 @@ export const en = {
       result: "Result",
     },
     noResults: searchExtra.noResults,
+    emptyTitle: searchExtra.emptyTitle,
+    emptyHint: searchExtra.emptyHint,
     group: searchExtra.group,
     resultLabel: searchExtra.result,
   },
