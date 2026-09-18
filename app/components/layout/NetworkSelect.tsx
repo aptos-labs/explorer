@@ -30,6 +30,29 @@ export function networkStatusPaletteKey(
   }
 }
 
+function NetworkStatusDot({networkName}: {networkName: string}) {
+  const theme = useTheme();
+  const statusKey = networkStatusPaletteKey(networkName);
+  const bgcolor =
+    statusKey === "disabled"
+      ? theme.palette.text.disabled
+      : theme.palette[statusKey].main;
+
+  return (
+    <Box
+      data-network-status={networkName}
+      aria-hidden
+      sx={{
+        width: 8,
+        height: 8,
+        borderRadius: "50%",
+        bgcolor,
+        flexShrink: 0,
+      }}
+    />
+  );
+}
+
 export default function NetworkSelect() {
   const theme = useTheme();
   const {t} = useTranslation();
@@ -62,12 +85,6 @@ export default function NetworkSelect() {
   const isHiddenNetwork =
     hiddenNetworks.includes(networkName) && networkName !== "local";
 
-  const statusKey = networkStatusPaletteKey(networkName);
-  const statusColor =
-    statusKey === "disabled"
-      ? theme.palette.text.disabled
-      : theme.palette[statusKey].main;
-
   // Custom render for the selected value to show hidden network names
   const renderValue = (selected: string) => {
     return <span>{translateNetworkName(selected, t)}</span>;
@@ -99,19 +116,9 @@ export default function NetworkSelect() {
           startAdornment={
             <InputAdornment
               position="start"
-              sx={{ml: 0.5, mr: 0, pointerEvents: "none"}}
+              sx={{ml: 0.5, mr: 1, pointerEvents: "none"}}
             >
-              <Box
-                data-network-status={networkName}
-                aria-hidden
-                sx={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  bgcolor: statusColor,
-                  flexShrink: 0,
-                }}
-              />
+              <NetworkStatusDot networkName={networkName} />
             </InputAdornment>
           }
           MenuProps={{
@@ -151,12 +158,14 @@ export default function NetworkSelect() {
             </MenuItem>
           )}
           {visibleNetworks.map((network) => (
-            <MenuItem key={network} value={network}>
+            <MenuItem key={network} value={network} sx={{gap: 1}}>
+              <NetworkStatusDot networkName={network} />
               {translateNetworkName(network, t)}
             </MenuItem>
           ))}
           {/* Always show localnet option - user must explicitly select it to trigger local device detection */}
-          <MenuItem key="local" value="local">
+          <MenuItem key="local" value="local" sx={{gap: 1}}>
+            <NetworkStatusDot networkName="local" />
             {t("network.localnet")}
           </MenuItem>
         </Select>
