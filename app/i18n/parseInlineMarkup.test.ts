@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {isInternalHref, parseInlineMarkup} from "./inlineMarkup";
+import {isInternalHref, parseInlineMarkup} from "./parseInlineMarkup";
 
 describe("parseInlineMarkup", () => {
   it("returns a single text node when there is no markup", () => {
