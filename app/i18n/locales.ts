@@ -290,8 +290,8 @@ const LOCALE_PICKER_COLLATOR = new Intl.Collator("en", {
  * English, Arabic, Spanish, and others are spoken in many places; Portuguese
  * and Chinese each have two catalogs that would collapse to competing national
  * flags; and several shipped locales (Hausa, Swahili, Tamil) have no single
- * accurate flag. Native names are the identifier; `localeShortLabel` is the
- * compact chrome chip.
+ * accurate flag. Each row shows the native name plus `localeShortLabel` (the
+ * same compact code as the header globe chip). Browser default has no code.
  *
  * `SUPPORTED_LOCALES` stays registration order (append new catalogs there).
  * This list is derived so a new native name lands in the right place
@@ -310,7 +310,7 @@ export const LANGUAGE_PICKER_LOCALES: readonly SupportedLocale[] = [
 ];
 
 /**
- * Compact header chip for the current catalog. CJK locales use a single
+ * Compact header chip and picker-row trailing code. CJK locales use a single
  * distinctive character; Portuguese variants use region codes so Brazil and
  * Portugal stay distinguishable; everything else is the uppercase primary tag.
  */
@@ -329,4 +329,9 @@ export function localeShortLabel(locale: SupportedLocale): string {
       return primary.toUpperCase();
     }
   }
+}
+
+/** Accessible picker-row label: native name plus compact code. */
+export function localePickerRowLabel(locale: SupportedLocale): string {
+  return `${LOCALE_META[locale].nativeName} ${localeShortLabel(locale)}`;
 }

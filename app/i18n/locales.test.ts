@@ -2,6 +2,7 @@ import {describe, expect, it} from "vitest";
 import {
   DEFAULT_LOCALE,
   LANGUAGE_PICKER_LOCALES,
+  localePickerRowLabel,
   localeShortLabel,
   LOCALE_META,
   SUPPORTED_LOCALES,
@@ -56,5 +57,14 @@ describe("FEAT-SETTINGS-003 — LANGUAGE_PICKER_LOCALES", () => {
     expect(rest[rest.indexOf("pt") + 1]).toBe("pt-PT");
     expect(rest[rest.indexOf("zh") + 1]).toBe("zh-Hant");
     expect(rest[rest.indexOf("id") + 1]).toBe("ms");
+  });
+});
+
+describe("FEAT-SETTINGS-003 — localePickerRowLabel", () => {
+  it("joins the native name and compact code", () => {
+    expect(localePickerRowLabel("fr")).toBe("Français FR");
+    expect(localePickerRowLabel("zh")).toBe("简体中文 简");
+    expect(localePickerRowLabel("pt")).toBe("Português (Brasil) BR");
+    expect(localePickerRowLabel("pt-PT")).toBe("Português (Portugal) PT");
   });
 });
