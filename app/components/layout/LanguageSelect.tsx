@@ -1,6 +1,7 @@
 import CheckIcon from "@mui/icons-material/Check";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import {
+  Box,
   Button,
   FormControl,
   InputLabel,
@@ -15,14 +16,50 @@ import {
 import type {MouseEvent} from "react";
 import {useState} from "react";
 import {
+  isSupportedLocale,
+  LANGUAGE_PICKER_LOCALES,
   type LocalePreference,
+  localePickerRowLabel,
   localeShortLabel,
   LOCALE_META,
   normalizeLocalePreference,
-  SUPPORTED_LOCALES,
+  type SupportedLocale,
   useTranslation,
 } from "../../i18n";
 import {useExplorerSettings} from "../../settings";
+
+function LocaleNameWithCode({locale}: {locale: SupportedLocale}) {
+  return (
+    <Box
+      component="span"
+      sx={{
+        display: "flex",
+        alignItems: "baseline",
+        justifyContent: "space-between",
+        gap: 1.5,
+        width: "100%",
+        minWidth: 0,
+      }}
+    >
+      <Box component="span" sx={{minWidth: 0}}>
+        {LOCALE_META[locale].nativeName}
+      </Box>
+      <Box
+        component="span"
+        sx={{
+          color: "text.secondary",
+          fontSize: "0.75rem",
+          fontWeight: 700,
+          letterSpacing: "0.04em",
+          flexShrink: 0,
+          marginInlineStart: "auto",
+        }}
+      >
+        {localeShortLabel(locale)}
+      </Box>
+    </Box>
+  );
+}
 
 function usePersistLocalePreference() {
   const {settings, setExplorerSettings} = useExplorerSettings();
@@ -56,10 +93,11 @@ function LocaleMenuItems({
         </ListItemIcon>
         <ListItemText>{t("settings.language.auto")}</ListItemText>
       </MenuItem>
-      {SUPPORTED_LOCALES.map((locale) => (
+      {LANGUAGE_PICKER_LOCALES.map((locale) => (
         <MenuItem
           key={locale}
           selected={localePreference === locale}
+          aria-label={localePickerRowLabel(locale)}
           onClick={() => onSelect(locale)}
         >
           <ListItemIcon sx={{minWidth: "1.75rem"}}>
@@ -67,7 +105,12 @@ function LocaleMenuItems({
               <CheckIcon fontSize="small" />
             ) : null}
           </ListItemIcon>
-          <ListItemText>{LOCALE_META[locale].nativeName}</ListItemText>
+          <ListItemText
+            primary={<LocaleNameWithCode locale={locale} />}
+            slotProps={{
+              primary: {component: "div", sx: {width: "100%"}},
+            }}
+          />
         </MenuItem>
       ))}
     </>
@@ -182,6 +225,15 @@ export default function LanguageSelect({
           value={localePreference}
           onChange={handleSelectChange}
           inputProps={{"aria-label": label}}
+          renderValue={(value) => {
+            if (value === "auto") {
+              return t("settings.language.auto");
+            }
+            if (isSupportedLocale(value)) {
+              return LOCALE_META[value].nativeName;
+            }
+            return value;
+          }}
           MenuProps={{
             disableScrollLock: true,
             disableAutoFocusItem: true,
@@ -192,9 +244,13 @@ export default function LanguageSelect({
           }}
         >
           <MenuItem value="auto">{t("settings.language.auto")}</MenuItem>
-          {SUPPORTED_LOCALES.map((locale) => (
-            <MenuItem key={locale} value={locale}>
-              {LOCALE_META[locale].nativeName}
+          {LANGUAGE_PICKER_LOCALES.map((locale) => (
+            <MenuItem
+              key={locale}
+              value={locale}
+              aria-label={localePickerRowLabel(locale)}
+            >
+              <LocaleNameWithCode locale={locale} />
             </MenuItem>
           ))}
         </Select>
@@ -204,7 +260,7 @@ export default function LanguageSelect({
 
   return (
     <>
-      <Tooltip title={label} disableTouchListener>
+      <Tooltip title={anchorEl ? "" : label} disableTouchListener>
         <Button
           color="inherit"
           size="small"

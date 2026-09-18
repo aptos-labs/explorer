@@ -58,6 +58,19 @@ describe("FEAT-NETWORK-001 — header network selector", () => {
     ).toBeTruthy();
   });
 
+  it("does not cover Mainnet with the Select Network tooltip while the menu is open", async () => {
+    renderSelect();
+    const control = screen.getByLabelText("Select network");
+    fireEvent.mouseDown(control);
+    expect(screen.getByRole("option", {name: /^mainnet$/i})).toBeTruthy();
+
+    fireEvent.mouseOver(control);
+    fireEvent.mouseEnter(control);
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    expect(screen.queryByRole("tooltip")).toBeNull();
+    expect(screen.getByRole("option", {name: /^mainnet$/i})).toBeTruthy();
+  });
+
   it("opens the network list without locking body scroll", () => {
     renderSelect();
 

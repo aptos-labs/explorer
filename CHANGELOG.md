@@ -51,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Language picker order**: The header, overflow-menu, and Settings language lists now show **Browser default**, then English, then the other catalogs alphabetically by native name (Portuguese, Bahasa, and Simplified/Traditional Chinese variants sit next to each other). Each catalog row shows the native name plus the same short code as the globe chip (`EN`, `FR`, `简`, `BR`, `PT`). No country flags (a language is not a country, and several catalogs have no single accurate flag).
 - **Remaining explorer UI copy tokenized**: Hardcoded English on account balance and CSV export, user-transaction filters, multisig pending/owners, call traces, fee-statement events, FA dispatchable properties, coin/FA supply tooltips, validator epoch/node counts, analytics totals, and gas-unit amounts now reads from i18n catalogs (keys added to every full-UI locale). On-chain identifiers stay untranslated. Touched counts use locale-bound `formatInteger` / `formatNumber`.
 - **Landing page copy tokenized**: Home-page hero subtitle, transaction/blocks/analytics CTAs, document title, search metadata, and the inline empty-search message now read from i18n catalogs in every shipped locale (`pages.home.*`, `search.emptyTitle`, `search.emptyHint`). The heading still uses the shared `chrome.appName` brand string.
 - **Locale-aware number, date, and time formatting**: User-visible integers (including ledger versions, block heights, sequence numbers, and counts), decimals, currency grouping, compact chart/market-cap figures, timestamps, and relative ages follow the selected explorer locale (UTC for absolute dates so SSR and hydration match). CSV timestamps stay a stable UTC machine format.
@@ -59,6 +60,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **English UI copy in message catalogs**: Remaining explorer chrome — tabs, field labels, table headers, error pages, entity titles, search result templates, verification copy, analytics chart labels, and related tooltips — now reads from the English i18n catalogs. Visible English is unchanged; other locales can be added later without rewriting components.
 
 ### Fixed
+
+- **Network dropdown tooltip covered Mainnet**: Opening the header network select no longer leaves the **Select Network** tooltip sitting on top of the first option (Mainnet). The tooltip is hidden while the menu is open. The language globe tooltip uses the same rule.
 
 - **Delegation validators page crash (`Cannot convert … to a BigInt`)**: `/validators/delegation` formatted `apt_rewards_distributed` (already decimal APT) through `APTCurrencyValue` with `decimals={0}`, which calls `BigInt` on values such as `166921.92` and crashed the page. Rewards now render via locale-aware decimal formatting in both the desktop table and mobile cards.
 
