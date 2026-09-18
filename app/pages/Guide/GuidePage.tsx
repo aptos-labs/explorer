@@ -205,7 +205,7 @@ export default function GuidePage() {
           sx={{
             mb: 2,
             fontWeight: 700,
-            textAlign: {md: "center"},
+            textAlign: "center",
           }}
         >
           {t("guide.meta.title")}
@@ -217,10 +217,10 @@ export default function GuidePage() {
             color: "text.secondary",
             fontSize: "1.125rem",
             lineHeight: 1.65,
-            mb: 5,
+            mb: 3,
             maxWidth: guideArticleMaxWidth,
-            mx: {md: "auto"},
-            textAlign: {md: "center"},
+            mx: "auto",
+            textAlign: "center",
             overflowWrap: "anywhere",
           }}
         >
@@ -229,7 +229,14 @@ export default function GuidePage() {
 
         <Box
           sx={{
-            position: "relative",
+            display: {xs: "flex", lg: "grid"},
+            flexDirection: {xs: "column"},
+            gridTemplateColumns: {
+              lg: `1fr minmax(0, ${guideArticleMaxWidth}) 1fr`,
+            },
+            columnGap: {lg: 3},
+            rowGap: {xs: 3},
+            alignItems: "start",
             width: "100%",
             minWidth: 0,
           }}
@@ -238,19 +245,23 @@ export default function GuidePage() {
             activeSectionId={activeSectionId}
             t={t}
             paperSx={{
-              display: {xs: "block", lg: "none"},
+              order: {xs: -1, lg: 0},
+              gridColumn: {lg: 1},
+              justifySelf: {lg: "end"},
+              width: {xs: "100%", lg: guideTocWidthPx},
               maxWidth: "100%",
+              position: {lg: "sticky"},
+              top: {lg: 112},
             }}
           />
 
           <Box
             component="article"
             sx={{
+              gridColumn: {lg: 2},
               minWidth: 0,
               width: "100%",
-              maxWidth: {lg: guideArticleMaxWidth},
-              mx: {lg: "auto"},
-              mt: {xs: 3, lg: 0},
+              maxWidth: guideArticleMaxWidth,
               overflowWrap: "anywhere",
             }}
           >
@@ -292,27 +303,6 @@ export default function GuidePage() {
                 <GuideParagraphs texts={tList(`${section.messageKey}.more`)} />
               </Box>
             ))}
-          </Box>
-
-          <Box
-            sx={{
-              display: {xs: "none", lg: "block"},
-              position: "absolute",
-              top: 0,
-              right: 0,
-              bottom: 0,
-              width: guideTocWidthPx,
-            }}
-          >
-            <GuideTocNav
-              activeSectionId={activeSectionId}
-              t={t}
-              paperSx={{
-                width: guideTocWidthPx,
-                position: "sticky",
-                top: 112,
-              }}
-            />
           </Box>
         </Box>
       </Box>

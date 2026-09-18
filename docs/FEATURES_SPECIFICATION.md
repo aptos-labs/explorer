@@ -1376,8 +1376,8 @@ top of the HTML site.
 | Aspect | Detail |
 |--------|--------|
 | **Content** | Article-style guide covering what the explorer is, chrome, search, networks, transactions, accounts/objects, modules, blocks, validators, assets, analytics, releases, Run Script, configuration, wallet, verification, URLs/agents, glossary, and troubleshooting. Copy lives in i18n catalogs (English source plus shipped translations). |
-| **TOC** | Sticky "On this page" nav with hash links to each section; on `lg+` viewports it is pinned to the right while the article body is centered. On compact viewports the TOC stays above the article. The entry for the section currently in view is highlighted while scrolling. |
-| **Layout** | The guide column is width-constrained (`min-width: 0`, wrapping long tokens) so it does not extend the page sideways. On `lg+`, the article is centered with `margin-inline: auto` (~42rem) and the TOC is absolutely positioned on the right (sticky within the article height); below `lg`, the TOC stacks above the article. Body copy uses a relaxed line height. |
+| **TOC** | Sticky "On this page" nav with hash links to each section; on `lg+` viewports it sits immediately left of the centered article. On compact viewports the TOC stays above the article. The entry for the section currently in view is highlighted while scrolling. |
+| **Layout** | The guide column is width-constrained (`min-width: 0`, wrapping long tokens) so it does not extend the page sideways. On `lg+`, a three-column grid (`1fr` / ~42rem article / `1fr`) centers the article; the TOC is sticky in the left rail beside it (small column gap). Title and intro are centered above. Below `lg`, the TOC stacks above the article. Body copy uses a relaxed line height. |
 | **Navigation** | Header help icon (desktop), overflow menu (compact), footer link. WebMCP `open_guide` tool. |
 | **Metadata** | `PageMetadata` type `article`, canonical `/guide`. |
 
