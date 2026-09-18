@@ -9,6 +9,7 @@ import {
   useTheme,
 } from "@mui/material";
 import {useLocation} from "@tanstack/react-router";
+import {useState} from "react";
 import {hiddenNetworks, type NetworkName, networks} from "../../constants";
 import {useNetworkSelector} from "../../global-config";
 import {translateNetworkName, useTranslation} from "../../i18n";
@@ -35,6 +36,8 @@ export default function NetworkSelect() {
   const [networkName, setNetworkName] = useNetworkSelector();
   const navigate = useNavigate();
   const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [tooltipHovered, setTooltipHovered] = useState(false);
 
   const handleChange = (event: SelectChangeEvent) => {
     const newNetwork = event.target.value as NetworkName;
@@ -75,17 +78,32 @@ export default function NetworkSelect() {
       size="small"
       sx={{minWidth: 0, maxWidth: {xs: "42vw", sm: "none"}, flexShrink: 0}}
     >
-      <Tooltip title={t("network.selectTitle")} disableTouchListener>
+      {/* Tooltip popper zIndex (1500) sits above the menu (1300). Hide it when the
+          pointer leaves the control or the menu opens so it never covers options. */}
+      <Tooltip
+        title={t("network.selectTitle")}
+        disableTouchListener
+        disableInteractive
+        open={tooltipHovered && !menuOpen}
+      >
         <Select
           value={networkName}
           onChange={handleChange}
+          open={menuOpen}
+          onMouseEnter={() => setTooltipHovered(true)}
+          onMouseLeave={() => setTooltipHovered(false)}
+          onOpen={() => {
+            setTooltipHovered(false);
+            setMenuOpen(true);
+          }}
+          onClose={() => setMenuOpen(false)}
           displayEmpty
           inputProps={{"aria-label": t("network.selectAriaLabel")}}
           renderValue={renderValue}
           startAdornment={
             <InputAdornment
               position="start"
-              sx={{ml: 0.5, mr: 0, pointerEvents: "none"}}
+              sx={{ml: 0.5, mr: 0.75, pointerEvents: "none"}}
             >
               <Box
                 data-network-status={networkName}

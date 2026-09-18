@@ -15,9 +15,9 @@ import {
 import type {MouseEvent} from "react";
 import {useState} from "react";
 import {
+  LOCALE_META,
   type LocalePreference,
   localeShortLabel,
-  LOCALE_META,
   normalizeLocalePreference,
   SUPPORTED_LOCALES,
   useTranslation,
@@ -162,6 +162,7 @@ export default function LanguageSelect({
   const {localePreference, persistLocalePreference} =
     usePersistLocalePreference();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [tooltipHovered, setTooltipHovered] = useState(false);
   const isSettings = variant === "settings";
   const label = isSettings
     ? t("settings.language.label")
@@ -204,11 +205,21 @@ export default function LanguageSelect({
 
   return (
     <>
-      <Tooltip title={label} disableTouchListener>
+      <Tooltip
+        title={label}
+        disableTouchListener
+        disableInteractive
+        open={tooltipHovered && !anchorEl}
+      >
         <Button
           color="inherit"
           size="small"
-          onClick={(event) => setAnchorEl(event.currentTarget)}
+          onMouseEnter={() => setTooltipHovered(true)}
+          onMouseLeave={() => setTooltipHovered(false)}
+          onClick={(event) => {
+            setTooltipHovered(false);
+            setAnchorEl(event.currentTarget);
+          }}
           aria-label={label}
           aria-haspopup="menu"
           aria-expanded={anchorEl ? "true" : undefined}
