@@ -15,11 +15,11 @@ import {
 import type {MouseEvent} from "react";
 import {useState} from "react";
 import {
+  LANGUAGE_PICKER_LOCALES,
   type LocalePreference,
   localeShortLabel,
   LOCALE_META,
   normalizeLocalePreference,
-  SUPPORTED_LOCALES,
   useTranslation,
 } from "../../i18n";
 import {useExplorerSettings} from "../../settings";
@@ -56,7 +56,7 @@ function LocaleMenuItems({
         </ListItemIcon>
         <ListItemText>{t("settings.language.auto")}</ListItemText>
       </MenuItem>
-      {SUPPORTED_LOCALES.map((locale) => (
+      {LANGUAGE_PICKER_LOCALES.map((locale) => (
         <MenuItem
           key={locale}
           selected={localePreference === locale}
@@ -192,7 +192,7 @@ export default function LanguageSelect({
           }}
         >
           <MenuItem value="auto">{t("settings.language.auto")}</MenuItem>
-          {SUPPORTED_LOCALES.map((locale) => (
+          {LANGUAGE_PICKER_LOCALES.map((locale) => (
             <MenuItem key={locale} value={locale}>
               {LOCALE_META[locale].nativeName}
             </MenuItem>

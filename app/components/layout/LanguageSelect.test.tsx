@@ -2,7 +2,7 @@
 import {createTheme, ThemeProvider} from "@mui/material/styles";
 import {cleanup, fireEvent, render, screen} from "@testing-library/react";
 import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
-import {I18nProvider} from "../../i18n";
+import {I18nProvider, LANGUAGE_PICKER_LOCALES, LOCALE_META} from "../../i18n";
 import {ExplorerSettingsProvider} from "../../settings";
 import getDesignTokens from "../../themes/theme";
 import LanguageSelect from "./LanguageSelect";
@@ -48,6 +48,13 @@ describe("FEAT-SETTINGS-003 / FEAT-CHROME-001 — header language switch", () =>
     expect(screen.getByRole("menuitem", {name: "Hausa"})).toBeTruthy();
     expect(screen.getByRole("menuitem", {name: "isiZulu"})).toBeTruthy();
     expect(screen.getByRole("menuitem", {name: "አማርኛ"})).toBeTruthy();
+    const names = screen
+      .getAllByRole("menuitem")
+      .map((item) => item.textContent);
+    expect(names[0]).toBe("Browser default");
+    expect(names.slice(1)).toEqual(
+      LANGUAGE_PICKER_LOCALES.map((locale) => LOCALE_META[locale].nativeName),
+    );
     fireEvent.click(screen.getByRole("menuitem", {name: "Français"}));
 
     expect(window.localStorage.getItem("aptos-explorer-locale")).toBe("fr");

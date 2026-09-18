@@ -34,6 +34,7 @@ export {
   DEFAULT_LOCALE,
   FULL_UI_LOCALES,
   isFullUiLocale,
+  LANGUAGE_PICKER_LOCALES,
   localeShortLabel,
   LOCALE_META,
   SUPPORTED_LOCALES,
