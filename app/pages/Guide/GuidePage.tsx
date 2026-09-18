@@ -217,7 +217,7 @@ export default function GuidePage() {
             color: "text.secondary",
             fontSize: "1.125rem",
             lineHeight: 1.65,
-            mb: 3,
+            mb: 6,
             maxWidth: guideArticleMaxWidth,
             mx: "auto",
             textAlign: "center",
