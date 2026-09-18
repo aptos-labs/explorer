@@ -2,11 +2,19 @@ import {describe, expect, it} from "vitest";
 import {
   desktopToolbarNeedsCompact,
   HEADER_OVERFLOW_HYSTERESIS_PX,
+  stripAtMedia,
   sumFlexItemWidths,
 } from "./headerOverflow";
 
 // Covers FEAT-CHROME-001 — compact chrome when translated labels do not fit
 describe("FEAT-CHROME-001 — header overflow compact chrome", () => {
+  it("strips the @media prefix for matchMedia", () => {
+    expect(stripAtMedia("@media (min-width:1200px)")).toBe(
+      "(min-width:1200px)",
+    );
+    expect(stripAtMedia("(min-width:1200px)")).toBe("(min-width:1200px)");
+  });
+
   it("sums visible flex items and inter-item gaps", () => {
     expect(sumFlexItemWidths([120, 0, 80, 40], 8)).toBe(120 + 80 + 40 + 16);
     expect(sumFlexItemWidths([0, 0], 8)).toBe(0);
