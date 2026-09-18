@@ -61,6 +61,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Desktop header flashed the hamburger on load**: Wide viewports briefly showed the mobile overflow (☰) control before switching to desktop nav. Compact-below-`lg` is now CSS `display` breakpoints; `useMediaQuery` no longer drives first paint (it defaults to `false` during SSR). JS still forces the hamburger at `lg+` when translated toolbar labels overflow.
+
 - **Network dropdown tooltip covered Mainnet**: Opening the header network select no longer leaves the **Select Network** tooltip sitting on top of the first option (Mainnet). The tooltip is hidden while the menu is open. The language globe tooltip uses the same rule.
 
 - **Delegation validators page crash (`Cannot convert … to a BigInt`)**: `/validators/delegation` formatted `apt_rewards_distributed` (already decimal APT) through `APTCurrencyValue` with `decimals={0}`, which calls `BigInt` on values such as `166921.92` and crashed the page. Rewards now render via locale-aware decimal formatting in both the desktop table and mobile cards.

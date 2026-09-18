@@ -1,15 +1,8 @@
 import {AccountAddress} from "@aptos-labs/ts-sdk";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import {
-  alpha,
-  Box,
-  IconButton,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import {alpha, Box, IconButton, Typography, useTheme} from "@mui/material";
 import MuiAppBar from "@mui/material/AppBar";
 import Container from "@mui/material/Container";
 import Toolbar from "@mui/material/Toolbar";
@@ -22,8 +15,8 @@ import {useNetworkName} from "../../global-config";
 import {useInView} from "../../hooks/useInView";
 import {useIsInIframe} from "../../hooks/useIsInIframe";
 import {useIsStandalonePWA} from "../../hooks/useIsStandalonePWA";
-import {useLogEventWithBasic} from "../../pages/Account/hooks/useLogEventWithBasic";
 import {useTranslation} from "../../i18n";
+import {useLogEventWithBasic} from "../../pages/Account/hooks/useLogEventWithBasic";
 import {Link, useNavigate} from "../../routing";
 import {addressFromWallet, sortPetraFirst} from "../../utils";
 import {WalletConnector} from "../WalletConnector";
@@ -60,7 +53,9 @@ export default function Header() {
     threshold: 0,
   });
 
-  const belowLg = !useMediaQuery(theme.breakpoints.up("lg"));
+  // Below `lg`, compact chrome is CSS (`display` breakpoints). JS only forces
+  // the hamburger when translated desktop toolbar overflows at `lg+` — never
+  // via useMediaQuery, which defaults to false on SSR and flashes the menu.
   const inMainnet = useGetInMainnet();
   const isStandalonePWA = useIsStandalonePWA();
   const isInIframe = useIsInIframe();
@@ -73,8 +68,7 @@ export default function Header() {
   const languageRef = useRef<HTMLElement>(null);
   const shareRef = useRef<HTMLElement>(null);
   const desktopActionsRef = useRef<HTMLElement>(null);
-  const isCompact = useCompactHeader({
-    forceCompact: belowLg,
+  const overflowCompact = useCompactHeader({
     toolbarRef,
     brandRef,
     navRef,
@@ -228,34 +222,34 @@ export default function Header() {
               </Typography>
             </Box>
 
-            {!belowLg && (
-              <Box
-                ref={navRef}
-                aria-hidden={isCompact}
-                inert={isCompact || undefined}
-                sx={
-                  isCompact
-                    ? {
-                        position: "absolute",
-                        visibility: "hidden",
-                        display: "flex",
-                        alignItems: "center",
-                        height: 0,
-                        overflow: "hidden",
-                        pointerEvents: "none",
-                        whiteSpace: "nowrap",
-                        width: "max-content",
-                      }
-                    : {
-                        display: "flex",
-                        flexShrink: 0,
-                        minWidth: 0,
-                      }
-                }
-              >
-                <Nav />
-              </Box>
-            )}
+            <Box
+              ref={navRef}
+              aria-hidden={overflowCompact}
+              inert={overflowCompact || undefined}
+              sx={
+                overflowCompact
+                  ? {
+                      // Keep in the layout tree at lg+ for overflow measurement,
+                      // but never paint below lg (CSS owns that breakpoint).
+                      position: "absolute",
+                      visibility: "hidden",
+                      display: {xs: "none", lg: "flex"},
+                      alignItems: "center",
+                      height: 0,
+                      overflow: "hidden",
+                      pointerEvents: "none",
+                      whiteSpace: "nowrap",
+                      width: "max-content",
+                    }
+                  : {
+                      display: {xs: "none", lg: "flex"},
+                      flexShrink: 0,
+                      minWidth: 0,
+                    }
+              }
+            >
+              <Nav />
+            </Box>
             <Box ref={networkRef} sx={{flexShrink: 0, minWidth: 0}}>
               <NetworkSelect />
             </Box>
@@ -267,11 +261,11 @@ export default function Header() {
                 <ShareButton />
               </Box>
             )}
-            {!isCompact && (
+            {!overflowCompact && (
               <Box
                 ref={desktopActionsRef}
                 sx={{
-                  display: "flex",
+                  display: {xs: "none", lg: "flex"},
                   alignItems: "center",
                   columnGap: "inherit",
                   flexShrink: 0,
@@ -313,7 +307,11 @@ export default function Header() {
               </Box>
             )}
 
-            <HeaderOverflowMenu visible={isCompact} />
+            {/*
+              undefined → CSS {xs:block, lg:none} (no SSR media-query flash).
+              true → force hamburger when desktop toolbar overflows at lg+.
+            */}
+            <HeaderOverflowMenu visible={overflowCompact ? true : undefined} />
           </Toolbar>
         </Container>
       </MuiAppBar>
