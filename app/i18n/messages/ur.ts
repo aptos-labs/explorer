@@ -56,6 +56,9 @@ export const ur = {
       result: "نتیجہ",
     },
     noResults: "کوئی نتیجہ نہیں",
+    emptyTitle: '"{query}" کے لیے کوئی نتیجہ نہیں',
+    emptyHint:
+      "اکاؤنٹ ایڈریس، ٹرانزیکشن ہیش یا ورژن، بلاک کی اونچائی، ANS نام، یا کوائن کی قسم آزمائیں۔",
     group: {
       account: "اکاؤنٹس",
       asset: "اثاثے",
@@ -890,6 +893,15 @@ export const ur = {
       websiteSchema:
         "Aptos بلاک چین پر ٹرانزیکشنز، اکاؤنٹس، بلاکس، اور سرگرمی دریافت کریں۔",
       searchSchemaName: "Aptos Explorer تلاش",
+      subtitle:
+        "چین تلاش کریں، پھر براہ راست ٹرانزیکشنز، بلاکس، ویلیڈیٹرز یا تجزیات پر جائیں۔",
+      browseTransactions: "ٹرانزیکشنز دیکھیں",
+      viewLatestBlocks: "تازہ ترین بلاکس دیکھیں",
+      openAnalytics: "تجزیات کھولیں",
+      documentTitle: "Aptos Explorer - بلاک چین ایکسپلورر",
+      searchDocumentTitle: "تلاش · {query}",
+      searchMetaDescription:
+        "“{query}” کے لیے Aptos Explorer تلاش۔ نتائج اسی صفحے پر ان لائن لوڈ ہوتے ہیں؛ تلاش بار سے بہتر بنائیں یا پہچانے گئے روابط کھولیں۔",
     },
     transactions: {
       title: "ٹرانزیکشنز",

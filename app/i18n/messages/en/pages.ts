@@ -6,6 +6,15 @@ export const pages = {
     websiteSchema:
       "Explore transactions, accounts, blocks, and activity on the Aptos blockchain.",
     searchSchemaName: "Aptos Explorer search",
+    subtitle:
+      "Search the chain, then jump straight to transactions, blocks, validators, or analytics.",
+    browseTransactions: "Browse Transactions",
+    viewLatestBlocks: "View Latest Blocks",
+    openAnalytics: "Open Analytics",
+    documentTitle: "Aptos Explorer - Blockchain Explorer",
+    searchDocumentTitle: "Search · {query}",
+    searchMetaDescription:
+      "Aptos Explorer search for “{query}”. Results load inline on this page; use the search bar to refine or follow detected links.",
   },
   transactions: {
     title: "Transactions",

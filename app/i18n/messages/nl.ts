@@ -58,6 +58,9 @@ export const nl = {
       result: "Resultaat",
     },
     noResults: "Geen resultaten",
+    emptyTitle: 'Geen resultaten voor "{query}"',
+    emptyHint:
+      "Probeer een accountadres, transactiehash of -versie, blokhoogte, ANS-naam of cointype.",
     group: {
       account: "Accounts",
       asset: "Assets",
@@ -898,6 +901,15 @@ export const nl = {
       websiteSchema:
         "Verken transacties, accounts, blokken en activiteit op de Aptos-blockchain.",
       searchSchemaName: "Aptos Explorer-zoeken",
+      subtitle:
+        "Zoek op de chain en ga meteen naar transacties, blokken, validators of analytics.",
+      browseTransactions: "Transacties bekijken",
+      viewLatestBlocks: "Laatste blokken bekijken",
+      openAnalytics: "Analytics openen",
+      documentTitle: "Aptos Explorer - Blockchainverkenner",
+      searchDocumentTitle: "Zoeken · {query}",
+      searchMetaDescription:
+        "Aptos Explorer-zoekopdracht voor “{query}”. Resultaten laden op deze pagina; gebruik de zoekbalk om te verfijnen of gedetecteerde links te volgen.",
     },
     transactions: {
       title: "Transacties",

@@ -103,6 +103,28 @@ describe("FEAT-I18N-001 — English catalog", () => {
     expect(en.search.helper.length).toBeGreaterThan(0);
   });
 
+  // Covers FEAT-SEARCH-004 / FEAT-I18N-001 — landing page remaining English
+  it("tokenizes landing page hero, CTAs, metadata, and empty search copy", () => {
+    const {t} = createTranslator("en");
+    expect(t("pages.home.subtitle")).toBe(
+      "Search the chain, then jump straight to transactions, blocks, validators, or analytics.",
+    );
+    expect(t("pages.home.browseTransactions")).toBe("Browse Transactions");
+    expect(t("pages.home.viewLatestBlocks")).toBe("View Latest Blocks");
+    expect(t("pages.home.openAnalytics")).toBe("Open Analytics");
+    expect(t("pages.home.documentTitle")).toBe(
+      "Aptos Explorer - Blockchain Explorer",
+    );
+    expect(t("pages.home.searchDocumentTitle", {query: "0x1"})).toBe(
+      "Search · 0x1",
+    );
+    expect(t("pages.home.searchMetaDescription", {query: "0x1"})).toContain(
+      "0x1",
+    );
+    expect(t("search.emptyTitle", {query: "0x1"})).toBe('No results for "0x1"');
+    expect(t("search.emptyHint")).toContain("account address");
+  });
+
   it("binds number and UTC date formatting to the selected locale", () => {
     const translator = createTranslator("de");
     expect(translator.formatNumber(1_234.5, {minimumFractionDigits: 1})).toBe(
@@ -197,6 +219,25 @@ describe("FEAT-I18N-001 — shipped locale catalogs", () => {
       const {t} = createTranslator(locale);
       expect(t("guide.meta.title"), locale).not.toBe(englishTitle);
       expect(t("chrome.nav.transactions").length).toBeGreaterThan(0);
+    }
+  });
+
+  it("translates landing page copy away from English for non-English locales", () => {
+    const {t: enT} = createTranslator("en");
+    const englishSubtitle = enT("pages.home.subtitle");
+    const englishHint = enT("search.emptyHint");
+    const englishBrowse = enT("pages.home.browseTransactions");
+    for (const locale of SUPPORTED_LOCALES) {
+      if (locale === "en") {
+        continue;
+      }
+      const {t} = createTranslator(locale);
+      expect(t("pages.home.subtitle"), locale).not.toBe(englishSubtitle);
+      expect(t("search.emptyHint"), locale).not.toBe(englishHint);
+      expect(t("pages.home.browseTransactions"), locale).not.toBe(
+        englishBrowse,
+      );
+      expect(t("search.emptyTitle", {query: "0x1"}), locale).toContain("0x1");
     }
   });
 });

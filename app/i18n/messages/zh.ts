@@ -55,6 +55,8 @@ export const zh = {
       result: "结果",
     },
     noResults: "无结果",
+    emptyTitle: "没有与“{query}”匹配的结果",
+    emptyHint: "请尝试账户地址、交易哈希或版本、区块高度、ANS 名称或代币类型。",
     group: {
       account: "账户",
       asset: "资产",
@@ -873,6 +875,14 @@ export const zh = {
         "在 Aptos 区块链上探索交易、账户、区块、验证者和活动。Aptos 网络的官方区块浏览器。",
       websiteSchema: "在 Aptos 区块链上探索交易、账户、区块和活动。",
       searchSchemaName: "Aptos Explorer 搜索",
+      subtitle: "搜索链上数据，然后直接跳转到交易、区块、验证者或分析。",
+      browseTransactions: "浏览交易",
+      viewLatestBlocks: "查看最新区块",
+      openAnalytics: "打开分析",
+      documentTitle: "Aptos Explorer - 区块链浏览器",
+      searchDocumentTitle: "搜索 · {query}",
+      searchMetaDescription:
+        "Aptos Explorer 搜索“{query}”。结果在本页内联加载；使用搜索栏缩小范围或打开检测到的链接。",
     },
     transactions: {
       title: "交易",

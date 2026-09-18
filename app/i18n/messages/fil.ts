@@ -58,6 +58,9 @@ export const fil = {
       result: "Resulta",
     },
     noResults: "Walang resulta",
+    emptyTitle: 'Walang resulta para sa "{query}"',
+    emptyHint:
+      "Subukan ang address ng account, hash o bersyon ng transaksyon, taas ng block, pangalan ng ANS, o uri ng coin.",
     group: {
       account: "Mga account",
       asset: "Mga asset",
@@ -901,6 +904,15 @@ export const fil = {
       websiteSchema:
         "Tuklasin ang mga transaksyon, account, block, at aktibidad sa Aptos blockchain.",
       searchSchemaName: "Paghahanap sa Aptos Explorer",
+      subtitle:
+        "Hanapin ang chain, tapos tumalon agad sa mga transaksyon, block, validator, o analytics.",
+      browseTransactions: "Tingnan ang mga transaksyon",
+      viewLatestBlocks: "Tingnan ang pinakabagong mga block",
+      openAnalytics: "Buksan ang analytics",
+      documentTitle: "Aptos Explorer - Tagasuri ng blockchain",
+      searchDocumentTitle: "Paghahanap · {query}",
+      searchMetaDescription:
+        "Paghahanap sa Aptos Explorer para sa “{query}”. Naglo-load ang mga resulta sa page na ito; gamitin ang search bar para i-refine o sundan ang nakitang mga link.",
     },
     transactions: {
       title: "Mga transaksyon",

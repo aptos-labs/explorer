@@ -58,6 +58,9 @@ export const ha = {
       result: "Sakamako",
     },
     noResults: "Babu sakamako",
+    emptyTitle: 'Babu sakamako don "{query}"',
+    emptyHint:
+      "Gwada adireshin asusu, hash ko sigar ma'amala, tsayin bulo, sunan ANS, ko nau'in tsabar kudi.",
     group: {
       account: "Asusuna",
       asset: "Kadarori",
@@ -893,6 +896,15 @@ export const ha = {
       websiteSchema:
         "Bincika ma'amaloli, asusuna, buloli, da ayyuka a kan blockchain na Aptos.",
       searchSchemaName: "Binciken Aptos Explorer",
+      subtitle:
+        "Bincika sarkar, sannan ku tafi kai tsaye zuwa ma'amaloli, buloli, masu tabbatarwa, ko nazari.",
+      browseTransactions: "Duba ma'amaloli",
+      viewLatestBlocks: "Duba sabbin buloli",
+      openAnalytics: "Buɗe nazari",
+      documentTitle: "Aptos Explorer - Mai binciken blockchain",
+      searchDocumentTitle: "Bincike · {query}",
+      searchMetaDescription:
+        "Binciken Aptos Explorer na “{query}”. Sakamakon yana lodawa a wannan shafi; yi amfani da sandar bincike don tacewa ko bin hanyoyin da aka gano.",
     },
     transactions: {
       title: "Ma'amaloli",

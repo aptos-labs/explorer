@@ -57,6 +57,9 @@ export const it = {
       result: "Risultato",
     },
     noResults: "Nessun risultato",
+    emptyTitle: 'Nessun risultato per "{query}"',
+    emptyHint:
+      "Prova un indirizzo di account, un hash o una versione di transazione, un’altezza di blocco, un nome ANS o un tipo di coin.",
     group: {
       account: "Account",
       asset: "Asset",
@@ -898,6 +901,15 @@ export const it = {
       websiteSchema:
         "Esplora transazioni, account, blocchi e attività sulla blockchain Aptos.",
       searchSchemaName: "Ricerca Aptos Explorer",
+      subtitle:
+        "Cerca sulla chain, poi vai subito a transazioni, blocchi, validatori o analisi.",
+      browseTransactions: "Sfoglia le transazioni",
+      viewLatestBlocks: "Visualizza gli ultimi blocchi",
+      openAnalytics: "Apri le analisi",
+      documentTitle: "Aptos Explorer - Esploratore blockchain",
+      searchDocumentTitle: "Ricerca · {query}",
+      searchMetaDescription:
+        "Ricerca Aptos Explorer per “{query}”. I risultati si caricano in questa pagina; usa la barra di ricerca per affinare o seguire i link rilevati.",
     },
     transactions: {
       title: "Transazioni",

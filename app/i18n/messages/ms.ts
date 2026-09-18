@@ -57,6 +57,9 @@ export const ms = {
       result: "Hasil",
     },
     noResults: "Tiada hasil",
+    emptyTitle: 'Tiada hasil untuk "{query}"',
+    emptyHint:
+      "Cuba alamat akaun, cincang atau versi transaksi, ketinggian blok, nama ANS, atau jenis syiling.",
     group: {
       account: "Akaun",
       asset: "Aset",
@@ -894,6 +897,15 @@ export const ms = {
       websiteSchema:
         "Terokai transaksi, akaun, blok, dan aktiviti pada blockchain Aptos.",
       searchSchemaName: "Carian Aptos Explorer",
+      subtitle:
+        "Cari rantaian, kemudian terus ke transaksi, blok, validator, atau analitik.",
+      browseTransactions: "Layari transaksi",
+      viewLatestBlocks: "Lihat blok terkini",
+      openAnalytics: "Buka analitik",
+      documentTitle: "Aptos Explorer - Peneroka rantaian blok",
+      searchDocumentTitle: "Carian · {query}",
+      searchMetaDescription:
+        "Carian Aptos Explorer untuk “{query}”. Hasil dimuatkan pada halaman ini; gunakan bar carian untuk memperhalusi atau mengikuti pautan yang dikesan.",
     },
     transactions: {
       title: "Transaksi",

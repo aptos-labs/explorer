@@ -335,10 +335,7 @@ export default function SearchWithResults({
                   color: "text.secondary",
                 }}
               >
-                No results for{" "}
-                <Box component="span" sx={{fontWeight: 600}}>
-                  "{query}"
-                </Box>
+                {t("search.emptyTitle", {query})}
               </Typography>
               <Typography
                 variant="body2"
@@ -347,8 +344,7 @@ export default function SearchWithResults({
                   mt: 0.5,
                 }}
               >
-                Try an account address, transaction hash or version, block
-                height, ANS name, or coin type.
+                {t("search.emptyHint")}
               </Typography>
             </Box>
           ) : (

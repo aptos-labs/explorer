@@ -56,6 +56,9 @@ export const bn = {
       result: "ফলাফল",
     },
     noResults: "কোনো ফলাফল নেই",
+    emptyTitle: '"{query}"-এর জন্য কোনো ফলাফল নেই',
+    emptyHint:
+      "অ্যাকাউন্ট ঠিকানা, লেনদেনের হ্যাশ বা সংস্করণ, ব্লকের উচ্চতা, ANS নাম, বা কয়েনের ধরন চেষ্টা করুন।",
     group: {
       account: "অ্যাকাউন্ট",
       asset: "অ্যাসেট",
@@ -883,6 +886,15 @@ export const bn = {
         "Aptos ব্লকচেইনে লেনদেন, অ্যাকাউন্ট, ব্লক, ভ্যালিডেটর ও কার্যক্রম ঘুরে দেখুন। Aptos নেটওয়ার্কের অফিসিয়াল ব্লক এক্সপ্লোরার।",
       websiteSchema: "Aptos ব্লকচেইনে লেনদেন, অ্যাকাউন্ট, ব্লক ও কার্যক্রম ঘুরে দেখুন।",
       searchSchemaName: "Aptos Explorer অনুসন্ধান",
+      subtitle:
+        "চেইন অনুসন্ধান করুন, তারপর সরাসরি লেনদেন, ব্লক, ভ্যালিডেটর বা বিশ্লেষণে যান।",
+      browseTransactions: "লেনদেন দেখুন",
+      viewLatestBlocks: "সর্বশেষ ব্লক দেখুন",
+      openAnalytics: "বিশ্লেষণ খুলুন",
+      documentTitle: "Aptos Explorer - ব্লকচেইন এক্সপ্লোরার",
+      searchDocumentTitle: "অনুসন্ধান · {query}",
+      searchMetaDescription:
+        "“{query}”-এর জন্য Aptos Explorer অনুসন্ধান। ফলাফল এই পাতায় ইনলাইন লোড হয়; অনুসন্ধান বার দিয়ে পরিশোধন করুন বা শনাক্ত লিংক অনুসরণ করুন।",
     },
     transactions: {
       title: "লেনদেন",

@@ -56,6 +56,9 @@ export const ar = {
       result: "نتيجة",
     },
     noResults: "لا توجد نتائج",
+    emptyTitle: 'لا توجد نتائج لـ "{query}"',
+    emptyHint:
+      "جرّب عنوان حساب أو تجزئة معاملة أو إصدارها أو ارتفاع كتلة أو اسم ANS أو نوع عملة.",
     group: {
       account: "الحسابات",
       asset: "الأصول",
@@ -880,6 +883,15 @@ export const ar = {
       websiteSchema:
         "استكشف المعاملات والحسابات والكتل والنشاط على سلسلة كتل Aptos.",
       searchSchemaName: "بحث Aptos Explorer",
+      subtitle:
+        "ابحث في السلسلة ثم انتقل مباشرة إلى المعاملات أو الكتل أو المدققين أو التحليلات.",
+      browseTransactions: "تصفح المعاملات",
+      viewLatestBlocks: "عرض أحدث الكتل",
+      openAnalytics: "فتح التحليلات",
+      documentTitle: "Aptos Explorer - مستكشف سلسلة الكتل",
+      searchDocumentTitle: "بحث · {query}",
+      searchMetaDescription:
+        "بحث Aptos Explorer عن “{query}”. تُحمَّل النتائج في هذه الصفحة؛ استخدم شريط البحث للتنقيح أو لاتباع الروابط المكتشفة.",
     },
     transactions: {
       title: "المعاملات",

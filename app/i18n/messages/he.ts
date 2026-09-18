@@ -56,6 +56,9 @@ export const he = {
       result: "תוצאה",
     },
     noResults: "אין תוצאות",
+    emptyTitle: 'אין תוצאות עבור "{query}"',
+    emptyHint:
+      "נסו כתובת חשבון, hash או גרסת עסקה, גובה בלוק, שם ANS או סוג מטבע.",
     group: {
       account: "חשבונות",
       asset: "נכסים",
@@ -880,6 +883,14 @@ export const he = {
         "חקור עסקאות, חשבונות, בלוקים, מאמתים ופעילות בבלוקצ'יין Aptos. סייר הבלוקים הרשמי של רשת Aptos.",
       websiteSchema: "חקור עסקאות, חשבונות, בלוקים ופעילות בבלוקצ'יין Aptos.",
       searchSchemaName: "חיפוש Aptos Explorer",
+      subtitle: "חפשו בשרשרת ואז עברו ישר לעסקאות, בלוקים, מאמתים או אנליטיקה.",
+      browseTransactions: "עיון בעסקאות",
+      viewLatestBlocks: "הצג את הבלוקים האחרונים",
+      openAnalytics: "פתח אנליטיקה",
+      documentTitle: "Aptos Explorer - סייר בלוקצ׳יין",
+      searchDocumentTitle: "חיפוש · {query}",
+      searchMetaDescription:
+        "חיפוש Aptos Explorer עבור “{query}”. התוצאות נטענות בעמוד זה; השתמשו בשורת החיפוש כדי לצמצם או לעקוב אחר קישורים שזוהו.",
     },
     transactions: {
       title: "עסקאות",

@@ -59,6 +59,9 @@ export const zu = {
       result: "Umphumela",
     },
     noResults: "Ayikho Imiphumela",
+    emptyTitle: 'Ayikho imiphumela ye-"{query}"',
+    emptyHint:
+      "Zama ikheli le-akhawunti, i-hash noma inguqulo yokuthengiselana, ukuphakama kwebhulokhi, igama le-ANS, noma uhlobo lwekhoyini.",
     group: {
       account: "Ama-akhawunti",
       asset: "Izimpahla",
@@ -897,6 +900,15 @@ export const zu = {
       websiteSchema:
         "Hlola ukuthengiselana, ama-akhawunti, amabhulokhi, nomsebenzi ku-Aptos blockchain.",
       searchSchemaName: "Ukusesha kwe-Aptos Explorer",
+      subtitle:
+        "Sesa uchungechunge, bese uya ngqo ekuthengiselaneni, emabhulokhini, kubaqinisekisi, noma ekuhlaziyeni.",
+      browseTransactions: "Bheka ukuthengiselana",
+      viewLatestBlocks: "Buka amabhulokhi amasha",
+      openAnalytics: "Vula ukuhlaziya",
+      documentTitle: "Aptos Explorer - Isihloli se-blockchain",
+      searchDocumentTitle: "Ukusesha · {query}",
+      searchMetaDescription:
+        "Ukusesha kwe-Aptos Explorer kwe-“{query}”. Imiphumela ilayishwa kuleli khasi; sebenzisa ibha yokusesha ukucacisa noma ukulandela izixhumanisi ezitholakele.",
     },
     transactions: {
       title: "Ukuthengiselana",

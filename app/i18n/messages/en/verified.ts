@@ -277,6 +277,9 @@ export const analytics = {
 
 export const searchExtra = {
   noResults: "No Results",
+  emptyTitle: 'No results for "{query}"',
+  emptyHint:
+    "Try an account address, transaction hash or version, block height, ANS name, or coin type.",
   group: {
     account: "Accounts",
     asset: "Assets",

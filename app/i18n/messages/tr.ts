@@ -57,6 +57,9 @@ export const tr = {
       result: "Sonuç",
     },
     noResults: "Sonuç yok",
+    emptyTitle: '"{query}" için sonuç yok',
+    emptyHint:
+      "Bir hesap adresi, işlem karması veya sürümü, blok yüksekliği, ANS adı ya da coin türü deneyin.",
     group: {
       account: "Hesaplar",
       asset: "Varlıklar",
@@ -894,6 +897,15 @@ export const tr = {
       websiteSchema:
         "Aptos blockchain'deki işlemleri, hesapları, blokları ve etkinliği keşfedin.",
       searchSchemaName: "Aptos Explorer araması",
+      subtitle:
+        "Zinciri arayın, ardından işlemlere, bloklara, doğrulayıcılara veya analitiğe geçin.",
+      browseTransactions: "İşlemlere göz at",
+      viewLatestBlocks: "En son blokları görüntüle",
+      openAnalytics: "Analitiği aç",
+      documentTitle: "Aptos Explorer - Blockchain kaşifi",
+      searchDocumentTitle: "Arama · {query}",
+      searchMetaDescription:
+        "Aptos Explorer araması: “{query}”. Sonuçlar bu sayfada yüklenir; arama çubuğuyla daraltın veya algılanan bağlantıları izleyin.",
     },
     transactions: {
       title: "İşlemler",

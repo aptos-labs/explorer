@@ -56,6 +56,9 @@ export const ko = {
       result: "결과",
     },
     noResults: "결과 없음",
+    emptyTitle: '"{query}"에 대한 결과가 없습니다',
+    emptyHint:
+      "계정 주소, 트랜잭션 해시 또는 버전, 블록 높이, ANS 이름, 코인 유형을 시도해 보세요.",
     group: {
       account: "계정",
       asset: "자산",
@@ -886,6 +889,15 @@ export const ko = {
       websiteSchema:
         "Aptos 블록체인의 트랜잭션, 계정, 블록, 활동을 탐색하세요.",
       searchSchemaName: "Aptos Explorer 검색",
+      subtitle:
+        "체인을 검색한 뒤 트랜잭션, 블록, 밸리데이터 또는 분석으로 바로 이동하세요.",
+      browseTransactions: "트랜잭션 둘러보기",
+      viewLatestBlocks: "최신 블록 보기",
+      openAnalytics: "분석 열기",
+      documentTitle: "Aptos Explorer - 블록체인 탐색기",
+      searchDocumentTitle: "검색 · {query}",
+      searchMetaDescription:
+        "Aptos Explorer에서 “{query}”를 검색합니다. 결과는 이 페이지에 바로 로드됩니다. 검색창으로 범위를 좁히거나 감지된 링크를 따라가세요.",
     },
     transactions: {
       title: "트랜잭션",
