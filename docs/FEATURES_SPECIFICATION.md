@@ -1376,8 +1376,8 @@ top of the HTML site.
 | Aspect | Detail |
 |--------|--------|
 | **Content** | Article-style guide covering what the explorer is, chrome, search, networks, transactions, accounts/objects, modules, blocks, validators, assets, analytics, releases, Run Script, configuration, wallet, verification, URLs/agents, glossary, and troubleshooting. Copy lives in i18n catalogs (English source plus shipped translations). |
-| **TOC** | Sticky "On this page" nav with hash links to each section. |
-| **Layout** | The guide column is width-constrained (`min-width: 0`, wrapping long tokens) so it does not extend the page sideways. |
+| **TOC** | Sticky "On this page" nav with hash links to each section; on `lg+` viewports it is pinned to the right while the article body is centered. On compact viewports the TOC stays above the article. The entry for the section currently in view is highlighted while scrolling. |
+| **Layout** | The guide column is width-constrained (`min-width: 0`, wrapping long tokens) so it does not extend the page sideways. On `lg+`, the article is centered with `margin-inline: auto` (~42rem) and the TOC is absolutely positioned on the right (sticky within the article height); below `lg`, the TOC stacks above the article. Body copy uses a relaxed line height. |
 | **Navigation** | Header help icon (desktop), overflow menu (compact), footer link. WebMCP `open_guide` tool. |
 | **Metadata** | `PageMetadata` type `article`, canonical `/guide`. |
 
@@ -1453,6 +1453,8 @@ top of the HTML site.
 | `app/settings/ExplorerSettings.test.tsx` | FEAT-SETTINGS-003 (cross-tab `storage` events reload `aptos-explorer-locale`) |
 | `app/components/layout/NetworkSelect.test.tsx` | FEAT-NETWORK-001 (header network dropdown opens without locking body scroll; hover tooltip is dismissed when the menu opens so the first option stays clickable; choosing an option updates the URL; status-dot mapping) |
 | `app/pages/Guide/guideSections.test.ts` | FEAT-GUIDE-001 (section ids, titles, body copy) |
+| `app/pages/Guide/GuidePage.test.tsx` | FEAT-GUIDE-001 (guide page layout, TOC, article sections) |
+| `app/pages/Guide/useGuideActiveSection.test.ts` | FEAT-GUIDE-001 (TOC active-section selection from intersection ratios and scroll spy hook) |
 | `app/utils/routerParams.test.ts` | FEAT-ROUTING-003 (`pathSplatToSegments` normalization) |
 | `app/api/hooks/aptosFeatureFlagsUpstream.test.ts` | FEAT-RELEASES-001 (upstream Rust enum parse for unlisted feature flag names) |
 | `app/api/hooks/useGetNetworkStatus.test.ts` | FEAT-RELEASES-001 (`fetchNetworkStatus`) |
