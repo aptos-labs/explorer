@@ -1,15 +1,28 @@
 import {
+  alpha,
   Box,
   Divider,
   Link as MuiLink,
   Paper,
   Stack,
+  type SxProps,
+  type Theme,
   Typography,
+  useTheme,
 } from "@mui/material";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import {InlineMarkup, useTranslation} from "../../i18n";
 import PageHeader from "../layout/PageHeader";
 import {GUIDE_SECTIONS} from "./guideSections";
+import {useGuideActiveSection} from "./useGuideActiveSection";
+
+const guideBodyTypography = {
+  fontSize: "1.0625rem",
+  lineHeight: 1.7,
+} as const;
+
+const guideArticleMaxWidth = "42rem";
+const guideTocWidthPx = 280;
 
 function GuideParagraphs({texts}: {texts: string[]}) {
   if (texts.length === 0) {
@@ -23,8 +36,8 @@ function GuideParagraphs({texts}: {texts: string[]}) {
           variant="body1"
           component="p"
           sx={{
-            mb: 2,
-            maxWidth: "65ch",
+            ...guideBodyTypography,
+            mb: 2.5,
             overflowWrap: "anywhere",
           }}
         >
@@ -42,11 +55,22 @@ function GuideBullets({items}: {items: string[]}) {
   return (
     <Box
       component="ul"
-      sx={{pl: 3, mb: 2, maxWidth: "65ch", overflowWrap: "anywhere"}}
+      sx={{
+        pl: 2.75,
+        mb: 2.5,
+        overflowWrap: "anywhere",
+        "& li": {
+          mb: 1.25,
+          lineHeight: 1.7,
+          "&::marker": {
+            color: "text.secondary",
+          },
+        },
+      }}
     >
       {items.map((item) => (
-        <Box component="li" key={item} sx={{mb: 1}}>
-          <Typography variant="body1" component="span">
+        <Box component="li" key={item}>
+          <Typography variant="body1" component="span" sx={guideBodyTypography}>
             <InlineMarkup text={item} />
           </Typography>
         </Box>
@@ -55,8 +79,100 @@ function GuideBullets({items}: {items: string[]}) {
   );
 }
 
+const guideSectionIds = GUIDE_SECTIONS.map((section) => section.id);
+
+function GuideTocNav({
+  activeSectionId,
+  paperSx,
+  t,
+}: {
+  activeSectionId: string | undefined;
+  paperSx?: SxProps<Theme>;
+  t: ReturnType<typeof useTranslation>["t"];
+}) {
+  const theme = useTheme();
+
+  return (
+    <Paper
+      component="nav"
+      aria-label={t("guide.meta.tocLabel")}
+      variant="outlined"
+      sx={[
+        {
+          p: 2.5,
+          width: "100%",
+          boxSizing: "border-box",
+          borderRadius: 2,
+          bgcolor: alpha(
+            theme.palette.text.primary,
+            theme.palette.mode === "dark" ? 0.06 : 0.03,
+          ),
+          borderColor: alpha(theme.palette.divider, 0.9),
+          boxShadow: "none",
+        },
+        ...(Array.isArray(paperSx) ? paperSx : paperSx ? [paperSx] : []),
+      ]}
+    >
+      <Typography
+        variant="overline"
+        component="p"
+        sx={{
+          display: "block",
+          fontWeight: 700,
+          letterSpacing: "0.08em",
+          color: "text.secondary",
+          mb: 1.5,
+          lineHeight: 1.4,
+        }}
+      >
+        {t("guide.meta.tocLabel")}
+      </Typography>
+      <Stack spacing={0.25}>
+        {GUIDE_SECTIONS.map((section) => {
+          const isActive = activeSectionId === section.id;
+          return (
+            <MuiLink
+              key={section.id}
+              href={`#${section.id}`}
+              underline="none"
+              aria-current={isActive ? "location" : undefined}
+              sx={{
+                display: "block",
+                py: 0.75,
+                px: 1.25,
+                borderRadius: 1,
+                fontSize: "0.875rem",
+                lineHeight: 1.45,
+                fontWeight: isActive ? 600 : 400,
+                color: isActive ? "primary.main" : "text.secondary",
+                bgcolor: isActive
+                  ? alpha(theme.palette.primary.main, 0.12)
+                  : "transparent",
+                transition: theme.transitions.create([
+                  "background-color",
+                  "color",
+                ]),
+                "&:hover": {
+                  bgcolor: isActive
+                    ? alpha(theme.palette.primary.main, 0.16)
+                    : "action.hover",
+                  color: isActive ? "primary.main" : "text.primary",
+                },
+              }}
+            >
+              {t(`${section.messageKey}.title`)}
+            </MuiLink>
+          );
+        })}
+      </Stack>
+    </Paper>
+  );
+}
+
 export default function GuidePage() {
+  const theme = useTheme();
   const {t, tList} = useTranslation();
+  const activeSectionId = useGuideActiveSection(guideSectionIds);
 
   return (
     <Box sx={{width: "100%", maxWidth: "100%", minWidth: 0}}>
@@ -89,6 +205,7 @@ export default function GuidePage() {
           sx={{
             mb: 2,
             fontWeight: 700,
+            textAlign: "center",
           }}
         >
           {t("guide.meta.title")}
@@ -96,71 +213,55 @@ export default function GuidePage() {
         <Typography
           variant="body1"
           sx={{
+            ...guideBodyTypography,
             color: "text.secondary",
-            mb: 4,
-            maxWidth: "65ch",
+            fontSize: "1.125rem",
+            lineHeight: 1.65,
+            mb: 3,
+            maxWidth: guideArticleMaxWidth,
+            mx: "auto",
+            textAlign: "center",
             overflowWrap: "anywhere",
           }}
         >
           <InlineMarkup text={t("guide.meta.intro")} />
         </Typography>
 
-        <Stack
-          direction={{xs: "column", md: "row"}}
-          spacing={4}
+        <Box
           sx={{
-            alignItems: "flex-start",
+            display: {xs: "flex", lg: "grid"},
+            flexDirection: {xs: "column"},
+            gridTemplateColumns: {
+              lg: `1fr minmax(0, ${guideArticleMaxWidth}) 1fr`,
+            },
+            columnGap: {lg: 3},
+            rowGap: {xs: 3},
+            alignItems: "start",
             width: "100%",
-            maxWidth: "100%",
             minWidth: 0,
           }}
         >
-          <Paper
-            component="nav"
-            aria-label={t("guide.meta.tocLabel")}
-            variant="outlined"
-            sx={{
-              p: 2,
-              width: {xs: "100%", md: 260},
+          <GuideTocNav
+            activeSectionId={activeSectionId}
+            t={t}
+            paperSx={{
+              order: {xs: -1, lg: 0},
+              gridColumn: {lg: 1},
+              justifySelf: {lg: "end"},
+              width: {xs: "100%", lg: guideTocWidthPx},
               maxWidth: "100%",
-              boxSizing: "border-box",
-              flexShrink: 0,
-              position: {md: "sticky"},
-              top: {md: 112},
+              position: {lg: "sticky"},
+              top: {lg: 112},
             }}
-          >
-            <Typography
-              variant="subtitle2"
-              sx={{
-                fontWeight: 700,
-                mb: 1,
-              }}
-            >
-              {t("guide.meta.tocLabel")}
-            </Typography>
-            <Stack spacing={0.5}>
-              {GUIDE_SECTIONS.map((section) => (
-                <MuiLink
-                  key={section.id}
-                  href={`#${section.id}`}
-                  underline="hover"
-                  sx={{
-                    fontSize: "0.9rem",
-                    color: "text.primary",
-                  }}
-                >
-                  {t(`${section.messageKey}.title`)}
-                </MuiLink>
-              ))}
-            </Stack>
-          </Paper>
+          />
 
           <Box
             component="article"
             sx={{
+              gridColumn: {lg: 2},
               minWidth: 0,
-              flex: 1,
-              maxWidth: "100%",
+              width: "100%",
+              maxWidth: guideArticleMaxWidth,
               overflowWrap: "anywhere",
             }}
           >
@@ -171,16 +272,26 @@ export default function GuidePage() {
                 id={section.id}
                 sx={{
                   scrollMarginTop: 112,
-                  mb: 2,
+                  mb: {xs: 4, md: 5},
                 }}
               >
-                {index > 0 ? <Divider sx={{mb: 4}} /> : null}
+                {index > 0 ? (
+                  <Divider
+                    sx={{
+                      mb: 4,
+                      borderColor: alpha(theme.palette.divider, 0.8),
+                    }}
+                  />
+                ) : null}
                 <Typography
                   variant="h4"
                   component="h2"
                   sx={{
-                    mb: 2,
+                    mb: 2.5,
                     fontWeight: 600,
+                    fontSize: {xs: "1.375rem", md: "1.5rem"},
+                    lineHeight: 1.35,
+                    letterSpacing: "-0.01em",
                   }}
                 >
                   {t(`${section.messageKey}.title`)}
@@ -193,7 +304,7 @@ export default function GuidePage() {
               </Box>
             ))}
           </Box>
-        </Stack>
+        </Box>
       </Box>
     </Box>
   );
