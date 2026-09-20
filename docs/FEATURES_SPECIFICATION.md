@@ -1515,7 +1515,9 @@ top of the HTML site.
 | `app/pages/Transaction/Tabs/Components/SignatureOverviewTable.test.tsx` | FEAT-TXN-002 (signature overview: Ed25519, multi-Ed25519, single_sender, multi_agent, fee_payer, fallbacks; stable keys for duplicate secondary addresses) |
 | `app/pages/Transaction/Tabs/Components/moveParamTypeDisplay.test.ts` | FEAT-TXN-011 (Move type display badges) |
 | `app/pages/Transaction/txnTabValues.test.ts` | FEAT-TXN-001 (tab selection by transaction type, shared `overview` tab component dispatch, trace tab only for user txns), FEAT-TXN-016 (Payments tab only when a payment is identified), FEAT-TXN-008 (legacy overview path rewrite), FEAT-TXN-012 (conditional Modules tab) |
-| `app/utils/decibel/parser.test.ts` | FEAT-TXN-001 / FEAT-TXN-002 (Decibel txn detection; order/deposit/withdraw/bulk/twap parsing; `place_bulk_orders_to_subaccount` and `place_bulk_orders_to_subaccount_with_repricing` ladders; BulkOrderPlaced/Filled events) |
+| `app/utils/decibel/parser.test.ts` | FEAT-TXN-001 / FEAT-TXN-002 (Decibel txn detection; order/deposit/withdraw/bulk/twap parsing; `place_bulk_orders_to_subaccount` and `place_bulk_orders_to_subaccount_with_repricing` ladders + `max_collapse_size`; BulkOrderPlaced/Filled events) |
+| `app/pages/Transaction/Tabs/DecibelTab.test.tsx` | FEAT-TXN-001 / FEAT-TXN-002 (Decibel tab: with_repricing bulk detail, max collapse size / unlimited, event-only bulk ladders) |
+| `app/pages/Transaction/Tabs/parseDecibelPerpFromPayload.test.ts` | FEAT-TXN-002 (Overview Actions recognizes bulk and with_repricing bulk entry functions) |
 | `app/pages/Transaction/payments/identifyPayments.test.ts` | FEAT-TXN-016 (P2P, controlled/partner hops, confidential amount hiding, public↔confidential, exchange I/O, fee breakdown, Mermaid multi-step, client-trace fallback) |
 | `app/pages/Transaction/payments/clientTrace.test.ts` | FEAT-TXN-016 (client-side call-graph tracker remains disabled) |
 | `app/pages/Transaction/Tabs/PaymentsTab.test.tsx` | FEAT-TXN-016 (Payments tab copy, visible fee breakdown, encrypted confidential amounts, Mermaid source for multi-leg flows) |

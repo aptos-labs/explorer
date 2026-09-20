@@ -530,6 +530,28 @@ describe("parseDecibelTransaction", () => {
       expect(summary.bulkOrderDetail?.maxCollapseSize).toBeNull();
     });
 
+    it("treats missing max_collapse_size arg as unlimited", () => {
+      const txn = makeUserTxn({
+        payload: {
+          type: "entry_function_payload",
+          function: `${MAINNET_CONTRACT}::dex_accounts_entry::place_bulk_orders_to_subaccount_with_repricing`,
+          arguments: [
+            {inner: "0xsub1"},
+            {inner: "0xmarket1"},
+            "1",
+            ["5000"],
+            ["100"],
+            ["5100"],
+            ["150"],
+            {vec: []},
+            {vec: []},
+          ],
+        },
+      });
+      const summary = parseDecibelTransaction(txn);
+      expect(summary.bulkOrderDetail?.maxCollapseSize).toBeNull();
+    });
+
     it("omits builder when address is 0x0", () => {
       const txn = makeUserTxn({
         payload: {

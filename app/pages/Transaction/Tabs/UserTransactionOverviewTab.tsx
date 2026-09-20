@@ -3314,7 +3314,7 @@ function parseDecibelOrderEvent(
   };
 }
 
-function parseDecibelPerpFromPayload(
+export function parseDecibelPerpFromPayload(
   transaction: Types.Transaction,
 ): DecibelPerpOrder | DecibelPerpDeposit | DecibelPerpWithdraw | undefined {
   if (!("success" in transaction) || !transaction.success) {
