@@ -2223,6 +2223,7 @@ export const ru = {
     amount: "Сумма",
     function: "Функция",
     assetAndAmount: "Актив и сумма",
+    submittedOrder: "Отправленный ордер",
     placed: "Размещено",
     placedCount: "Размещено ({count})",
     fills: "Исполнения ({count})",

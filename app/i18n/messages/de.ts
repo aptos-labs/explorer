@@ -2265,6 +2265,7 @@ export const de = {
     amount: "Betrag",
     function: "Funktion",
     assetAndAmount: "Asset & Betrag",
+    submittedOrder: "Eingereichte Order",
     placed: "Platziert",
     placedCount: "Platziert ({count})",
     fills: "Fills ({count})",

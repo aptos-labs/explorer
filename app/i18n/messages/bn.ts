@@ -2154,6 +2154,7 @@ export const bn = {
     amount: "পরিমাণ",
     function: "ফাংশন",
     assetAndAmount: "অ্যাসেট ও পরিমাণ",
+    submittedOrder: "জমা দেওয়া অর্ডার",
     placed: "রাখা",
     placedCount: "রাখা ({count})",
     fills: "ফিল ({count})",

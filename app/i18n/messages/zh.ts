@@ -2108,6 +2108,7 @@ export const zh = {
     amount: "金额",
     function: "函数",
     assetAndAmount: "资产与金额",
+    submittedOrder: "提交的订单",
     placed: "已挂单",
     placedCount: "已挂单（{count}）",
     fills: "成交（{count}）",

@@ -2190,6 +2190,7 @@ export const ur = {
     amount: "رقم",
     function: "فنکشن",
     assetAndAmount: "اثاثہ اور رقم",
+    submittedOrder: "جمع کرائی گئی آرڈر",
     placed: "رکھا گیا",
     placedCount: "رکھا گیا ({count})",
     fills: "فلز ({count})",

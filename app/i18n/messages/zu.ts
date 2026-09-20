@@ -2252,6 +2252,7 @@ export const zu = {
     amount: "Inani",
     function: "Umsebenzi",
     assetAndAmount: "Impahla Nenani",
+    submittedOrder: "I-oda ethunyelwe",
     placed: "Kubekwe",
     placedCount: "Kubekwe ({count})",
     fills: "Ukugcwalisa ({count})",

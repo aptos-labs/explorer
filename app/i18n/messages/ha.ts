@@ -2243,6 +2243,7 @@ export const ha = {
     amount: "Adadi",
     function: "Aiki",
     assetAndAmount: "Kadari da adadi",
+    submittedOrder: "Oda da aka aika",
     placed: "An sanya",
     placedCount: "An sanya ({count})",
     fills: "Cikawa ({count})",

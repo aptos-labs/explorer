@@ -2263,6 +2263,7 @@ export const es = {
     amount: "Cantidad",
     function: "Función",
     assetAndAmount: "Activo y cantidad",
+    submittedOrder: "Orden enviada",
     placed: "Colocadas",
     placedCount: "Colocadas ({count})",
     fills: "Ejecuciones ({count})",

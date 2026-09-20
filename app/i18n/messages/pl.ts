@@ -2225,6 +2225,7 @@ export const pl = {
     amount: "Kwota",
     function: "Funkcja",
     assetAndAmount: "Aktywo i kwota",
+    submittedOrder: "Złożone zlecenie",
     placed: "Złożone",
     placedCount: "Złożone ({count})",
     fills: "Wypełnienia ({count})",

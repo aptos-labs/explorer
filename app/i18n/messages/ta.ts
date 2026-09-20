@@ -2202,6 +2202,7 @@ export const ta = {
     amount: "தொகை",
     function: "செயல்பாடு",
     assetAndAmount: "சொத்து & தொகை",
+    submittedOrder: "சமர்ப்பிக்கப்பட்ட ஆர்டர்",
     placed: "வைக்கப்பட்டது",
     placedCount: "வைக்கப்பட்டது ({count})",
     fills: "நிரப்புகள் ({count})",

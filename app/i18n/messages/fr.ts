@@ -2273,6 +2273,7 @@ export const fr = {
     amount: "Montant",
     function: "Fonction",
     assetAndAmount: "Actif et montant",
+    submittedOrder: "Ordre soumis",
     placed: "Placés",
     placedCount: "Placés ({count})",
     fills: "Exécutions ({count})",

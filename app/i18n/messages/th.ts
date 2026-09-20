@@ -2132,6 +2132,7 @@ export const th = {
     amount: "จำนวน",
     function: "ฟังก์ชัน",
     assetAndAmount: "สินทรัพย์และจำนวน",
+    submittedOrder: "คำสั่งที่ส่งแล้ว",
     placed: "วางแล้ว",
     placedCount: "วางแล้ว ({count})",
     fills: "การเติม ({count})",

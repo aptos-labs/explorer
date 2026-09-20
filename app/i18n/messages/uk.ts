@@ -2227,6 +2227,7 @@ export const uk = {
     amount: "Сума",
     function: "Функція",
     assetAndAmount: "Актив і сума",
+    submittedOrder: "Надісланий ордер",
     placed: "Розміщено",
     placedCount: "Розміщено ({count})",
     fills: "Виконання ({count})",

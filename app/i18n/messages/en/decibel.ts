@@ -72,6 +72,7 @@ export const decibel = {
   amount: "Amount",
   function: "Function",
   assetAndAmount: "Asset & Amount",
+  submittedOrder: "Submitted Order",
   placed: "Placed",
   placedCount: "Placed ({count})",
   fills: "Fills ({count})",

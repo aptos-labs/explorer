@@ -2220,6 +2220,7 @@ export const id = {
     amount: "Jumlah",
     function: "Fungsi",
     assetAndAmount: "Aset & jumlah",
+    submittedOrder: "Order terkirim",
     placed: "Ditempatkan",
     placedCount: "Ditempatkan ({count})",
     fills: "Fill ({count})",

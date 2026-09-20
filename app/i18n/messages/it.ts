@@ -2260,6 +2260,7 @@ export const it = {
     amount: "Importo",
     function: "Funzione",
     assetAndAmount: "Asset e importo",
+    submittedOrder: "Ordine inviato",
     placed: "Inseriti",
     placedCount: "Inseriti ({count})",
     fills: "Fill ({count})",

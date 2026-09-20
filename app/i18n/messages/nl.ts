@@ -2256,6 +2256,7 @@ export const nl = {
     amount: "Bedrag",
     function: "Functie",
     assetAndAmount: "Asset & bedrag",
+    submittedOrder: "Ingediende order",
     placed: "Geplaatst",
     placedCount: "Geplaatst ({count})",
     fills: "Fills ({count})",

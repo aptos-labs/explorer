@@ -2233,6 +2233,7 @@ export const ms = {
     amount: "Jumlah",
     function: "Fungsi",
     assetAndAmount: "Aset & jumlah",
+    submittedOrder: "Pesanan dihantar",
     placed: "Diletakkan",
     placedCount: "Diletakkan ({count})",
     fills: "Pengisian ({count})",

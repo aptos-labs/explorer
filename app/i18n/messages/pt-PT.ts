@@ -2242,6 +2242,7 @@ export const ptPT = {
     amount: "Quantia",
     function: "Função",
     assetAndAmount: "Ativo e quantia",
+    submittedOrder: "Ordem submetida",
     placed: "Enviadas",
     placedCount: "Enviadas ({count})",
     fills: "Fills ({count})",

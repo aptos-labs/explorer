@@ -2255,6 +2255,7 @@ export const fil = {
     amount: "Halaga",
     function: "Function",
     assetAndAmount: "Asset at halaga",
+    submittedOrder: "Isinumiteng order",
     placed: "Nailagay",
     placedCount: "Nailagay ({count})",
     fills: "Mga fill ({count})",

@@ -2223,6 +2223,7 @@ export const ja = {
     amount: "数量",
     function: "関数",
     assetAndAmount: "アセットと数量",
+    submittedOrder: "送信オーダー",
     placed: "発注済み",
     placedCount: "発注済み（{count}）",
     fills: "約定（{count}）",

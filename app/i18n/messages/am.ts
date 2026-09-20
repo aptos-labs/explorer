@@ -2126,6 +2126,7 @@ export const am = {
     amount: "መጠን",
     function: "ተግባር",
     assetAndAmount: "ንብረት እና መጠን",
+    submittedOrder: "የተላከ ትዕዛዝ",
     placed: "ተቀምጧል",
     placedCount: "ተቀምጧል ({count})",
     fills: "ሙላቶች ({count})",

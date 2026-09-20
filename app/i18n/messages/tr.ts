@@ -2223,6 +2223,7 @@ export const tr = {
     amount: "Miktar",
     function: "Fonksiyon",
     assetAndAmount: "Varlık ve Miktar",
+    submittedOrder: "Gönderilen emir",
     placed: "Yerleştirildi",
     placedCount: "Yerleştirildi ({count})",
     fills: "Doldurmalar ({count})",

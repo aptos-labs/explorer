@@ -2161,6 +2161,7 @@ export const he = {
     amount: "סכום",
     function: "פונקציה",
     assetAndAmount: "נכס וסכום",
+    submittedOrder: "הזמנה שנשלחה",
     placed: "הוצבה",
     placedCount: "הוצבו ({count})",
     fills: "מילויים ({count})",

@@ -2166,6 +2166,7 @@ export const ar = {
     amount: "المبلغ",
     function: "الدالة",
     assetAndAmount: "الأصل والمبلغ",
+    submittedOrder: "الطلب المُرسَل",
     placed: "موضوع",
     placedCount: "موضوع ({count})",
     fills: "التنفيذات ({count})",

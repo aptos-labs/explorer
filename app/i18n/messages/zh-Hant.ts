@@ -2109,6 +2109,7 @@ export const zhHant = {
     amount: "金額",
     function: "函式",
     assetAndAmount: "資產與金額",
+    submittedOrder: "提交的訂單",
     placed: "已掛單",
     placedCount: "已掛單（{count}）",
     fills: "成交（{count}）",

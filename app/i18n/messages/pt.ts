@@ -2246,6 +2246,7 @@ export const pt = {
     amount: "Quantia",
     function: "Função",
     assetAndAmount: "Ativo e quantia",
+    submittedOrder: "Ordem enviada",
     placed: "Enviadas",
     placedCount: "Enviadas ({count})",
     fills: "Fills ({count})",

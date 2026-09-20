@@ -2157,6 +2157,7 @@ export const hi = {
     amount: "राशि",
     function: "फ़ंक्शन",
     assetAndAmount: "एसेट और राशि",
+    submittedOrder: "सबमिट किया गया ऑर्डर",
     placed: "प्लेस किया",
     placedCount: "प्लेस ({count})",
     fills: "फिल ({count})",

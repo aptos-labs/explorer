@@ -2252,6 +2252,7 @@ export const sw = {
     amount: "Kiasi",
     function: "Kazi",
     assetAndAmount: "Mali na kiasi",
+    submittedOrder: "Agizo lililotumwa",
     placed: "Imewekwa",
     placedCount: "Imewekwa ({count})",
     fills: "Ujazaji ({count})",

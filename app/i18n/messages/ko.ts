@@ -2192,6 +2192,7 @@ export const ko = {
     amount: "금액",
     function: "함수",
     assetAndAmount: "자산 및 금액",
+    submittedOrder: "제출한 주문",
     placed: "제출됨",
     placedCount: "제출됨 ({count})",
     fills: "체결 ({count})",

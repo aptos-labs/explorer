@@ -560,7 +560,7 @@ function BulkOrderInlineDetail({
           {detail && (
             <Box>
               <Typography variant="subtitle2" sx={{mb: 1}}>
-                Submitted Order
+                {t("decibel.submittedOrder")}
               </Typography>
               <Paper variant="outlined" sx={{p: 2}}>
                 <Stack spacing={1.5}>

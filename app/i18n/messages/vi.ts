@@ -2206,6 +2206,7 @@ export const vi = {
     amount: "Số lượng",
     function: "Hàm",
     assetAndAmount: "Tài sản & số lượng",
+    submittedOrder: "Lệnh đã gửi",
     placed: "Đã đặt",
     placedCount: "Đã đặt ({count})",
     fills: "Khớp ({count})",
