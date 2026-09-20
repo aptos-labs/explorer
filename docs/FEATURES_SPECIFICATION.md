@@ -187,7 +187,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Transaction Type | Available Tabs |
 |------------------|----------------|
-| User | Overview, Payments (when a payment is identified), Balance Change, Events, Payload, Modules (when package/modules changed), Changes, Trace |
+| User | Overview, Decibel (when the txn touches a Decibel contract), Payments (when a payment is identified), Balance Change, Events, Payload, Modules (when package/modules changed), Changes, Trace |
 | Block metadata | Overview, Events, Modules (when applicable), Changes |
 | State checkpoint | Overview |
 | Pending | Overview, Payload |
@@ -201,7 +201,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | Aspect | Detail |
 |--------|--------|
 | **Key fields** | Version, status, sender, fee payer, secondary signers, function, arguments, amount. For protocol-decrypted `encrypted_transaction_payload` values, these fields use the fullnode-provided decrypted entry function; ciphertext is never decrypted in the browser. An **Encryption** row (chips for encrypted state and epoch) appears when the payload type is `encrypted_transaction_payload`. Pending or failed-decryption payloads show an "Encrypted Transaction" function line (and any `claimed_entry_fun`) instead of a blank function. |
-| **Actions section** | Rich parsing of DEX swaps, LSD operations, liquidity events (see FEAT-TXN-009). |
+| **Actions section** | Rich parsing of DEX swaps, LSD operations, liquidity events (see FEAT-TXN-009). Decibel perp orders include `place_bulk_orders_to_subaccount` and `place_bulk_orders_to_subaccount_with_repricing` (bulk). |
 | **Gas** | Gas fee, storage refund, net gas, gas unit price, max gas, VM status. |
 | **Block** | Link to parent block. |
 | **Timestamps** | Expiration and execution timestamp. |
@@ -1515,6 +1515,7 @@ top of the HTML site.
 | `app/pages/Transaction/Tabs/Components/SignatureOverviewTable.test.tsx` | FEAT-TXN-002 (signature overview: Ed25519, multi-Ed25519, single_sender, multi_agent, fee_payer, fallbacks; stable keys for duplicate secondary addresses) |
 | `app/pages/Transaction/Tabs/Components/moveParamTypeDisplay.test.ts` | FEAT-TXN-011 (Move type display badges) |
 | `app/pages/Transaction/txnTabValues.test.ts` | FEAT-TXN-001 (tab selection by transaction type, shared `overview` tab component dispatch, trace tab only for user txns), FEAT-TXN-016 (Payments tab only when a payment is identified), FEAT-TXN-008 (legacy overview path rewrite), FEAT-TXN-012 (conditional Modules tab) |
+| `app/utils/decibel/parser.test.ts` | FEAT-TXN-001 / FEAT-TXN-002 (Decibel txn detection; order/deposit/withdraw/bulk/twap parsing; `place_bulk_orders_to_subaccount` and `place_bulk_orders_to_subaccount_with_repricing` ladders; BulkOrderPlaced/Filled events) |
 | `app/pages/Transaction/payments/identifyPayments.test.ts` | FEAT-TXN-016 (P2P, controlled/partner hops, confidential amount hiding, public↔confidential, exchange I/O, fee breakdown, Mermaid multi-step, client-trace fallback) |
 | `app/pages/Transaction/payments/clientTrace.test.ts` | FEAT-TXN-016 (client-side call-graph tracker remains disabled) |
 | `app/pages/Transaction/Tabs/PaymentsTab.test.tsx` | FEAT-TXN-016 (Payments tab copy, visible fee breakdown, encrypted confidential amounts, Mermaid source for multi-leg flows) |

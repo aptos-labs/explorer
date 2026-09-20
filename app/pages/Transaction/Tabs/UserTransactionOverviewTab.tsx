@@ -3395,8 +3395,12 @@ function parseDecibelPerpFromPayload(
   }
 
   // place_bulk_orders_to_subaccount(auth, subaccount, market, ...)
+  // place_bulk_orders_to_subaccount_with_repricing(...same..., repricing)
   // API args: [subaccount(0), market(1), ...]
-  if (fnName === "place_bulk_orders_to_subaccount") {
+  if (
+    fnName === "place_bulk_orders_to_subaccount" ||
+    fnName === "place_bulk_orders_to_subaccount_with_repricing"
+  ) {
     if (args.length < 2) return undefined;
     return {
       actionType: "perp order",

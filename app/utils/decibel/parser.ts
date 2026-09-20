@@ -167,8 +167,12 @@ function parsePayloadAction(
   }
 
   // place_bulk_orders_to_subaccount(auth, subaccount, market, ...)
+  // place_bulk_orders_to_subaccount_with_repricing(...same..., repricing)
   // API args: [subaccount(0), market(1), ...]
-  if (fnName === "place_bulk_orders_to_subaccount") {
+  if (
+    fnName === "place_bulk_orders_to_subaccount" ||
+    fnName === "place_bulk_orders_to_subaccount_with_repricing"
+  ) {
     if (args.length < 2) return undefined;
     return {
       orderType: "bulk",
@@ -304,11 +308,19 @@ function parseBulkOrderPayloadDetail(
   if (!matchesDecibel) return undefined;
 
   const fnName = fn.split("::").pop() ?? "";
-  if (fnName !== "place_bulk_orders_to_subaccount") return undefined;
+  // with_repricing shares the same ladder/builder args; trailing Option<u64> is
+  // ignored for detail rendering (still labeled on the Payload tab).
+  if (
+    fnName !== "place_bulk_orders_to_subaccount" &&
+    fnName !== "place_bulk_orders_to_subaccount_with_repricing"
+  ) {
+    return undefined;
+  }
 
   // API args (signer stripped): [subaccount(0), market(1), sequence_number(2),
   //   bid_prices(3), bid_sizes(4), ask_prices(5), ask_sizes(6),
-  //   builder_address(7), builder_fees(8)]
+  //   builder_address(7), builder_fees(8),
+  //   repricing(9) — only on with_repricing]
   if (args.length < 7) return undefined;
 
   const builderAddr = args.length > 7 ? extractOptionValue(args[7]) : undefined;

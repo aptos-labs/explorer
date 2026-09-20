@@ -177,6 +177,33 @@ describe("parseDecibelTransaction", () => {
       expect(summary.orders[0].market).toBe("0xmarket1");
     });
 
+    // Covers FEAT-TXN-001 / Decibel bulk: with_repricing entry variant
+    it("parses bulk order from place_bulk_orders_to_subaccount_with_repricing", () => {
+      const txn = makeUserTxn({
+        payload: {
+          type: "entry_function_payload",
+          function: `${MAINNET_CONTRACT}::dex_accounts_entry::place_bulk_orders_to_subaccount_with_repricing`,
+          arguments: [
+            {inner: "0xsub1"},
+            {inner: "0xmarket1"},
+            "1789132318341956919",
+            ["97091000", "97072000"],
+            ["68950000", "158420000"],
+            ["97111000", "97130000"],
+            ["57630000", "132410000"],
+            {vec: []},
+            {vec: []},
+            {vec: ["126040000"]},
+          ],
+        },
+      });
+      const summary = parseDecibelTransaction(txn);
+      expect(summary.orders).toHaveLength(1);
+      expect(summary.orders[0].orderType).toBe("bulk");
+      expect(summary.orders[0].market).toBe("0xmarket1");
+      expect(summary.orders[0].subaccount).toBe("0xsub1");
+    });
+
     it("parses twap order from payload", () => {
       // API args (signer stripped): [subaccount, market, size, is_buy, ...]
       const txn = makeUserTxn({
@@ -442,6 +469,40 @@ describe("parseDecibelTransaction", () => {
       expect(detail.asks[0]).toEqual({price: "5100", size: "150"});
       expect(detail.builderAddress).toBe("0xbuilder");
       expect(detail.builderFees).toBe("10");
+    });
+
+    it("extracts ladders from place_bulk_orders_to_subaccount_with_repricing", () => {
+      const txn = makeUserTxn({
+        payload: {
+          type: "entry_function_payload",
+          function: `${MAINNET_CONTRACT}::dex_accounts_entry::place_bulk_orders_to_subaccount_with_repricing`,
+          arguments: [
+            {inner: "0xsub1"},
+            {inner: "0xmarket1"},
+            "99",
+            ["5000", "4900"],
+            ["100", "200"],
+            ["5100"],
+            ["150"],
+            {vec: []},
+            {vec: []},
+            {vec: ["126040000"]},
+          ],
+        },
+      });
+      const summary = parseDecibelTransaction(txn);
+      const detail = summary.bulkOrderDetail;
+      if (!detail) throw new Error("expected bulkOrderDetail");
+      expect(detail.market).toBe("0xmarket1");
+      expect(detail.subaccount).toBe("0xsub1");
+      expect(detail.sequenceNumber).toBe("99");
+      expect(detail.bids).toEqual([
+        {price: "5000", size: "100"},
+        {price: "4900", size: "200"},
+      ]);
+      expect(detail.asks).toEqual([{price: "5100", size: "150"}]);
+      expect(detail.builderAddress).toBeUndefined();
+      expect(detail.builderFees).toBeUndefined();
     });
 
     it("omits builder when address is 0x0", () => {
