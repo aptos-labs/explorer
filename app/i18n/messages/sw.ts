@@ -2246,6 +2246,8 @@ export const sw = {
     outstandingTimestamp: "Muda unaosubiri",
     builder: "Mjenzi",
     builderFee: "Ada ya mjenzi",
+    maxCollapseSize: "Ukubwa wa juu wa collapse",
+    maxCollapseSizeUnlimited: "Bila kikomo",
     subaccount: "Akaunti ndogo",
     amount: "Kiasi",
     function: "Kazi",

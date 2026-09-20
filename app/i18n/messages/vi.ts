@@ -2200,6 +2200,8 @@ export const vi = {
     outstandingTimestamp: "Dấu thời gian chưa thanh toán",
     builder: "Builder",
     builderFee: "Phí builder",
+    maxCollapseSize: "Kích thước collapse tối đa",
+    maxCollapseSizeUnlimited: "Không giới hạn",
     subaccount: "Tài khoản phụ",
     amount: "Số lượng",
     function: "Hàm",

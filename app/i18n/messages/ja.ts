@@ -2217,6 +2217,8 @@ export const ja = {
     outstandingTimestamp: "未清算時刻",
     builder: "ビルダー",
     builderFee: "ビルダー手数料",
+    maxCollapseSize: "最大コラプスサイズ",
+    maxCollapseSizeUnlimited: "無制限",
     subaccount: "サブアカウント",
     amount: "数量",
     function: "関数",

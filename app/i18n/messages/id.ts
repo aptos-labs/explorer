@@ -2214,6 +2214,8 @@ export const id = {
     outstandingTimestamp: "Stempel waktu tertunggak",
     builder: "Builder",
     builderFee: "Biaya builder",
+    maxCollapseSize: "Ukuran collapse maks",
+    maxCollapseSizeUnlimited: "Tidak terbatas",
     subaccount: "Subakun",
     amount: "Jumlah",
     function: "Fungsi",

@@ -2249,6 +2249,8 @@ export const fil = {
     outstandingTimestamp: "Outstanding timestamp",
     builder: "Builder",
     builderFee: "Builder fee",
+    maxCollapseSize: "Max collapse size",
+    maxCollapseSizeUnlimited: "Unlimited",
     subaccount: "Subaccount",
     amount: "Halaga",
     function: "Function",

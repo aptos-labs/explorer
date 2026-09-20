@@ -2151,6 +2151,8 @@ export const hi = {
     outstandingTimestamp: "बकाया टाइमस्टैंप",
     builder: "बिल्डर",
     builderFee: "बिल्डर शुल्क",
+    maxCollapseSize: "अधिकतम कोलैप्स आकार",
+    maxCollapseSizeUnlimited: "असीमित",
     subaccount: "सबअकाउंट",
     amount: "राशि",
     function: "फ़ंक्शन",

@@ -2250,6 +2250,8 @@ export const nl = {
     outstandingTimestamp: "Openstaand tijdstempel",
     builder: "Builder",
     builderFee: "Builder-kosten",
+    maxCollapseSize: "Max. collapse-grootte",
+    maxCollapseSizeUnlimited: "Onbeperkt",
     subaccount: "Subaccount",
     amount: "Bedrag",
     function: "Functie",

@@ -61,7 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **Decibel bulk orders with repricing**: Transactions that call `place_bulk_orders_to_subaccount_with_repricing` (for example mainnet version `7283503314`) now populate the Decibel tab with the bulk order row and bid/ask ladders. The parser previously only recognized `place_bulk_orders_to_subaccount`, so Overview Actions and Decibel detail stayed empty even when a `BulkOrderPlacedEvent` was present. Payload argument labels include the trailing `repricing` option; the Decibel tab also falls back to event/payload ladders when an order row is missing.
+- **Decibel bulk orders with repricing**: Transactions that call `place_bulk_orders_to_subaccount_with_repricing` (for example mainnet version `7283503314`) now populate the Decibel tab with the bulk order row and bid/ask ladders. The parser previously only recognized `place_bulk_orders_to_subaccount`, so Overview Actions and Decibel detail stayed empty even when a `BulkOrderPlacedEvent` was present. Payload argument labels include the trailing `max_collapse_size` option (crossing-size merge cap); the Decibel tab also falls back to event/payload ladders when an order row is missing.
 
 - **Network dropdown tooltip covered Mainnet**: Opening the header network select no longer leaves the **Select Network** tooltip sitting on top of the first option (Mainnet). The tooltip is hidden while the menu is open. The language globe tooltip uses the same rule.
 

@@ -2148,6 +2148,8 @@ export const bn = {
     outstandingTimestamp: "বকেয়া টাইমস্ট্যাম্প",
     builder: "বিল্ডার",
     builderFee: "বিল্ডার ফি",
+    maxCollapseSize: "সর্বোচ্চ কলাপ্স আকার",
+    maxCollapseSizeUnlimited: "সীমাহীন",
     subaccount: "সাবঅ্যাকাউন্ট",
     amount: "পরিমাণ",
     function: "ফাংশন",

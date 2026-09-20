@@ -2254,6 +2254,8 @@ export const it = {
     outstandingTimestamp: "Timestamp in sospeso",
     builder: "Builder",
     builderFee: "Commissione builder",
+    maxCollapseSize: "Dimensione max di collapse",
+    maxCollapseSizeUnlimited: "Illimitato",
     subaccount: "Sottoconto",
     amount: "Importo",
     function: "Funzione",

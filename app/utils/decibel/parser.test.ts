@@ -469,6 +469,7 @@ describe("parseDecibelTransaction", () => {
       expect(detail.asks[0]).toEqual({price: "5100", size: "150"});
       expect(detail.builderAddress).toBe("0xbuilder");
       expect(detail.builderFees).toBe("10");
+      expect(detail.maxCollapseSize).toBeUndefined();
     });
 
     it("extracts ladders from place_bulk_orders_to_subaccount_with_repricing", () => {
@@ -503,6 +504,30 @@ describe("parseDecibelTransaction", () => {
       expect(detail.asks).toEqual([{price: "5100", size: "150"}]);
       expect(detail.builderAddress).toBeUndefined();
       expect(detail.builderFees).toBeUndefined();
+      expect(detail.maxCollapseSize).toBe("126040000");
+    });
+
+    it("treats empty Option max_collapse_size as unlimited", () => {
+      const txn = makeUserTxn({
+        payload: {
+          type: "entry_function_payload",
+          function: `${MAINNET_CONTRACT}::dex_accounts_entry::place_bulk_orders_to_subaccount_with_repricing`,
+          arguments: [
+            {inner: "0xsub1"},
+            {inner: "0xmarket1"},
+            "1",
+            ["5000"],
+            ["100"],
+            ["5100"],
+            ["150"],
+            {vec: []},
+            {vec: []},
+            {vec: []},
+          ],
+        },
+      });
+      const summary = parseDecibelTransaction(txn);
+      expect(summary.bulkOrderDetail?.maxCollapseSize).toBeNull();
     });
 
     it("omits builder when address is 0x0", () => {

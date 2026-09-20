@@ -2186,6 +2186,8 @@ export const ko = {
     outstandingTimestamp: "미결제 타임스탬프",
     builder: "빌더",
     builderFee: "빌더 수수료",
+    maxCollapseSize: "최대 병합 수량",
+    maxCollapseSizeUnlimited: "무제한",
     subaccount: "서브계정",
     amount: "금액",
     function: "함수",

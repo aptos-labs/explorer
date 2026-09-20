@@ -201,7 +201,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | Aspect | Detail |
 |--------|--------|
 | **Key fields** | Version, status, sender, fee payer, secondary signers, function, arguments, amount. For protocol-decrypted `encrypted_transaction_payload` values, these fields use the fullnode-provided decrypted entry function; ciphertext is never decrypted in the browser. An **Encryption** row (chips for encrypted state and epoch) appears when the payload type is `encrypted_transaction_payload`. Pending or failed-decryption payloads show an "Encrypted Transaction" function line (and any `claimed_entry_fun`) instead of a blank function. |
-| **Actions section** | Rich parsing of DEX swaps, LSD operations, liquidity events (see FEAT-TXN-009). Decibel perp orders include `place_bulk_orders_to_subaccount` and `place_bulk_orders_to_subaccount_with_repricing` (bulk). |
+| **Actions section** | Rich parsing of DEX swaps, LSD operations, liquidity events (see FEAT-TXN-009). Decibel perp orders include `place_bulk_orders_to_subaccount` and `place_bulk_orders_to_subaccount_with_repricing` (bulk; the latter adds `max_collapse_size` for crossing-leg collapse). |
 | **Gas** | Gas fee, storage refund, net gas, gas unit price, max gas, VM status. |
 | **Block** | Link to parent block. |
 | **Timestamps** | Expiration and execution timestamp. |

@@ -2102,6 +2102,8 @@ export const zh = {
     outstandingTimestamp: "未结时间戳",
     builder: "Builder",
     builderFee: "Builder 费用",
+    maxCollapseSize: "最大合并数量",
+    maxCollapseSizeUnlimited: "不限",
     subaccount: "子账户",
     amount: "金额",
     function: "函数",

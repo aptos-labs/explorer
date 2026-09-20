@@ -2217,6 +2217,8 @@ export const tr = {
     outstandingTimestamp: "Bekleyen Zaman",
     builder: "Oluşturucu",
     builderFee: "Oluşturucu Ücreti",
+    maxCollapseSize: "Maks. collapse boyutu",
+    maxCollapseSizeUnlimited: "Sınırsız",
     subaccount: "Alt hesap",
     amount: "Miktar",
     function: "Fonksiyon",

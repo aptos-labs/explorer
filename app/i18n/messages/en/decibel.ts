@@ -66,6 +66,8 @@ export const decibel = {
   outstandingTimestamp: "Outstanding Timestamp",
   builder: "Builder",
   builderFee: "Builder Fee",
+  maxCollapseSize: "Max Collapse Size",
+  maxCollapseSizeUnlimited: "Unlimited",
   subaccount: "Subaccount",
   amount: "Amount",
   function: "Function",

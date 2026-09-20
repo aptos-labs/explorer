@@ -2184,6 +2184,8 @@ export const ur = {
     outstandingTimestamp: "بقایا ٹائم اسٹیمپ",
     builder: "بلڈر",
     builderFee: "بلڈر فیس",
+    maxCollapseSize: "زیادہ سے زیادہ کولپس سائز",
+    maxCollapseSizeUnlimited: "غیر محدود",
     subaccount: "ذیلی اکاؤنٹ",
     amount: "رقم",
     function: "فنکشن",

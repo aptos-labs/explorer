@@ -2217,6 +2217,8 @@ export const ru = {
     outstandingTimestamp: "Метка непогашенного",
     builder: "Билдер",
     builderFee: "Комиссия билдера",
+    maxCollapseSize: "Макс. размер схлопывания",
+    maxCollapseSizeUnlimited: "Без ограничений",
     subaccount: "Субаккаунт",
     amount: "Сумма",
     function: "Функция",

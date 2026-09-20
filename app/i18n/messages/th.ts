@@ -2126,6 +2126,8 @@ export const th = {
     outstandingTimestamp: "เวลาค้าง",
     builder: "Builder",
     builderFee: "ค่าธรรมเนียม Builder",
+    maxCollapseSize: "ขนาด collapse สูงสุด",
+    maxCollapseSizeUnlimited: "ไม่จำกัด",
     subaccount: "บัญชีย่อย",
     amount: "จำนวน",
     function: "ฟังก์ชัน",

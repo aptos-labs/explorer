@@ -2103,6 +2103,8 @@ export const zhHant = {
     outstandingTimestamp: "未結時間戳",
     builder: "Builder",
     builderFee: "Builder 費用",
+    maxCollapseSize: "最大合併數量",
+    maxCollapseSizeUnlimited: "不限",
     subaccount: "子帳戶",
     amount: "金額",
     function: "函式",

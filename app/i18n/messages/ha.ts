@@ -2237,6 +2237,8 @@ export const ha = {
     outstandingTimestamp: "Lokacin da ya rage",
     builder: "Mai ginawa",
     builderFee: "Kuɗin mai ginawa",
+    maxCollapseSize: "Girman collapse mafi girma",
+    maxCollapseSizeUnlimited: "Ba iyaka",
     subaccount: "Ƙaramin asusun",
     amount: "Adadi",
     function: "Aiki",

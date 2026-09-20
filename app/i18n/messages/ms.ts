@@ -2227,6 +2227,8 @@ export const ms = {
     outstandingTimestamp: "Cap masa tertunggak",
     builder: "Pembina",
     builderFee: "Yuran pembina",
+    maxCollapseSize: "Saiz collapse maks",
+    maxCollapseSizeUnlimited: "Tanpa had",
     subaccount: "Subakaun",
     amount: "Jumlah",
     function: "Fungsi",

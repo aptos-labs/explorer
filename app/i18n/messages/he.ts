@@ -2155,6 +2155,8 @@ export const he = {
     outstandingTimestamp: "חותמת זמן שטרם נפרע",
     builder: "בונה",
     builderFee: "עמלת בונה",
+    maxCollapseSize: "גודל כיווץ מרבי",
+    maxCollapseSizeUnlimited: "ללא הגבלה",
     subaccount: "תת-חשבון",
     amount: "סכום",
     function: "פונקציה",

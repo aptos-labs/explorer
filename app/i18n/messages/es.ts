@@ -2257,6 +2257,8 @@ export const es = {
     outstandingTimestamp: "Marca de tiempo pendiente",
     builder: "Builder",
     builderFee: "Tarifa de builder",
+    maxCollapseSize: "Tamaño máx. de colapso",
+    maxCollapseSizeUnlimited: "Ilimitado",
     subaccount: "Subcuenta",
     amount: "Cantidad",
     function: "Función",

@@ -579,6 +579,21 @@ function BulkOrderInlineDetail({
                       <MonoText>{detail.builderFees}</MonoText>
                     </KeyValue>
                   )}
+                  {detail.maxCollapseSize !== undefined && (
+                    <KeyValue labelKey="decibel.maxCollapseSize">
+                      {detail.maxCollapseSize === null ? (
+                        t("decibel.maxCollapseSizeUnlimited")
+                      ) : (
+                        <MonoText>
+                          {formatDecibelSize(
+                            detail.maxCollapseSize,
+                            marketConfig,
+                            locale,
+                          )}
+                        </MonoText>
+                      )}
+                    </KeyValue>
+                  )}
                   <Stack
                     direction={isMobile ? "column" : "row"}
                     spacing={2}

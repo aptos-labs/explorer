@@ -23,6 +23,12 @@ export type DecibelBulkOrderDetail = {
   asks: BulkOrderLeg[];
   builderAddress: string | undefined;
   builderFees: string | undefined;
+  /**
+   * Only set for `place_bulk_orders_to_subaccount_with_repricing`.
+   * `null` means Option::none (unlimited crossing collapse);
+   * a string is Option::some(limit) in base-asset smallest units.
+   */
+  maxCollapseSize: string | null | undefined;
 };
 
 export type DecibelBulkOrderPlacedEvent = {

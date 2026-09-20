@@ -2196,6 +2196,8 @@ export const ta = {
     outstandingTimestamp: "நிலுவை நேர முத்திரை",
     builder: "பில்டர்",
     builderFee: "பில்டர் கட்டணம்",
+    maxCollapseSize: "அதிகபட்ச கொலாப்ஸ் அளவு",
+    maxCollapseSizeUnlimited: "வரம்பற்றது",
     subaccount: "துணைக்கணக்கு",
     amount: "தொகை",
     function: "செயல்பாடு",

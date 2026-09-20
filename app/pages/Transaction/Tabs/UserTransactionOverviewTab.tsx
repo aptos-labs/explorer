@@ -3395,7 +3395,7 @@ function parseDecibelPerpFromPayload(
   }
 
   // place_bulk_orders_to_subaccount(auth, subaccount, market, ...)
-  // place_bulk_orders_to_subaccount_with_repricing(...same..., repricing)
+  // place_bulk_orders_to_subaccount_with_repricing(...same..., max_collapse_size)
   // API args: [subaccount(0), market(1), ...]
   if (
     fnName === "place_bulk_orders_to_subaccount" ||

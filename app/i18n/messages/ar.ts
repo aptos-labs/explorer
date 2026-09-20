@@ -2160,6 +2160,8 @@ export const ar = {
     outstandingTimestamp: "طابع المستحق الزمني",
     builder: "الباني",
     builderFee: "رسوم الباني",
+    maxCollapseSize: "الحد الأقصى لحجم الدمج",
+    maxCollapseSizeUnlimited: "غير محدود",
     subaccount: "الحساب الفرعي",
     amount: "المبلغ",
     function: "الدالة",

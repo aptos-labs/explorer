@@ -2219,6 +2219,8 @@ export const pl = {
     outstandingTimestamp: "Znacznik zaległości",
     builder: "Builder",
     builderFee: "Opłata buildera",
+    maxCollapseSize: "Maks. rozmiar collapse",
+    maxCollapseSizeUnlimited: "Bez limitu",
     subaccount: "Subkonto",
     amount: "Kwota",
     function: "Funkcja",

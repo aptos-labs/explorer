@@ -2221,6 +2221,8 @@ export const uk = {
     outstandingTimestamp: "Мітка часу заборгованості",
     builder: "Білдер",
     builderFee: "Комісія білдера",
+    maxCollapseSize: "Макс. розмір згортання",
+    maxCollapseSizeUnlimited: "Без обмежень",
     subaccount: "Субакаунт",
     amount: "Сума",
     function: "Функція",

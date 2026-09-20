@@ -2120,6 +2120,8 @@ export const am = {
     outstandingTimestamp: "ያልተከፈለ ጊዜ ማህተም",
     builder: "ገንቢ",
     builderFee: "የገንቢ ክፍያ",
+    maxCollapseSize: "ከፍተኛ የመሰብሰብ መጠን",
+    maxCollapseSizeUnlimited: "ያልተገደበ",
     subaccount: "ንዑስ መለያ",
     amount: "መጠን",
     function: "ተግባር",

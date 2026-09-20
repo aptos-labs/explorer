@@ -2246,6 +2246,8 @@ export const zu = {
     outstandingTimestamp: "Isikhathi Olusalindile",
     builder: "Umakhi",
     builderFee: "Inkokhelo Yomakhi",
+    maxCollapseSize: "Usayizi omkhulu we-collapse",
+    maxCollapseSizeUnlimited: "Okungenamkhawulo",
     subaccount: "I-akhawunti encane",
     amount: "Inani",
     function: "Umsebenzi",

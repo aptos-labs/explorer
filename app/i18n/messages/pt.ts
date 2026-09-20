@@ -2240,6 +2240,8 @@ export const pt = {
     outstandingTimestamp: "Data/hora pendente",
     builder: "Builder",
     builderFee: "Taxa do builder",
+    maxCollapseSize: "Tamanho máx. de colapso",
+    maxCollapseSizeUnlimited: "Ilimitado",
     subaccount: "Subconta",
     amount: "Quantia",
     function: "Função",

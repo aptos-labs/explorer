@@ -2259,6 +2259,8 @@ export const de = {
     outstandingTimestamp: "Ausstehender Zeitstempel",
     builder: "Builder",
     builderFee: "Builder-Gebühr",
+    maxCollapseSize: "Max. Collapse-Größe",
+    maxCollapseSizeUnlimited: "Unbegrenzt",
     subaccount: "Unterkonto",
     amount: "Betrag",
     function: "Funktion",

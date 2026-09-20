@@ -2267,6 +2267,8 @@ export const fr = {
     outstandingTimestamp: "Horodatage en cours",
     builder: "Builder",
     builderFee: "Frais builder",
+    maxCollapseSize: "Taille de collapse max",
+    maxCollapseSizeUnlimited: "Illimité",
     subaccount: "Sous-compte",
     amount: "Montant",
     function: "Fonction",
