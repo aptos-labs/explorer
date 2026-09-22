@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-09-22
+
 ### Added
 
 - **In-app user guide (`/guide`)**: A User Guide in the explorer covers how to search, switch networks, read transactions/accounts/modules, configure language / decompilation / API keys, and what common terms mean. Reach it from the header help icon, the overflow menu, the footer, or `/help` (redirects to `/guide`).
@@ -51,7 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Language picker order**: The header, overflow-menu, and Settings language lists now show **Browser default**, then English, then the other catalogs alphabetically by native name (Portuguese, Bahasa, and Simplified/Traditional Chinese variants sit next to each other). Each catalog row shows the native name plus the same short code as the globe chip (`EN`, `FR`, `简`, `BR`, `PT`). No country flags (a language is not a country, and several catalogs have no single accurate flag).
+- **Language picker order**: The header, overflow-menu, and Settings language lists now show **Browser default**, then English, then the other catalogs alphabetically by native name (Portuguese, Bahasa, and Simplified/Traditional Chinese variants sit next to each other). Each catalog row shows the native name plus the same short code as the globe chip (`EN`, `FR`, `简`, `BR`, `PT`). Browser default uses `AUTO` on that row and on the header globe while it is selected (an explicit catalog still shows its own code, such as `EN`). No country flags (a language is not a country, and several catalogs have no single accurate flag).
 - **Remaining explorer UI copy tokenized**: Hardcoded English on account balance and CSV export, user-transaction filters, multisig pending/owners, call traces, fee-statement events, FA dispatchable properties, coin/FA supply tooltips, validator epoch/node counts, analytics totals, and gas-unit amounts now reads from i18n catalogs (keys added to every full-UI locale). On-chain identifiers stay untranslated. Touched counts use locale-bound `formatInteger` / `formatNumber`.
 - **Landing page copy tokenized**: Home-page hero subtitle, transaction/blocks/analytics CTAs, document title, search metadata, and the inline empty-search message now read from i18n catalogs in every shipped locale (`pages.home.*`, `search.emptyTitle`, `search.emptyHint`). The heading still uses the shared `chrome.appName` brand string.
 - **Locale-aware number, date, and time formatting**: User-visible integers (including ledger versions, block heights, sequence numbers, and counts), decimals, currency grouping, compact chart/market-cap figures, timestamps, and relative ages follow the selected explorer locale (UTC for absolute dates so SSR and hydration match). CSV timestamps stay a stable UTC machine format.

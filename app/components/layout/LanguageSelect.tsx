@@ -16,19 +16,20 @@ import {
 import type {MouseEvent} from "react";
 import {useState} from "react";
 import {
+  AUTO_LOCALE_SHORT_LABEL,
   isSupportedLocale,
   LANGUAGE_PICKER_LOCALES,
+  LOCALE_META,
   type LocalePreference,
   localePickerRowLabel,
   localeShortLabel,
-  LOCALE_META,
   normalizeLocalePreference,
   type SupportedLocale,
   useTranslation,
 } from "../../i18n";
 import {useExplorerSettings} from "../../settings";
 
-function LocaleNameWithCode({locale}: {locale: SupportedLocale}) {
+function NameWithCode({name, code}: {name: string; code: string}) {
   return (
     <Box
       component="span"
@@ -42,7 +43,7 @@ function LocaleNameWithCode({locale}: {locale: SupportedLocale}) {
       }}
     >
       <Box component="span" sx={{minWidth: 0}}>
-        {LOCALE_META[locale].nativeName}
+        {name}
       </Box>
       <Box
         component="span"
@@ -55,10 +56,23 @@ function LocaleNameWithCode({locale}: {locale: SupportedLocale}) {
           marginInlineStart: "auto",
         }}
       >
-        {localeShortLabel(locale)}
+        {code}
       </Box>
     </Box>
   );
+}
+
+function LocaleNameWithCode({locale}: {locale: SupportedLocale}) {
+  return (
+    <NameWithCode
+      name={LOCALE_META[locale].nativeName}
+      code={localeShortLabel(locale)}
+    />
+  );
+}
+
+function autoPreferenceLabel(autoName: string): string {
+  return `${autoName} ${AUTO_LOCALE_SHORT_LABEL}`;
 }
 
 function usePersistLocalePreference() {
@@ -81,17 +95,26 @@ function LocaleMenuItems({
 }) {
   const {t} = useTranslation();
   const {localePreference} = usePersistLocalePreference();
+  const autoLabel = t("settings.language.auto");
 
   return (
     <>
       <MenuItem
         selected={localePreference === "auto"}
+        aria-label={autoPreferenceLabel(autoLabel)}
         onClick={() => onSelect("auto")}
       >
         <ListItemIcon sx={{minWidth: "1.75rem"}}>
           {localePreference === "auto" ? <CheckIcon fontSize="small" /> : null}
         </ListItemIcon>
-        <ListItemText>{t("settings.language.auto")}</ListItemText>
+        <ListItemText
+          primary={
+            <NameWithCode name={autoLabel} code={AUTO_LOCALE_SHORT_LABEL} />
+          }
+          slotProps={{
+            primary: {component: "div", sx: {width: "100%"}},
+          }}
+        />
       </MenuItem>
       {LANGUAGE_PICKER_LOCALES.map((locale) => (
         <MenuItem
@@ -209,7 +232,11 @@ export default function LanguageSelect({
   const label = isSettings
     ? t("settings.language.label")
     : t("settings.language.title");
-  const shortLabel = localeShortLabel(locale);
+  const shortLabel =
+    localePreference === "auto"
+      ? AUTO_LOCALE_SHORT_LABEL
+      : localeShortLabel(locale);
+  const autoLabel = t("settings.language.auto");
 
   const handleSelectChange = (event: SelectChangeEvent) => {
     persistLocalePreference(event.target.value);
@@ -243,7 +270,9 @@ export default function LanguageSelect({
             },
           }}
         >
-          <MenuItem value="auto">{t("settings.language.auto")}</MenuItem>
+          <MenuItem value="auto" aria-label={autoPreferenceLabel(autoLabel)}>
+            <NameWithCode name={autoLabel} code={AUTO_LOCALE_SHORT_LABEL} />
+          </MenuItem>
           {LANGUAGE_PICKER_LOCALES.map((locale) => (
             <MenuItem
               key={locale}

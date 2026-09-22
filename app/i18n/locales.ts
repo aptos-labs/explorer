@@ -291,7 +291,8 @@ const LOCALE_PICKER_COLLATOR = new Intl.Collator("en", {
  * and Chinese each have two catalogs that would collapse to competing national
  * flags; and several shipped locales (Hausa, Swahili, Tamil) have no single
  * accurate flag. Each row shows the native name plus `localeShortLabel` (the
- * same compact code as the header globe chip). Browser default has no code.
+ * same compact code as the header globe chip). Browser default uses
+ * `AUTO_LOCALE_SHORT_LABEL` (`AUTO`).
  *
  * `SUPPORTED_LOCALES` stays registration order (append new catalogs there).
  * This list is derived so a new native name lands in the right place
@@ -308,6 +309,13 @@ export const LANGUAGE_PICKER_LOCALES: readonly SupportedLocale[] = [
       ),
   ),
 ];
+
+/**
+ * Compact code for the browser-default preference (`auto`). Shown on the
+ * header globe while that preference is selected, and as the trailing code
+ * on the Browser default picker row.
+ */
+export const AUTO_LOCALE_SHORT_LABEL = "AUTO";
 
 /**
  * Compact header chip and picker-row trailing code. CJK locales use a single

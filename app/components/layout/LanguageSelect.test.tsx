@@ -57,7 +57,7 @@ describe("FEAT-SETTINGS-003 / FEAT-CHROME-001 — header language switch", () =>
     renderHeaderButton();
 
     const button = screen.getByRole("button", {name: "Language"});
-    expect(button.textContent).toContain("EN");
+    expect(button.textContent).toContain("AUTO");
     expect(button.querySelector("svg")).toBeTruthy();
 
     fireEvent.click(button);
@@ -67,7 +67,7 @@ describe("FEAT-SETTINGS-003 / FEAT-CHROME-001 — header language switch", () =>
     const names = screen
       .getAllByRole("menuitem")
       .map((item) => item.getAttribute("aria-label") ?? item.textContent);
-    expect(names[0]).toBe("Browser default");
+    expect(names[0]).toBe("Browser default AUTO");
     expect(names.slice(1)).toEqual(
       LANGUAGE_PICKER_LOCALES.map((locale) => localePickerRowLabel(locale)),
     );
@@ -106,7 +106,7 @@ describe("FEAT-SETTINGS-003 — settings language select", () => {
     const names = screen
       .getAllByRole("option")
       .map((item) => item.getAttribute("aria-label") ?? item.textContent);
-    expect(names[0]).toBe("Browser default");
+    expect(names[0]).toBe("Browser default AUTO");
     expect(names.slice(1)).toEqual(
       LANGUAGE_PICKER_LOCALES.map((locale) => localePickerRowLabel(locale)),
     );

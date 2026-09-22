@@ -1,14 +1,19 @@
 import {describe, expect, it} from "vitest";
 import {
+  AUTO_LOCALE_SHORT_LABEL,
   DEFAULT_LOCALE,
   LANGUAGE_PICKER_LOCALES,
+  LOCALE_META,
   localePickerRowLabel,
   localeShortLabel,
-  LOCALE_META,
   SUPPORTED_LOCALES,
 } from "./locales";
 
 describe("FEAT-SETTINGS-003 / FEAT-CHROME-001 — localeShortLabel", () => {
+  it("uses AUTO for the browser-default preference", () => {
+    expect(AUTO_LOCALE_SHORT_LABEL).toBe("AUTO");
+  });
+
   it("uses distinctive compact labels for Chinese and Portuguese variants", () => {
     expect(localeShortLabel("en")).toBe("EN");
     expect(localeShortLabel("fr")).toBe("FR");

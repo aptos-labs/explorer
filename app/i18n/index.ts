@@ -29,16 +29,17 @@ export {
 } from "./I18nProvider";
 export {InlineMarkup} from "./InlineMarkup";
 export {
+  AUTO_LOCALE_SHORT_LABEL,
   DEFAULT_LOCALE,
   FULL_UI_LOCALES,
+  type FullUiLocale,
   isFullUiLocale,
   LANGUAGE_PICKER_LOCALES,
+  LOCALE_META,
+  type LocalePreference,
   localePickerRowLabel,
   localeShortLabel,
-  LOCALE_META,
   SUPPORTED_LOCALES,
-  type FullUiLocale,
-  type LocalePreference,
   type SupportedLocale,
 } from "./locales";
 export {en, messageCatalogs} from "./messages";
