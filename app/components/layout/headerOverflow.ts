@@ -1,6 +1,11 @@
 /** Extra pixels of slack before expanding out of compact chrome. */
 export const HEADER_OVERFLOW_HYSTERESIS_PX = 16;
 
+/** Strip the `@media` prefix from an MUI `breakpoints.up/down(...)` string. */
+export function stripAtMedia(mediaQuery: string): string {
+  return mediaQuery.replace(/^@media\s*/i, "").trim();
+}
+
 /**
  * Approximate width of help + settings + language + theme + wallet when those
  * controls have not been measured yet (first overflow-compact frame).

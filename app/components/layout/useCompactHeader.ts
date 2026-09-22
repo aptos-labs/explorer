@@ -1,18 +1,20 @@
+import {useTheme} from "@mui/material";
 import {type RefObject, useLayoutEffect, useRef, useState} from "react";
 import {
   desktopToolbarNeedsCompact,
   FALLBACK_DESKTOP_ACTIONS_WIDTH_PX,
   readColumnGap,
+  stripAtMedia,
   sumFlexItemWidths,
 } from "./headerOverflow";
 
 /**
- * Compact header below `lg`, and also at `lg+` when the desktop toolbar's
- * intrinsic width (translated nav labels, network, language, actions)
- * does not fit.
+ * Compact header from overflow only: at `lg+`, when the desktop toolbar's
+ * intrinsic width (translated nav labels, network, language, actions) does
+ * not fit. Below `lg`, CSS media queries own compact chrome — this hook
+ * returns false so SSR/first paint never flash a JS-driven hamburger.
  */
 export function useCompactHeader({
-  forceCompact,
   toolbarRef,
   brandRef,
   navRef,
@@ -23,7 +25,6 @@ export function useCompactHeader({
   fallbackTrailingWidth = FALLBACK_DESKTOP_ACTIONS_WIDTH_PX,
   remeasureKey,
 }: {
-  forceCompact: boolean;
   toolbarRef: RefObject<HTMLElement | null>;
   brandRef: RefObject<HTMLElement | null>;
   navRef: RefObject<HTMLElement | null>;
@@ -34,21 +35,25 @@ export function useCompactHeader({
   fallbackTrailingWidth?: number;
   remeasureKey: string;
 }): boolean {
+  const theme = useTheme();
   const [overflowCompact, setOverflowCompact] = useState(false);
   const cachedTrailingWidthRef = useRef(fallbackTrailingWidth);
+  const lgUpQuery = stripAtMedia(theme.breakpoints.up("lg"));
 
   useLayoutEffect(() => {
-    if (forceCompact) {
-      setOverflowCompact(false);
+    const toolbar = toolbarRef.current;
+    if (!toolbar || typeof window.matchMedia !== "function") {
       return;
     }
 
-    const toolbar = toolbarRef.current;
-    if (!toolbar) {
-      return;
-    }
+    const mql = window.matchMedia(lgUpQuery);
 
     const update = () => {
+      if (!mql.matches) {
+        setOverflowCompact(false);
+        return;
+      }
+
       const actions = desktopActionsRef.current;
       if (actions && actions.offsetWidth > 0) {
         cachedTrailingWidthRef.current = actions.offsetWidth;
@@ -86,9 +91,12 @@ export function useCompactHeader({
       desktopActionsRef.current,
     ].filter((node): node is HTMLElement => node != null);
 
+    mql.addEventListener("change", update);
+
     if (typeof ResizeObserver === "undefined") {
       window.addEventListener("resize", update);
       return () => {
+        mql.removeEventListener("change", update);
         window.removeEventListener("resize", update);
       };
     }
@@ -98,13 +106,14 @@ export function useCompactHeader({
       observer.observe(node);
     }
     return () => {
+      mql.removeEventListener("change", update);
       observer.disconnect();
     };
   }, [
     brandRef,
     desktopActionsRef,
-    forceCompact,
     languageRef,
+    lgUpQuery,
     navRef,
     networkRef,
     remeasureKey,
@@ -112,5 +121,5 @@ export function useCompactHeader({
     toolbarRef,
   ]);
 
-  return forceCompact || overflowCompact;
+  return overflowCompact;
 }
