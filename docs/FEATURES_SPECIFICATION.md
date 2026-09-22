@@ -59,7 +59,7 @@ The app shell that wraps every page.
 |--------|--------|
 | **Logo** | Aptos logo links to `/`, scrolls to top. |
 | **Desktop Nav** | Links: Transactions, Analytics (mainnet only), Validators, Blocks, Coins, Releases, Run Script. Active link highlighted via `useLocation`. Shown when the viewport is `lg+` **and** those labels (plus network, language, help, settings, theme, wallet) fit the toolbar. |
-| **Mobile Nav** | Compact chrome uses a 48px hamburger `IconButton` (glyph pinned at 24×24 so the SVG cannot overflow the tap target) that opens `HeaderOverflowMenu` with the same links, plus User Guide, Settings, language, theme toggle, and Wallet. Compact is used below `lg`, and also at `lg+` when translated nav labels (or other chrome) no longer fit — `useCompactHeader` measures intrinsic desktop width vs the toolbar and keeps a 16px hysteresis so the layout does not flicker. The menu does **not** lock document scroll (MUI's default `overflow: hidden` on `body` makes the overlay appear inert on iOS Safari) and is height-capped so items including Wallet stay reachable. Header blur lives on a non-interactive `::before` layer so iOS Safari still hit-tests the hamburger and network Select. The wordmark is hidden on phones and at the `lg` nav breakpoint so logo, network, language, and (when the desktop toolbar fits) help/settings/theme/wallet stay on-screen, including when the PWA Share button is present. |
+| **Mobile Nav** | Compact chrome uses a 48px hamburger `IconButton` (glyph pinned at 24×24 so the SVG cannot overflow the tap target) that opens `HeaderOverflowMenu` with the same links, plus User Guide, Settings, language, theme toggle, and Wallet. Below `lg`, compact vs desktop chrome is owned by CSS `display` breakpoints (not `useMediaQuery`) so SSR/first paint cannot flash the hamburger on wide viewports. At `lg+`, `useCompactHeader` still measures intrinsic desktop width vs the toolbar and forces the hamburger when translated nav labels (or other chrome) no longer fit, with a 16px hysteresis so the layout does not flicker. The menu does **not** lock document scroll (MUI's default `overflow: hidden` on `body` makes the overlay appear inert on iOS Safari) and is height-capped so items including Wallet stay reachable. Header blur lives on a non-interactive `::before` layer so iOS Safari still hit-tests the hamburger and network Select. The wordmark is hidden on phones and at the `lg` nav breakpoint so logo, network, language, and (when the desktop toolbar fits) help/settings/theme/wallet stay on-screen, including when the PWA Share button is present. |
 | **Search** | Header autocomplete search (see FEAT-SEARCH). |
 | **Network selector** | Dropdown to switch `?network=` param (see FEAT-NETWORK). Visible in the header on every viewport, including the installed PWA. |
 | **Language selector** | A globe control with a short code (`LanguageSelect`) in the header toolbar next to the network selector on **every** viewport (`xs`–`xl`), including the installed PWA. The code is `AUTO` while the preference is browser default, otherwise the resolved catalog short code. Compact chrome also keeps a Language `MenuItem` (with the current native name as secondary text) inside `HeaderOverflowMenu`. Applies immediately (see FEAT-SETTINGS-003). |
@@ -187,7 +187,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Transaction Type | Available Tabs |
 |------------------|----------------|
-| User | Overview, Payments (when a payment is identified), Balance Change, Events, Payload, Modules (when package/modules changed), Changes, Trace |
+| User | Overview, Decibel (when the txn touches a Decibel contract), Payments (when a payment is identified), Balance Change, Events, Payload, Modules (when package/modules changed), Changes, Trace |
 | Block metadata | Overview, Events, Modules (when applicable), Changes |
 | State checkpoint | Overview |
 | Pending | Overview, Payload |
@@ -201,7 +201,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | Aspect | Detail |
 |--------|--------|
 | **Key fields** | Version, status, sender, fee payer, secondary signers, function, arguments, amount. For protocol-decrypted `encrypted_transaction_payload` values, these fields use the fullnode-provided decrypted entry function; ciphertext is never decrypted in the browser. An **Encryption** row (chips for encrypted state and epoch) appears when the payload type is `encrypted_transaction_payload`. Pending or failed-decryption payloads show an "Encrypted Transaction" function line (and any `claimed_entry_fun`) instead of a blank function. |
-| **Actions section** | Rich parsing of DEX swaps, LSD operations, liquidity events (see FEAT-TXN-009). |
+| **Actions section** | Rich parsing of DEX swaps, LSD operations, liquidity events (see FEAT-TXN-009). Decibel perp orders include `place_bulk_orders_to_subaccount` and `place_bulk_orders_to_subaccount_with_repricing` (bulk; the latter adds `max_collapse_size` for crossing-leg collapse). |
 | **Gas** | Gas fee, storage refund, net gas, gas unit price, max gas, VM status. |
 | **Block** | Link to parent block. |
 | **Timestamps** | Expiration and execution timestamp. |
@@ -1378,8 +1378,8 @@ top of the HTML site.
 | Aspect | Detail |
 |--------|--------|
 | **Content** | Article-style guide covering what the explorer is, chrome, search, networks, transactions, accounts/objects, modules, blocks, validators, assets, analytics, releases, Run Script, configuration, wallet, verification, URLs/agents, glossary, and troubleshooting. Copy lives in i18n catalogs (English source plus shipped translations). |
-| **TOC** | Sticky "On this page" nav with hash links to each section. |
-| **Layout** | The guide column is width-constrained (`min-width: 0`, wrapping long tokens) so it does not extend the page sideways. |
+| **TOC** | Sticky "On this page" nav with hash links to each section; on `lg+` viewports it sits immediately left of the centered article. On compact viewports the TOC stays above the article. The entry for the section currently in view is highlighted while scrolling. |
+| **Layout** | The guide column is width-constrained (`min-width: 0`, wrapping long tokens) so it does not extend the page sideways. On `lg+`, a three-column grid (`1fr` / ~42rem article / `1fr`) centers the article; the TOC is sticky in the left rail beside it (small column gap). Title and intro are centered above. Below `lg`, the TOC stacks above the article. Body copy uses a relaxed line height. |
 | **Navigation** | Header help icon (desktop), overflow menu (compact), footer link. WebMCP `open_guide` tool. |
 | **Metadata** | `PageMetadata` type `article`, canonical `/guide`. |
 
@@ -1455,6 +1455,8 @@ top of the HTML site.
 | `app/settings/ExplorerSettings.test.tsx` | FEAT-SETTINGS-003 (cross-tab `storage` events reload `aptos-explorer-locale`) |
 | `app/components/layout/NetworkSelect.test.tsx` | FEAT-NETWORK-001 (header network dropdown opens without locking body scroll; choosing an option updates the URL; status-dot mapping; Select Network tooltip does not cover Mainnet while the menu is open) |
 | `app/pages/Guide/guideSections.test.ts` | FEAT-GUIDE-001 (section ids, titles, body copy) |
+| `app/pages/Guide/GuidePage.test.tsx` | FEAT-GUIDE-001 (guide page layout, TOC, article sections) |
+| `app/pages/Guide/useGuideActiveSection.test.ts` | FEAT-GUIDE-001 (TOC active-section selection from intersection ratios and scroll spy hook) |
 | `app/utils/routerParams.test.ts` | FEAT-ROUTING-003 (`pathSplatToSegments` normalization) |
 | `app/api/hooks/aptosFeatureFlagsUpstream.test.ts` | FEAT-RELEASES-001 (upstream Rust enum parse for unlisted feature flag names) |
 | `app/api/hooks/useGetNetworkStatus.test.ts` | FEAT-RELEASES-001 (`fetchNetworkStatus`) |
@@ -1515,6 +1517,9 @@ top of the HTML site.
 | `app/pages/Transaction/Tabs/Components/SignatureOverviewTable.test.tsx` | FEAT-TXN-002 (signature overview: Ed25519, multi-Ed25519, single_sender, multi_agent, fee_payer, fallbacks; stable keys for duplicate secondary addresses) |
 | `app/pages/Transaction/Tabs/Components/moveParamTypeDisplay.test.ts` | FEAT-TXN-011 (Move type display badges) |
 | `app/pages/Transaction/txnTabValues.test.ts` | FEAT-TXN-001 (tab selection by transaction type, shared `overview` tab component dispatch, trace tab only for user txns), FEAT-TXN-016 (Payments tab only when a payment is identified), FEAT-TXN-008 (legacy overview path rewrite), FEAT-TXN-012 (conditional Modules tab) |
+| `app/utils/decibel/parser.test.ts` | FEAT-TXN-001 / FEAT-TXN-002 (Decibel txn detection; order/deposit/withdraw/bulk/twap parsing; `place_bulk_orders_to_subaccount` and `place_bulk_orders_to_subaccount_with_repricing` ladders + `max_collapse_size`; BulkOrderPlaced/Filled events) |
+| `app/pages/Transaction/Tabs/DecibelTab.test.tsx` | FEAT-TXN-001 / FEAT-TXN-002 (Decibel tab: with_repricing bulk detail, max collapse size / unlimited, event-only bulk ladders) |
+| `app/pages/Transaction/Tabs/parseDecibelPerpFromPayload.test.ts` | FEAT-TXN-002 (Overview Actions recognizes bulk and with_repricing bulk entry functions) |
 | `app/pages/Transaction/payments/identifyPayments.test.ts` | FEAT-TXN-016 (P2P, controlled/partner hops, confidential amount hiding, public↔confidential, exchange I/O, fee breakdown, Mermaid multi-step, client-trace fallback) |
 | `app/pages/Transaction/payments/clientTrace.test.ts` | FEAT-TXN-016 (client-side call-graph tracker remains disabled) |
 | `app/pages/Transaction/Tabs/PaymentsTab.test.tsx` | FEAT-TXN-016 (Payments tab copy, visible fee breakdown, encrypted confidential amounts, Mermaid source for multi-leg flows) |

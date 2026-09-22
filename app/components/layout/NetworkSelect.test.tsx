@@ -82,6 +82,23 @@ describe("FEAT-NETWORK-001 — header network selector", () => {
     expect(document.documentElement.style.overflow).not.toBe("hidden");
   });
 
+  it("shows a status indicator beside each menu option", () => {
+    renderSelect();
+    fireEvent.mouseDown(screen.getByLabelText("Select network"));
+
+    for (const network of ["mainnet", "testnet", "devnet", "local"] as const) {
+      const option = screen.getByRole("option", {
+        name: new RegExp(
+          network === "local" ? "localnet" : `^${network}$`,
+          "i",
+        ),
+      });
+      expect(
+        option.querySelector(`[data-network-status='${network}']`),
+      ).toBeTruthy();
+    }
+  });
+
   it("updates the network and URL when an option is chosen", () => {
     renderSelect();
 

@@ -3314,7 +3314,7 @@ function parseDecibelOrderEvent(
   };
 }
 
-function parseDecibelPerpFromPayload(
+export function parseDecibelPerpFromPayload(
   transaction: Types.Transaction,
 ): DecibelPerpOrder | DecibelPerpDeposit | DecibelPerpWithdraw | undefined {
   if (!("success" in transaction) || !transaction.success) {
@@ -3395,8 +3395,12 @@ function parseDecibelPerpFromPayload(
   }
 
   // place_bulk_orders_to_subaccount(auth, subaccount, market, ...)
+  // place_bulk_orders_to_subaccount_with_repricing(...same..., max_collapse_size)
   // API args: [subaccount(0), market(1), ...]
-  if (fnName === "place_bulk_orders_to_subaccount") {
+  if (
+    fnName === "place_bulk_orders_to_subaccount" ||
+    fnName === "place_bulk_orders_to_subaccount_with_repricing"
+  ) {
     if (args.length < 2) return undefined;
     return {
       actionType: "perp order",

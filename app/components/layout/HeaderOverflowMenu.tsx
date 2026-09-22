@@ -20,12 +20,17 @@ import {WalletConnector} from "../WalletConnector";
 import {LanguageOverflowMenuItem} from "./LanguageSelect";
 
 /**
- * Compact header menu: below `lg`, and at `lg+` when translated desktop chrome
- * does not fit the toolbar. Mirrors inline `Nav` links, User Guide, Settings,
- * language, the theme toggle, and the wallet connector. On every viewport the
- * toolbar already shows `NetworkSelect` and `LanguageSelect` (globe + short
- * locale code). When the desktop toolbar fits, it also shows Help, Settings,
- * `ColorModeToggleButton`, `Nav`, and `WalletConnector` inline.
+ * Compact header menu: below `lg` (CSS), and at `lg+` when translated desktop
+ * chrome does not fit the toolbar (`visible={true}`). Mirrors inline `Nav`
+ * links, User Guide, Settings, language, the theme toggle, and the wallet
+ * connector. On every viewport the toolbar already shows `NetworkSelect` and
+ * `LanguageSelect` (globe + short locale code). When the desktop toolbar fits,
+ * it also shows Help, Settings, `ColorModeToggleButton`, `Nav`, and
+ * `WalletConnector` inline.
+ *
+ * Pass `visible={undefined}` (default) so CSS owns `{xs:block, lg:none}` and
+ * SSR cannot flash the hamburger on wide viewports. Pass `true` only when
+ * `useCompactHeader` reports desktop toolbar overflow.
  *
  * Previously named `NavMobile`, then `HeaderOverflowMenu` when it briefly
  * rendered on all viewports as a preferences drop-down.

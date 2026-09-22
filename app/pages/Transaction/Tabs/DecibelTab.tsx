@@ -560,7 +560,7 @@ function BulkOrderInlineDetail({
           {detail && (
             <Box>
               <Typography variant="subtitle2" sx={{mb: 1}}>
-                Submitted Order
+                {t("decibel.submittedOrder")}
               </Typography>
               <Paper variant="outlined" sx={{p: 2}}>
                 <Stack spacing={1.5}>
@@ -577,6 +577,21 @@ function BulkOrderInlineDetail({
                   {detail.builderFees && (
                     <KeyValue labelKey="decibel.builderFee">
                       <MonoText>{detail.builderFees}</MonoText>
+                    </KeyValue>
+                  )}
+                  {detail.maxCollapseSize !== undefined && (
+                    <KeyValue labelKey="decibel.maxCollapseSize">
+                      {detail.maxCollapseSize === null ? (
+                        t("decibel.maxCollapseSizeUnlimited")
+                      ) : (
+                        <MonoText>
+                          {formatDecibelSize(
+                            detail.maxCollapseSize,
+                            marketConfig,
+                            locale,
+                          )}
+                        </MonoText>
+                      )}
                     </KeyValue>
                   )}
                   <Stack
@@ -948,10 +963,36 @@ function OrdersSection({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const bulkMarket =
-    summary.bulkOrderDetail?.market ?? orders.find((o) => o.market)?.market;
+    summary.bulkOrderDetail?.market ??
+    orders.find((o) => o.market)?.market ??
+    summary.bulkOrderPlacedEvents[0]?.market ??
+    summary.bulkOrderFilledEvents[0]?.market;
   const {data: marketConfig} = useGetDecibelMarketConfig(bulkMarket ?? "");
 
-  if (orders.length === 0) return null;
+  const hasBulkDetail =
+    summary.bulkOrderDetail !== undefined ||
+    summary.bulkOrderPlacedEvents.length > 0 ||
+    summary.bulkOrderFilledEvents.length > 0;
+  const showBulkUnderOrders = orders.some((o) => o.orderType === "bulk");
+
+  // Bulk place events / payload ladders can exist without a parsed order row
+  // (e.g. a newly added entry-function variant). Still surface the detail.
+  if (orders.length === 0) {
+    if (!hasBulkDetail) return null;
+    return (
+      <Box>
+        <Typography variant="h6" sx={{mb: 1.5}}>
+          Orders
+        </Typography>
+        <BulkOrderInlineDetail
+          detail={summary.bulkOrderDetail}
+          placedEvents={summary.bulkOrderPlacedEvents}
+          filledEvents={summary.bulkOrderFilledEvents}
+          marketConfig={marketConfig}
+        />
+      </Box>
+    );
+  }
 
   return (
     <Box>
@@ -959,23 +1000,33 @@ function OrdersSection({
         Orders
       </Typography>
       {isMobile ? (
-        orders.map((order, i) => (
-          <OrderCard
-            // biome-ignore lint/suspicious/noArrayIndexKey: orders lack a guaranteed unique identifier
-            key={i}
-            order={order}
-            marketConfig={marketConfig}
-          >
-            {order.orderType === "bulk" && (
-              <BulkOrderInlineDetail
-                detail={summary.bulkOrderDetail}
-                placedEvents={summary.bulkOrderPlacedEvents}
-                filledEvents={summary.bulkOrderFilledEvents}
-                marketConfig={marketConfig}
-              />
-            )}
-          </OrderCard>
-        ))
+        <>
+          {orders.map((order, i) => (
+            <OrderCard
+              // biome-ignore lint/suspicious/noArrayIndexKey: orders lack a guaranteed unique identifier
+              key={i}
+              order={order}
+              marketConfig={marketConfig}
+            >
+              {order.orderType === "bulk" && (
+                <BulkOrderInlineDetail
+                  detail={summary.bulkOrderDetail}
+                  placedEvents={summary.bulkOrderPlacedEvents}
+                  filledEvents={summary.bulkOrderFilledEvents}
+                  marketConfig={marketConfig}
+                />
+              )}
+            </OrderCard>
+          ))}
+          {hasBulkDetail && !showBulkUnderOrders && (
+            <BulkOrderInlineDetail
+              detail={summary.bulkOrderDetail}
+              placedEvents={summary.bulkOrderPlacedEvents}
+              filledEvents={summary.bulkOrderFilledEvents}
+              marketConfig={marketConfig}
+            />
+          )}
+        </>
       ) : (
         <Stack spacing={0}>
           <Table>
@@ -999,7 +1050,7 @@ function OrdersSection({
               ))}
             </TableBody>
           </Table>
-          {orders.some((o) => o.orderType === "bulk") && (
+          {(showBulkUnderOrders || hasBulkDetail) && (
             <Box sx={{mt: 1, px: 1}}>
               <BulkOrderInlineDetail
                 detail={summary.bulkOrderDetail}
