@@ -577,6 +577,20 @@ export const decibelMainnetFunctionArgumentNameOverrides = {
       "builder_address",
       "builder_fees",
     ],
+  "0x50ead22afd6ffd9769e3b3d6e0e64a2a350d68e8b102c4e72e33d0b8cfdfdb06::dex_accounts_entry::place_bulk_orders_to_subaccount_with_repricing":
+    [
+      "auth",
+      "subaccount",
+      "market",
+      "sequence_number",
+      "bid_prices",
+      "bid_sizes",
+      "ask_prices",
+      "ask_sizes",
+      "builder_address",
+      "builder_fees",
+      "max_collapse_size",
+    ],
   "0x50ead22afd6ffd9769e3b3d6e0e64a2a350d68e8b102c4e72e33d0b8cfdfdb06::dex_accounts_entry::place_market_order_to_subaccount":
     [
       "auth",
