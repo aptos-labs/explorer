@@ -22,20 +22,8 @@ minimumReleaseAge: 7200
 minimumReleaseAgeExclude:
   [
     # Temporary Renovate update exception; remove after 2026-09-17.
-    react-simple-maps@5.0.5,
-    # Renovate security update: undici@8.10.2
-    undici@8.10.2
+    react-simple-maps@5.0.5
   ]
-
-# Temporary: patched image-size 2.0.3/2.0.4 (ICNS/JXL/HEIF infinite-loop DoS)
-# published 2026-09-14, inside both the 5-day minimumReleaseAge gate and Safe
-# Chain's 48h floor. Transitive via nitro → @netlify/dev-utils (dev-only Netlify
-# local tooling). Drop these once an override to >=2.0.3 is age-eligible
-# (after 2026-09-19).
-audit:
-  ignore:
-    - GHSA-w3rx-r6r6-pgpr
-    - GHSA-5p2g-fcmc-qvqq
 
 allowBuilds:
   "@parcel/watcher": false
@@ -49,13 +37,15 @@ overrides:
   "@babel/core": 8.0.1
   "@opentelemetry/core": 2.10.0
   "@opentelemetry/propagator-jaeger": 2.10.0
-  axios: 1.19.0
+  axios: 1.20.0
   baseline-browser-mapping: 2.11.21
   brace-expansion: 5.0.9
   browserslist: 4.28.9
   esbuild: 0.28.2
   form-data: 4.0.6
-  js-yaml: 5.3.0
+  "@fastify/busboy": 3.2.2
+  image-size: 2.0.4
+  js-yaml: 5.4.2
   postcss: 8.5.26
   sharp: 0.35.3
   svgo: 4.0.2
@@ -79,7 +69,7 @@ overrides:
   lodash: 4.18.1
   node-forge: 1.4.0
   uuid: 14.0.1
-  undici: 8.10.2
+  undici: 8.11.2
   nanoid: 6.0.1
 
 patchedDependencies:
