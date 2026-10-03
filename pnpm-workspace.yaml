@@ -21,8 +21,24 @@ minimumReleaseAge: 7200
 # https://pnpm.io/settings#minimumreleaseageexclude
 minimumReleaseAgeExclude:
   [
-    # Temporary Renovate update exception; remove after 2026-09-17.
-    react-simple-maps@5.0.5
+    # CVE-2026-102989 reflected XSS in TanStack Start server functions.
+    # Patched line published 2026-09-29/30, past Safe Chain's 48h floor but still
+    # inside the 5-day minimumReleaseAge gate. Remove after 2026-10-05.
+    "@tanstack/react-start@1.168.60",
+    "@tanstack/react-router@1.170.41",
+    "@tanstack/react-store@0.11.2",
+    "@tanstack/store@0.11.2",
+    "@tanstack/router-core@1.171.34",
+    "@tanstack/router-plugin@1.168.42",
+    "@tanstack/router-cli@1.167.40",
+    "@tanstack/router-generator@1.167.40",
+    "@tanstack/react-start-rsc@0.1.59",
+    "@tanstack/react-start-client@1.168.39",
+    "@tanstack/react-start-server@1.167.46",
+    "@tanstack/start-client-core@1.170.34",
+    "@tanstack/start-plugin-core@1.171.49",
+    "@tanstack/start-server-core@1.169.39",
+    "@tanstack/start-storage-context@1.167.36",
   ]
 
 allowBuilds:
