@@ -24,7 +24,9 @@ minimumReleaseAgeExclude:
     # Temporary Renovate update exception; remove after 2026-09-17.
     react-simple-maps@5.0.5,
     # Renovate security update: undici@8.10.2
-    undici@8.10.2
+    undici@8.10.2,
+    # Renovate security update: js-yaml@5.4.1
+    js-yaml@5.4.1
   ]
 
 # Temporary: patched image-size 2.0.3/2.0.4 (ICNS/JXL/HEIF infinite-loop DoS)
@@ -55,7 +57,7 @@ overrides:
   browserslist: 4.28.9
   esbuild: 0.28.2
   form-data: 4.0.6
-  js-yaml: 5.3.0
+  js-yaml: 5.4.1
   postcss: 8.5.26
   sharp: 0.35.3
   svgo: 4.0.2
