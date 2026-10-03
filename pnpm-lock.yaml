@@ -10,7 +10,7 @@ overrides:
   '@babel/core': 8.0.1
   '@opentelemetry/core': 2.10.0
   '@opentelemetry/propagator-jaeger': 2.10.0
-  axios: 1.19.0
+  axios: 1.20.0
   baseline-browser-mapping: 2.11.21
   brace-expansion: 5.0.9
   browserslist: 4.28.9
@@ -2019,8 +2019,8 @@ packages:
   atomically@2.1.1:
     resolution: {integrity: sha512-P4w9o2dqARji6P7MHprklbfiArZAWvo07yW7qs3pdljb3BWr12FIB7W+p0zJiuiVsUpRO0iZn1kFFcpPegg0tQ==}
 
-  axios@1.19.0:
-    resolution: {integrity: sha512-ht/iuYZXEjFxLH/Hkezgd7m6JKlHHXEUSneaDz8uZe1Gj5QZtCnpyDsckvAiEnT89OEbCLmnte4R4sn7P0EKFw==}
+  axios@1.20.0:
+    resolution: {integrity: sha512-r8aOh8j9cGKpgQAqpzrUHnSIc6a59Y3Xf/cv8sy1DrHCkZHzQGEuoq1tARk6qSyDdtQGSDgpb9kFlruzPvrgwg==}
 
   babel-dead-code-elimination@1.0.12:
     resolution: {integrity: sha512-GERT7L2TiYcYDtYk1IpD+ASAYXjKbLTDPhBtYj7X1NuRMDTMtAx9kyBenub1Ev41lo91OHCKdmP+egTDmfQ7Ig==}
@@ -4283,7 +4283,7 @@ snapshots:
       '@identity-connect/api': 0.8.0
       '@identity-connect/crypto': 0.3.1(@aptos-labs/ts-sdk@7.3.0)(@wallet-standard/core@1.1.1)
       '@identity-connect/wallet-api': 0.2.0(@aptos-labs/ts-sdk@7.3.0)
-      axios: 1.19.0(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0)
+      axios: 1.20.0(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0)
       uuid: 14.0.1
     transitivePeerDependencies:
       - '@telegram-apps/bridge'
@@ -5425,7 +5425,7 @@ snapshots:
       when-exit: 2.1.5
     optional: true
 
-  axios@1.19.0(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0):
+  axios@1.20.0(debug@4.4.3(supports-color@7.2.0))(supports-color@7.2.0):
     dependencies:
       follow-redirects: 1.16.0(debug@4.4.3(supports-color@7.2.0))
       form-data: 4.0.6
