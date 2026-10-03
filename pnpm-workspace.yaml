@@ -22,7 +22,9 @@ minimumReleaseAge: 7200
 minimumReleaseAgeExclude:
   [
     # Temporary Renovate update exception; remove after 2026-09-17.
-    react-simple-maps@5.0.5
+    react-simple-maps@5.0.5,
+    # Renovate security update: undici@8.10.2
+    undici@8.10.2
   ]
 
 # Temporary: patched image-size 2.0.3/2.0.4 (ICNS/JXL/HEIF infinite-loop DoS)
@@ -77,7 +79,7 @@ overrides:
   lodash: 4.18.1
   node-forge: 1.4.0
   uuid: 14.0.1
-  undici: 8.10.0
+  undici: 8.10.2
   nanoid: 6.0.1
 
 patchedDependencies:
