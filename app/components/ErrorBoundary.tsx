@@ -5,12 +5,23 @@ import {Link} from "../routing";
 import {isModuleFetchError} from "../utils/moduleErrorHandler";
 
 interface ErrorBoundaryProps {
-  error: Error;
+  error: unknown;
   reset?: () => void;
+}
+
+function errorDetails(error: unknown): {message: string; stack?: string} {
+  if (error instanceof Error) {
+    return {message: error.message, stack: error.stack};
+  }
+  if (typeof error === "string") {
+    return {message: error};
+  }
+  return {message: ""};
 }
 
 export function ErrorBoundary({error, reset}: ErrorBoundaryProps) {
   const isModuleError = isModuleFetchError(error);
+  const {message, stack} = errorDetails(error);
   const {t} = useTranslation();
 
   const handleReload = () => {
@@ -90,7 +101,7 @@ export function ErrorBoundary({error, reset}: ErrorBoundaryProps) {
               mb: 3,
             }}
           >
-            {error.message || t("errors.unexpected")}
+            {message || t("errors.unexpected")}
           </Typography>
           {process.env.NODE_ENV === "development" && (
             <Box
@@ -105,7 +116,7 @@ export function ErrorBoundary({error, reset}: ErrorBoundaryProps) {
                 fontSize: "0.75rem",
               }}
             >
-              {error.stack}
+              {stack}
             </Box>
           )}
           <Box sx={{display: "flex", gap: 2, justifyContent: "center"}}>
