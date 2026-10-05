@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **Filipino**: Phrases that were still English now follow the rest of the Filipino catalog. Staking status, suggested max, commission, and node counts; partner and protocol fees; signature key descriptions; multisig votes, abort location, and error codes; and guide labels that still used the English tab names (**All Nodes**, **User vs All**). Loanwords the catalog already uses (Account, Address, Block, user transaction) stay as they are.
+### Security
+
+- **TanStack Start reflected XSS (CVE-2026-102989)**: `@tanstack/react-start` `1.168.45` is in the affected range (`>=1.143.12 <1.168.60`). Direct packages are now the patched release line: `react-start` `1.168.60`, `react-router` `1.170.41`, `router-plugin` `1.168.42`, and `router-cli` `1.167.40`. The lockfile resolves `@tanstack/start-server-core` to `1.169.39` (first patched server-function release). These versions were published 2026-09-29/30, so they are past Safe Chain's 48-hour floor and listed as a temporary `minimumReleaseAgeExclude` until they clear the 5-day gate (remove after 2026-10-05). The stale `react-simple-maps@5.0.5` exclude is gone.
+
+- **pnpm audit — patched transitive overrides**: Raised age-eligible overrides so `pnpm audit` no longer reports these packages: `axios@1.20.0` (prototype-pollution gadgets, ReDoS, header injection, and HTTP/2 adapter issues; patched `>=1.20.0`), `js-yaml@5.4.2` (GHSA-r3ph-w7gj-g6xm, `maxTotalMergeKeys` CPU use), `undici@8.11.2` (WebSocket, decompression, cache, and TLS advisories patched in `>=8.10.2`), `@fastify/busboy@3.2.2` (GHSA-xjh9-v7x6-24jw / GHSA-x8mw-p69m-v3mx), and `image-size@2.0.4` (GHSA-w3rx-r6r6-pgpr / GHSA-5p2g-fcmc-qvqq). `image-size@2.0.4` (published 2026-09-14) is now past both the 5-day `minimumReleaseAge` gate and Safe Chain's 48h floor, so the temporary `audit.ignore` entries are gone. The lockfile was reinstalled through Aikido Safe Chain (`@aptos-labs/*` the only age exclusion; malware scan of the refetched tarballs). `http-cache-semantics@4.2.0` (GHSA-ch52-4w7c-c8xp / CVE-2026-93748) remains reported: no patched npm release exists. It is transitive through `@aptos-labs/ts-sdk` → `got` → `cacheable-request`.
 
 ## [2.0.0] - 2026-09-22
 
