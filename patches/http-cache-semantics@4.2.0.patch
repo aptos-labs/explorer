@@ -1,0 +1,121 @@
+diff --git a/index.js b/index.js
+index f01e9a1..24d98a6 100644
+--- a/index.js
++++ b/index.js
+@@ -423,6 +423,14 @@ module.exports = class CachePolicy {
+         // the stored response is either:
+         // fresh, or allowed to be served stale
+         if (this.stale()) {
++            // CVE-2026-93748: a zero freshness lifetime that maxAge() forced for a
++            // shared-cache prohibition (Set-Cookie without public/immutable,
++            // proxy-revalidate, no-cache, Vary: *, or not storable) must not be
++            // served just because the client sent max-stale. Ordinary expiry still can.
++            if (this._staleReuseProhibited()) {
++                return this._evaluateRequestMissResult(req);
++            }
++
+             // If a value is present, then the client is willing to accept a response that has
+             // exceeded its freshness lifetime by no more than the specified number of seconds
+             const allowsStaleWithoutRevalidation = 'max-stale' in requestCC &&
+@@ -588,38 +596,54 @@ module.exports = class CachePolicy {
+     }
+ 
+     /**
+-     * Possibly outdated value of applicable max-age (or heuristic equivalent) in seconds.
+-     * This counts since response's `Date`.
+-     *
+-     * For an up-to-date value, see `timeToLive()`.
+-     *
+-     * Returns the maximum age (freshness lifetime) of the response in seconds.
+-     * @returns {number} The max-age value in seconds.
++     * True when freshness was forced to zero because the response must not be
++     * reused from a shared cache, as opposed to ordinary expiry.
++     * max-stale, stale-while-revalidate, and stale-if-error must not override this.
++     * CVE-2026-93748 / GHSA-ch52-4w7c-c8xp.
++     * @returns {boolean}
+      */
+-    maxAge() {
++    _staleReuseProhibited() {
+         if (!this.storable() || this._rescc['no-cache']) {
+-            return 0;
++            return true;
+         }
+ 
+         // Shared responses with cookies are cacheable according to the RFC, but IMHO it'd be unwise to do so by default
+         // so this implementation requires explicit opt-in via public header
+         if (
+             this._isShared &&
+-            (this._resHeaders['set-cookie'] &&
+-                !this._rescc.public &&
+-                !this._rescc.immutable)
++            this._resHeaders['set-cookie'] &&
++            !this._rescc.public &&
++            !this._rescc.immutable
+         ) {
+-            return 0;
++            return true;
+         }
+ 
+         if (this._resHeaders.vary === '*') {
++            return true;
++        }
++
++        if (this._isShared && this._rescc['proxy-revalidate']) {
++            return true;
++        }
++
++        return false;
++    }
++
++    /**
++     * Possibly outdated value of applicable max-age (or heuristic equivalent) in seconds.
++     * This counts since response's `Date`.
++     *
++     * For an up-to-date value, see `timeToLive()`.
++     *
++     * Returns the maximum age (freshness lifetime) of the response in seconds.
++     * @returns {number} The max-age value in seconds.
++     */
++    maxAge() {
++        if (this._staleReuseProhibited()) {
+             return 0;
+         }
+ 
+         if (this._isShared) {
+-            if (this._rescc['proxy-revalidate']) {
+-                return 0;
+-            }
+             // if a response includes the s-maxage directive, a shared cache recipient MUST ignore the Expires field.
+             if (this._rescc['s-maxage']) {
+                 return toNumberOrZero(this._rescc['s-maxage']);
+@@ -665,6 +689,10 @@ module.exports = class CachePolicy {
+      */
+     timeToLive() {
+         const age = this.maxAge() - this.age();
++        // Do not keep a prohibited entry around for stale-if-error / stale-while-revalidate.
++        if (this._staleReuseProhibited()) {
++            return Math.round(Math.max(0, age) * 1000);
++        }
+         const staleIfErrorAge = age + toNumberOrZero(this._rescc['stale-if-error']);
+         const staleWhileRevalidateAge = age + toNumberOrZero(this._rescc['stale-while-revalidate']);
+         return Math.round(Math.max(0, age, staleIfErrorAge, staleWhileRevalidateAge) * 1000);
+@@ -683,6 +711,9 @@ module.exports = class CachePolicy {
+      * @returns {boolean} `true` if `stale-if-error` condition allows use of a stale response.
+      */
+     _useStaleIfError() {
++        if (this._staleReuseProhibited()) {
++            return false;
++        }
+         return this.maxAge() + toNumberOrZero(this._rescc['stale-if-error']) > this.age();
+     }
+ 
+@@ -690,6 +721,9 @@ module.exports = class CachePolicy {
+      * @returns {boolean} `true` if `stale-while-revalidate` is currently allowed.
+      */
+     useStaleWhileRevalidate() {
++        if (this._staleReuseProhibited()) {
++            return false;
++        }
+         const swr = toNumberOrZero(this._rescc['stale-while-revalidate']);
+         return swr > 0 && this.maxAge() + swr > this.age();
+     }
