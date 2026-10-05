@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Filipino**: Phrases that were still English now follow the rest of the Filipino catalog. Staking status, suggested max, commission, and node counts; partner and protocol fees; signature key descriptions; multisig votes, abort location, and error codes; and guide labels that still used the English tab names (**All Nodes**, **User vs All**). Loanwords the catalog already uses (Account, Address, Block, user transaction) stay as they are.
 ### Security
 
 - **TanStack Start reflected XSS (CVE-2026-102989)**: `@tanstack/react-start` `1.168.45` is in the affected range (`>=1.143.12 <1.168.60`). Direct packages are now the patched release line: `react-start` `1.168.60`, `react-router` `1.170.41`, `router-plugin` `1.168.42`, and `router-cli` `1.167.40`. The lockfile resolves `@tanstack/start-server-core` to `1.169.39` (first patched server-function release). These versions were published 2026-09-29/30, so they are past Safe Chain's 48-hour floor and listed as a temporary `minimumReleaseAgeExclude` until they clear the 5-day gate (remove after 2026-10-05). The stale `react-simple-maps@5.0.5` exclude is gone.
