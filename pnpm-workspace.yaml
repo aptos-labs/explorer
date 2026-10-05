@@ -91,5 +91,16 @@ overrides:
 patchedDependencies:
   "@babel/core@8.0.1": patches/@babel__core@8.0.1.patch
   "@babel/traverse@8.0.4": patches/@babel__traverse@8.0.4.patch
+  # CVE-2026-93748 / GHSA-ch52-4w7c-c8xp. Upstream 4.3.0 (2026-10-04) is still
+  # inside Safe Chain's 48h floor and does not change the max-stale path.
+  # This patch closes that path on the locked 4.2.0. Drop it when an upstream
+  # release both fixes the behavior and clears the age gates.
+  "http-cache-semantics@4.2.0": patches/http-cache-semantics@4.2.0.patch
+
+# The advisory range is still `<=4.2.0`, so `pnpm audit` matches the locked
+# version even after the patch above. Valid only while that patch is applied.
+audit:
+  ignore:
+    - GHSA-ch52-4w7c-c8xp
 
 resolutionMode: highest

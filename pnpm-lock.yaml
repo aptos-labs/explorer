@@ -48,6 +48,7 @@ overrides:
 patchedDependencies:
   '@babel/core@8.0.1': 30825055e822eba1334228628fd7ef24fd1ba8b93e9891f7601299edcf28ab9f
   '@babel/traverse@8.0.4': a3ae47b08170de2fbbc6b8d1a856c433b188d345ca65d4e8a5341ff6cbcbd79e
+  http-cache-semantics@4.2.0: 84f73d887122c60fa8ba60b1173e02cac068b5e7ef0a9a26457b0feb278f6542
 
 importers:
 
@@ -5563,7 +5564,7 @@ snapshots:
     dependencies:
       '@types/http-cache-semantics': 4.2.0
       get-stream: 9.0.1
-      http-cache-semantics: 4.2.0
+      http-cache-semantics: 4.2.0(patch_hash=84f73d887122c60fa8ba60b1173e02cac068b5e7ef0a9a26457b0feb278f6542)
       keyv: 5.6.0
       mimic-response: 4.0.0
       normalize-url: 8.1.1
@@ -6061,7 +6062,7 @@ snapshots:
     transitivePeerDependencies:
       - '@noble/hashes'
 
-  http-cache-semantics@4.2.0: {}
+  http-cache-semantics@4.2.0(patch_hash=84f73d887122c60fa8ba60b1173e02cac068b5e7ef0a9a26457b0feb278f6542): {}
 
   http2-wrapper@2.2.1:
     dependencies:
