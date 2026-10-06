@@ -1243,8 +1243,15 @@ export const ms = {
     depositStatus: "Status deposit",
     lastEpochPerformance: "Prestasi epoch terakhir",
     rewardsPerformance: "Prestasi ganjaran",
-    smartContract: "Kontrak pintar",
-    receiver: "Penerima",
+    status:
+      "Sama ada transaksi berjaya dilaksanakan atau gagal. Transaksi yang gagal tetap direkodkan pada rantai.",
+    receiver: "Akaun yang menerima aset dalam pemindahan ini.",
+    smartContract:
+      "Akaun yang menerbitkan modul Move yang dipanggil oleh transaksi ini. Di Aptos, modul Move ialah kontrak pintar.",
+    amount:
+      "Berapa APT yang dialihkan oleh transaksi ini. Angka ialah yang lebih besar antara jumlah APT yang didepositkan dan jumlah APT yang dikeluarkan.",
+    signature:
+      "Tandatangan digital yang membenarkan transaksi ini. Pengirim mesti menandatangani; pembayar yuran atau penandatangan sekunder juga boleh menandatangani.",
     functionFilter:
       "Tapis transaksi mengikut medan fungsi entry (tekan Enter atau Tab untuk menggunakan setiap medan)",
     bytecodeFormat:

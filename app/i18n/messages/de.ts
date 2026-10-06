@@ -1264,8 +1264,16 @@ export const de = {
     depositStatus: "Einlagenstatus",
     lastEpochPerformance: "Leistung der letzten Epoch",
     rewardsPerformance: "Rewards-Leistung",
-    smartContract: "Smart Contract",
-    receiver: "Empfänger",
+    status:
+      "Ob die Transaktion erfolgreich ausgeführt wurde oder fehlgeschlagen ist. Eine fehlgeschlagene Transaktion bleibt auf der Chain gespeichert.",
+    receiver:
+      "Das Konto, das die Vermögenswerte in dieser Übertragung erhalten hat.",
+    smartContract:
+      "Das Konto, das das von dieser Transaktion aufgerufene Move-Modul veröffentlicht hat. Auf Aptos ist ein Move-Modul ein Smart Contract.",
+    amount:
+      "Wie viel APT diese Transaktion bewegt hat. Der Wert ist der größere von insgesamt eingezahltem und insgesamt abgehobenem APT.",
+    signature:
+      "Die digitale Signatur, die diese Transaktion autorisiert. Der Absender muss signieren; ein Gebührenzahler oder sekundäre Signierer können ebenfalls signieren.",
     functionFilter:
       "Transaktionen nach Entry-Funktionsfeldern filtern (Enter oder Tab drücken, um jedes Feld anzuwenden)",
     bytecodeFormat:

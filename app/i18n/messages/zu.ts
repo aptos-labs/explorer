@@ -1252,8 +1252,15 @@ export const zu = {
     depositStatus: "Isimo Sediphozithi",
     lastEpochPerformance: "Ukusebenza Kwe-Epoch Yokugcina",
     rewardsPerformance: "Ukusebenza Kwemivuzo",
-    smartContract: "Inkontileka Ehlakaniphile",
-    receiver: "Umamukeli",
+    status:
+      "Ukuthi ukuthengiselana kwenziwe ngempumelelo noma kwehlulekile. Ukuthengiselana okwehlulekile kusarekhodwa ochungechungeni.",
+    receiver: "I-akhawunti etholi izimpahla kulokhu kudluliswa.",
+    smartContract:
+      "I-akhawunti eshicilele imojuli ye-Move ebizwa yilokhu kuthengiselana. Ku-Aptos, imojuli ye-Move iyinkontileka ehlakaniphile.",
+    amount:
+      "Ukuthi lokhu kuthengiselana kuhambise i-APT engakanani. Inani yilona elikhulu phakathi kwe-APT ephelele efakiwe ne-APT ephelele ekhishiwe.",
+    signature:
+      "Isignesha yedijithali egunyaza lokhu kuthengiselana. Umthumeli kumele asayine; umkhokhi wemali noma abasayini besibili bangasayina futhi.",
     functionFilter:
       "Hlunga ukuthengiselana ngamafidi omsebenzi wokungena (cindezela u-Enter noma u-Tab ukuze usebenzise ifidi ngayinye)",
     bytecodeFormat:

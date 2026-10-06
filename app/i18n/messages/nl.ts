@@ -1254,8 +1254,15 @@ export const nl = {
     depositStatus: "Stortingsstatus",
     lastEpochPerformance: "Prestaties laatste epoch",
     rewardsPerformance: "Beloningsprestaties",
-    smartContract: "Smart contract",
-    receiver: "Ontvanger",
+    status:
+      "Of de transactie succesvol is uitgevoerd of is mislukt. Een mislukte transactie blijft op de chain vastgelegd.",
+    receiver: "Het account dat de activa in deze overdracht heeft ontvangen.",
+    smartContract:
+      "Het account dat de Move-module heeft gepubliceerd die deze transactie aanroept. Op Aptos is een Move-module een smart contract.",
+    amount:
+      "Hoeveel APT deze transactie heeft verplaatst. Het getal is de grootste van het totaal gestorte APT en het totaal opgenomen APT.",
+    signature:
+      "De digitale handtekening die deze transactie autoriseert. De afzender moet tekenen; een fee-betaler of secundaire ondertekenaars kunnen ook tekenen.",
     functionFilter:
       "Filter transacties op velden van de entry-functie (druk op Enter of Tab om elk veld toe te passen)",
     bytecodeFormat:

@@ -1243,8 +1243,15 @@ export const ja = {
     depositStatus: "預入ステータス",
     lastEpochPerformance: "直前エポックのパフォーマンス",
     rewardsPerformance: "報酬パフォーマンス",
-    smartContract: "スマートコントラクト",
-    receiver: "受信者",
+    status:
+      "トランザクションが正常に実行されたか、失敗したかです。失敗したトランザクションもチェーンに記録されます。",
+    receiver: "この送金で資産を受け取ったアカウントです。",
+    smartContract:
+      "このトランザクションが呼び出した Move モジュールを公開したアカウントです。Aptos では Move モジュールがスマートコントラクトです。",
+    amount:
+      "このトランザクションが移動した APT の量です。数値は、預け入れた APT の合計と引き出した APT の合計のうち大きい方です。",
+    signature:
+      "このトランザクションを承認するデジタル署名です。送信者が署名する必要があり、手数料の支払者やセカンダリ署名者も署名できます。",
     functionFilter:
       "エントリ関数のフィールドでトランザクションをフィルター（各フィールドは Enter または Tab で適用）",
     bytecodeFormat:

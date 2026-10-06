@@ -1256,8 +1256,15 @@ export const fil = {
     depositStatus: "Status ng deposito",
     lastEpochPerformance: "Performance ng huling epoch",
     rewardsPerformance: "Performance ng rewards",
-    smartContract: "Smart contract",
-    receiver: "Tumanggap",
+    status:
+      "Kung matagumpay na naisagawa ang transaksyon o nabigo. Ang nabigong transaksyon ay naitatala pa rin sa chain.",
+    receiver: "Ang account na tumanggap ng mga asset sa paglilipat na ito.",
+    smartContract:
+      "Ang account na nag-publish ng Move module na tinawag ng transaksyong ito. Sa Aptos, ang Move module ay isang smart contract.",
+    amount:
+      "Gaano karaming APT ang inilipat ng transaksyong ito. Ang bilang ay ang mas malaki sa kabuuang APT na idineposito at binawi.",
+    signature:
+      "Ang digital signature na nagpapahintulot sa transaksyong ito. Dapat pumirma ang sender; maaari ring pumirma ang fee payer o mga secondary signer.",
     functionFilter:
       "I-filter ang transaksyon ayon sa field ng entry function (pindutin ang Enter o Tab para i-apply ang bawat field)",
     bytecodeFormat:

@@ -1210,8 +1210,15 @@ export const he = {
     depositStatus: "סטטוס הפקדה",
     lastEpochPerformance: "ביצועי ה-Epoch האחרון",
     rewardsPerformance: "ביצועי תגמולים",
-    smartContract: "חוזה חכם",
-    receiver: "מקבל",
+    status:
+      "אם העסקה בוצעה בהצלחה או נכשלה. עסקה שנכשלה עדיין נרשמת על השרשרת.",
+    receiver: "החשבון שקיבל את הנכסים בהעברה זו.",
+    smartContract:
+      "החשבון שפרסם את מודול Move שהעסקה הזו קוראת לו. ב-Aptos, מודול Move הוא חוזה חכם.",
+    amount:
+      "כמה APT העסקה הזו העבירה. המספר הוא הגדול מבין סך ה-APT שהופקד וסך ה-APT שנמשך.",
+    signature:
+      "החתימה הדיגיטלית שמאשרת עסקה זו. השולח חייב לחתום; משלם עמלה או חותמים משניים יכולים לחתום גם הם.",
     functionFilter:
       "סנן עסקאות לפי שדות entry function (לחץ Enter או Tab כדי להחיל כל שדה)",
     bytecodeFormat:

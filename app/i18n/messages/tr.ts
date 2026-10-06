@@ -1242,8 +1242,15 @@ export const tr = {
     depositStatus: "Mevduat Durumu",
     lastEpochPerformance: "Son Epoch Performansı",
     rewardsPerformance: "Ödül Performansı",
-    smartContract: "Akıllı Sözleşme",
-    receiver: "Alıcı",
+    status:
+      "İşlemin başarıyla yürütülüp yürütülmediği veya başarısız olduğu. Başarısız bir işlem yine de zincire kaydedilir.",
+    receiver: "Bu transferde varlıkları alan hesap.",
+    smartContract:
+      "Bu işlemin çağırdığı Move modülünü yayımlayan hesap. Aptos'ta bir Move modülü bir akıllı sözleşmedir.",
+    amount:
+      "Bu işlemin ne kadar APT taşıdığı. Rakam, toplam yatırılan APT ile toplam çekilen APT'ten büyük olanıdır.",
+    signature:
+      "Bu işlemi yetkilendiren dijital imza. Gönderenin imzalaması gerekir; bir ücret ödeyen veya ikincil imzacılar da imzalayabilir.",
     functionFilter:
       "İşlemleri entry function alanlarına göre filtreleyin (her alanı uygulamak için Enter veya Tab)",
     bytecodeFormat:

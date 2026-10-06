@@ -1193,8 +1193,13 @@ export const zhHant = {
     depositStatus: "存款狀態",
     lastEpochPerformance: "上一紀元表現",
     rewardsPerformance: "獎勵表現",
-    smartContract: "智慧合約",
-    receiver: "接收方",
+    status: "交易是執行成功還是失敗。失敗的交易仍會記錄在鏈上。",
+    receiver: "在此轉帳中接收資產的帳戶。",
+    smartContract:
+      "發布此交易所呼叫 Move 模組的帳戶。在 Aptos 上，Move 模組即智慧合約。",
+    amount: "此交易轉移了多少 APT。該數字取 APT 總存入與總取出中較大的一方。",
+    signature:
+      "授權此交易的數位簽章。傳送方必須簽名；費用支付方或次要簽名方也可以簽名。",
     functionFilter: "按入口函式字段篩選交易（按 Enter 或 Tab 應用每個字段）",
     bytecodeFormat:
       "透過鏈上 VM Binary Format 功能旗標啟用的最高 Move 模組位元組碼格式",

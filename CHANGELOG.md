@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Copy ungrouped versions and block heights**: Ledger versions and block numbers still display with locale grouping (for example `1,234,567` or `1.234.567`). A copy control next to those identifiers writes the locale-independent ASCII integer (`1234567`) so it can be pasted into search, URLs, and APIs. Search also accepts the grouped form (comma thousands, period thousands, or Indian comma grouping) and looks up the ungrouped integer. The same control is on transaction overview version, parent block, block overview height / first–last version / adjacent blocks, transaction and blocks tables, numeric transaction-version chips, and deployment ledger/block rows.
+- **Transaction detail tooltips**: The overview rows for status, receiver, smart contract, amount, and signature now include an info icon that explains the field. Smart contract and signature link to the Aptos glossary.
 
 ### Fixed
 

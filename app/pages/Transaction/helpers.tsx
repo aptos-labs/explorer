@@ -31,7 +31,7 @@ function LearnMoreTooltipField({field}: {field: string}): React.JSX.Element {
         />
       );
     case "amount":
-      return <LearnMoreTooltipPlaceholder />;
+      return <LearnMoreTooltip text={t("tooltips.amount")} />;
     case "authentication_key":
       return <LearnMoreTooltip text={t("tooltips.authenticationKey")} />;
     case "key_type":
@@ -118,7 +118,7 @@ function LearnMoreTooltipField({field}: {field: string}): React.JSX.Element {
     case "proposer":
       return <LearnMoreTooltipPlaceholder />;
     case "receiver":
-      return <LearnMoreTooltipPlaceholder />;
+      return <LearnMoreTooltip text={t("tooltips.receiver")} />;
     case "round":
       return (
         <LearnMoreTooltip
@@ -148,11 +148,23 @@ function LearnMoreTooltipField({field}: {field: string}): React.JSX.Element {
         />
       );
     case "signature":
-      return <LearnMoreTooltipPlaceholder />;
+      return (
+        <LearnMoreTooltip
+          text={t("tooltips.signature")}
+          link="https://aptos.dev/en/network/glossary#transaction"
+        />
+      );
     case "state_change_hash":
       return <LearnMoreTooltipPlaceholder />;
     case "status":
-      return <LearnMoreTooltipPlaceholder />;
+      return <LearnMoreTooltip text={t("tooltips.status")} />;
+    case "smartContract":
+      return (
+        <LearnMoreTooltip
+          text={t("tooltips.smartContract")}
+          link="https://aptos.dev/en/network/glossary#smart-contract"
+        />
+      );
     case "timestamp":
       return <LearnMoreTooltip text={t("tooltips.timestamp")} />;
     case "version":
