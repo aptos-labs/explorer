@@ -1192,8 +1192,13 @@ export const zh = {
     depositStatus: "存款状态",
     lastEpochPerformance: "上一纪元表现",
     rewardsPerformance: "奖励表现",
-    smartContract: "智能合约",
-    receiver: "接收方",
+    status: "交易是执行成功还是失败。失败的交易仍会记录在链上。",
+    receiver: "在此转账中接收资产的账户。",
+    smartContract:
+      "发布此交易所调用 Move 模块的账户。在 Aptos 上，Move 模块即智能合约。",
+    amount: "此交易转移了多少 APT。该数字取 APT 总存入与总取出中较大的一方。",
+    signature:
+      "授权此交易的数字签名。发送方必须签名；费用支付方或次要签名方也可以签名。",
     functionFilter: "按入口函数字段筛选交易（按 Enter 或 Tab 应用每个字段）",
     bytecodeFormat:
       "通过链上 VM Binary Format 功能开关启用的最高 Move 模块字节码格式",

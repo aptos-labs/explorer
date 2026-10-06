@@ -1258,8 +1258,15 @@ export const fr = {
     depositStatus: "Statut du dépôt",
     lastEpochPerformance: "Performance de la dernière époque",
     rewardsPerformance: "Performance des récompenses",
-    smartContract: "Contrat intelligent",
-    receiver: "Destinataire",
+    status:
+      "Indique si la transaction s’est exécutée avec succès ou a échoué. Une transaction échouée reste enregistrée sur la chaîne.",
+    receiver: "Le compte qui a reçu les actifs de ce transfert.",
+    smartContract:
+      "Le compte qui a publié le module Move appelé par cette transaction. Sur Aptos, un module Move est un contrat intelligent.",
+    amount:
+      "La quantité d’APT déplacée par cette transaction. Le chiffre est le plus élevé entre l’APT total déposé et l’APT total retiré.",
+    signature:
+      "La signature numérique qui autorise cette transaction. L’expéditeur doit signer ; un payeur de frais ou des signataires secondaires peuvent aussi signer.",
     functionFilter:
       "Filtrer les transactions par champs de fonction d'entrée (appuyez sur Entrée ou Tabulation pour appliquer chaque champ)",
     bytecodeFormat:

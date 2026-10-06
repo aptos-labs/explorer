@@ -1237,8 +1237,15 @@ export const id = {
     depositStatus: "Status deposit",
     lastEpochPerformance: "Kinerja epoch terakhir",
     rewardsPerformance: "Kinerja imbalan",
-    smartContract: "Kontrak pintar",
-    receiver: "Penerima",
+    status:
+      "Apakah transaksi berhasil dieksekusi atau gagal. Transaksi yang gagal tetap tercatat di chain.",
+    receiver: "Akun yang menerima aset dalam transfer ini.",
+    smartContract:
+      "Akun yang menerbitkan modul Move yang dipanggil transaksi ini. Di Aptos, modul Move adalah kontrak pintar.",
+    amount:
+      "Berapa APT yang dipindahkan transaksi ini. Angkanya adalah yang lebih besar antara total APT yang disetor dan total APT yang ditarik.",
+    signature:
+      "Tanda tangan digital yang mengotorisasi transaksi ini. Pengirim harus menandatangani; pembayar biaya atau penanda tangan sekunder juga dapat menandatangani.",
     functionFilter:
       "Saring transaksi menurut bidang fungsi entri (tekan Enter atau Tab untuk menerapkan setiap bidang)",
     bytecodeFormat:
