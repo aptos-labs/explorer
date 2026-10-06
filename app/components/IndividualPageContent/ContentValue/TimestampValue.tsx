@@ -18,7 +18,7 @@ export default function TimestampValue({
   timestamp,
 }: TimestampValueProps) {
   const [tooltipOpen, setTooltipOpen] = useState<boolean>(false);
-  const {t, locale} = useTranslation();
+  const {t, locale, timestampTimeZone} = useTranslation();
   const theme = useTheme();
   const color = theme.palette.text.secondary;
 
@@ -30,6 +30,7 @@ export default function TimestampValue({
     timestamp,
     ensureMilliSeconds,
     locale,
+    timestampTimeZone,
   );
 
   const copyTimestamp = async () => {

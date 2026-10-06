@@ -26,6 +26,7 @@ import {
   type SupportedLocale,
 } from "./locales";
 import {messageCatalogs} from "./messages";
+import {useResolvedTimestampTimeZone} from "./timestampTimeZone";
 import {type MessageCatalog, translate, translateList} from "./translate";
 
 export type TranslateVars = Record<string, string | number>;
@@ -49,6 +50,8 @@ export interface I18nFormatters {
 export interface I18nContextValue extends I18nFormatters {
   locale: SupportedLocale;
   localePreference: LocalePreference;
+  /** `UTC` until hydration, then the browser zone when local timestamps are on. */
+  timestampTimeZone: string;
   t: TFunction;
   tList: TListFunction;
 }
@@ -96,6 +99,7 @@ const I18nContext = createContext<I18nContextValue | undefined>(undefined);
 const fallbackValue: I18nContextValue = {
   locale: DEFAULT_LOCALE,
   localePreference: "auto",
+  timestampTimeZone: "UTC",
   t: englishTranslator.t,
   tList: englishTranslator.tList,
   formatNumber: englishTranslator.formatNumber,
@@ -136,6 +140,9 @@ export function I18nProvider({children}: {children: ReactNode}) {
   );
 
   const translator = useMemo(() => createTranslator(locale), [locale]);
+  const timestampTimeZone = useResolvedTimestampTimeZone(
+    settings.displayLocalTimestamps,
+  );
 
   useEffect(() => {
     if (typeof document === "undefined") {
@@ -153,6 +160,7 @@ export function I18nProvider({children}: {children: ReactNode}) {
     () => ({
       locale,
       localePreference: settings.localePreference,
+      timestampTimeZone,
       t: translator.t,
       tList: translator.tList,
       formatNumber: translator.formatNumber,
@@ -160,12 +168,15 @@ export function I18nProvider({children}: {children: ReactNode}) {
       formatBigInt: translator.formatBigInt,
       formatIntegerString: translator.formatIntegerString,
       formatCompactNumber: translator.formatCompactNumber,
-      formatDateTime: translator.formatDateTime,
-      formatTimestamp: translator.formatTimestamp,
+      formatDateTime: (date) =>
+        formatDateTimeForLocale(date, locale, timestampTimeZone),
+      formatTimestamp: (date) =>
+        formatTimestampForLocale(date, locale, timestampTimeZone),
+      // Chart day labels are UTC calendar dates, not instants to shift.
       formatMonthDay: translator.formatMonthDay,
       formatRelativeTime: translator.formatRelativeTime,
     }),
-    [locale, settings.localePreference, translator],
+    [locale, settings.localePreference, timestampTimeZone, translator],
   );
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;

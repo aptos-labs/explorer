@@ -561,6 +561,7 @@ export function parseTimestampString(
   timestamp: string,
   ensureMilliSeconds: boolean = true,
   locale: string = DEFAULT_LOCALE,
+  timeZone: string = "UTC",
 ): string {
   let time: bigint;
   if (ensureMilliSeconds) {
@@ -569,9 +570,10 @@ export function parseTimestampString(
     time = BigInt(timestamp);
   }
   if (time > 8640000000000000n) {
-    return `> ${timestampDisplay(new Date(8640000000000000), locale).local_formatted}`;
+    return `> ${timestampDisplay(new Date(8640000000000000), locale, timeZone).local_formatted}`;
   } else {
-    return timestampDisplay(new Date(Number(time)), locale).local_formatted;
+    return timestampDisplay(new Date(Number(time)), locale, timeZone)
+      .local_formatted;
   }
 }
 
@@ -588,6 +590,7 @@ export interface TimestampDisplay {
 export function timestampDisplay(
   timestamp: Date,
   locale: string = DEFAULT_LOCALE,
+  timeZone: string = "UTC",
 ): TimestampDisplay {
   // Build the UTC string manually so it is always accurate regardless of the
   // browser's local timezone. Used for CSV and other machine-oriented output.
@@ -599,8 +602,8 @@ export function timestampDisplay(
 
   return {
     formatted: utcFormatted,
-    local_formatted: formatTimestamp(timestamp, locale),
-    local_formatted_short: formatDateTime(timestamp, locale),
+    local_formatted: formatTimestamp(timestamp, locale, timeZone),
+    local_formatted_short: formatDateTime(timestamp, locale, timeZone),
   };
 }
 
@@ -689,9 +692,10 @@ export function isNumeric(text: string) {
 export function getTableFormattedTimestamp(
   timestamp?: string,
   locale: string = DEFAULT_LOCALE,
+  timeZone: string = "UTC",
 ): string {
   if (!timestamp || timestamp === "0") return "-";
-  return parseTimestampString(timestamp, true, locale);
+  return parseTimestampString(timestamp, true, locale, timeZone);
 }
 
 export function isValidUrl(url: string): boolean {

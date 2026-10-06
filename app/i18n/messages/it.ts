@@ -110,6 +110,14 @@ export const it = {
         "L'output non deve essere trattato come il codice sorgente definitivo o autorevole di alcun modulo on-chain.",
       ],
     },
+    timestamps: {
+      title: "Timestamp",
+      description:
+        "Mostra i timestamp della chain nel fuso orario locale. Se disattivato, gli orari restano in UTC.",
+      ariaLabel: "Mostra i timestamp nell'ora locale",
+      localZone: "Il fuso orario del browser è {timeZone}.",
+      example: "Esempio: {time}",
+    },
     apiKeys: {
       title: "Sostituzione chiavi API",
       whyAriaLabel: "Perché usare la propria chiave API?",
@@ -304,6 +312,7 @@ export const it = {
       bullets: [
         "**Lingua** — Predefinita del browser o una lingua esplicita. Controlla l'interfaccia tradotta, il testo delle impostazioni e questa guida. I dati on-chain (indirizzi, nomi funzione, eventi) restano come li memorizza la catena.",
         "**Decompilazione bytecode Move** — disattivata per default. Leggi l'avviso prima di abilitarla. Se disattivata, le viste Decompilato e Disassembly sono nascoste.",
+        "**Timestamp** — UTC per impostazione predefinita, così un orario si legge allo stesso modo su ogni dispositivo. Attiva l'ora locale in [Impostazioni](/settings) per convertire gli orari della chain nel fuso del browser. L'esportazione CSV e i timestamp grezzi copiati restano in UTC.",
         "**Sostituzione chiavi API** — chiavi opzionali [geomi.dev](https://geomi.dev) per rete così il browser non resta bloccato sul limite di frequenza anonimo condiviso. Le chiavi sono inviate come `Authorization: Bearer`. Le chiavi client Geomi `AG-*` devono consentire l'Origin di questo sito. Seleziona **Ricorda su questo dispositivo** solo su una macchina di cui ti fidi; altrimenti le chiavi durano la sessione della scheda.",
         "**Tema** — chiaro o scuro dal controllo sole/luna nell'intestazione. Salvato in un cookie (`color_scheme`) e segue il sistema se non hai scelto.",
         "**Rete** — selettore nell'intestazione; codificata in `?network=` anziché nelle impostazioni.",

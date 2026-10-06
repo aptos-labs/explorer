@@ -11,11 +11,14 @@ export interface ExplorerClientSettings {
   geomiDevApiKeyOverridesByNetwork: GeomiDevApiKeyOverridesByNetwork;
   rememberGeomiDevApiKeyOverride: boolean;
   enableDecompilation: boolean;
+  /** When true, chain timestamps render in the browser time zone after hydration. */
+  displayLocalTimestamps: boolean;
   localePreference: LocalePreference;
 }
 
 export const EXPLORER_SETTINGS_STORAGE_KEY = "aptos-explorer-settings";
 export const DECOMPILATION_STORAGE_KEY = "aptos-explorer-enable-decompilation";
+export const LOCAL_TIMESTAMPS_STORAGE_KEY = "aptos-explorer-local-timestamps";
 export const LOCALE_STORAGE_KEY = "aptos-explorer-locale";
 
 const ALL_NETWORK_NAMES = Object.keys(networks) as NetworkName[];
@@ -24,6 +27,7 @@ export const defaultExplorerClientSettings: ExplorerClientSettings = {
   geomiDevApiKeyOverridesByNetwork: {},
   rememberGeomiDevApiKeyOverride: false,
   enableDecompilation: false,
+  displayLocalTimestamps: false,
   localePreference: "auto",
 };
 
@@ -33,6 +37,7 @@ export function isExplorerSettingsStorageKey(key: string | null): boolean {
     key === null ||
     key === EXPLORER_SETTINGS_STORAGE_KEY ||
     key === DECOMPILATION_STORAGE_KEY ||
+    key === LOCAL_TIMESTAMPS_STORAGE_KEY ||
     key === LOCALE_STORAGE_KEY
   );
 }
@@ -157,12 +162,14 @@ export function sanitizeExplorerClientSettings(
     );
 
   const enableDecompilation = value?.enableDecompilation === true;
+  const displayLocalTimestamps = value?.displayLocalTimestamps === true;
   const localePreference = normalizeLocalePreference(value?.localePreference);
 
   return {
     geomiDevApiKeyOverridesByNetwork,
     rememberGeomiDevApiKeyOverride,
     enableDecompilation,
+    displayLocalTimestamps,
     localePreference,
   };
 }
@@ -211,6 +218,12 @@ export function clearExplorerClientSettings(
     }
 
     try {
+      storage.removeItem(LOCAL_TIMESTAMPS_STORAGE_KEY);
+    } catch {
+      // Ignore storage removal failures.
+    }
+
+    try {
       storage.removeItem(LOCALE_STORAGE_KEY);
     } catch {
       // Ignore storage removal failures.
@@ -245,13 +258,14 @@ function persistLocalePreference(
   }
 }
 
-function loadDecompilationFlag(
+function loadStoredBooleanFlag(
   storages: ExplorerSettingsStorage,
+  key: string,
 ): boolean | undefined {
   const storage = storages.localStorage ?? storages.sessionStorage;
   if (!storage) return undefined;
   try {
-    const raw = storage.getItem(DECOMPILATION_STORAGE_KEY);
+    const raw = storage.getItem(key);
     if (raw === "true") return true;
     if (raw === "false") return false;
     return undefined;
@@ -260,52 +274,70 @@ function loadDecompilationFlag(
   }
 }
 
+function loadDecompilationFlag(
+  storages: ExplorerSettingsStorage,
+): boolean | undefined {
+  return loadStoredBooleanFlag(storages, DECOMPILATION_STORAGE_KEY);
+}
+
+function loadLocalTimestampsFlag(
+  storages: ExplorerSettingsStorage,
+): boolean | undefined {
+  return loadStoredBooleanFlag(storages, LOCAL_TIMESTAMPS_STORAGE_KEY);
+}
+
 export function loadExplorerClientSettings(
   storages: ExplorerSettingsStorage = getAvailableStorages(),
 ): ExplorerClientSettings {
   const decompFlag = loadDecompilationFlag(storages);
+  const localTimestampsFlag = loadLocalTimestampsFlag(storages);
   const localePreference = loadLocalePreference(storages);
+
+  const applyIndependentFlags = (settings: ExplorerClientSettings) => {
+    if (decompFlag !== undefined) {
+      settings.enableDecompilation = decompFlag;
+    }
+    if (localTimestampsFlag !== undefined) {
+      settings.displayLocalTimestamps = localTimestampsFlag;
+    }
+    if (localePreference !== undefined) {
+      settings.localePreference = localePreference;
+    }
+    return settings;
+  };
 
   const sessionSettings = loadStoredExplorerClientSettings(
     storages.sessionStorage,
   );
   if (sessionSettings) {
-    const settings = sanitizeExplorerClientSettings({
-      ...sessionSettings,
-      rememberGeomiDevApiKeyOverride: false,
-    });
-    if (decompFlag !== undefined) {
-      settings.enableDecompilation = decompFlag;
-    }
-    if (localePreference !== undefined) {
-      settings.localePreference = localePreference;
-    }
-    return settings;
+    return applyIndependentFlags(
+      sanitizeExplorerClientSettings({
+        ...sessionSettings,
+        rememberGeomiDevApiKeyOverride: false,
+      }),
+    );
   }
 
   const localSettings = loadStoredExplorerClientSettings(storages.localStorage);
   if (localSettings) {
-    const settings = sanitizeExplorerClientSettings({
-      ...localSettings,
-      rememberGeomiDevApiKeyOverride: true,
-    });
-    if (decompFlag !== undefined) {
-      settings.enableDecompilation = decompFlag;
-    }
-    if (localePreference !== undefined) {
-      settings.localePreference = localePreference;
-    }
-    return settings;
+    return applyIndependentFlags(
+      sanitizeExplorerClientSettings({
+        ...localSettings,
+        rememberGeomiDevApiKeyOverride: true,
+      }),
+    );
   }
 
   return {
     ...defaultExplorerClientSettings,
     enableDecompilation: decompFlag ?? false,
+    displayLocalTimestamps: localTimestampsFlag ?? false,
     localePreference: localePreference ?? "auto",
   };
 }
 
-function persistDecompilationFlag(
+function persistBooleanFlag(
+  key: string,
   enabled: boolean,
   storages: ExplorerSettingsStorage,
 ) {
@@ -313,13 +345,27 @@ function persistDecompilationFlag(
   if (!storage) return;
   try {
     if (enabled) {
-      storage.setItem(DECOMPILATION_STORAGE_KEY, "true");
+      storage.setItem(key, "true");
     } else {
-      storage.removeItem(DECOMPILATION_STORAGE_KEY);
+      storage.removeItem(key);
     }
   } catch {
     // Ignore storage write failures.
   }
+}
+
+function persistDecompilationFlag(
+  enabled: boolean,
+  storages: ExplorerSettingsStorage,
+) {
+  persistBooleanFlag(DECOMPILATION_STORAGE_KEY, enabled, storages);
+}
+
+function persistLocalTimestampsFlag(
+  enabled: boolean,
+  storages: ExplorerSettingsStorage,
+) {
+  persistBooleanFlag(LOCAL_TIMESTAMPS_STORAGE_KEY, enabled, storages);
 }
 
 export function persistExplorerClientSettings(
@@ -330,6 +376,10 @@ export function persistExplorerClientSettings(
   clearExplorerClientSettings(storages);
 
   persistDecompilationFlag(sanitizedSettings.enableDecompilation, storages);
+  persistLocalTimestampsFlag(
+    sanitizedSettings.displayLocalTimestamps,
+    storages,
+  );
   persistLocalePreference(sanitizedSettings.localePreference, storages);
 
   if (

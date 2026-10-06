@@ -6,7 +6,7 @@
 > code. Tests (unit, integration, E2E) should reference the feature IDs defined
 > here (e.g. `// Covers FEAT-SEARCH-001`).
 >
-> **Last updated**: 2026-09-15
+> **Last updated**: 2026-10-06
 
 ---
 
@@ -902,7 +902,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **Navigation** | Header gear icon and mobile nav "Settings" item link to `/settings`. Rate Limit Drawer "Set API key override" button also links there. |
 | **API key overrides** | One optional masked geomi.dev API key field per network (mainnet, testnet, devnet, decibel, shelbynet, local); shared show/hide toggle for all fields. Empty network uses the build default key (if any). Keys are sent as `Authorization: Bearer <key>` (Geomi + TS SDK `API_KEY`). A custom `api-key` header is ignored by the gateway. Geomi `AG-*` client keys also require a matching browser Origin. An info icon next to the section title opens a popover explaining that a personal key provides a dedicated rate limit (useful for heavy use or after HTTP 429) and links to geomi.dev. |
 | **Migration** | Previously saved single-key settings load as the same key applied to every network until the user saves again. |
-| **Persistence** | "Remember on this device" → localStorage, cross-tab sync via `storage` events. Non-API-key preferences (decompilation, language) persist to dedicated localStorage keys (`aptos-explorer-enable-decompilation`, `aptos-explorer-locale`); those keys are included in the same cross-tab listener. |
+| **Persistence** | "Remember on this device" → localStorage, cross-tab sync via `storage` events. Non-API-key preferences (decompilation, local timestamps, language) persist to dedicated localStorage keys (`aptos-explorer-enable-decompilation`, `aptos-explorer-local-timestamps`, `aptos-explorer-locale`); those keys are included in the same cross-tab listener. |
 | **On save** | Clears cached SDK clients (`clearCachedV2Clients`, `clearCachedSearchClients`), invalidates all React Query queries, invalidates router. If non-empty API key saved, fires `emitApiKeySaved()` to dismiss rate-limit drawer (see FEAT-RATELIMIT-001). |
 
 ### FEAT-SETTINGS-002 — Decompilation Opt-In
@@ -924,6 +924,16 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **Resolution** | Explicit catalog wins (case-insensitive). `auto` maps `navigator.languages` tags onto `SUPPORTED_LOCALES`, including `tl`→`fil`, `iw`→`he`, `zh-CN`/`zh-Hans`→`zh`, `zh-Hant`/`zh-TW`/`zh-HK`/`zh-MO`→`zh-Hant`, `pt-BR`→`pt`, and `pt-PT` plus lusophone African regions (`pt-AO`, `pt-MZ`, `pt-CV`, `pt-GW`, `pt-ST`)→`pt-PT`. |
 | **Persistence** | `localePreference` on `ExplorerClientSettings`, stored in `aptos-explorer-locale` localStorage independently of API keys. The header globe control, overflow-menu language item, and Settings language select write this immediately; they do not wait for Settings **Save**. Reloads and new tabs read that key; other open tabs pick it up via `storage` events. |
 | **Document language** | SSR `html lang="en"`; after hydration `document.documentElement.lang` / `dir` follow the resolved locale. |
+
+### FEAT-SETTINGS-004 — Timestamp time zone
+
+| Aspect | Detail |
+|--------|--------|
+| **Toggle** | "Timestamps" switch on the Settings page. Off by default (UTC). |
+| **Behavior** | Off: chain timestamps stay in UTC, including the short zone label on full timestamps. On: after hydration, transaction, block, module-version, release, and multisig timestamps use the browser time zone. Full timestamps (tables, overviews, module versions) include the short zone name. Shorter date-times (releases and some multisig rows) shift the clock without a zone abbreviation, because `dateStyle` cannot be combined with `timeZoneName`. The first server and client render stay UTC so hydration matches; the clock updates after mount. |
+| **Unchanged** | CSV export keeps the fixed UTC `MM/DD/YY HH:mm:ss.SSS UTC` string. Copy on a timestamp writes the raw chain value, not the formatted clock. Analytics chart day labels stay on the UTC calendar date. Relative ages ("3 minutes ago") are unchanged. |
+| **Preview** | After mount, Settings shows the browser time zone name and an example of the draft choice. Save applies it with the other settings. |
+| **Persistence** | `displayLocalTimestamps` on `ExplorerClientSettings`, stored in `aptos-explorer-local-timestamps` independently of API keys. Other tabs reload it through the settings `storage` listener. |
 
 ---
 
@@ -1365,7 +1375,7 @@ top of the HTML site.
 | **Shipped locales** | Every registered catalog in `SUPPORTED_LOCALES` (see FEAT-SETTINGS-003) is available in the language picker. The picker lists English first, then other catalogs alphabetically by native name (`LANGUAGE_PICKER_LOCALES`); registration order in `SUPPORTED_LOCALES` does not control display order. Picker rows show the native name plus `localeShortLabel`. Every non-English locale matches the full English key tree (`FULL_UI_LOCALES`). Missing keys fall back to English at runtime. Automated tests enforce key/placeholder parity for full-UI locales and subset/placeholder parity for any chrome-only locale. |
 | **Adding a locale** | Add a catalog file, register it in `SUPPORTED_LOCALES` / `messageCatalogs` / `LOCALE_META`, and update the shipped-locales table in `AGENTS.md` in the same PR (`app/i18n/agentsLocales.test.ts` fails if the list diverges). Also update FEAT-SETTINGS-003 and `CHANGELOG.md`. Generate TypeScript from JSON with `node scripts/i18n-json-to-catalog.mjs`. Missing keys fall back to English. New catalogs do not need to be inserted in picker display order — `LANGUAGE_PICKER_LOCALES` sorts by native name. |
 | **Provider** | `I18nProvider` (inside `ExplorerSettingsProvider`) resolves locale and updates `document.documentElement.lang` / `dir` (and `og:locale` when present) after hydration. `useTranslation()` falls back to English when no provider is mounted. |
-| **Formatting helpers** | Locale-bound `formatNumber`, `formatInteger`, `formatBigInt`, `formatIntegerString`, `canonicalIntegerString`, `formatCompactNumber`, `formatDateTime`, `formatTimestamp`, `formatMonthDay`, and `formatRelativeTime` wrap `Intl`. Locale metadata selects intended regional tags (for example `pt-BR`) so decimal separators, grouping (including Indian grouping), date order, compact suffixes, relative times, and 12/24-hour conventions follow the selected locale. Date/time output is pinned to UTC to remain deterministic between SSR and hydration. User-visible integers (including ledger versions, block heights, sequence numbers, and counts), decimals, timestamps, chart axes, and currency grouping go through these helpers rather than `toLocaleString("en-US")` or date-fns English relative time. Ledger versions and block heights that use grouped display include a copy control (`IntegerValue` `copyable`) that writes `canonicalIntegerString` (ASCII digits, no grouping) so the clipboard value can be pasted into search, URLs, and APIs. |
+| **Formatting helpers** | Locale-bound `formatNumber`, `formatInteger`, `formatBigInt`, `formatIntegerString`, `canonicalIntegerString`, `formatCompactNumber`, `formatDateTime`, `formatTimestamp`, `formatMonthDay`, and `formatRelativeTime` wrap `Intl`. Locale metadata selects intended regional tags (for example `pt-BR`) so decimal separators, grouping (including Indian grouping), date order, compact suffixes, relative times, and 12/24-hour conventions follow the selected locale. Date/time output defaults to UTC so SSR and hydration match. After hydration, FEAT-SETTINGS-004 can switch displayed chain timestamps to the browser time zone; chart day labels stay on the UTC calendar date. User-visible integers (including ledger versions, block heights, sequence numbers, and counts), decimals, timestamps, chart axes, and currency grouping go through these helpers rather than `toLocaleString("en-US")` or date-fns English relative time. Ledger versions and block heights that use grouped display include a copy control (`IntegerValue` `copyable`) that writes `canonicalIntegerString` (ASCII digits, no grouping) so the clipboard value can be pasted into search, URLs, and APIs. |
 | **Remaining UI copy** | Account balance and CSV export, user-transaction filters, multisig pending/owners, call traces, fee-statement events, FA dispatchable properties, coin/FA supply tooltips, validator epoch/node counts, analytics totals, gas-unit amounts, and the home-page hero/CTAs/empty-search copy read from catalogs rather than hardcoded English. |
 
 ---
@@ -1399,7 +1409,7 @@ top of the HTML site.
 | `/verification` | FEAT-VERIFY-001 |
 | `/guide` | FEAT-GUIDE-001 |
 | `/help` | FEAT-GUIDE-001 (redirect to `/guide`) |
-| `/settings` | FEAT-SETTINGS-001 |
+| `/settings` | FEAT-SETTINGS-001, FEAT-SETTINGS-004 |
 | `/validators/$tab` | FEAT-VALIDATORS-001 |
 | `/account/$address/$tab` | FEAT-ACCOUNT-005 |
 | `/object/$address/$tab` | FEAT-ACCOUNT-005 |
@@ -1444,7 +1454,9 @@ top of the HTML site.
 | `app/components/webMcpTools.test.ts` | FEAT-SEO-004 (WebMCP navigation tools: routing, validation), FEAT-GUIDE-001 (`open_guide`) |
 | `app/i18n/translate.test.ts` | FEAT-I18N-001 (interpolation, nested keys, catalog fallback) |
 | `app/i18n/detectLocale.test.ts` | FEAT-I18N-001 (locale preference and browser-language resolution) |
-| `app/i18n/format.test.ts` | FEAT-I18N-001 (`Intl` number/date helpers; `canonicalIntegerString` for clipboard identifiers) |
+| `app/i18n/format.test.ts` | FEAT-I18N-001 (`Intl` number/date helpers; `canonicalIntegerString` for clipboard identifiers), FEAT-SETTINGS-004 (explicit local time zone shifts `formatTimestamp`) |
+| `app/i18n/timestampTimeZone.test.ts` | FEAT-SETTINGS-004 (UTC until hydration; browser zone only when the preference is on) |
+| `app/i18n/timestampTimeZone.hook.test.tsx` | FEAT-SETTINGS-004 (saved local-time preference reaches `useTranslation` formatters after hydration) |
 | `app/components/IndividualPageContent/ContentValue/IntegerValue.test.tsx` | FEAT-I18N-001 / FEAT-TXN-002 / FEAT-BLOCK-001 (locale-grouped display; copy writes ungrouped ASCII integer; link href stays ungrouped) |
 | `app/i18n/parseInlineMarkup.test.ts` | FEAT-I18N-001 (bold/code/link markup and internal vs external hrefs) |
 | `app/i18n/messages.en.test.ts` | FEAT-I18N-001 / FEAT-GUIDE-001 / FEAT-SEARCH-004 (English chrome, guide, tabs, fields, errors, verification titles, landing-page copy; shipped locale key/placeholder parity) |
@@ -1494,7 +1506,8 @@ top of the HTML site.
 | `app/data/defunctProtocols.test.ts` | FEAT-ACCOUNT-003 (defunct protocol registry shape, uniqueness, known-address `// defunct` / `// winding_down` comment drift) |
 | `app/data/functionArgumentNameOverrides/lookup.test.ts` | FEAT-DATA-003 / FEAT-MODULES-006 (argument name override lookup) |
 | `app/types/defunctProtocol.test.ts` | FEAT-ACCOUNT-003 (withdrawal plugin validation) |
-| `app/settings/clientSettings.test.ts` | FEAT-SETTINGS-001 (settings persistence, sanitization), FEAT-I18N-001 (locale preference), FEAT-SETTINGS-003 (locale storage key is part of settings sync) |
+| `app/settings/clientSettings.test.ts` | FEAT-SETTINGS-001 (settings persistence, sanitization), FEAT-I18N-001 (locale preference), FEAT-SETTINGS-003 (locale storage key is part of settings sync), FEAT-SETTINGS-004 (local timestamp preference persists without API keys) |
+| `app/pages/Settings/SettingsPage.test.tsx` | FEAT-SETTINGS-004 (Timestamps switch, local-zone preview, save writes `aptos-explorer-local-timestamps`) |
 | `app/themes/colors/aptosBrandColors.a11y.test.ts` | FEAT-THEME-001 (WCAG contrast regression) |
 | `app/components/hooks/usePageMetadata.structuredData.test.ts` | FEAT-SEO-001 (JSON-LD generation) |
 | `app/components/IndividualPageContent/ContentValue/CurrencyValue.test.tsx` | Currency formatting (octa → APT) |

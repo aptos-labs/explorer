@@ -76,11 +76,15 @@ export function decimalSeparator(locale: string): string {
   return parts.find((part) => part.type === "decimal")?.value ?? ".";
 }
 
-export function formatDateTime(date: Date, locale: string): string {
+export function formatDateTime(
+  date: Date,
+  locale: string,
+  timeZone: string = "UTC",
+): string {
   return new Intl.DateTimeFormat(intlLocale(locale), {
     dateStyle: "medium",
     timeStyle: "short",
-    timeZone: "UTC",
+    timeZone,
   }).format(date);
 }
 
@@ -96,12 +100,17 @@ const TIMESTAMP_OPTIONS: Intl.DateTimeFormatOptions = {
   timeZoneName: "short",
 };
 
-export function formatTimestamp(date: Date, locale: string): string {
+export function formatTimestamp(
+  date: Date,
+  locale: string,
+  timeZone: string = "UTC",
+): string {
+  const options: Intl.DateTimeFormatOptions = {
+    ...TIMESTAMP_OPTIONS,
+    timeZone,
+  };
   try {
-    return new Intl.DateTimeFormat(
-      intlLocale(locale),
-      TIMESTAMP_OPTIONS,
-    ).format(date);
+    return new Intl.DateTimeFormat(intlLocale(locale), options).format(date);
   } catch {
     return new Intl.DateTimeFormat(intlLocale(locale), {
       year: "numeric",
@@ -110,7 +119,7 @@ export function formatTimestamp(date: Date, locale: string): string {
       hour: "numeric",
       minute: "2-digit",
       second: "2-digit",
-      timeZone: "UTC",
+      timeZone,
       timeZoneName: "short",
     }).format(date);
   }

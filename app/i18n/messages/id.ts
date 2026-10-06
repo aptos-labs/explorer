@@ -110,6 +110,14 @@ export const id = {
         "Output tidak boleh diperlakukan sebagai kode sumber definitif atau otoritatif untuk modul on-chain mana pun.",
       ],
     },
+    timestamps: {
+      title: "Stempel waktu",
+      description:
+        "Tampilkan stempel waktu rantai dalam zona waktu lokal Anda. Saat mati, waktu tetap UTC.",
+      ariaLabel: "Tampilkan stempel waktu dalam waktu lokal",
+      localZone: "Zona waktu browser Anda adalah {timeZone}.",
+      example: "Contoh: {time}",
+    },
     apiKeys: {
       title: "Override Kunci API",
       whyAriaLabel: "Mengapa menggunakan kunci API sendiri?",
@@ -302,6 +310,7 @@ export const id = {
       bullets: [
         "**Bahasa** — Default browser atau bahasa eksplisit. Ini mengontrol antarmuka yang diterjemahkan, teks pengaturan, dan panduan ini. Data on-chain (alamat, nama fungsi, event) tetap seperti disimpan rantai.",
         "**Dekompilasi bytecode Move** — nonaktif secara default. Baca penafian sebelum mengaktifkan. Saat nonaktif, tampilan Decompiled dan Disassembly disembunyikan.",
+        "**Stempel waktu** — UTC secara bawaan agar satu waktu terbaca sama di setiap perangkat. Aktifkan waktu lokal di [Pengaturan](/settings) untuk mengubah waktu rantai ke zona waktu browser. Ekspor CSV dan stempel waktu mentah yang disalin tetap UTC.",
         "**Override kunci API** — kunci [geomi.dev](https://geomi.dev) opsional per jaringan agar browser Anda tidak terjebak pada batas laju anonim bersama. Kunci dikirim sebagai `Authorization: Bearer`. Kunci klien Geomi `AG-*` harus mengizinkan Origin situs ini. Centang **Ingat di perangkat ini** hanya di mesin yang Anda percaya; jika tidak, kunci bertahan untuk sesi tab.",
         "**Tema** — terang atau gelap dari kontrol matahari/bulan di header. Disimpan di cookie (`color_scheme`) dan mengikuti sistem jika Anda belum memilih.",
         "**Jaringan** — pemilih header; di-encode di `?network=` alih-alih di pengaturan.",

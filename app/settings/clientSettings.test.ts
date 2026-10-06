@@ -6,6 +6,7 @@ import {
   EXPLORER_SETTINGS_STORAGE_KEY,
   isExplorerSettingsStorageKey,
   loadExplorerClientSettings,
+  LOCAL_TIMESTAMPS_STORAGE_KEY,
   LOCALE_STORAGE_KEY,
   normalizeGeomiDevApiKeyOverride,
   persistExplorerClientSettings,
@@ -75,6 +76,7 @@ describe("clientSettings", () => {
         geomiDevApiKeyOverridesByNetwork: {mainnet: "override-key"},
         rememberGeomiDevApiKeyOverride: true,
         enableDecompilation: false,
+        displayLocalTimestamps: false,
         localePreference: "auto",
       });
     });
@@ -105,6 +107,7 @@ describe("clientSettings", () => {
         },
         rememberGeomiDevApiKeyOverride: true,
         enableDecompilation: false,
+        displayLocalTimestamps: false,
         localePreference: "auto",
       });
     });
@@ -120,6 +123,7 @@ describe("clientSettings", () => {
         geomiDevApiKeyOverridesByNetwork: {mainnet: "only-main"},
         rememberGeomiDevApiKeyOverride: true,
         enableDecompilation: false,
+        displayLocalTimestamps: false,
         localePreference: "auto",
       });
     });
@@ -168,6 +172,7 @@ describe("clientSettings", () => {
         geomiDevApiKeyOverridesByNetwork: {testnet: "session-key"},
         rememberGeomiDevApiKeyOverride: false,
         enableDecompilation: false,
+        displayLocalTimestamps: false,
         localePreference: "auto",
       });
     });
@@ -183,6 +188,7 @@ describe("clientSettings", () => {
         geomiDevApiKeyOverridesByNetwork: {devnet: "saved-key"},
         rememberGeomiDevApiKeyOverride: true,
         enableDecompilation: false,
+        displayLocalTimestamps: false,
         localePreference: "auto",
       });
     });
@@ -211,6 +217,7 @@ describe("clientSettings", () => {
           geomiDevApiKeyOverridesByNetwork: {mainnet: "  persisted-key  "},
           rememberGeomiDevApiKeyOverride: false,
           enableDecompilation: false,
+          displayLocalTimestamps: false,
           localePreference: "auto",
         },
         storages,
@@ -220,6 +227,7 @@ describe("clientSettings", () => {
         geomiDevApiKeyOverridesByNetwork: {mainnet: "persisted-key"},
         rememberGeomiDevApiKeyOverride: false,
         enableDecompilation: false,
+        displayLocalTimestamps: false,
         localePreference: "auto",
       });
     });
@@ -232,6 +240,7 @@ describe("clientSettings", () => {
           geomiDevApiKeyOverridesByNetwork: {testnet: "persisted-key"},
           rememberGeomiDevApiKeyOverride: true,
           enableDecompilation: false,
+          displayLocalTimestamps: false,
           localePreference: "auto",
         },
         storages,
@@ -241,6 +250,7 @@ describe("clientSettings", () => {
         geomiDevApiKeyOverridesByNetwork: {testnet: "persisted-key"},
         rememberGeomiDevApiKeyOverride: true,
         enableDecompilation: false,
+        displayLocalTimestamps: false,
         localePreference: "auto",
       });
     });
@@ -260,6 +270,7 @@ describe("clientSettings", () => {
           geomiDevApiKeyOverridesByNetwork: {},
           rememberGeomiDevApiKeyOverride: false,
           enableDecompilation: false,
+          displayLocalTimestamps: false,
           localePreference: "auto",
         },
         storages,
@@ -295,6 +306,7 @@ describe("clientSettings", () => {
           geomiDevApiKeyOverridesByNetwork: {},
           rememberGeomiDevApiKeyOverride: false,
           enableDecompilation: true,
+          displayLocalTimestamps: false,
           localePreference: "auto",
         },
         storages,
@@ -304,6 +316,7 @@ describe("clientSettings", () => {
         geomiDevApiKeyOverridesByNetwork: {},
         rememberGeomiDevApiKeyOverride: false,
         enableDecompilation: true,
+        displayLocalTimestamps: false,
         localePreference: "auto",
       });
     });
@@ -316,6 +329,7 @@ describe("clientSettings", () => {
           geomiDevApiKeyOverridesByNetwork: {},
           rememberGeomiDevApiKeyOverride: false,
           enableDecompilation: true,
+          displayLocalTimestamps: false,
           localePreference: "auto",
         },
         storages,
@@ -331,6 +345,7 @@ describe("clientSettings", () => {
         geomiDevApiKeyOverridesByNetwork: {},
         rememberGeomiDevApiKeyOverride: false,
         enableDecompilation: true,
+        displayLocalTimestamps: false,
         localePreference: "auto",
       });
     });
@@ -343,6 +358,7 @@ describe("clientSettings", () => {
           geomiDevApiKeyOverridesByNetwork: {mainnet: "session-key"},
           rememberGeomiDevApiKeyOverride: false,
           enableDecompilation: true,
+          displayLocalTimestamps: false,
           localePreference: "auto",
         },
         storages,
@@ -369,6 +385,7 @@ describe("clientSettings", () => {
           geomiDevApiKeyOverridesByNetwork: {},
           rememberGeomiDevApiKeyOverride: false,
           enableDecompilation: false,
+          displayLocalTimestamps: false,
           localePreference: "en",
         },
         storages,
@@ -385,7 +402,7 @@ describe("clientSettings", () => {
       );
     });
 
-    it("treats locale and decompilation keys as settings storage", () => {
+    it("treats locale, decompilation, and timestamp keys as settings storage", () => {
       expect(isExplorerSettingsStorageKey(null)).toBe(true);
       expect(isExplorerSettingsStorageKey(EXPLORER_SETTINGS_STORAGE_KEY)).toBe(
         true,
@@ -394,7 +411,61 @@ describe("clientSettings", () => {
       expect(isExplorerSettingsStorageKey(DECOMPILATION_STORAGE_KEY)).toBe(
         true,
       );
+      expect(isExplorerSettingsStorageKey(LOCAL_TIMESTAMPS_STORAGE_KEY)).toBe(
+        true,
+      );
       expect(isExplorerSettingsStorageKey("unrelated")).toBe(false);
+    });
+
+    it("persists displayLocalTimestamps without API keys", () => {
+      // Covers FEAT-SETTINGS-004
+      const storages = createStorageCollection({});
+
+      persistExplorerClientSettings(
+        {
+          geomiDevApiKeyOverridesByNetwork: {},
+          rememberGeomiDevApiKeyOverride: false,
+          enableDecompilation: false,
+          displayLocalTimestamps: true,
+          localePreference: "auto",
+        },
+        storages,
+      );
+
+      expect(loadExplorerClientSettings(storages).displayLocalTimestamps).toBe(
+        true,
+      );
+      expect(storages.localStorage?.getItem(LOCAL_TIMESTAMPS_STORAGE_KEY)).toBe(
+        "true",
+      );
+
+      const freshStorages = {
+        localStorage: storages.localStorage,
+        sessionStorage: createStorageMock(),
+      };
+      expect(
+        loadExplorerClientSettings(freshStorages).displayLocalTimestamps,
+      ).toBe(true);
+    });
+
+    it("clears local timestamps when the preference is turned off", () => {
+      const storages = createStorageCollection({});
+      storages.localStorage?.setItem(LOCAL_TIMESTAMPS_STORAGE_KEY, "true");
+
+      persistExplorerClientSettings(
+        {
+          ...defaultExplorerClientSettings,
+          displayLocalTimestamps: false,
+        },
+        storages,
+      );
+
+      expect(
+        storages.localStorage?.getItem(LOCAL_TIMESTAMPS_STORAGE_KEY),
+      ).toBeNull();
+      expect(loadExplorerClientSettings(storages).displayLocalTimestamps).toBe(
+        false,
+      );
     });
 
     it("fails gracefully when storage writes throw", () => {
@@ -406,6 +477,7 @@ describe("clientSettings", () => {
             geomiDevApiKeyOverridesByNetwork: {mainnet: "persisted-key"},
             rememberGeomiDevApiKeyOverride: true,
             enableDecompilation: false,
+            displayLocalTimestamps: false,
             localePreference: "auto",
           },
           storages,
