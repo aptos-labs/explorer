@@ -389,6 +389,7 @@ export const ms = {
     loadingTransactions: "Memuat transaksi",
     codeCopied: "Kod disalin",
     timestampCopied: "Cap masa disalin",
+    numberCopied: "Nombor disalin",
     loading: "Memuat",
     loadingEllipsis: "Memuat...",
     noDataFound: "Tiada data dijumpai",

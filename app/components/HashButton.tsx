@@ -32,6 +32,7 @@ import {useTranslation} from "../i18n";
 import {getSemanticColors} from "../themes/colors/aptosBrandColors";
 import {assertNever, standardizeAddress} from "../utils";
 import IdenticonImg from "./IdenticonImg";
+import IntegerValue from "./IndividualPageContent/ContentValue/IntegerValue";
 
 export enum HashType {
   ACCOUNT = "account",
@@ -530,6 +531,12 @@ export default function HashButton({
         img={img}
         {...props}
       />
+    );
+  } else if (isNumericTransactionVersion(hash, type)) {
+    return (
+      <Box {...props}>
+        <IntegerValue value={hash} copyable to={getHashLinkStr(hash, type)} />
+      </Box>
     );
   } else {
     return (

@@ -392,6 +392,7 @@ export const de = {
     loadingTransactions: "Transaktionen werden geladen",
     codeCopied: "Code kopiert",
     timestampCopied: "Zeitstempel kopiert",
+    numberCopied: "Zahl kopiert",
     loading: "Wird geladen",
     loadingEllipsis: "Wird geladen...",
     noDataFound: "Keine Daten gefunden",

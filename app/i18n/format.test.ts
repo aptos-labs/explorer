@@ -6,6 +6,7 @@ import {
   formatDateTime,
   formatInteger,
   formatIntegerString,
+  canonicalIntegerString,
   formatMonthDay,
   formatNumber,
   formatRelativeTime,
@@ -102,6 +103,23 @@ describe("formatBigInt and formatIntegerString", () => {
 
   it("uses Indian grouping for Hindi", () => {
     expect(formatIntegerString("1234567", "hi")).toBe("12,34,567");
+  });
+});
+
+describe("canonicalIntegerString", () => {
+  // Covers FEAT-I18N-001 / FEAT-TXN-002 / FEAT-BLOCK-001 — copyable identifiers
+  it("returns an ungrouped ASCII integer for locale-formatted identifiers", () => {
+    expect(canonicalIntegerString("1234567")).toBe("1234567");
+    expect(canonicalIntegerString(1_234_567)).toBe("1234567");
+    expect(canonicalIntegerString(10_000_000_000_000_001n)).toBe(
+      "10000000000000001",
+    );
+  });
+
+  it("trims whitespace and strips leading zeros without losing a lone zero", () => {
+    expect(canonicalIntegerString("  0001234567 ")).toBe("1234567");
+    expect(canonicalIntegerString("0")).toBe("0");
+    expect(canonicalIntegerString("-0010")).toBe("-10");
   });
 });
 

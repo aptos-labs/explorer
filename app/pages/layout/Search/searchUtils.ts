@@ -18,7 +18,6 @@ import {getAssetSymbol, tryStandardizeAddress} from "../../../utils";
 import {
   coinOrderIndex,
   is32ByteHex,
-  isNumeric,
   isValidAccountAddress,
   isValidStruct,
   truncateAddress,
@@ -83,7 +82,7 @@ export function detectInputType(searchText: string): {
   return {
     isAnsName: normalizedText.endsWith(".apt"),
     isStruct: isValidStruct(normalizedText),
-    isValidBlockHeightOrVer: isNumeric(normalizedText),
+    isValidBlockHeightOrVer: parseNumericSearch(normalizedText) !== null,
     is32Hex: is32ByteHex(normalizedText),
     isValidAccountAddr: isValidAccountAddress(normalizedText),
     isEmoji: Boolean(normalizedText.match(/^\p{Emoji}+$/gu)),
@@ -206,10 +205,24 @@ export type SearchLedgerBounds = {
 /**
  * Parse a search box integer (block height or txn version). Rejects
  * negatives; strips leading zeros so `BigInt` does not throw.
+ *
+ * Locale-grouped display (`1,234,567`, `1.234.567`, Indian `12,34,567`)
+ * is accepted so pasting a formatted identifier still searches. Mixed
+ * comma+period strings are rejected (those look like decimals).
  */
 export function parseNumericSearch(text: string): bigint | null {
-  if (!/^\d+$/.test(text)) return null;
-  const stripped = text.replace(/^0+(?=\d)/, "");
+  const trimmed = text.trim();
+  let digits: string;
+  if (/^\d+$/.test(trimmed)) {
+    digits = trimmed;
+  } else if (/^\d{1,3}([.,])\d{3}(?:\1\d{3})*$/.test(trimmed)) {
+    digits = trimmed.replace(/[.,]/g, "");
+  } else if (/^\d{1,2}(,\d{2})+,\d{3}$/.test(trimmed)) {
+    digits = trimmed.replace(/,/g, "");
+  } else {
+    return null;
+  }
+  const stripped = digits.replace(/^0+(?=\d)/, "");
   return BigInt(stripped);
 }
 

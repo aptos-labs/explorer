@@ -393,6 +393,7 @@ export const es = {
     loadingTransactions: "Cargando transacciones",
     codeCopied: "Código copiado",
     timestampCopied: "Marca de tiempo copiada",
+    numberCopied: "Número copiado",
     loading: "Cargando",
     loadingEllipsis: "Cargando...",
     noDataFound: "No se encontraron datos",

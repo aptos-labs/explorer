@@ -391,6 +391,7 @@ export const fil = {
     loadingTransactions: "Naglo-load ng mga transaksyon",
     codeCopied: "Nakopya ang code",
     timestampCopied: "Nakopya ang timestamp",
+    numberCopied: "Nakopya ang numero",
     loading: "Naglo-load",
     loadingEllipsis: "Naglo-load...",
     noDataFound: "Walang nahanap na data",

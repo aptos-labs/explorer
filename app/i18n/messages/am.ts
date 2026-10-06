@@ -386,6 +386,7 @@ export const am = {
     loadingTransactions: "ግብይቶች በመጫን ላይ",
     codeCopied: "ኮድ ተቀድቷል",
     timestampCopied: "ጊዜ ማህተም ተቀድቷል",
+    numberCopied: "ቁጥር ተቀድቷል",
     loading: "በመጫን ላይ",
     loadingEllipsis: "በመጫን ላይ...",
     noDataFound: "ውሂብ አልተገኘም",

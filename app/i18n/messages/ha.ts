@@ -391,6 +391,7 @@ export const ha = {
     loadingTransactions: "Ana lodin ma'amaloli",
     codeCopied: "An kwafa lamba",
     timestampCopied: "An kwafa lokaci",
+    numberCopied: "An kwafa lamba",
     loading: "Ana lodawa",
     loadingEllipsis: "Ana lodawa...",
     noDataFound: "Ba a sami bayanai ba",

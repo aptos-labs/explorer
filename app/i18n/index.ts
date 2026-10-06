@@ -7,6 +7,7 @@ export {
 } from "./detectLocale";
 export {englishT, englishTList} from "./english";
 export {
+  canonicalIntegerString,
   decimalSeparator,
   formatBigInt,
   formatCompactNumber,

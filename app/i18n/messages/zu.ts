@@ -393,6 +393,7 @@ export const zu = {
     loadingTransactions: "Iyalayisha ukuthengiselana",
     codeCopied: "Ikhodi ikopishiwe",
     timestampCopied: "Isikhathi sikopishiwe",
+    numberCopied: "Inombolo ikopishiwe",
     loading: "Iyalayisha",
     loadingEllipsis: "Iyalayisha...",
     noDataFound: "Ayikho Idatha Etholakele",

@@ -125,11 +125,11 @@ export function NetworkCard({network}: {network: NetworkName}) {
             />
             <StatusRow
               label={t("deployments.blockHeight")}
-              value={<IntegerValue value={data.blockHeight} />}
+              value={<IntegerValue value={data.blockHeight} copyable />}
             />
             <StatusRow
               label={t("deployments.ledgerVersion")}
-              value={<IntegerValue value={data.ledgerVersion} />}
+              value={<IntegerValue value={data.ledgerVersion} copyable />}
             />
             <StatusRow
               label={t("deployments.chainId")}

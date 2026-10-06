@@ -384,6 +384,7 @@ export const zh = {
     loadingTransactions: "正在加载交易",
     codeCopied: "代码已复制",
     timestampCopied: "时间戳已复制",
+    numberCopied: "数字已复制",
     loading: "加载中",
     loadingEllipsis: "加载中...",
     noDataFound: "未找到数据",

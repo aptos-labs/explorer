@@ -390,6 +390,7 @@ export const tr = {
     loadingTransactions: "İşlemler yükleniyor",
     codeCopied: "Kod kopyalandı",
     timestampCopied: "Zaman damgası kopyalandı",
+    numberCopied: "Sayı kopyalandı",
     loading: "Yükleniyor",
     loadingEllipsis: "Yükleniyor...",
     noDataFound: "Veri bulunamadı",

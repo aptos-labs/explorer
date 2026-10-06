@@ -40,7 +40,7 @@ export default function ValidatorTransactionTab({
           titleKey="fields.version"
           value={
             <Box sx={{fontWeight: 600}}>
-              <IntegerValue value={transactionData.version} />
+              <IntegerValue value={transactionData.version} copyable />
             </Box>
           }
           tooltip={getLearnMoreTooltip("version")}

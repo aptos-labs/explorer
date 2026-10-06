@@ -390,6 +390,7 @@ export const pl = {
     loadingTransactions: "Ładowanie transakcji",
     codeCopied: "Skopiowano kod",
     timestampCopied: "Skopiowano znacznik czasu",
+    numberCopied: "Skopiowano liczbę",
     loading: "Ładowanie",
     loadingEllipsis: "Ładowanie...",
     noDataFound: "Nie znaleziono danych",

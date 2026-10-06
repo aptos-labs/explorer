@@ -390,6 +390,7 @@ export const ta = {
     loadingTransactions: "பரிவர்த்தனைகளை ஏற்றுகிறது",
     codeCopied: "குறியீடு நகலெடுக்கப்பட்டது",
     timestampCopied: "நேர முத்திரை நகலெடுக்கப்பட்டது",
+    numberCopied: "எண் நகலெடுக்கப்பட்டது",
     loading: "ஏற்றுகிறது",
     loadingEllipsis: "ஏற்றுகிறது...",
     noDataFound: "தரவு காணப்படவில்லை",

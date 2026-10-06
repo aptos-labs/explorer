@@ -387,6 +387,7 @@ export const he = {
     loadingTransactions: "טוען עסקאות",
     codeCopied: "הקוד הועתק",
     timestampCopied: "חותמת הזמן הועתקה",
+    numberCopied: "המספר הועתק",
     loading: "טוען",
     loadingEllipsis: "טוען...",
     noDataFound: "לא נמצאו נתונים",

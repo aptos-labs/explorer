@@ -388,6 +388,7 @@ export const bn = {
     loadingTransactions: "লেনদেন লোড হচ্ছে",
     codeCopied: "কোড কপি হয়েছে",
     timestampCopied: "টাইমস্ট্যাম্প কপি হয়েছে",
+    numberCopied: "সংখ্যা কপি হয়েছে",
     loading: "লোড হচ্ছে",
     loadingEllipsis: "লোড হচ্ছে...",
     noDataFound: "কোনো ডেটা পাওয়া যায়নি",

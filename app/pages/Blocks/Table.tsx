@@ -19,11 +19,7 @@ import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCel
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
 import VirtualizedTableBody from "../../components/Table/VirtualizedTableBody";
 import {englishT, useTranslation, type TFunction} from "../../i18n";
-import {
-  Link,
-  useAugmentToWithGlobalSearchParams,
-  useNavigate,
-} from "../../routing";
+import {useAugmentToWithGlobalSearchParams, useNavigate} from "../../routing";
 import {assertNever} from "../../utils";
 import {getTimeDiffInSeconds, parseTimestamp} from "../utils";
 
@@ -103,9 +99,11 @@ type BlockCellProps = {
 function BlockHeightCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
-      <Link to={`/block/${block.block_height}`} underline="none">
-        <IntegerValue value={block.block_height} />
-      </Link>
+      <IntegerValue
+        value={block.block_height}
+        copyable
+        to={`/block/${block.block_height}`}
+      />
     </GeneralTableCell>
   );
 }
@@ -149,9 +147,11 @@ function CountVersionCell({block}: BlockCellProps) {
 function FirstVersionCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      <Link to={`/txn/${block.first_version}`} underline="none">
-        <IntegerValue value={block.first_version} />
-      </Link>
+      <IntegerValue
+        value={block.first_version}
+        copyable
+        to={`/txn/${block.first_version}`}
+      />
     </GeneralTableCell>
   );
 }
@@ -159,9 +159,11 @@ function FirstVersionCell({block}: BlockCellProps) {
 function LastVersionCell({block}: BlockCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "right"}}>
-      <Link to={`/txn/${block.last_version}`} underline="none">
-        <IntegerValue value={block.last_version} />
-      </Link>
+      <IntegerValue
+        value={block.last_version}
+        copyable
+        to={`/txn/${block.last_version}`}
+      />
     </GeneralTableCell>
   );
 }

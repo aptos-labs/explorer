@@ -389,6 +389,7 @@ export const ur = {
     loadingTransactions: "ٹرانزیکشنز لوڈ ہو رہی ہیں",
     codeCopied: "کوڈ کاپی ہو گیا",
     timestampCopied: "ٹائم اسٹیمپ کاپی ہو گیا",
+    numberCopied: "عدد کاپی ہو گیا",
     loading: "لوڈ ہو رہا ہے",
     loadingEllipsis: "لوڈ ہو رہا ہے...",
     noDataFound: "کوئی ڈیٹا نہیں ملا",

@@ -389,6 +389,7 @@ export const ko = {
     loadingTransactions: "트랜잭션 불러오는 중",
     codeCopied: "코드가 복사되었습니다",
     timestampCopied: "타임스탬프가 복사되었습니다",
+    numberCopied: "숫자가 복사되었습니다",
     loading: "불러오는 중",
     loadingEllipsis: "불러오는 중...",
     noDataFound: "데이터가 없습니다",

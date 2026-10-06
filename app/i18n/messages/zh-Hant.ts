@@ -384,6 +384,7 @@ export const zhHant = {
     loadingTransactions: "正在載入交易",
     codeCopied: "程式碼已複製",
     timestampCopied: "時間戳已複製",
+    numberCopied: "數字已複製",
     loading: "載入中",
     loadingEllipsis: "載入中...",
     noDataFound: "未找到資料",
