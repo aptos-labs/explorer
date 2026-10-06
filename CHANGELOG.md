@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Transaction detail tooltips**: The overview rows for status, receiver, smart contract, amount, and signature now include an info icon that explains the field. Smart contract and signature link to the Aptos glossary.
 
+### Changed
+
+- **Releases / framework trains**: Gas schedule `feature_version` values **51–54** now map to framework releases **1.47–1.50**, matching aptos-core `gas_feature_versions` through `RELEASE_V1_50`.
+- **Releases / feature flags**: Static names now cover aptos-core `FeatureFlag` IDs **113–114** and **116–130** (ID **115** is unassigned upstream), including storage-slot natives, transaction info v1, native trading, MonoMove, and lazy module initialization. **Enable Resource Access Control** (75) and **Permissioned Signer** (84) are labeled `(deprecated)` to match the upstream `_DEPRECATED_` variants.
+
 ### Fixed
 
 - **Filipino**: Phrases that were still English now follow the rest of the Filipino catalog. Staking status, suggested max, commission, and node counts; partner and protocol fees; signature key descriptions; multisig votes, abort location, and error codes; and guide labels that still used the English tab names (**All Nodes**, **User vs All**). Loanwords the catalog already uses (Account, Address, Block, user transaction) stay as they are.

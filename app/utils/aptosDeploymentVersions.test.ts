@@ -10,6 +10,13 @@ describe("aptosDeploymentVersions", () => {
     expect(frameworkReleaseFromGasFeatureVersion(47)).toBe("1.43");
   });
 
+  it("maps gas feature versions 51–54 to framework releases 1.47–1.50", () => {
+    expect(frameworkReleaseFromGasFeatureVersion(51)).toBe("1.47");
+    expect(frameworkReleaseFromGasFeatureVersion(52)).toBe("1.48");
+    expect(frameworkReleaseFromGasFeatureVersion(53)).toBe("1.49");
+    expect(frameworkReleaseFromGasFeatureVersion(54)).toBe("1.50");
+  });
+
   it("returns null for unknown gas feature versions", () => {
     expect(frameworkReleaseFromGasFeatureVersion(999)).toBeNull();
   });
