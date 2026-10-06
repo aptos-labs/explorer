@@ -111,6 +111,14 @@ export const ha = {
         "Ba a kamata a ɗauki abin da aka cire a matsayin tushen lamba na ƙarshe ko na hukuma ga kowane module na kan sarkar.",
       ],
     },
+    timestamps: {
+      title: "Tambarin lokaci",
+      description:
+        "Nuna tambarin lokacin sarkar a yankin lokacinku na gida. Idan an kashe, lokutan suna UTC.",
+      ariaLabel: "Nuna tambarin lokaci a lokacin gida",
+      localZone: "Yankin lokacin burauzarku shine {timeZone}.",
+      example: "Misali: {time}",
+    },
     apiKeys: {
       title: "Canza maɓallin API",
       whyAriaLabel: "Me yasa ku yi amfani da maɓallin API naku?",
@@ -304,6 +312,7 @@ export const ha = {
       bullets: [
         "**Harshe** — Na asalin burauza ko harshe na musamman. Wannan yana sarrafa fuskar da aka fassara, rubutun saituna, da wannan jagora. Bayanan kan sarkar (adireshi, sunayen aiki, abubuwan da suka faru) suna kasancewa kamar yadda sarkar ke adana su.",
         "**Cire bytecode na Move** — a kashe a tsohuwa. Karanta gargadin kafin kunna. Lokacin da aka kashe, ra'ayoyin da aka Cire da Cire lamba suna ɓoye.",
+        "**Tambarin lokaci** — UTC a tsohuwa don lokaci ɗaya ya kasance iri ɗaya a kowace na'ura. Kunna lokacin gida a [Saituna](/settings) don canza lokutan sarkar zuwa yankin lokacin burauza. Fitar da CSV da tambarin da aka kwafa suna UTC.",
         "**Canza maɓallin API** — maɓallan [geomi.dev](https://geomi.dev) na zaɓi ga kowace hanyar sadarwa don burauzar ku kada ta tsaya a kan iyakar saurin maras suna da aka raba. Ana aika maɓalli a matsayin `Authorization: Bearer`. Maɓallan abokin ciniki na Geomi `AG-*` dole ne su ƙyale Asalin wannan gidan. Duba **Tuna a wannan na'urar** kawai a kan na'urar da kuka amince da ita; in ba haka ba maɓalli suna ƙarewa da zaman shafin.",
         "**Jigo** — haske ko duhu daga maɓallin rana/wata a cikin shugaban shafi. Ana adana shi a cikin cookie (`color_scheme`) kuma yana bin tsarin idan ba ku zaɓi ba.",
         "**Hanyar sadarwa** — mai zaɓar shugaban shafi; ana encode shi a cikin `?network=` maimakon saituna.",

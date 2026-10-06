@@ -90,10 +90,14 @@ function TransactionTypeCell({transaction}: TransactionCellProps) {
 }
 
 function TransactionTimestampCell({transaction}: TransactionCellProps) {
-  const {locale} = useTranslation();
+  const {locale, timestampTimeZone} = useTranslation();
   const timestamp =
     "timestamp" in transaction ? (
-      getTableFormattedTimestamp(transaction.timestamp, locale)
+      getTableFormattedTimestamp(
+        transaction.timestamp,
+        locale,
+        timestampTimeZone,
+      )
     ) : (
       // Genesis transaction
       <Typography variant="subtitle2" align="center">
@@ -230,7 +234,7 @@ function TransactionDetailDialog({
   transaction,
   address,
 }: TransactionDetailDialogProps) {
-  const {t, locale} = useTranslation();
+  const {t, locale, timestampTimeZone} = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
   const augmentTo = useAugmentToWithGlobalSearchParams();
@@ -239,7 +243,11 @@ function TransactionDetailDialog({
   const version = "version" in transaction ? transaction.version : null;
   const timestamp =
     "timestamp" in transaction
-      ? getTableFormattedTimestamp(transaction.timestamp, locale)
+      ? getTableFormattedTimestamp(
+          transaction.timestamp,
+          locale,
+          timestampTimeZone,
+        )
       : "-";
   const counterparty = getTransactionCounterparty(transaction);
   const sender =
@@ -535,14 +543,18 @@ type TransactionCardProps = {
 };
 
 function TransactionCard({transaction, address}: TransactionCardProps) {
-  const {t, locale} = useTranslation();
+  const {t, locale, timestampTimeZone} = useTranslation();
   const theme = useTheme();
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
   const version = "version" in transaction ? transaction.version : null;
   const timestamp =
     "timestamp" in transaction
-      ? getTableFormattedTimestamp(transaction.timestamp, locale)
+      ? getTableFormattedTimestamp(
+          transaction.timestamp,
+          locale,
+          timestampTimeZone,
+        )
       : "-";
   const counterparty = getTransactionCounterparty(transaction);
 

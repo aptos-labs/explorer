@@ -26,7 +26,13 @@ import {useEffect, useMemo, useState} from "react";
 import {clearCachedSearchClients} from "../../api/createClient";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import LanguageSelect from "../../components/layout/LanguageSelect";
-import {InlineMarkup, translateNetworkName, useTranslation} from "../../i18n";
+import {
+  formatTimestamp,
+  InlineMarkup,
+  translateNetworkName,
+  useTranslation,
+} from "../../i18n";
+import {readBrowserTimeZone} from "../../i18n/timestampTimeZone";
 import {emitApiKeySaved} from "../../context/rate-limit";
 import {clearCachedV2Clients} from "../../global-config";
 import {type NetworkName, networks} from "../../lib/constants";
@@ -61,7 +67,7 @@ function hasAnyOverride(settings: ExplorerClientSettings): boolean {
 
 export default function SettingsPage() {
   const theme = useTheme();
-  const {t, tList} = useTranslation();
+  const {t, tList, locale} = useTranslation();
   const queryClient = useQueryClient();
   const router = useRouter();
   const {settings, setExplorerSettings} = useExplorerSettings();
@@ -72,6 +78,11 @@ export default function SettingsPage() {
   const [apiKeyInfoAnchor, setApiKeyInfoAnchor] = useState<HTMLElement | null>(
     null,
   );
+  const [browserTimeZone, setBrowserTimeZone] = useState<string | null>(null);
+
+  useEffect(() => {
+    setBrowserTimeZone(readBrowserTimeZone() ?? "UTC");
+  }, []);
 
   useEffect(() => {
     setDraftSettings((current) => {
@@ -184,6 +195,79 @@ export default function SettingsPage() {
                 </Typography>
                 <LanguageSelect variant="settings" />
               </Box>
+            </Stack>
+          </Paper>
+
+          <Paper
+            variant="outlined"
+            sx={{
+              p: 3,
+              borderColor: draftSettings.displayLocalTimestamps
+                ? theme.palette.success.main
+                : theme.palette.divider,
+            }}
+          >
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+              }}
+            >
+              <Box>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontWeight: 600,
+                  }}
+                >
+                  {t("settings.timestamps.title")}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "text.secondary",
+                    mt: 0.5,
+                  }}
+                >
+                  {t("settings.timestamps.description")}
+                </Typography>
+                {browserTimeZone ? (
+                  <Stack spacing={0.5} sx={{mt: 1.5}}>
+                    <Typography variant="body2" sx={{color: "text.secondary"}}>
+                      {t("settings.timestamps.localZone", {
+                        timeZone: browserTimeZone,
+                      })}
+                    </Typography>
+                    <Typography variant="body2">
+                      {t("settings.timestamps.example", {
+                        time: formatTimestamp(
+                          new Date(),
+                          locale,
+                          draftSettings.displayLocalTimestamps
+                            ? browserTimeZone
+                            : "UTC",
+                        ),
+                      })}
+                    </Typography>
+                  </Stack>
+                ) : null}
+              </Box>
+              <Switch
+                checked={draftSettings.displayLocalTimestamps}
+                onChange={(event) =>
+                  setDraftSettings((current) => ({
+                    ...current,
+                    displayLocalTimestamps: event.target.checked,
+                  }))
+                }
+                slotProps={{
+                  input: {
+                    "aria-label": t("settings.timestamps.ariaLabel"),
+                  },
+                }}
+              />
             </Stack>
           </Paper>
 

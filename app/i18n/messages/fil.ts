@@ -111,6 +111,14 @@ export const fil = {
         "Hindi dapat ituring ang output bilang pinal o awtoritatibong source code ng anumang on-chain module.",
       ],
     },
+    timestamps: {
+      title: "Mga timestamp",
+      description:
+        "Ipakita ang mga timestamp ng chain sa iyong lokal na time zone. Kapag naka-off, nananatili sa UTC ang mga oras.",
+      ariaLabel: "Ipakita ang mga timestamp sa lokal na oras",
+      localZone: "Ang time zone ng iyong browser ay {timeZone}.",
+      example: "Halimbawa: {time}",
+    },
     apiKeys: {
       title: "Mga override ng API key",
       whyAriaLabel: "Bakit gagamit ng sarili mong API key?",
@@ -304,6 +312,7 @@ export const fil = {
       bullets: [
         "**Wika** — Default ng browser o tahasang wika. Kinokontrol nito ang isinaling chrome, kopya ng setting, at ang gabay na ito. Nananatili ang on-chain data (address, pangalan ng function, event) ayon sa pagkaka-store sa chain.",
         "**Decompilation ng Move bytecode** — naka-off bilang default. Basahin ang disclaimer bago i-enable. Kapag naka-off, nakatago ang Decompiled at Disassembly view.",
+        "**Mga timestamp** — UTC bilang default para pareho ang pagbasa ng isang oras sa bawat device. I-on ang lokal na oras sa [Settings](/settings) para i-convert ang mga oras ng chain sa time zone ng browser. Nananatiling UTC ang CSV export at mga kinopyang raw timestamp.",
         "**Mga override ng API key** — opsyonal na [geomi.dev](https://geomi.dev) key bawat network para hindi maipit ang browser sa shared anonymous rate limit. Ipinapadala ang key bilang `Authorization: Bearer`. Dapat payagan ng Geomi `AG-*` client key ang Origin ng site na ito. I-check ang **Tandaan sa device na ito** sa makina lang na pinagkakatiwalaan mo; kung hindi, tumatagal ang key sa tab session.",
         "**Theme** — light o dark mula sa sun/moon control sa header. Naka-store sa cookie (`color_scheme`) at sumusunod sa system kung hindi ka pa pumili.",
         "**Network** — selector sa header; naka-encode sa `?network=` sa halip na sa setting.",

@@ -112,6 +112,14 @@ export const es = {
         "La salida no debe tratarse como el código fuente definitivo o autoritativo de ningún módulo en cadena.",
       ],
     },
+    timestamps: {
+      title: "Marcas de tiempo",
+      description:
+        "Muestra las marcas de tiempo de la cadena en tu zona horaria local. Si está desactivado, las horas siguen en UTC.",
+      ariaLabel: "Mostrar marcas de tiempo en hora local",
+      localZone: "La zona horaria de tu navegador es {timeZone}.",
+      example: "Ejemplo: {time}",
+    },
     apiKeys: {
       title: "Sustituciones de claves de API",
       whyAriaLabel: "¿Por qué usar tu propia clave de API?",
@@ -306,6 +314,7 @@ export const es = {
       bullets: [
         "**Idioma** — predeterminado del navegador o un catálogo explícito (hoy se incluye inglés). Controla la interfaz traducida, el texto de configuración y esta guía. Los datos en cadena (direcciones, nombres de funciones, eventos) permanecen como los almacena la cadena.",
         "**Descompilación de bytecode de Move** — desactivada de forma predeterminada. Lee el aviso antes de activarla. Cuando está desactivada, las vistas Descompilado y Desensamblado se ocultan.",
+        "**Marcas de tiempo** — UTC de forma predeterminada, para que una hora se lea igual en cada dispositivo. Activa la hora local en [Configuración](/settings) para convertir las horas de la cadena a la zona horaria de tu navegador. La exportación CSV y las marcas de tiempo sin procesar copiadas siguen en UTC.",
         "**Sustituciones de claves de API** — claves opcionales de [geomi.dev](https://geomi.dev) por red para que tu navegador no quede en el límite de frecuencia anónimo compartido. Las claves se envían como `Authorization: Bearer`. Las claves de cliente `AG-*` de Geomi deben permitir el Origin de este sitio. Marca **Recordar en este dispositivo** solo en una máquina de confianza; de lo contrario las claves duran la sesión de la pestaña.",
         "**Tema** — claro u oscuro desde el control de sol/luna del encabezado. Se guarda en una cookie (`color_scheme`) y sigue el sistema si no has elegido.",
         "**Red** — selector del encabezado; se codifica en `?network=` en lugar de en la configuración.",

@@ -111,6 +111,14 @@ export const nl = {
         "De output niet als de definitieve of gezaghebbende broncode voor een on-chain module moet worden behandeld.",
       ],
     },
+    timestamps: {
+      title: "Tijdstempels",
+      description:
+        "Toon ketentijdstempels in je lokale tijdzone. Uitgeschakeld blijven tijden in UTC.",
+      ariaLabel: "Tijdstempels in lokale tijd tonen",
+      localZone: "De tijdzone van je browser is {timeZone}.",
+      example: "Voorbeeld: {time}",
+    },
     apiKeys: {
       title: "API-sleuteloverschrijvingen",
       whyAriaLabel: "Waarom uw eigen API-sleutel gebruiken?",
@@ -304,6 +312,7 @@ export const nl = {
       bullets: [
         "**Taal** — Browserstandaard of een expliciete taal. Dit bepaalt vertaalde interface, instellingsteksten en deze handleiding. On-chain gegevens (adressen, functienamen, events) blijven zoals de keten ze opslaat.",
         "**Move-bytecode-decompilatie** — standaard uit. Lees de disclaimer voordat u inschakelt. Wanneer uit, zijn Gedecompileerd- en Disassembly-weergaven verborgen.",
+        "**Tijdstempels** — standaard UTC, zodat een tijd op elk apparaat hetzelfde wordt gelezen. Zet lokale tijd aan in [Instellingen](/settings) om ketentijden naar de tijdzone van je browser om te zetten. CSV-export en gekopieerde ruwe tijdstempels blijven UTC.",
         "**API-sleuteloverschrijvingen** — optionele [geomi.dev](https://geomi.dev)-sleutels per netwerk, zodat uw browser niet vastzit aan de gedeelde anonieme ratelimiet. Sleutels worden verzonden als `Authorization: Bearer`. Geomi `AG-*`-clientsleutels moeten de Origin van deze site toestaan. Vink **Op dit apparaat onthouden** alleen aan op een apparaat dat u vertrouwt; anders blijven sleutels geldig voor de tabsessie.",
         "**Thema** — licht of donker via de zon/maan-knop in de koptekst. Opgeslagen in een cookie (`color_scheme`) en volgt het systeem als u niets hebt gekozen.",
         "**Netwerk** — selector in de koptekst; gecodeerd in `?network=` in plaats van in instellingen.",

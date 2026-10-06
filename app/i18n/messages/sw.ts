@@ -110,6 +110,14 @@ export const sw = {
         "Matokeo hayapaswi kuchukuliwa kama msimbo wa mwisho au wa mamlaka kwa moduli yoyote iliyoko kwenye mnyororo.",
       ],
     },
+    timestamps: {
+      title: "Mihuri ya muda",
+      description:
+        "Onyesha mihuri ya muda ya mnyororo katika ukanda wa muda wa karibu nawe. Ikiwa imezimwa, muda hubaki UTC.",
+      ariaLabel: "Onyesha mihuri ya muda kwa saa ya karibu",
+      localZone: "Ukanda wa muda wa kivinjari chako ni {timeZone}.",
+      example: "Mfano: {time}",
+    },
     apiKeys: {
       title: "Ubadilishaji wa funguo za API",
       whyAriaLabel: "Kwa nini utumie funguo yako ya API?",
@@ -303,6 +311,7 @@ export const sw = {
       bullets: [
         "**Lugha** — Chaguomsingi la kivinjari au lugha maalum. Huidhibiti kiolesura kilichotafsiriwa, maandishi ya mipangilio, na mwongozo huu. Data iliyoko kwenye mnyororo (anwani, majina ya kazi, matukio) hubaki kama mnyororo unavyohifadhi.",
         "**Uchanganuzi wa bytecode ya Move** — umezimwa kwa chaguomsingi. Soma kanusho kabla ya kuwasha. Ukiwa umezimwa, maoni ya Iliyochanganuliwa na Uchanganuzi hufichwa.",
+        "**Mihuri ya muda** — UTC kwa chaguo-msingi ili muda mmoja usomwe sawa kwenye kila kifaa. Washa muda wa karibu katika [Mipangilio](/settings) ili kubadilisha muda wa mnyororo hadi ukanda wa kivinjari. Hamisho la CSV na mihuri ghafi iliyonakiliwa hubaki UTC.",
         "**Ubadilishaji wa funguo za API** — funguo za [geomi.dev](https://geomi.dev) kwa kila mtandao (si lazima) ili kivinjari chako kisikwame kwenye kikomo cha kasi cha pamoja cha wasiojulikana. Funguo hutumwa kama `Authorization: Bearer`. Funguo za mteja za Geomi `AG-*` lazima ziruhusu Origin ya tovuti hii. Weka alama **Kumbuka kwenye kifaa hiki** tu kwenye mashine unayoiamini; vinginevyo funguo hudumu kwa kipindi cha kichupo.",
         "**Mandhari** — mwanga au giza kutoka kidhibiti cha jua/mwezi kwenye kichwa. Huhifadhiwa kwenye kuki (`color_scheme`) na hufuata mfumo ikiwa hujachagua.",
         "**Mtandao** — kichaguzi cha kichwa; husimbwa katika `?network=` badala ya mipangilio.",

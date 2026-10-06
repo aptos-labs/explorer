@@ -110,6 +110,14 @@ export const ms = {
         "Output tidak boleh dianggap sebagai kod sumber muktamad atau autoritatif untuk sebarang modul on-chain.",
       ],
     },
+    timestamps: {
+      title: "Cap masa",
+      description:
+        "Paparkan cap masa rantai dalam zon waktu tempatan anda. Apabila dimatikan, masa kekal dalam UTC.",
+      ariaLabel: "Paparkan cap masa dalam masa tempatan",
+      localZone: "Zon waktu pelayar anda ialah {timeZone}.",
+      example: "Contoh: {time}",
+    },
     apiKeys: {
       title: "Gantian Kunci API",
       whyAriaLabel: "Mengapa menggunakan kunci API sendiri?",
@@ -302,6 +310,7 @@ export const ms = {
       bullets: [
         "**Bahasa** — Lalai pelayar atau bahasa eksplisit. Ini mengawal antara muka diterjemahkan, teks tetapan, dan panduan ini. Data on-chain (alamat, nama fungsi, event) kekal seperti disimpan rantaian.",
         "**Penyahkompilasian bytecode Move** — dimatikan secara lalai. Baca penafian sebelum mendayakan. Apabila dimatikan, paparan Decompiled dan Disassembly disembunyikan.",
+        "**Cap masa** — UTC secara lalai supaya satu masa dibaca sama pada setiap peranti. Hidupkan masa tempatan dalam [Tetapan](/settings) untuk menukar masa rantai ke zon waktu pelayar. Eksport CSV dan cap masa mentah yang disalin kekal UTC.",
         "**Gantian kunci API** — kunci [geomi.dev](https://geomi.dev) pilihan bagi setiap rangkaian supaya pelayar anda tidak terperangkap pada had kadar anonim kongsi. Kunci dihantar sebagai `Authorization: Bearer`. Kunci klien Geomi `AG-*` mesti membenarkan Origin laman ini. Tanda **Ingat pada peranti ini** hanya pada mesin yang anda percayai; jika tidak, kunci kekal untuk sesi tab.",
         "**Tema** — cerah atau gelap daripada kawalan matahari/bulan dalam header. Disimpan dalam kuki (`color_scheme`) dan mengikuti sistem jika anda belum memilih.",
         "**Rangkaian** — pemilih header; di-encode dalam `?network=` dan bukannya tetapan.",

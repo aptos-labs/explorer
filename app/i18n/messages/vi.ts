@@ -109,6 +109,14 @@ export const vi = {
         "Không nên coi kết quả này là mã nguồn chính thức hoặc có thẩm quyền của bất kỳ module on-chain nào.",
       ],
     },
+    timestamps: {
+      title: "Dấu thời gian",
+      description:
+        "Hiển thị dấu thời gian trên chuỗi theo múi giờ địa phương. Khi tắt, thời gian giữ ở UTC.",
+      ariaLabel: "Hiển thị dấu thời gian theo giờ địa phương",
+      localZone: "Múi giờ của trình duyệt là {timeZone}.",
+      example: "Ví dụ: {time}",
+    },
     apiKeys: {
       title: "Ghi đè khóa API",
       whyAriaLabel: "Tại sao nên dùng khóa API của riêng bạn?",
@@ -301,6 +309,7 @@ export const vi = {
       bullets: [
         "**Ngôn ngữ** — Mặc định trình duyệt hoặc một catalog cụ thể (hiện có tiếng Anh). Điều này kiểm soát chrome đã dịch, nội dung cài đặt và hướng dẫn này. Dữ liệu on-chain (địa chỉ, tên hàm, sự kiện) giữ nguyên như chuỗi lưu trữ.",
         "**Dịch ngược bytecode Move** — tắt mặc định. Đọc tuyên bố miễn trừ trước khi bật. Khi tắt, các view Đã dịch ngược và Disassembly bị ẩn.",
+        "**Dấu thời gian** — mặc định UTC để cùng một thời điểm đọc giống nhau trên mọi thiết bị. Bật giờ địa phương trong [Cài đặt](/settings) để đổi thời gian trên chuỗi sang múi giờ của trình duyệt. Xuất CSV và dấu thời gian thô đã sao chép vẫn là UTC.",
         "**Ghi đè khóa API** — khóa [geomi.dev](https://geomi.dev) tùy chọn theo mạng để trình duyệt không bị kẹt ở hạn mức ẩn danh dùng chung. Khóa được gửi dưới dạng `Authorization: Bearer`. Khóa máy khách Geomi `AG-*` phải cho phép Origin của trang này. Chỉ chọn **Ghi nhớ trên thiết bị này** trên máy bạn tin cậy; nếu không khóa chỉ tồn tại trong phiên tab.",
         "**Giao diện** — sáng hoặc tối từ nút mặt trời/mặt trăng trên header. Lưu trong cookie (`color_scheme`) và theo hệ thống nếu bạn chưa chọn.",
         "**Mạng** — bộ chọn trên header; mã hóa trong `?network=` chứ không phải cài đặt.",

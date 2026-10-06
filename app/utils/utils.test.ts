@@ -509,4 +509,15 @@ describe("timestampDisplay", () => {
     expect(de).toMatch(/19/);
     expect(de).not.toBe(timestampDisplay(fixedDate, "en").local_formatted);
   });
+
+  it("shifts local_formatted into the requested time zone and keeps CSV UTC", () => {
+    // Covers FEAT-SETTINGS-004
+    const display = timestampDisplay(fixedDate, "en", "America/New_York");
+    expect(display.formatted).toBe("03/19/24 17:40:05.123 UTC");
+    expect(display.local_formatted).toMatch(/1:40:05/);
+    expect(display.local_formatted).toMatch(/EDT|GMT-4|GMT−4/);
+    expect(display.local_formatted_short).not.toBe(
+      formatDateTime(fixedDate, "en"),
+    );
+  });
 });

@@ -110,6 +110,14 @@ export const tr = {
         "Çıktı, zincir üzerindeki herhangi bir modülün kesin veya yetkili kaynak kodu olarak değerlendirilmemelidir.",
       ],
     },
+    timestamps: {
+      title: "Zaman damgaları",
+      description:
+        "Zincir zaman damgalarını yerel saat diliminizde gösterin. Kapalıyken saatler UTC olarak kalır.",
+      ariaLabel: "Zaman damgalarını yerel saatte göster",
+      localZone: "Tarayıcınızın saat dilimi {timeZone}.",
+      example: "Örnek: {time}",
+    },
     apiKeys: {
       title: "API Anahtarı Geçersiz Kılmaları",
       whyAriaLabel: "Neden kendi API anahtarınızı kullanmalısınız?",
@@ -303,6 +311,7 @@ export const tr = {
       bullets: [
         "**Dil** — Tarayıcı varsayılanı veya açık bir dil. Çevrilmiş arayüzü, ayar metnini ve bu kılavuzu kontrol eder. Zincir üzerindeki veriler (adresler, fonksiyon adları, olaylar) zincirin sakladığı şekilde kalır.",
         "**Move bytecode dekompilasyonu** — varsayılan olarak kapalı. Etkinleştirmeden önce sorumluluk reddini okuyun. Kapalı olduğunda Dekompile ve Disassembly görünümleri gizlenir.",
+        "**Zaman damgaları** — varsayılan UTC'dir; böylece bir saat her cihazda aynı okunur. Zincir saatlerini tarayıcınızın saat dilimine çevirmek için [Ayarlar](/settings) içinde yerel saati açın. CSV dışa aktarma ve kopyalanan ham zaman damgaları UTC kalır.",
         "**API anahtarı geçersiz kılmaları** — tarayıcınızın paylaşılan anonim hız sınırında takılı kalmaması için ağ bazında isteğe bağlı [geomi.dev](https://geomi.dev) anahtarları. Anahtarlar `Authorization: Bearer` olarak gönderilir. Geomi `AG-*` istemci anahtarları bu sitenin Origin'ine izin vermelidir. **Bu cihazda hatırla**'yı yalnızca güvendiğiniz bir makinede işaretleyin; aksi halde anahtarlar sekme oturumu süresince geçerlidir.",
         "**Tema** — üst bilgi güneş/ay kontrolünden açık veya koyu. Bir çerezde (`color_scheme`) saklanır ve seçim yapmadıysanız sistemi izler.",
         "**Ağ** — üst bilgi seçici; ayarlarda değil `?network=` ile kodlanır.",

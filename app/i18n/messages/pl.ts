@@ -110,6 +110,14 @@ export const pl = {
         "Wynik nie powinien być traktowany jako ostateczny ani autorytatywny kod źródłowy żadnego modułu on-chain.",
       ],
     },
+    timestamps: {
+      title: "Znaczniki czasu",
+      description:
+        "Pokazuj znaczniki czasu łańcucha w Twojej lokalnej strefie czasowej. Gdy wyłączone, czasy pozostają w UTC.",
+      ariaLabel: "Pokazuj znaczniki czasu w czasie lokalnym",
+      localZone: "Strefa czasowa Twojej przeglądarki to {timeZone}.",
+      example: "Przykład: {time}",
+    },
     apiKeys: {
       title: "Nadpisania kluczy API",
       whyAriaLabel: "Dlaczego używać własnego klucza API?",
@@ -303,6 +311,7 @@ export const pl = {
       bullets: [
         "**Język** — domyślny język przeglądarki lub język jawny. Kontroluje przetłumaczony interfejs, teksty ustawień i ten przewodnik. Dane on-chain (adresy, nazwy funkcji, zdarzenia) pozostają tak, jak je przechowuje łańcuch.",
         "**Dekompilacja bajtkodu Move** — domyślnie wyłączona. Przeczytaj zastrzeżenie przed włączeniem. Gdy wyłączona, widoki Dekompilowany i Disassembly są ukryte.",
+        "**Znaczniki czasu** — domyślnie UTC, więc ta sama chwila czyta się tak samo na każdym urządzeniu. Włącz czas lokalny w [Ustawieniach](/settings), aby przeliczać czasy łańcucha na strefę przeglądarki. Eksport CSV i skopiowane surowe znaczniki zostają w UTC.",
         "**Nadpisania kluczy API** — opcjonalne klucze [geomi.dev](https://geomi.dev) dla każdej sieci, aby przeglądarka nie utknęła na współdzielonym anonimowym limicie zapytań. Klucze są wysyłane jako `Authorization: Bearer`. Klucze klienta Geomi `AG-*` muszą zezwalać na Origin tej witryny. Zaznacz **Zapamiętaj na tym urządzeniu** tylko na zaufanym komputerze; w przeciwnym razie klucze obowiązują przez sesję karty.",
         "**Motyw** — jasny lub ciemny z kontrolki słońca/księżyca w nagłówku. Przechowywany w ciasteczku (`color_scheme`) i podąża za systemem, jeśli nic nie wybrałeś.",
         "**Sieć** — selektor w nagłówku; zakodowany w `?network=`, a nie w ustawieniach.",

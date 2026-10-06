@@ -147,6 +147,17 @@ describe("formatTimestamp", () => {
     expect(formatted).toMatch(/12:00:05/);
     expect(formatted).toMatch(/UTC|GMT/i);
   });
+
+  it("converts the clock when a local time zone is requested", () => {
+    // Covers FEAT-SETTINGS-004
+    const date = new Date("2026-09-14T12:00:05.123Z");
+    const utc = formatTimestamp(date, "en", "UTC");
+    const local = formatTimestamp(date, "en", "America/Los_Angeles");
+    expect(utc).toMatch(/12:00:05/);
+    expect(local).toMatch(/5:00:05/);
+    expect(local).not.toBe(utc);
+    expect(local).toMatch(/PDT|GMT-7|GMT−7/);
+  });
 });
 
 describe("formatMonthDay", () => {

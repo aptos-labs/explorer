@@ -122,6 +122,14 @@ export const en = {
       label: "Display language",
       auto: "Browser default",
     },
+    timestamps: {
+      title: "Timestamps",
+      description:
+        "Show chain timestamps in your local time zone. When this is off, times stay in UTC.",
+      ariaLabel: "Show timestamps in local time",
+      localZone: "Your browser time zone is {timeZone}.",
+      example: "Example: {time}",
+    },
     decompilation: {
       title: "Move Bytecode Decompilation",
       description:
@@ -164,7 +172,7 @@ export const en = {
       save: "Save",
     },
     metaDescription:
-      "Configure Aptos Explorer settings including language, API keys, decompilation preferences, and other options.",
+      "Configure Aptos Explorer settings including language, timestamp time zone, API keys, decompilation preferences, and other options.",
   },
   guide: {
     meta: {
@@ -329,12 +337,13 @@ export const en = {
       bullets: [
         "**Language** — Header globe control (it shows a short code for the current language) or Settings. Browser default or an explicit language. This controls translated chrome, settings copy, and this guide. On-chain data (addresses, function names, events) stays as the chain stores it.",
         "**Move bytecode decompilation** — off by default. Read the disclaimer before enabling. When off, Decompiled and Disassembly views are hidden.",
+        "**Timestamps** — UTC by default, so a time reads the same on every device. Turn on local time in [Settings](/settings) to convert chain times to your browser's time zone. CSV export and copied raw timestamps stay in UTC.",
         "**API key overrides** — optional per-network [geomi.dev](https://geomi.dev) keys so your browser is not stuck on the shared anonymous rate limit. Keys are sent as `Authorization: Bearer`. Geomi `AG-*` client keys must allow this site’s Origin. Check **Remember on this device** only on a machine you trust; otherwise keys last for the tab session.",
         "**Theme** — light or dark from the header sun/moon control. Stored in a cookie (`color_scheme`) and follows the system if you have not chosen.",
         "**Network** — header dropdown (visible on phones and in the installed PWA); encoded in `?network=` rather than settings.",
       ],
       more: [
-        "Save applies API keys and decompilation (and language) together: cached clients are dropped and queries refresh. **Restore Defaults** clears these explorer preferences in this browser.",
+        "Save applies API keys, decompilation, and the timestamp time zone (and language) together: cached clients are dropped and queries refresh. **Restore Defaults** clears these explorer preferences in this browser.",
         "If you see HTTP **429**, the rate-limit drawer can send you to Settings. A Geomi body of *Per anonymous IP rate limit exceeded* means no key was accepted; *Per application per IP rate limit exceeded* means your key’s quota was hit.",
       ],
     },

@@ -110,6 +110,14 @@ export const pt = {
         "A saída não deve ser tratada como o código-fonte definitivo ou oficial de nenhum módulo on-chain.",
       ],
     },
+    timestamps: {
+      title: "Data e hora",
+      description:
+        "Mostrar os carimbos de data/hora da cadeia no seu fuso horário local. Desligado, os horários permanecem em UTC.",
+      ariaLabel: "Mostrar data e hora no horário local",
+      localZone: "O fuso horário do seu navegador é {timeZone}.",
+      example: "Exemplo: {time}",
+    },
     apiKeys: {
       title: "Substituições de chave de API",
       whyAriaLabel: "Por que usar sua própria chave de API?",
@@ -304,6 +312,7 @@ export const pt = {
       bullets: [
         "**Idioma** — Padrão do navegador ou um catálogo explícito (o inglês já é enviado). Isso controla a interface traduzida, os textos de configurações e este guia. Dados on-chain (endereços, nomes de funções, eventos) permanecem como a cadeia os armazena.",
         "**Descompilação de bytecode Move** — desligada por padrão. Leia o aviso antes de ativar. Quando desligada, as visões Descompilado e Desmontagem ficam ocultas.",
+        "**Data e hora** — UTC por padrão, para que um horário seja lido igual em cada dispositivo. Ative o horário local em [Configurações](/settings) para converter os horários da cadeia para o fuso do seu navegador. A exportação CSV e os carimbos brutos copiados permanecem em UTC.",
         "**Substituições de chave de API** — chaves opcionais por rede do [geomi.dev](https://geomi.dev) para que seu navegador não fique preso no limite de taxa anônimo compartilhado. As chaves são enviadas como `Authorization: Bearer`. Chaves de cliente Geomi `AG-*` devem permitir a Origin deste site. Marque **Lembrar neste dispositivo** só em uma máquina em que você confie; caso contrário, as chaves duram a sessão da aba.",
         "**Tema** — claro ou escuro pelo controle de sol/lua no cabeçalho. Armazenado em um cookie (`color_scheme`) e segue o sistema se você não tiver escolhido.",
         "**Rede** — seletor do cabeçalho; codificada em `?network=` em vez de nas configurações.",
