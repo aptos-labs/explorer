@@ -388,6 +388,7 @@ export const vi = {
     loadingTransactions: "Đang tải giao dịch",
     codeCopied: "Đã sao chép mã",
     timestampCopied: "Đã sao chép dấu thời gian",
+    numberCopied: "Đã sao chép số",
     loading: "Đang tải",
     loadingEllipsis: "Đang tải...",
     noDataFound: "Không tìm thấy dữ liệu",

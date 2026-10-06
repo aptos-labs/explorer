@@ -391,6 +391,7 @@ export const pt = {
     loadingTransactions: "Carregando transações",
     codeCopied: "Código copiado",
     timestampCopied: "Carimbo de data/hora copiado",
+    numberCopied: "Número copiado",
     loading: "Carregando",
     loadingEllipsis: "Carregando...",
     noDataFound: "Nenhum dado encontrado",

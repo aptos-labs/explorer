@@ -10,7 +10,6 @@ import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import TimestampValue from "../../../components/IndividualPageContent/ContentValue/TimestampValue";
 import IntegerValue from "../../../components/IndividualPageContent/ContentValue/IntegerValue";
-import {Link} from "../../../routing";
 import {useTranslation} from "../../../i18n";
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
 
@@ -18,13 +17,13 @@ function VersionValue({data}: {data: Block}) {
   const {first_version, last_version} = data;
   return (
     <>
-      <Link to={`/txn/${first_version}`} underline="none">
-        <IntegerValue value={first_version} />
-      </Link>
+      <IntegerValue
+        value={first_version}
+        copyable
+        to={`/txn/${first_version}`}
+      />
       {" - "}
-      <Link to={`/txn/${last_version}`} underline="none">
-        <IntegerValue value={last_version} />
-      </Link>
+      <IntegerValue value={last_version} copyable to={`/txn/${last_version}`} />
     </>
   );
 }
@@ -63,18 +62,18 @@ function BlockMetadataRows({
       <ContentRow
         titleKey="fields.previousBlock"
         value={
-          <Link to={`/block/${previousBlock}`} underline="none">
-            <IntegerValue value={previousBlock} />
-          </Link>
+          <IntegerValue
+            value={previousBlock}
+            copyable
+            to={`/block/${previousBlock}`}
+          />
         }
         tooltip={getLearnMoreTooltip("block")}
       />
       <ContentRow
         titleKey="fields.nextBlock"
         value={
-          <Link to={`/block/${nextBlock}`} underline="none">
-            <IntegerValue value={nextBlock} />
-          </Link>
+          <IntegerValue value={nextBlock} copyable to={`/block/${nextBlock}`} />
         }
         tooltip={getLearnMoreTooltip("block")}
       />
@@ -105,7 +104,7 @@ export default function OverviewTab({data}: OverviewTabProps) {
         <ContentBox>
           <ContentRow
             titleKey="fields.blockHeight"
-            value={<IntegerValue value={data.block_height} />}
+            value={<IntegerValue value={data.block_height} copyable />}
             tooltip={getLearnMoreTooltip("block_height")}
           />
           <ContentRow

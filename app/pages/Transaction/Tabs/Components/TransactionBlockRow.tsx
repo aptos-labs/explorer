@@ -2,7 +2,6 @@ import {Skeleton} from "@mui/material";
 import {useGetBlockByVersion} from "../../../../api/hooks/useGetBlock";
 import ContentRow from "../../../../components/IndividualPageContent/ContentRow";
 import IntegerValue from "../../../../components/IndividualPageContent/ContentValue/IntegerValue";
-import {Link} from "../../../../routing";
 import {getLearnMoreTooltip} from "../../helpers";
 
 export default function TransactionBlockRow({version}: {version: string}) {
@@ -28,9 +27,11 @@ export default function TransactionBlockRow({version}: {version: string}) {
     <ContentRow
       titleKey="fields.block"
       value={
-        <Link to={`/block/${data.block_height}`} underline="none">
-          <IntegerValue value={data.block_height} />
-        </Link>
+        <IntegerValue
+          value={data.block_height}
+          copyable
+          to={`/block/${data.block_height}`}
+        />
       }
       tooltip={getLearnMoreTooltip("block_height")}
     />

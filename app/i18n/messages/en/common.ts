@@ -21,6 +21,7 @@ export const common = {
   loadingTransactions: "Loading transactions",
   codeCopied: "Code copied",
   timestampCopied: "Timestamp copied",
+  numberCopied: "Number copied",
   loading: "Loading",
   loadingEllipsis: "Loading...",
   noDataFound: "No Data Found",

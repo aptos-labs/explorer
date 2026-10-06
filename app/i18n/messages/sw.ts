@@ -390,6 +390,7 @@ export const sw = {
     loadingTransactions: "Inapakia miamala",
     codeCopied: "Msimbo umenakiliwa",
     timestampCopied: "Muda umenakiliwa",
+    numberCopied: "Nambari imenakiliwa",
     loading: "Inapakia",
     loadingEllipsis: "Inapakia...",
     noDataFound: "Hakuna data iliyopatikana",

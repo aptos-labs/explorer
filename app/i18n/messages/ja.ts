@@ -390,6 +390,7 @@ export const ja = {
     loadingTransactions: "トランザクションを読み込み中",
     codeCopied: "コードをコピーしました",
     timestampCopied: "タイムスタンプをコピーしました",
+    numberCopied: "数値をコピーしました",
     loading: "読み込み中",
     loadingEllipsis: "読み込み中...",
     noDataFound: "データがありません",

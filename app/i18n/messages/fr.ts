@@ -391,6 +391,7 @@ export const fr = {
     loadingTransactions: "Chargement des transactions",
     codeCopied: "Code copié",
     timestampCopied: "Horodatage copié",
+    numberCopied: "Nombre copié",
     loading: "Chargement",
     loadingEllipsis: "Chargement...",
     noDataFound: "Aucune donnée trouvée",

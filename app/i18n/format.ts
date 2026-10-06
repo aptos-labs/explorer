@@ -37,6 +37,28 @@ export function formatIntegerString(value: string, locale: string): string {
   return formatNumber(num, locale);
 }
 
+/**
+ * Locale-independent ASCII integer for clipboard / URLs / search.
+ * Display still uses `formatIntegerString`; copy should not include grouping
+ * separators or locale-specific digits.
+ */
+export function canonicalIntegerString(
+  value: string | number | bigint,
+): string {
+  if (typeof value === "bigint") {
+    return value.toString();
+  }
+  if (typeof value === "number") {
+    if (!Number.isFinite(value)) return String(value);
+    return Math.trunc(value).toString();
+  }
+  const trimmed = value.trim();
+  if (/^-?\d+$/.test(trimmed)) {
+    return trimmed.replace(/^(-?)0+(?=\d)/, "$1");
+  }
+  return trimmed;
+}
+
 export function formatCompactNumber(
   value: number,
   locale: string,

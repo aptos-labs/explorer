@@ -386,6 +386,7 @@ export const th = {
     loadingTransactions: "กำลังโหลดธุรกรรม",
     codeCopied: "คัดลอกโค้ดแล้ว",
     timestampCopied: "คัดลอกเวลาแล้ว",
+    numberCopied: "คัดลอกตัวเลขแล้ว",
     loading: "กำลังโหลด",
     loadingEllipsis: "กำลังโหลด...",
     noDataFound: "ไม่พบข้อมูล",

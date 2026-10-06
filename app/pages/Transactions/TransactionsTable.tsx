@@ -33,11 +33,7 @@ import {
   TableTransactionType,
   TransactionTypeName,
 } from "../../components/TransactionType";
-import {
-  Link,
-  useAugmentToWithGlobalSearchParams,
-  useNavigate,
-} from "../../routing";
+import {useAugmentToWithGlobalSearchParams, useNavigate} from "../../routing";
 import {assertNever, standardizeAddress} from "../../utils";
 import TransactionFunction from "../Transaction/Tabs/Components/TransactionFunction";
 import {getTransactionCounterparty} from "../Transaction/utils";
@@ -69,16 +65,14 @@ function SequenceNumberCell({transaction}: TransactionCellProps) {
 function TransactionVersionStatusCell({transaction}: TransactionCellProps) {
   return (
     <GeneralTableCell sx={{textAlign: "left"}}>
-      <Stack direction="row" spacing={0.5}>
-        <Link
-          to={`/txn/${"version" in transaction && transaction.version}`}
-          color="primary"
-          underline="none"
-        >
-          {"version" in transaction && (
-            <IntegerValue value={transaction.version} />
-          )}
-        </Link>
+      <Stack direction="row" spacing={0.5} sx={{alignItems: "center"}}>
+        {"version" in transaction && (
+          <IntegerValue
+            value={transaction.version}
+            copyable
+            to={`/txn/${transaction.version}`}
+          />
+        )}
         {"success" in transaction && (
           <TableTransactionStatus success={transaction.success} />
         )}
@@ -296,9 +290,13 @@ function TransactionDetailDialog({
           <Typography variant="h6" component="span">
             {t("txn.entity")}
           </Typography>
-          <Link to={`/txn/${version}`} color="primary" sx={{fontWeight: 600}}>
-            <IntegerValue value={version} />
-          </Link>
+          <Box sx={{fontWeight: 600, color: "primary.main"}}>
+            <IntegerValue
+              value={version}
+              copyable
+              to={version != null ? `/txn/${version}` : undefined}
+            />
+          </Box>
           {"success" in transaction && (
             <TableTransactionStatus success={transaction.success} />
           )}
@@ -598,7 +596,7 @@ function TransactionCard({transaction, address}: TransactionCardProps) {
             <Typography
               sx={{fontWeight: 600, fontSize: "0.9rem", color: "primary.main"}}
             >
-              <IntegerValue value={version} />
+              <IntegerValue value={version} copyable />
             </Typography>
             <TableTransactionType type={transaction.type} />
             {"success" in transaction && !transaction.success && (

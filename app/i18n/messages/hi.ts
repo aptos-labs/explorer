@@ -389,6 +389,7 @@ export const hi = {
     loadingTransactions: "लेन-देन लोड हो रहे हैं",
     codeCopied: "कोड कॉपी हो गया",
     timestampCopied: "टाइमस्टैंप कॉपी हो गया",
+    numberCopied: "संख्या कॉपी हो गई",
     loading: "लोड हो रहा है",
     loadingEllipsis: "लोड हो रहा है...",
     noDataFound: "कोई डेटा नहीं मिला",

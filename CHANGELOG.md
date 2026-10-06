@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Copy ungrouped versions and block heights**: Ledger versions and block numbers still display with locale grouping (for example `1,234,567` or `1.234.567`). A copy control next to those identifiers writes the locale-independent ASCII integer (`1234567`) so it can be pasted into search, URLs, and APIs. The same control is on transaction overview version, parent block, block overview height / first–last version / adjacent blocks, transaction and blocks tables, numeric transaction-version chips, and deployment ledger/block rows.
+
 ### Fixed
 
 - **Filipino**: Phrases that were still English now follow the rest of the Filipino catalog. Staking status, suggested max, commission, and node counts; partner and protocol fees; signature key descriptions; multisig votes, abort location, and error codes; and guide labels that still used the English tab names (**All Nodes**, **User vs All**). Loanwords the catalog already uses (Account, Address, Block, user transaction) stay as they are.

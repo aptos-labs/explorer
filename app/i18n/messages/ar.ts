@@ -387,6 +387,7 @@ export const ar = {
     loadingTransactions: "جارٍ تحميل المعاملات",
     codeCopied: "تم نسخ الشيفرة",
     timestampCopied: "تم نسخ الطابع الزمني",
+    numberCopied: "تم نسخ الرقم",
     loading: "جارٍ التحميل",
     loadingEllipsis: "جارٍ التحميل...",
     noDataFound: "لا توجد بيانات",

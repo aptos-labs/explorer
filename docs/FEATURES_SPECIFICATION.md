@@ -173,7 +173,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Columns** | Version, type, timestamp, sender, function, gas. |
+| **Columns** | Version (linked, with a copy control for the ungrouped ledger version), type, timestamp, sender, function, gas. |
 | **Pagination** | Cursor-based pagination with start param. |
 | **Virtualization** | Uses `@tanstack/react-virtual` via `VirtualizedTableBody` when row count > 20. |
 
@@ -200,10 +200,10 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Key fields** | Version, status, sender, fee payer, secondary signers, function, arguments, amount. For protocol-decrypted `encrypted_transaction_payload` values, these fields use the fullnode-provided decrypted entry function; ciphertext is never decrypted in the browser. An **Encryption** row (chips for encrypted state and epoch) appears when the payload type is `encrypted_transaction_payload`. Pending or failed-decryption payloads show an "Encrypted Transaction" function line (and any `claimed_entry_fun`) instead of a blank function. |
+| **Key fields** | Version, status, sender, fee payer, secondary signers, function, arguments, amount. Version (and the parent block height) display with locale grouping and a copy control that writes the ungrouped ASCII integer. For protocol-decrypted `encrypted_transaction_payload` values, these fields use the fullnode-provided decrypted entry function; ciphertext is never decrypted in the browser. An **Encryption** row (chips for encrypted state and epoch) appears when the payload type is `encrypted_transaction_payload`. Pending or failed-decryption payloads show an "Encrypted Transaction" function line (and any `claimed_entry_fun`) instead of a blank function. |
 | **Actions section** | Rich parsing of DEX swaps, LSD operations, liquidity events (see FEAT-TXN-009). Decibel perp orders include `place_bulk_orders_to_subaccount` and `place_bulk_orders_to_subaccount_with_repricing` (bulk; the latter adds `max_collapse_size` for crossing-leg collapse). |
 | **Gas** | Gas fee, storage refund, net gas, gas unit price, max gas, VM status. |
-| **Block** | Link to parent block. |
+| **Block** | Link to parent block, with the same copy control as version for the ungrouped height. |
 | **Timestamps** | Expiration and execution timestamp. |
 | **Signature** | Table-style breakdown (same layout family as FeeStatement on Events); hex fields use expandable hash chips; nested or unknown shapes fall back to JSON. |
 | **Hashes** | State, event, and accumulator root hashes. |
@@ -346,7 +346,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 |--------|--------|
 | **Data** | Ledger info (cursor height) + REST `getBlockByHeight` for each row (same source as block detail). Block fetches use the same API key as the rest of the app (embedded `VITE_*` key or per-network Settings override on `useSdkV2Client` / `useAptosClient`). React Query keys include a **non-secret** API key identity so changing the override does not reuse cached responses from the old key. Requests are **limited concurrency** (not all rows in parallel) to reduce edge/CDN 429s when refreshing. Default page size is **20** rows. |
 | **Pagination** | `?start=` cursor. |
-| **Columns** | Block height (linked), proposer, timestamp, transaction count. |
+| **Columns** | Block height (linked, with a copy control for the ungrouped height), proposer, timestamp, transaction count. Optional first/last version columns use the same copy control. |
 | **Virtualization** | Uses `VirtualizedTableBody` for large result sets. |
 
 ---
@@ -359,7 +359,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Tab | Content |
 |-----|---------|
-| `overview` | Block height, proposer, epoch, round, timestamp, hash, first/last version. |
+| `overview` | Block height, proposer, epoch, round, timestamp, hash, first/last version. Height, first/last version, and previous/next block display with locale grouping and a copy control that writes the ungrouped ASCII integer. |
 | `transactions` | List of transactions in the block. |
 
 | Aspect | Detail |
@@ -1364,7 +1364,7 @@ top of the HTML site.
 | **Shipped locales** | Every registered catalog in `SUPPORTED_LOCALES` (see FEAT-SETTINGS-003) is available in the language picker. The picker lists English first, then other catalogs alphabetically by native name (`LANGUAGE_PICKER_LOCALES`); registration order in `SUPPORTED_LOCALES` does not control display order. Picker rows show the native name plus `localeShortLabel`. Every non-English locale matches the full English key tree (`FULL_UI_LOCALES`). Missing keys fall back to English at runtime. Automated tests enforce key/placeholder parity for full-UI locales and subset/placeholder parity for any chrome-only locale. |
 | **Adding a locale** | Add a catalog file, register it in `SUPPORTED_LOCALES` / `messageCatalogs` / `LOCALE_META`, and update the shipped-locales table in `AGENTS.md` in the same PR (`app/i18n/agentsLocales.test.ts` fails if the list diverges). Also update FEAT-SETTINGS-003 and `CHANGELOG.md`. Generate TypeScript from JSON with `node scripts/i18n-json-to-catalog.mjs`. Missing keys fall back to English. New catalogs do not need to be inserted in picker display order — `LANGUAGE_PICKER_LOCALES` sorts by native name. |
 | **Provider** | `I18nProvider` (inside `ExplorerSettingsProvider`) resolves locale and updates `document.documentElement.lang` / `dir` (and `og:locale` when present) after hydration. `useTranslation()` falls back to English when no provider is mounted. |
-| **Formatting helpers** | Locale-bound `formatNumber`, `formatInteger`, `formatBigInt`, `formatIntegerString`, `formatCompactNumber`, `formatDateTime`, `formatTimestamp`, `formatMonthDay`, and `formatRelativeTime` wrap `Intl`. Locale metadata selects intended regional tags (for example `pt-BR`) so decimal separators, grouping (including Indian grouping), date order, compact suffixes, relative times, and 12/24-hour conventions follow the selected locale. Date/time output is pinned to UTC to remain deterministic between SSR and hydration. User-visible integers (including ledger versions, block heights, sequence numbers, and counts), decimals, timestamps, chart axes, and currency grouping go through these helpers rather than `toLocaleString("en-US")` or date-fns English relative time. |
+| **Formatting helpers** | Locale-bound `formatNumber`, `formatInteger`, `formatBigInt`, `formatIntegerString`, `canonicalIntegerString`, `formatCompactNumber`, `formatDateTime`, `formatTimestamp`, `formatMonthDay`, and `formatRelativeTime` wrap `Intl`. Locale metadata selects intended regional tags (for example `pt-BR`) so decimal separators, grouping (including Indian grouping), date order, compact suffixes, relative times, and 12/24-hour conventions follow the selected locale. Date/time output is pinned to UTC to remain deterministic between SSR and hydration. User-visible integers (including ledger versions, block heights, sequence numbers, and counts), decimals, timestamps, chart axes, and currency grouping go through these helpers rather than `toLocaleString("en-US")` or date-fns English relative time. Ledger versions and block heights that use grouped display include a copy control (`IntegerValue` `copyable`) that writes `canonicalIntegerString` (ASCII digits, no grouping) so the clipboard value can be pasted into search, URLs, and APIs. |
 | **Remaining UI copy** | Account balance and CSV export, user-transaction filters, multisig pending/owners, call traces, fee-statement events, FA dispatchable properties, coin/FA supply tooltips, validator epoch/node counts, analytics totals, gas-unit amounts, and the home-page hero/CTAs/empty-search copy read from catalogs rather than hardcoded English. |
 
 ---
@@ -1443,7 +1443,8 @@ top of the HTML site.
 | `app/components/webMcpTools.test.ts` | FEAT-SEO-004 (WebMCP navigation tools: routing, validation), FEAT-GUIDE-001 (`open_guide`) |
 | `app/i18n/translate.test.ts` | FEAT-I18N-001 (interpolation, nested keys, catalog fallback) |
 | `app/i18n/detectLocale.test.ts` | FEAT-I18N-001 (locale preference and browser-language resolution) |
-| `app/i18n/format.test.ts` | FEAT-I18N-001 (`Intl` number/date helpers) |
+| `app/i18n/format.test.ts` | FEAT-I18N-001 (`Intl` number/date helpers; `canonicalIntegerString` for clipboard identifiers) |
+| `app/components/IndividualPageContent/ContentValue/IntegerValue.test.tsx` | FEAT-I18N-001 / FEAT-TXN-002 / FEAT-BLOCK-001 (locale-grouped display; copy writes ungrouped ASCII integer; link href stays ungrouped) |
 | `app/i18n/parseInlineMarkup.test.ts` | FEAT-I18N-001 (bold/code/link markup and internal vs external hrefs) |
 | `app/i18n/messages.en.test.ts` | FEAT-I18N-001 / FEAT-GUIDE-001 / FEAT-SEARCH-004 (English chrome, guide, tabs, fields, errors, verification titles, landing-page copy; shipped locale key/placeholder parity) |
 | `app/i18n/messages.catalogs.test.ts` | FEAT-I18N-001 (locale metadata; full-UI locales match English keys; any chrome-only locale is an English-key subset) |

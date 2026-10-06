@@ -391,6 +391,7 @@ export const ru = {
     loadingTransactions: "Загрузка транзакций",
     codeCopied: "Код скопирован",
     timestampCopied: "Метка времени скопирована",
+    numberCopied: "Число скопировано",
     loading: "Загрузка",
     loadingEllipsis: "Загрузка...",
     noDataFound: "Данные не найдены",

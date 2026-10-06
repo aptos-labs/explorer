@@ -391,6 +391,7 @@ export const nl = {
     loadingTransactions: "Transacties laden",
     codeCopied: "Code gekopieerd",
     timestampCopied: "Tijdstempel gekopieerd",
+    numberCopied: "Getal gekopieerd",
     loading: "Laden",
     loadingEllipsis: "Laden...",
     noDataFound: "Geen gegevens gevonden",

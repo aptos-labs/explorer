@@ -392,6 +392,7 @@ export const uk = {
     loadingTransactions: "Завантаження транзакцій",
     codeCopied: "Код скопійовано",
     timestampCopied: "Мітку часу скопійовано",
+    numberCopied: "Число скопійовано",
     loading: "Завантаження",
     loadingEllipsis: "Завантаження...",
     noDataFound: "Даних не знайдено",

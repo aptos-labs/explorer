@@ -389,6 +389,7 @@ export const id = {
     loadingTransactions: "Memuat transaksi",
     codeCopied: "Kode disalin",
     timestampCopied: "Stempel waktu disalin",
+    numberCopied: "Angka disalin",
     loading: "Memuat",
     loadingEllipsis: "Memuat...",
     noDataFound: "Data tidak ditemukan",
