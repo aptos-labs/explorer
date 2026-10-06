@@ -121,7 +121,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 |---------------|-----------------|
 | `.apt` / `.petra` suffix | ANS name lookup via ts-sdk (`getPrimaryName`, `getName`) → account link |
 | Valid Move struct | Coin lookup via `CoinInfo` resource + Panora coin list prefix match |
-| Numeric | Ledger bounds (current `ledger_version` / `block_height`): every integer in range is a valid version/height, including history the serving fullnode has pruned. Does **not** fetch a full transaction body. The containing-block row uses REST `getBlockByVersion` inside the node's window, the archive node for pruned versions, then indexer `block_height` if archive misses. |
+| Numeric | Ledger bounds (current `ledger_version` / `block_height`): every integer in range is a valid version/height, including history the serving fullnode has pruned. Grouped locale integers are accepted (`1,234,567`, `1.234.567`, Indian `12,34,567`) and searched as the ungrouped ASCII value; mixed comma+period decimals are not. Does **not** fetch a full transaction body. The containing-block row uses REST `getBlockByVersion` inside the node's window, the archive node for pruned versions, then indexer `block_height` if archive misses. |
 | 32-byte hex | Parallel: transaction hash existence (fullnode, then archive node **without** API credentials so pruned hashes still match; the body is cancelled on 200; indexer has no hash column), account address, coin list |
 | Valid account address | Account, FA metadata, object core, coin list. Does **not** download the full `/accounts/{addr}/resources` list. |
 | Emoji-only (`/^\p{Emoji}+$/gu`) | Emojicoin market lookup: derives market address from `EMOJICOIN_REGISTRY_ADDRESS` via `createNamedObjectAddress`, verifies on-chain, returns coin + LP results |
@@ -1499,7 +1499,7 @@ top of the HTML site.
 | `app/components/IndividualPageContent/ContentValue/CurrencyValue.test.tsx` | Currency formatting (octa → APT) |
 | `app/components/Table/verifiedLevel.test.ts` | FEAT-COIN-003 / FEAT-UI-002 (verification level determination: native, verified, banned, recognized, unverified, disabled) |
 | `app/pages/Transaction/utils.test.ts` | FEAT-TXN-002/003 (tx amounts, counterparty including decrypted encrypted payloads, balance changes), FEAT-TXN-013 (multisig transaction detection) |
-| `app/pages/layout/Search/searchNumeric.test.ts` | FEAT-SEARCH-002 (ledger-bounded numeric search; pruned versions still produce a transaction result; containing-block REST vs archive then indexer last resort) |
+| `app/pages/layout/Search/searchNumeric.test.ts` | FEAT-SEARCH-002 (ledger-bounded numeric search; pruned versions still produce a transaction result; containing-block REST vs archive then indexer last resort; grouped locale integers parse as ungrouped versions) |
 | `app/api/archivalNode.test.ts` | FEAT-SEARCH-002 / FEAT-TXN-014 (parse `archival_endpoint` / `x-aptos-archival-endpoint`; `api.*` → `archive.*` host derivation; hash existence retries archival without credentials; version/block archival fetch) |
 | `app/api/v2.block.test.ts` | FEAT-BLOCK-001 (pruned `getBlockByHeight` / `getBlockByVersion` load from archive after fullnode miss) |
 | `app/api/prunedTransaction.test.ts` | FEAT-TXN-014 (detect 404/410 / `version_pruned` REST errors) |
@@ -1538,7 +1538,7 @@ top of the HTML site.
 | `app/pages/Account/Error.test.tsx` | FEAT-MODULES-008 (`AccountError` optional NOT_FOUND title/message) |
 | `app/pages/layout/Search/searchConstants.test.ts` | FEAT-SEARCH-001 (shared input tokens: placeholder, helper text, debounce, font, icon color), FEAT-SEARCH-003 (result-row type chip colors and labels) |
 | `app/pages/layout/Search/searchUtils.test.ts` | FEAT-SEARCH-003 (fallback address results), FEAT-SEARCH-002 (pruned hash search via archival) |
-| `app/pages/layout/Search/searchDetection.test.ts` | FEAT-SEARCH-002 (all input type detection: ANS, struct, numeric, hex, address, emoji, generic) |
+| `app/pages/layout/Search/searchDetection.test.ts` | FEAT-SEARCH-002 (all input type detection: ANS, struct, numeric including grouped integers, hex, address, emoji, generic) |
 | `app/pages/layout/Search/searchFiltering.test.ts` | FEAT-SEARCH-003 (result filtering/deduplication, grouping with headers and type ordering) |
 | `app/pages/layout/Search/searchHelpers.test.ts` | FEAT-SEARCH-001 (normalization, cache keys), FEAT-SEARCH-002 (label lookup, coin lookup), FEAT-SEARCH-003 (definitiveResult) |
 | `app/lib/networks.test.ts` | FEAT-NETWORK-001 (network config, hidden networks, localnet), FEAT-FLAGS-003 (feature labels) |

@@ -34,6 +34,25 @@ describe("FEAT-SEARCH-002 — parseNumericSearch", () => {
     expect(parseNumericSearch("12a")).toBeNull();
     expect(parseNumericSearch("")).toBeNull();
   });
+
+  it("accepts comma or period thousand grouping from locale display", () => {
+    expect(parseNumericSearch("1,234,567")).toBe(1234567n);
+    expect(parseNumericSearch("1.234.567")).toBe(1234567n);
+    expect(parseNumericSearch("1,234")).toBe(1234n);
+    expect(parseNumericSearch("1.234")).toBe(1234n);
+    expect(parseNumericSearch(" 6,947,679,400 ")).toBe(6947679400n);
+  });
+
+  it("accepts Indian comma grouping", () => {
+    expect(parseNumericSearch("12,34,567")).toBe(1234567n);
+  });
+
+  it("rejects mixed comma/period and incomplete groups", () => {
+    expect(parseNumericSearch("1,234.567")).toBeNull();
+    expect(parseNumericSearch("1.234,567")).toBeNull();
+    expect(parseNumericSearch("12.34")).toBeNull();
+    expect(parseNumericSearch("1,23")).toBeNull();
+  });
 });
 
 describe("FEAT-SEARCH-002 — buildNumericSearchResults", () => {
@@ -82,6 +101,15 @@ describe("FEAT-SEARCH-002 — buildNumericSearchResults", () => {
 
   it("returns no results for non-numeric input", () => {
     expect(buildNumericSearchResults("0x1", prunedMainnetLedger)).toEqual([]);
+  });
+
+  it("treats grouped locale integers as the ungrouped version", () => {
+    expect(
+      buildNumericSearchResults("6,947,679,400", prunedMainnetLedger),
+    ).toEqual(buildNumericSearchResults("6947679400", prunedMainnetLedger));
+    expect(
+      buildNumericSearchResults("6.947.679.400", prunedMainnetLedger),
+    ).toEqual(buildNumericSearchResults("6947679400", prunedMainnetLedger));
   });
 });
 

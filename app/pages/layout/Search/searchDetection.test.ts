@@ -59,6 +59,17 @@ describe("FEAT-SEARCH-002 — detectInputType", () => {
       const result = detectInputType("0xabc");
       expect(result.isValidBlockHeightOrVer).toBe(false);
     });
+
+    it("detects comma-grouped and period-grouped integers", () => {
+      expect(detectInputType("1,234,567").isValidBlockHeightOrVer).toBe(true);
+      expect(detectInputType("1.234.567").isValidBlockHeightOrVer).toBe(true);
+      expect(detectInputType("12,34,567").isValidBlockHeightOrVer).toBe(true);
+    });
+
+    it("does not treat mixed decimal grouping as a version", () => {
+      expect(detectInputType("1,234.56").isValidBlockHeightOrVer).toBe(false);
+      expect(detectInputType("1.234,56").isValidBlockHeightOrVer).toBe(false);
+    });
   });
 
   describe("32-byte hex (transaction hash)", () => {
