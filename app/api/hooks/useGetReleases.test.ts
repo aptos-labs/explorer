@@ -1,5 +1,5 @@
 import {afterEach, describe, expect, it, vi} from "vitest";
-import {fetchReleases} from "./useGetReleases";
+import {RUST_SDK_CRATE, fetchReleases} from "./useGetReleases";
 
 /**
  * Parse a fetched URL and return its hostname for exact-match dispatch.
@@ -305,5 +305,51 @@ describe("fetchReleases", () => {
 
     const result = await fetchReleases();
     expect(result.typescript.status).toBe("error");
+  });
+
+  it("looks up the Rust SDK from the official aptos-sdk crate", async () => {
+    const requestedUrls: string[] = [];
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockImplementation((url: string) => {
+        requestedUrls.push(url);
+        if (host(url) === "crates.io") {
+          return Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({
+                crate: {
+                  newest_version: "0.7.2",
+                  updated_at: "2026-10-05T23:04:09.072403Z",
+                },
+                versions: [
+                  {num: "0.7.2", created_at: "2026-10-05T23:04:09.072403Z"},
+                  {num: "0.7.1", created_at: "2026-09-18T15:46:06.148326Z"},
+                ],
+              }),
+          });
+        }
+        return Promise.resolve({ok: false, status: 404});
+      }),
+    );
+
+    const result = await fetchReleases();
+
+    // The lookup must hit the canonical crate endpoint…
+    expect(RUST_SDK_CRATE).toBe("aptos-sdk");
+    expect(requestedUrls).toContain(
+      `https://crates.io/api/v1/crates/${RUST_SDK_CRATE}`,
+    );
+
+    // …and every Rust SDK link must point back at that crate's page.
+    expect(result.rust.status).toBe("success");
+    if (result.rust.status === "success") {
+      expect(result.rust.version).toBe("0.7.2");
+      expect(result.rust.link).toBe("https://crates.io/crates/aptos-sdk/0.7.2");
+      expect(result.rust.recent.map((r) => r.link)).toEqual([
+        "https://crates.io/crates/aptos-sdk/0.7.2",
+        "https://crates.io/crates/aptos-sdk/0.7.1",
+      ]);
+    }
   });
 });

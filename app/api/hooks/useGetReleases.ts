@@ -10,6 +10,16 @@ import {compareSemverDesc, isStableSemver} from "./semver";
  */
 const RECENT_LIMIT = 25;
 
+/**
+ * Canonical Rust SDK crate on crates.io.
+ *
+ * The Rust SDK lookup must resolve to this crate —
+ * https://crates.io/crates/aptos-sdk — and not to any similarly-named crate.
+ * Keep the API endpoint and the user-facing links below derived from this
+ * single constant so they cannot drift apart.
+ */
+export const RUST_SDK_CRATE = "aptos-sdk";
+
 export type ReleaseEntry = {
   version: string;
   publishedAt: string | null;
@@ -186,11 +196,14 @@ async function fetchPyPI(): Promise<ReleaseResult> {
 
 async function fetchCratesIo(): Promise<ReleaseResult> {
   try {
-    const res = await fetch("https://crates.io/api/v1/crates/aptos-sdk", {
-      headers: {
-        "User-Agent": "aptos-explorer (https://explorer.aptoslabs.com)",
+    const res = await fetch(
+      `https://crates.io/api/v1/crates/${RUST_SDK_CRATE}`,
+      {
+        headers: {
+          "User-Agent": "aptos-explorer (https://explorer.aptoslabs.com)",
+        },
       },
-    });
+    );
     if (!res.ok) throw new Error(`crates.io returned ${res.status}`);
     const data = (await res.json()) as {
       crate: {newest_version: string; updated_at: string};
@@ -205,7 +218,7 @@ async function fetchCratesIo(): Promise<ReleaseResult> {
       .map((v) => ({
         version: v.num,
         publishedAt: v.created_at,
-        link: `https://crates.io/crates/aptos-sdk/${v.num}`,
+        link: `https://crates.io/crates/${RUST_SDK_CRATE}/${v.num}`,
         isPrerelease: !isStableSemver(v.num),
       }))
       .sort((a, b) => {
@@ -225,7 +238,7 @@ async function fetchCratesIo(): Promise<ReleaseResult> {
         status: "success",
         version,
         publishedAt: data.crate.updated_at,
-        link: `https://crates.io/crates/aptos-sdk/${version}`,
+        link: `https://crates.io/crates/${RUST_SDK_CRATE}/${version}`,
         isStable: isStableSemver(version),
         recent: [],
       };
