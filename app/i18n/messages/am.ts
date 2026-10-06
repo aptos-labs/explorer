@@ -1198,8 +1198,14 @@ export const am = {
     depositStatus: "የተቀማጭ ሁኔታ",
     lastEpochPerformance: "የመጨረሻ ኤፖክ አፈጻጸም",
     rewardsPerformance: "የሽልማት አፈጻጸም",
-    smartContract: "ስማርት ኮንትራክት",
-    receiver: "ተቀባይ",
+    status: "ግብይቱ በተሳካ ሁኔታ ተፈጽሟል ወይም አልተሳካም። ያልተሳካ ግብይት አሁንም በሰንሰለቱ ላይ ይመዘገባል።",
+    receiver: "በዚህ ማስተላለፍ ንብረቶችን የተቀበለው መለያ።",
+    smartContract:
+      "ይህ ግብይት የጠራውን የ Move ሞጁል ያሳተመው መለያ። በ Aptos ላይ የ Move ሞጁል ስማርት ኮንትራክት ነው።",
+    amount:
+      "ይህ ግብይት ምን ያህል APT እንዳንቀሳቀሰ። ቁጥሩ ከጠቅላላ የተቀመጠ APT እና ከጠቅላላ የተወጣ APT ትልቁ ነው።",
+    signature:
+      "ይህን ግብይት የሚፈቅደው ዲጂታል ፊርማ። ላኪው መፈረም አለበት፤ የክፍያ ከፋይ ወይም ሁለተኛ ፈራሚዎችም ሊፈርሙ ይችላሉ።",
     functionFilter:
       "ግብይቶችን በመግቢያ ተግባር መስኮች አጣራ (እያንዳንዱን መስክ ለመተግበር Enter ወይም Tab ይጫኑ)",
     bytecodeFormat:

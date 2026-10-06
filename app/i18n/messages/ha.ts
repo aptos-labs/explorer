@@ -1245,8 +1245,15 @@ export const ha = {
     depositStatus: "Matsayin ajiya",
     lastEpochPerformance: "Ayyukan epoch na ƙarshe",
     rewardsPerformance: "Ayyukan lada",
-    smartContract: "Kwangilar wayo",
-    receiver: "Mai karɓa",
+    status:
+      "Ko ma'amalar ta yi nasara ko ta gaza. Ma'amalar da ta gaza har yanzu ana rubuta ta a kan sarkar.",
+    receiver: "Asusun da ya karɓi kadarori a wannan canja wuri.",
+    smartContract:
+      "Asusun da ya buga tsarin Move da wannan ma'amala ta kira. A Aptos, tsarin Move kwangilar wayo ce.",
+    amount:
+      "Yawan APT da wannan ma'amala ta motsa. Lambar ita ce mafi girma tsakanin jimlar APT da aka ajiye da jimlar APT da aka cire.",
+    signature:
+      "Sa hannun dijital da ke ba da izinin wannan ma'amala. Mai aikawa dole ne ya sa hannu; mai biyan kuɗi ko masu sa hannu na biyu na iya sa hannu.",
     functionFilter:
       "Tace ma'amaloli ta filayen aikin shigarwa (danna Enter ko Tab don aiwatar da kowane fili)",
     bytecodeFormat:

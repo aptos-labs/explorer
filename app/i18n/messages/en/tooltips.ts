@@ -53,8 +53,15 @@ export const tooltips = {
   depositStatus: "Deposit Status",
   lastEpochPerformance: "Last Epoch Performance",
   rewardsPerformance: "Rewards Performance",
-  smartContract: "Smart Contract",
-  receiver: "Receiver",
+  status:
+    "Whether the transaction executed successfully or failed. A failed transaction is still recorded on chain.",
+  receiver: "The account that received the assets in this transfer.",
+  smartContract:
+    "The account that published the Move module called by this transaction. On Aptos, a Move module is a smart contract.",
+  amount:
+    "How much APT this transaction moved. The figure is the larger of total APT deposited and total APT withdrawn.",
+  signature:
+    "The digital signature that authorizes this transaction. The sender must sign; a fee payer or secondary signers may sign as well.",
   functionFilter:
     "Filter transactions by entry function fields (press Enter or Tab to apply each field)",
   bytecodeFormat:

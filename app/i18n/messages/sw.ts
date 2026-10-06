@@ -1249,8 +1249,15 @@ export const sw = {
     depositStatus: "Hali ya amana",
     lastEpochPerformance: "Utendaji wa kipindi kilichopita",
     rewardsPerformance: "Utendaji wa zawadi",
-    smartContract: "Mkataba mahiri",
-    receiver: "Mpokeaji",
+    status:
+      "Ikiwa muamala ulitekelezwa kwa mafanikio au ulishindwa. Muamala ulioshindwa bado unarekodiwa kwenye mnyororo.",
+    receiver: "Akaunti iliyopokea mali katika uhamisho huu.",
+    smartContract:
+      "Akaunti iliyochapisha moduli ya Move inayoitwa na muamala huu. Kwenye Aptos, moduli ya Move ni mkataba mahiri.",
+    amount:
+      "Kiasi cha APT kilichohamishwa na muamala huu. Nambari ni kubwa kati ya jumla ya APT iliyowekwa na jumla ya APT iliyotolewa.",
+    signature:
+      "Saini ya kidijitali inayoidhinisha muamala huu. Mtumaji lazima atie saini; mlipaji wa ada au watiaji saini wa pili wanaweza pia kutia saini.",
     functionFilter:
       "Chuja miamala kwa sehemu za kazi ya kuingia (bonyeza Enter au Tab kutumia kila sehemu)",
     bytecodeFormat:

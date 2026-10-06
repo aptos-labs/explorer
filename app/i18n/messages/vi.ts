@@ -1232,8 +1232,15 @@ export const vi = {
     depositStatus: "Trạng thái tiền gửi",
     lastEpochPerformance: "Hiệu suất epoch gần nhất",
     rewardsPerformance: "Hiệu suất phần thưởng",
-    smartContract: "Hợp đồng thông minh",
-    receiver: "Người nhận",
+    status:
+      "Giao dịch thực thi thành công hay thất bại. Giao dịch thất bại vẫn được ghi trên chuỗi.",
+    receiver: "Tài khoản đã nhận tài sản trong lần chuyển này.",
+    smartContract:
+      "Tài khoản đã xuất bản module Move mà giao dịch này gọi. Trên Aptos, module Move là hợp đồng thông minh.",
+    amount:
+      "Giao dịch này đã chuyển bao nhiêu APT. Con số là giá trị lớn hơn giữa tổng APT nạp vào và tổng APT rút ra.",
+    signature:
+      "Chữ ký số ủy quyền cho giao dịch này. Người gửi phải ký; người trả phí hoặc người ký phụ cũng có thể ký.",
     functionFilter:
       "Lọc giao dịch theo các trường hàm entry (nhấn Enter hoặc Tab để áp dụng từng trường)",
     bytecodeFormat:

@@ -1244,8 +1244,15 @@ export const pt = {
     depositStatus: "Status do depósito",
     lastEpochPerformance: "Desempenho da última época",
     rewardsPerformance: "Desempenho de recompensas",
-    smartContract: "Contrato inteligente",
-    receiver: "Destinatário",
+    status:
+      "Se a transação foi executada com sucesso ou falhou. Uma transação com falha continua registrada na chain.",
+    receiver: "A conta que recebeu os ativos nesta transferência.",
+    smartContract:
+      "A conta que publicou o módulo Move chamado por esta transação. Na Aptos, um módulo Move é um contrato inteligente.",
+    amount:
+      "Quanto APT esta transação moveu. O valor é o maior entre o APT total depositado e o APT total retirado.",
+    signature:
+      "A assinatura digital que autoriza esta transação. O remetente deve assinar; um pagador de taxa ou signatários secundários também podem assinar.",
     functionFilter:
       "Filtrar transações pelos campos da função de entrada (pressione Enter ou Tab para aplicar cada campo)",
     bytecodeFormat:

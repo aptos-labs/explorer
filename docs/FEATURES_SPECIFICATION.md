@@ -201,6 +201,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | Aspect | Detail |
 |--------|--------|
 | **Key fields** | Version, status, sender, fee payer, secondary signers, function, arguments, amount. For protocol-decrypted `encrypted_transaction_payload` values, these fields use the fullnode-provided decrypted entry function; ciphertext is never decrypted in the browser. An **Encryption** row (chips for encrypted state and epoch) appears when the payload type is `encrypted_transaction_payload`. Pending or failed-decryption payloads show an "Encrypted Transaction" function line (and any `claimed_entry_fun`) instead of a blank function. |
+| **Field tooltips** | Info icons on **Status**, **Receiver**, **Smart Contract**, **Amount**, and **Signature** explain the row. Status is success or failure (a failed transaction stays on chain). Receiver is the account that received assets in a transfer. Smart Contract is the account that published the called Move module (glossary link). Amount is APT moved, the larger of total APT deposited and withdrawn. Signature is the authorizing digital signature (sender, and optionally a fee payer or secondary signers), with a glossary link. The same status tooltip appears on other transaction-type overviews; signature also appears on pending transactions. |
 | **Actions section** | Rich parsing of DEX swaps, LSD operations, liquidity events (see FEAT-TXN-009). Decibel perp orders include `place_bulk_orders_to_subaccount` and `place_bulk_orders_to_subaccount_with_repricing` (bulk; the latter adds `max_collapse_size` for crossing-leg collapse). |
 | **Gas** | Gas fee, storage refund, net gas, gas unit price, max gas, VM status. |
 | **Block** | Link to parent block. |
@@ -1498,6 +1499,7 @@ top of the HTML site.
 | `app/components/IndividualPageContent/ContentValue/CurrencyValue.test.tsx` | Currency formatting (octa → APT) |
 | `app/components/Table/verifiedLevel.test.ts` | FEAT-COIN-003 / FEAT-UI-002 (verification level determination: native, verified, banned, recognized, unverified, disabled) |
 | `app/pages/Transaction/utils.test.ts` | FEAT-TXN-002/003 (tx amounts, counterparty including decrypted encrypted payloads, balance changes), FEAT-TXN-013 (multisig transaction detection) |
+| `app/pages/Transaction/helpers.test.tsx` | FEAT-TXN-002 (overview info tooltips for status, receiver, smart contract, amount, and signature) |
 | `app/pages/layout/Search/searchNumeric.test.ts` | FEAT-SEARCH-002 (ledger-bounded numeric search; pruned versions still produce a transaction result; containing-block REST vs archive then indexer last resort) |
 | `app/api/archivalNode.test.ts` | FEAT-SEARCH-002 / FEAT-TXN-014 (parse `archival_endpoint` / `x-aptos-archival-endpoint`; `api.*` → `archive.*` host derivation; hash existence retries archival without credentials; version/block archival fetch) |
 | `app/api/v2.block.test.ts` | FEAT-BLOCK-001 (pruned `getBlockByHeight` / `getBlockByVersion` load from archive after fullnode miss) |

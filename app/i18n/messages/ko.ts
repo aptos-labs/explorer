@@ -1228,8 +1228,15 @@ export const ko = {
     depositStatus: "예치 상태",
     lastEpochPerformance: "마지막 에포크 성과",
     rewardsPerformance: "보상 성과",
-    smartContract: "스마트 컨트랙트",
-    receiver: "수신자",
+    status:
+      "트랜잭션이 성공적으로 실행되었는지 또는 실패했는지입니다. 실패한 트랜잭션도 체인에 기록됩니다.",
+    receiver: "이 전송에서 자산을 받은 계정입니다.",
+    smartContract:
+      "이 트랜잭션이 호출한 Move 모듈을 게시한 계정입니다. Aptos에서 Move 모듈은 스마트 컨트랙트입니다.",
+    amount:
+      "이 트랜잭션이 옮긴 APT의 양입니다. 값은 입금된 APT 합계와 출금된 APT 합계 중 더 큰 쪽입니다.",
+    signature:
+      "이 트랜잭션을 승인하는 디지털 서명입니다. 보낸 사람이 서명해야 하며, 수수료 지불자나 보조 서명자도 서명할 수 있습니다.",
     functionFilter:
       "엔트리 함수 필드로 트랜잭션을 필터합니다 (Enter 또는 Tab으로 각 필드를 적용)",
     bytecodeFormat:

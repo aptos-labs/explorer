@@ -1239,8 +1239,15 @@ export const pl = {
     depositStatus: "Status wpłaty",
     lastEpochPerformance: "Wynik ostatniej epoki",
     rewardsPerformance: "Wynik nagród",
-    smartContract: "Smart kontrakt",
-    receiver: "Odbiorca",
+    status:
+      "Czy transakcja została wykonana pomyślnie, czy zakończyła się niepowodzeniem. Nieudana transakcja nadal jest zapisana w łańcuchu.",
+    receiver: "Konto, które otrzymało aktywa w tym transferze.",
+    smartContract:
+      "Konto, które opublikowało moduł Move wywołany przez tę transakcję. W Aptos moduł Move jest smart kontraktem.",
+    amount:
+      "Ile APT przeniosła ta transakcja. Liczba to większa z łącznego wpłaconego APT i łącznego wypłaconego APT.",
+    signature:
+      "Podpis cyfrowy autoryzujący tę transakcję. Nadawca musi podpisać; płatnik opłaty lub dodatkowi sygnatariusze też mogą podpisać.",
     functionFilter:
       "Filtruj transakcje według pól funkcji wejściowej (naciśnij Enter lub Tab, aby zastosować każde pole)",
     bytecodeFormat:
