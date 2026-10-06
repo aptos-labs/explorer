@@ -48,6 +48,10 @@ export const GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE: Readonly<
   48: "1.44",
   49: "1.45",
   50: "1.46",
+  51: "1.47",
+  52: "1.48",
+  53: "1.49",
+  54: "1.50",
 };
 
 /**

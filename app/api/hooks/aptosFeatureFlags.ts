@@ -2,8 +2,9 @@
  * Names for known Aptos on-chain feature flags. The canonical list lives in
  * the `FeatureFlag` enum at
  * `aptos-core/types/src/on_chain_config/aptos_features.rs`; this file mirrors
- * those numeric IDs (1..=112 at time of writing) so the explorer can render
- * human-readable names without a runtime dependency on aptos-core.
+ * those numeric IDs (1..=130 at time of writing; 115 is unassigned in
+ * aptos-core) so the explorer can render human-readable names without a
+ * runtime dependency on aptos-core.
  *
  * The on-chain `0x1::features::Features` resource stores enabled flags in a
  * little-endian byte vector — bit `(id % 8)` of byte `id / 8` is set when a
@@ -101,7 +102,7 @@ export const APTOS_FEATURE_FLAGS: ReadonlyArray<AptosFeatureFlag> = [
   {id: 72, name: "Allow Serialized Script Args"},
   {id: 73, name: "Use Compatibility Checker v2 (rolled out)"},
   {id: 74, name: "Enable Enum Types"},
-  {id: 75, name: "Enable Resource Access Control"},
+  {id: 75, name: "Enable Resource Access Control (deprecated)"},
   {id: 76, name: "Reject Unstable Bytecode for Script (rolled out)"},
   {id: 77, name: "Federated Keyless"},
   {id: 78, name: "Transaction Simulation Enhancement"},
@@ -110,7 +111,7 @@ export const APTOS_FEATURE_FLAGS: ReadonlyArray<AptosFeatureFlag> = [
   {id: 81, name: "Loader v2 (rolled out)"},
   {id: 82, name: "Disallow init_module to Publish Modules (rolled out)"},
   {id: 83, name: "Call Tree & Instruction VM Cache"},
-  {id: 84, name: "Permissioned Signer"},
+  {id: 84, name: "Permissioned Signer (deprecated)"},
   {id: 85, name: "Account Abstraction"},
   {id: 86, name: "VM Binary Format v8"},
   {id: 87, name: "Bulletproofs Batch Natives"},
@@ -139,6 +140,24 @@ export const APTOS_FEATURE_FLAGS: ReadonlyArray<AptosFeatureFlag> = [
   {id: 110, name: "Multisig Script"},
   {id: 111, name: "Transaction Limits"},
   {id: 112, name: "Versioned Transaction Validation"},
+  {id: 113, name: "Storage Slot Natives"},
+  {id: 114, name: "Allow Friend Entry Visibility Downgrade"},
+  // 115 is unassigned in aptos-core's FeatureFlag enum.
+  {id: 116, name: "Hotness in Epilogue"},
+  {id: 117, name: "Transaction Info v1"},
+  {id: 118, name: "Trading Native"},
+  {id: 119, name: "Native Position"},
+  {id: 120, name: "Native Orderbook"},
+  {id: 121, name: "Native Collateral"},
+  {id: 122, name: "Compute Trading Native State Roots"},
+  {id: 123, name: "Hot State Root in Transaction Info"},
+  {id: 124, name: "Gas Refund FA Mint"},
+  {id: 125, name: "Function Value Dispatch"},
+  {id: 126, name: "Disable Closure BCS Serialization"},
+  {id: 127, name: "Lazy Module Initialization"},
+  {id: 128, name: "Enable MonoMove"},
+  {id: 129, name: "Check Function Type Abilities"},
+  {id: 130, name: "Disable Eager Module Initialization"},
 ];
 
 const FEATURE_FLAG_NAME_BY_ID = new Map<number, string>(

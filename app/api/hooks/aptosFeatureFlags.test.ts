@@ -49,10 +49,19 @@ describe("getFeatureFlagName", () => {
   it("returns the registered name for known IDs", () => {
     expect(getFeatureFlagName(9)).toBe("Resource Groups");
     expect(getFeatureFlagName(46)).toBe("Keyless Accounts");
+    expect(getFeatureFlagName(75)).toBe(
+      "Enable Resource Access Control (deprecated)",
+    );
+    expect(getFeatureFlagName(84)).toBe("Permissioned Signer (deprecated)");
     expect(getFeatureFlagName(112)).toBe("Versioned Transaction Validation");
+    expect(getFeatureFlagName(113)).toBe("Storage Slot Natives");
+    expect(getFeatureFlagName(128)).toBe("Enable MonoMove");
+    expect(getFeatureFlagName(130)).toBe("Disable Eager Module Initialization");
   });
 
   it("returns a fallback for unknown IDs so they are still surfaced", () => {
+    // 115 is intentionally unassigned in aptos-core.
+    expect(getFeatureFlagName(115)).toBe("Feature #115");
     expect(getFeatureFlagName(9999)).toBe("Feature #9999");
   });
 });
@@ -60,6 +69,8 @@ describe("getFeatureFlagName", () => {
 describe("hasStaticFeatureFlagLabel", () => {
   it("is true for curated IDs and false for unknown", () => {
     expect(hasStaticFeatureFlagLabel(112)).toBe(true);
+    expect(hasStaticFeatureFlagLabel(130)).toBe(true);
+    expect(hasStaticFeatureFlagLabel(115)).toBe(false);
     expect(hasStaticFeatureFlagLabel(9999)).toBe(false);
   });
 });
