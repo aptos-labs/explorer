@@ -936,6 +936,10 @@ export const sw = {
         "Tazama {tab} ya kizuizi {height} kwenye mnyororo wa Aptos.",
       listDescription:
         "Tazama vitalu vya hivi karibuni vilivyozalishwa kwenye mnyororo wa Aptos. Fuatilia urefu wa kizuizi, kipindi, mzunguko, nyakati, wapendekeza, na miamala iliyojumuishwa. Kichunguzi cha vitalu cha wakati halisi.",
+      heightRange: "Urefu {start}–{end}",
+      rangeNav: "Masafa ya urefu wa bloku",
+      olderBlocks: "Vitalu vya zamani",
+      newerBlocks: "Vitalu vipya",
     },
     coins: {
       title: "Sarafu na mali zinazoweza kubadilishana",

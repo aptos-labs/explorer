@@ -934,6 +934,10 @@ export const ha = {
       metaDescription: "Duba {tab} na bulo {height} a kan blockchain na Aptos.",
       listDescription:
         "Duba sabbin bulolin da aka samar a kan blockchain na Aptos. Kula da tsayin bulo, epoch, zagaye, lokaci, masu ƙaddamarwa, da ma'amalolin da ke ciki. Binciken sarkar na ainihin lokaci.",
+      heightRange: "Tsayuka {start}–{end}",
+      rangeNav: "Zangon tsayin bulo",
+      olderBlocks: "Tsoffin buloli",
+      newerBlocks: "Sabbin buloli",
     },
     coins: {
       title: "Tsabar kuɗi da kadarorin da za a iya musayawa",

@@ -61,7 +61,9 @@ function describeExplorerPath(pathname: string): string {
   if (pathname === "/transactions") {
     return "Recent transactions list. Filter with `?type=user&fn_addr=&fn_module=&fn_name=`.";
   }
-  if (pathname === "/blocks") return "Recent blocks list.";
+  if (pathname === "/blocks") {
+    return "Recent blocks list. Height range: `?start={oldest}&end={newest}` (inclusive). Omit both to follow the chain tip.";
+  }
   if (pathname === "/coins") return "Coins list.";
   if (pathname === "/analytics") return "Network analytics (mainnet charts).";
   if (pathname === "/settings") {

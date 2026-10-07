@@ -346,7 +346,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | Aspect | Detail |
 |--------|--------|
 | **Data** | Ledger info (cursor height) + REST `getBlockByHeight` for each row (same source as block detail). Block fetches use the same API key as the rest of the app (embedded `VITE_*` key or per-network Settings override on `useSdkV2Client` / `useAptosClient`). React Query keys include a **non-secret** API key identity so changing the override does not reuse cached responses from the old key. Requests are **limited concurrency** (not all rows in parallel) to reduce edge/CDN 429s when refreshing. Default page size is **20** rows. |
-| **Pagination** | `?start=` cursor. |
+| **Pagination** | Previous and Next move between inclusive height ranges. The live tip (`/blocks` with no range) follows ledger height instead of a page index, because the tip advances continuously. A frozen window is `/blocks?start={oldest}&end={newest}` (both inclusive). `?start={newest}` alone remains the legacy cursor: a default-sized window ending at that height. The default window is **20** heights; a requested range is capped at **100**. Next returns to the live tip when the following window would reach the current ledger height. Previous stops at height 0. A short window that starts at height 0 steps forward by the default 20 so later windows stay aligned with the tip. |
 | **Columns** | Block height (linked, with a copy control for the ungrouped height), proposer, timestamp, transaction count. Optional first/last version columns use the same copy control. |
 | **Virtualization** | Uses `VirtualizedTableBody` for large result sets. |
 
@@ -1475,6 +1475,7 @@ top of the HTML site.
 | `app/api/hooks/aptosFeatureFlagsUpstream.test.ts` | FEAT-RELEASES-001 (upstream Rust enum parse for unlisted feature flag names) |
 | `app/api/hooks/useGetNetworkStatus.test.ts` | FEAT-RELEASES-001 (`fetchNetworkStatus`) |
 | `app/utils/mapWithConcurrencyLimit.test.ts` | FEAT-BLOCKS-001 (bounded concurrency for batched REST fetches) |
+| `app/pages/Blocks/blockRange.test.ts` | FEAT-BLOCKS-001 (inclusive `start`/`end` height ranges, legacy `?start=` cursor, live tip, previous/next steps, fetch cap) |
 | `app/utils/sentioCallTrace.test.ts` | FEAT-TXN-010 (Sentio helpers: network ID, paths, address normalization, node validation) |
 | `app/api/client.test.ts` | FEAT-RATELIMIT-003 (API error classification, 429 → `emitRateLimit`), 404-shaped `isNotFoundError` / `toResponseError` |
 | `app/api/hooks/useGetObjectRefs.test.ts` | FEAT-ACCOUNT-010 (object ref detection in transactions) |

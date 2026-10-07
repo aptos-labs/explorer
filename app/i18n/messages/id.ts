@@ -933,6 +933,10 @@ export const id = {
       metaDescription: "Lihat {tab} untuk blok {height} di blockchain Aptos.",
       listDescription:
         "Lihat blok terbaru di blockchain Aptos. Pantau tinggi blok, epoch, ronde, stempel waktu, pengusul, dan transaksi. Penjelajah blok real-time.",
+      heightRange: "Tinggi {start}–{end}",
+      rangeNav: "Rentang tinggi blok",
+      olderBlocks: "Blok lebih lama",
+      newerBlocks: "Blok lebih baru",
     },
     coins: {
       title: "Koin & aset fungible",

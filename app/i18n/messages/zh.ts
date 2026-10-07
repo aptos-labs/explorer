@@ -911,6 +911,10 @@ export const zh = {
       metaDescription: "查看 Aptos 区块链上区块 {height} 的{tab}。",
       listDescription:
         "查看 Aptos 区块链上最新产出的区块。监控区块高度、纪元、轮次、时间戳、提议者以及包含的交易。实时区块浏览器。",
+      heightRange: "高度 {start}–{end}",
+      rangeNav: "区块高度范围",
+      olderBlocks: "更早的区块",
+      newerBlocks: "更新的区块",
     },
     coins: {
       title: "代币与同质化资产",

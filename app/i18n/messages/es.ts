@@ -941,6 +941,10 @@ export const es = {
         "Consulta {tab} del bloque {height} en la cadena de bloques Aptos.",
       listDescription:
         "Consulta los bloques más recientes producidos en la cadena de bloques Aptos. Supervisa la altura de bloque, época, ronda, marcas de tiempo, proponentes y transacciones incluidas. Explorador de bloques en tiempo real.",
+      heightRange: "Alturas {start}–{end}",
+      rangeNav: "Rango de altura de bloque",
+      olderBlocks: "Bloques anteriores",
+      newerBlocks: "Bloques siguientes",
     },
     coins: {
       title: "Monedas y activos fungibles",

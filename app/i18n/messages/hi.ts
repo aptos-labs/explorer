@@ -924,6 +924,10 @@ export const hi = {
       metaDescription: "Aptos ब्लॉकचेन पर ब्लॉक {height} का {tab} देखें।",
       listDescription:
         "Aptos ब्लॉकचेन पर बने नवीनतम ब्लॉक देखें। ब्लॉक ऊँचाई, एपोक, राउंड, टाइमस्टैंप, प्रस्तावक और शामिल लेन-देन मॉनिटर करें। रियल-टाइम ब्लॉक एक्सप्लोरर।",
+      heightRange: "ऊँचाई {start}–{end}",
+      rangeNav: "ब्लॉक ऊँचाई सीमा",
+      olderBlocks: "पुराने ब्लॉक",
+      newerBlocks: "नए ब्लॉक",
     },
     coins: {
       title: "कॉइन और फंजिबल एसेट",

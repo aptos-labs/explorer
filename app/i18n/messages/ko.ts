@@ -927,6 +927,10 @@ export const ko = {
       metaDescription: "Aptos 블록체인에서 블록 {height}의 {tab}을(를) 봅니다.",
       listDescription:
         "Aptos 블록체인에서 생성된 최신 블록을 봅니다. 블록 높이, 에포크, 라운드, 타임스탬프, 제안자, 포함된 트랜잭션을 모니터링합니다. 실시간 블록 탐색기.",
+      heightRange: "높이 {start}–{end}",
+      rangeNav: "블록 높이 범위",
+      olderBlocks: "이전 블록",
+      newerBlocks: "다음 블록",
     },
     coins: {
       title: "코인 및 대체 가능 자산",

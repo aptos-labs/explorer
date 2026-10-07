@@ -32,6 +32,10 @@ export const pages = {
     metaDescription: "View {tab} for block {height} on the Aptos blockchain.",
     listDescription:
       "View the latest blocks produced on the Aptos blockchain. Monitor block height, epoch, round, timestamps, proposers, and included transactions. Real-time block explorer.",
+    heightRange: "Heights {start}–{end}",
+    rangeNav: "Block height range",
+    olderBlocks: "Older blocks",
+    newerBlocks: "Newer blocks",
   },
   coins: {
     title: "Coins & Fungible Assets",

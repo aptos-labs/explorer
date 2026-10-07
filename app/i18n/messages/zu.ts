@@ -938,6 +938,10 @@ export const zu = {
       metaDescription: "Buka {tab} yebhulokhi {height} ku-Aptos blockchain.",
       listDescription:
         "Buka amabhulokhi amasha akhiqizwe ku-Aptos blockchain. Qapha ubude bebhulokhi, i-epoch, umjikelezo, izikhathi, abaqambi, nokuthengiselana okufakiwe. I-block explorer yesikhathi sangempela.",
+      heightRange: "Ubude {start}–{end}",
+      rangeNav: "Ibanga lobude bebhulokhi",
+      olderBlocks: "Amabhulokhi amadala",
+      newerBlocks: "Amabhulokhi amasha",
     },
     coins: {
       title: "Izinhlamvu Zemali Nezimpahla Ezifakwayo",

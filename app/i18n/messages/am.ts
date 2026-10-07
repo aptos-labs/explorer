@@ -914,6 +914,10 @@ export const am = {
       metaDescription: "በAptos ብሎክቼይን ላይ ለብሎክ {height} {tab} ይመልከቱ።",
       listDescription:
         "በAptos ብሎክቼይን ላይ የተመረቱ የቅርብ ብሎኮችን ይመልከቱ። የብሎክ ቁመት፣ ኤፖክ፣ ዙር፣ ጊዜ ማህተሞች፣ አቅራቢዎች እና የተካተቱ ግብይቶችን ይከታተሉ። የቀጥታ ብሎክ አሳሽ።",
+      heightRange: "ቁመቶች {start}–{end}",
+      rangeNav: "የብሎክ ቁመት ክልል",
+      olderBlocks: "የቆዩ ብሎኮች",
+      newerBlocks: "አዲስ ብሎኮች",
     },
     coins: {
       title: "ኮይኖች እና ተለዋዋጭ ንብረቶች",

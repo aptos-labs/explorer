@@ -920,6 +920,10 @@ export const he = {
       metaDescription: "הצג {tab} עבור בלוק {height} בבלוקצ'יין Aptos.",
       listDescription:
         "הצג את הבלוקים האחרונים שיוצרו בבלוקצ'יין Aptos. עקוב אחר גובה בלוק, epoch, סיבוב, חותמות זמן, מציעים ועסקאות כלולות. סייר בלוקים בזמן אמת.",
+      heightRange: "גבהים {start}–{end}",
+      rangeNav: "טווח גובה בלוק",
+      olderBlocks: "בלוקים ישנים יותר",
+      newerBlocks: "בלוקים חדשים יותר",
     },
     coins: {
       title: "מטבעות ונכסים סחירים",

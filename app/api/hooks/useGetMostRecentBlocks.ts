@@ -13,12 +13,22 @@ import {
 import {getLedgerInfo} from "..";
 import {getRecentBlocks} from "../v2";
 
+function parseLedgerBlockHeight(value: string | undefined): number | undefined {
+  if (value == null || value === "") return undefined;
+  const height = Number(value);
+  if (!Number.isSafeInteger(height) || height < 0) return undefined;
+  return height;
+}
+
 /**
  * Recent blocks for `/blocks`. Uses the same REST `getBlockByHeight` data as block
  * detail pages so hash, timestamps, and version ranges stay consistent with the API.
+ *
+ * `newestHeight` is the inclusive top of a frozen window. Omit it to follow the
+ * ledger tip. `count` is how many heights to load, walking downward from that top.
  */
 export function useGetMostRecentBlocks(
-  start: string | undefined,
+  newestHeight: number | undefined,
   count: number,
 ) {
   const networkName = useNetworkName();
@@ -40,12 +50,14 @@ export function useGetMostRecentBlocks(
     refetchOnWindowFocus: false,
     refetchOnMount: true,
   });
-  const currentBlockHeight = parseInt(
-    start ?? ledgerData?.block_height ?? "",
-    10,
-  );
+  const ledgerBlockHeight = parseLedgerBlockHeight(ledgerData?.block_height);
+  const currentBlockHeight = newestHeight ?? ledgerBlockHeight;
 
-  const {isLoading, data: blocks} = useQuery<Types.Block[]>({
+  const {
+    isLoading,
+    isFetching,
+    data: blocks,
+  } = useQuery<Types.Block[]>({
     queryKey: [
       "recentBlocksRest",
       currentBlockHeight,
@@ -54,12 +66,13 @@ export function useGetMostRecentBlocks(
       apiKeyIdentity,
     ],
     queryFn: async () => {
-      if (!Number.isFinite(currentBlockHeight)) {
+      if (currentBlockHeight === undefined) {
         return [];
       }
+      const safeCount = Math.min(count, currentBlockHeight + 1);
       const restBlocks = await getRecentBlocks(
         currentBlockHeight,
-        count,
+        safeCount,
         sdkV2Client,
       );
       return restBlocks.map((b) => ({
@@ -70,20 +83,34 @@ export function useGetMostRecentBlocks(
         last_version: b.last_version,
       }));
     },
-    enabled: Number.isFinite(currentBlockHeight),
+    enabled: currentBlockHeight !== undefined && count > 0,
+    placeholderData: (previousData, previousQuery) => {
+      const previousKey = previousQuery?.queryKey;
+      if (!previousKey) return undefined;
+      if (
+        previousKey[3] !== networkValue ||
+        previousKey[4] !== apiKeyIdentity
+      ) {
+        return undefined;
+      }
+      return previousData;
+    },
     staleTime: 60 * 1000,
     gcTime: 10 * 60 * 1000,
     refetchOnWindowFocus: false,
     refetchOnMount: true,
   });
 
-  const recentBlocks =
-    currentBlockHeight !== undefined &&
-    !isLoadingLedgerData &&
-    !isLoading &&
-    blocks
-      ? blocks
-      : [];
+  const recentBlocks = blocks ?? [];
+  const waitingForLedger =
+    newestHeight === undefined &&
+    ledgerBlockHeight === undefined &&
+    isLoadingLedgerData;
+  const waitingForBlocks = isFetching && recentBlocks.length === 0;
 
-  return {recentBlocks, isLoading};
+  return {
+    recentBlocks,
+    isLoading: isLoading || waitingForLedger || waitingForBlocks,
+    ledgerBlockHeight,
+  };
 }

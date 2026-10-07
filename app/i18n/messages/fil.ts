@@ -943,6 +943,10 @@ export const fil = {
         "Tingnan ang {tab} para sa block {height} sa Aptos blockchain.",
       listDescription:
         "Tingnan ang pinakabagong mga block sa Aptos blockchain. Subaybayan ang block height, epoch, round, timestamp, proposer, at kasamang transaksyon. Real-time na block explorer.",
+      heightRange: "Mga height {start}–{end}",
+      rangeNav: "Saklaw ng block height",
+      olderBlocks: "Mas lumang mga block",
+      newerBlocks: "Mas bagong mga block",
     },
     coins: {
       title: "Mga coin at fungible asset",

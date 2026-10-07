@@ -44,6 +44,7 @@ All URLs default to mainnet. Append `?network=testnet`, `?network=devnet`, or `?
 - Coins list: `/coins`
 - Analytics: `/analytics`
 - Blocks list: `/blocks`
+  - Height range: `/blocks?start={oldest}&end={newest}` (inclusive). Omit both to follow the chain tip. `?start={newest}` alone is a legacy cursor for the newest height of the default 20-block window.
 - Transactions list: `/transactions`
   - Filter by function: `/transactions?type=user&fn_addr={address}&fn_module={module}&fn_name={function}` (e.g. `?fn_addr=0x1&fn_module=coin&fn_name=transfer`; each field is optional but progressive — module requires address, function requires module)
 - Verification: `/verification`

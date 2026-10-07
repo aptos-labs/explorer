@@ -915,6 +915,10 @@ export const th = {
       metaDescription: "ดู {tab} ของบล็อก {height} บนบล็อกเชน Aptos",
       listDescription:
         "ดูบล็อกล่าสุดที่ผลิตบนบล็อกเชน Aptos ติดตามความสูงบล็อก epoch รอบ เวลา ผู้เสนอ และธุรกรรมที่รวมอยู่ ตัวสำรวจบล็อกแบบเรียลไทม์",
+      heightRange: "ความสูง {start}–{end}",
+      rangeNav: "ช่วงความสูงของบล็อก",
+      olderBlocks: "บล็อกก่อนหน้า",
+      newerBlocks: "บล็อกถัดไป",
     },
     coins: {
       title: "เหรียญและสินทรัพย์ที่แลกเปลี่ยนได้",
