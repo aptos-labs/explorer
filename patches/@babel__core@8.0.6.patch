@@ -34,7 +34,7 @@ index 2a628e373acd7d506a4235c367f78e7ccfbaaab0..f54b1909e1a0d078d7f6ec5ef1df3e61
 +++ b/package.json
 @@ -2,7 +2,7 @@
    "name": "@babel/core",
-   "version": "8.0.1",
+   "version": "8.0.6",
    "description": "Babel compiler core.",
 -  "main": "./lib/index.js",
 +  "main": "./lib/default-export.js",
