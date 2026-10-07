@@ -495,6 +495,8 @@ export const fil = {
       "Para gamitin ang localnet, simulan ang local na Aptos node gamit ang:",
     unavailableSwitch: "O lumipat sa ibang network sa ibaba.",
     switchToMainnet: "Lumipat sa Mainnet",
+    testnetResetBanner:
+      "Testnet is currently being reset, and will be back up by 10/9.",
   },
   errors: {
     somethingWentWrong: "May nangyaring mali",

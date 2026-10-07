@@ -491,6 +491,8 @@ export const vi = {
     unavailableHint: "Để dùng Localnet, hãy khởi động node Aptos local bằng:",
     unavailableSwitch: "Hoặc chuyển sang mạng khác bên dưới.",
     switchToMainnet: "Chuyển sang Mainnet",
+    testnetResetBanner:
+      "Testnet is currently being reset, and will be back up by 10/9.",
   },
   errors: {
     somethingWentWrong: "Đã xảy ra lỗi",

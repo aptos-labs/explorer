@@ -495,6 +495,8 @@ export const ru = {
       "Чтобы использовать localnet, запустите локальный узел Aptos командой:",
     unavailableSwitch: "Или переключитесь на другую сеть ниже.",
     switchToMainnet: "Переключиться на Mainnet",
+    testnetResetBanner:
+      "Testnet is currently being reset, and will be back up by 10/9.",
   },
   errors: {
     somethingWentWrong: "Что-то пошло не так",

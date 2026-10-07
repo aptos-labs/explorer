@@ -493,6 +493,8 @@ export const ur = {
       "Localnet استعمال کرنے کے لیے مقامی Aptos نوڈ اس سے شروع کریں:",
     unavailableSwitch: "یا نیچے کسی دوسرے نیٹ ورک پر جائیں۔",
     switchToMainnet: "Mainnet پر جائیں",
+    testnetResetBanner:
+      "Testnet is currently being reset, and will be back up by 10/9.",
   },
   errors: {
     somethingWentWrong: "کچھ غلط ہو گیا",

@@ -22,6 +22,7 @@ import {addressFromWallet, sortPetraFirst} from "../../utils";
 import {WalletConnector} from "../WalletConnector";
 import ColorModeToggleButton from "./ColorModeToggleButton";
 import FeatureBar from "./FeatureBar";
+import TestnetBanner from "./TestnetBanner";
 import HeaderOverflowMenu from "./HeaderOverflowMenu";
 import LanguageSelect from "./LanguageSelect";
 import Nav from "./Nav";
@@ -161,6 +162,7 @@ export default function Header() {
         }}
       >
         <FeatureBar />
+        <TestnetBanner />
         <Container maxWidth={false} sx={{minWidth: 0, px: {xs: 1, sm: 2}}}>
           <Toolbar
             ref={toolbarRef}

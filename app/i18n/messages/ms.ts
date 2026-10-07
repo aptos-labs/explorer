@@ -493,6 +493,8 @@ export const ms = {
       "Untuk menggunakan localnet, mulakan nod Aptos tempatan dengan:",
     unavailableSwitch: "Atau tukar ke rangkaian lain di bawah.",
     switchToMainnet: "Tukar ke Mainnet",
+    testnetResetBanner:
+      "Testnet is currently being reset, and will be back up by 10/9.",
   },
   errors: {
     somethingWentWrong: "Sesuatu tidak kena",

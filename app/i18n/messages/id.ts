@@ -493,6 +493,8 @@ export const id = {
       "Untuk memakai localnet, jalankan node Aptos lokal dengan:",
     unavailableSwitch: "Atau beralih ke jaringan lain di bawah.",
     switchToMainnet: "Beralih ke Mainnet",
+    testnetResetBanner:
+      "Testnet is currently being reset, and will be back up by 10/9.",
   },
   errors: {
     somethingWentWrong: "Terjadi kesalahan",
