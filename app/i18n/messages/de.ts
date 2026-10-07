@@ -496,6 +496,8 @@ export const de = {
       "Um Localnet zu nutzen, starten Sie einen lokalen Aptos-Knoten mit:",
     unavailableSwitch: "Oder wechseln Sie unten zu einem anderen Netzwerk.",
     switchToMainnet: "Zu Mainnet wechseln",
+    testnetResetBanner:
+      "Testnet is currently being reset, and will be back up by 10/9.",
   },
   errors: {
     somethingWentWrong: "Etwas ist schiefgelaufen",

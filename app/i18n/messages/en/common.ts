@@ -116,6 +116,8 @@ export const network = {
   unavailableHint: "To use localnet, start a local Aptos node with:",
   unavailableSwitch: "Or switch to a different network below.",
   switchToMainnet: "Switch to Mainnet",
+  testnetResetBanner:
+    "Testnet is currently being reset, and will be back up by 10/9.",
 } as const;
 
 export const errors = {

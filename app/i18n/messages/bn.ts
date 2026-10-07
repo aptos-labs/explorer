@@ -492,6 +492,8 @@ export const bn = {
       "Localnet ব্যবহার করতে, এই কমান্ড দিয়ে একটি লোকাল Aptos নোড চালু করুন:",
     unavailableSwitch: "অথবা নিচে অন্য নেটওয়ার্কে যান।",
     switchToMainnet: "Mainnet-এ যান",
+    testnetResetBanner:
+      "Testnet is currently being reset, and will be back up by 10/9.",
   },
   errors: {
     somethingWentWrong: "কিছু ভুল হয়েছে",

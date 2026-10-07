@@ -493,6 +493,8 @@ export const ko = {
       "로컬넷을 사용하려면 다음으로 로컬 Aptos 노드를 시작하세요:",
     unavailableSwitch: "또는 아래에서 다른 네트워크로 전환하세요.",
     switchToMainnet: "메인넷으로 전환",
+    testnetResetBanner:
+      "Testnet is currently being reset, and will be back up by 10/9.",
   },
   errors: {
     somethingWentWrong: "문제가 발생했습니다",

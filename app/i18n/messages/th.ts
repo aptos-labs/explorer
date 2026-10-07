@@ -488,6 +488,8 @@ export const th = {
     unavailableHint: "หากต้องการใช้ localnet ให้เริ่มโหนด Aptos ท้องถิ่นด้วย:",
     unavailableSwitch: "หรือสลับไปเครือข่ายอื่นด้านล่าง",
     switchToMainnet: "สลับไป Mainnet",
+    testnetResetBanner:
+      "Testnet is currently being reset, and will be back up by 10/9.",
   },
   errors: {
     somethingWentWrong: "เกิดข้อผิดพลาด",

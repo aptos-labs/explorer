@@ -494,6 +494,8 @@ export const it = {
     unavailableHint: "Per usare Localnet, avvia un nodo Aptos locale con:",
     unavailableSwitch: "Oppure passa a un'altra rete qui sotto.",
     switchToMainnet: "Passa a Mainnet",
+    testnetResetBanner:
+      "Testnet is currently being reset, and will be back up by 10/9.",
   },
   errors: {
     somethingWentWrong: "Qualcosa è andato storto",

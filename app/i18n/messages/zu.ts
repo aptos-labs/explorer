@@ -497,6 +497,8 @@ export const zu = {
       "Ukuze usebenzise i-localnet, qalisa i-node ye-Aptos yasendaweni nge:",
     unavailableSwitch: "Noma shintshela kwenye inethiwekhi ngezansi.",
     switchToMainnet: "Shintshela ku-Mainnet",
+    testnetResetBanner:
+      "Testnet is currently being reset, and will be back up by 10/9.",
   },
   errors: {
     somethingWentWrong: "Kukhona okungahambanga kahle",

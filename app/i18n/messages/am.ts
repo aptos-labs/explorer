@@ -488,6 +488,8 @@ export const am = {
     unavailableHint: "Localnet ለመጠቀም አካባቢያዊ Aptos ኖድ በሚከተለው ያስጀምሩ፦",
     unavailableSwitch: "ወይም ከታች ወደ ሌላ አውታረ መረብ ይቀይሩ።",
     switchToMainnet: "ወደ Mainnet ቀይር",
+    testnetResetBanner:
+      "Testnet is currently being reset, and will be back up by 10/9.",
   },
   errors: {
     somethingWentWrong: "የሆነ ስህተት ተከስቷል",
