@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-10-06 (rev 34)
+> Last updated: 2026-10-07 (rev 35)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -65,7 +65,7 @@ Each detail page has tabs accessible via path segments:
   - `/account/{address}/info` — sequence number, authentication key, account type
 
 #### Blocks
-- `/blocks` — paginated list of recent blocks
+- `/blocks` — recent blocks. Previous and Next move between inclusive height ranges (`?start={oldest}&end={newest}`). Omit both to follow the chain tip (it moves continuously, so page numbers are not used). `?start={newest}` alone is a legacy cursor for the newest height of the default 20-block window. Requested ranges are capped at 100 heights.
 - `/block/{height}` — block by height (integer)
 - Tab paths: `/block/{height}/overview`, `/block/{height}/transactions`
 

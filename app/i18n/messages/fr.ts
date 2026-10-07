@@ -943,6 +943,10 @@ export const fr = {
         "Consulter {tab} pour le bloc {height} sur la blockchain Aptos.",
       listDescription:
         "Consultez les derniers blocs produits sur la blockchain Aptos. Suivez la hauteur de bloc, l'époque, le round, les horodatages, les proposeurs et les transactions incluses. Explorateur de blocs en temps réel.",
+      heightRange: "Hauteurs {start}–{end}",
+      rangeNav: "Plage de hauteurs de bloc",
+      olderBlocks: "Blocs plus anciens",
+      newerBlocks: "Blocs plus récents",
     },
     coins: {
       title: "Coins et actifs fongibles",

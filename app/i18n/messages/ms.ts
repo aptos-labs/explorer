@@ -935,6 +935,10 @@ export const ms = {
       metaDescription: "Lihat {tab} untuk blok {height} pada blockchain Aptos.",
       listDescription:
         "Lihat blok terkini yang dihasilkan pada blockchain Aptos. Pantau ketinggian blok, epoch, pusingan, cap masa, pencadang, dan transaksi disertakan. Penjelajah blok masa nyata.",
+      heightRange: "Ketinggian {start}–{end}",
+      rangeNav: "Julat ketinggian blok",
+      olderBlocks: "Blok lebih lama",
+      newerBlocks: "Blok lebih baharu",
     },
     coins: {
       title: "Koin & aset fungible",

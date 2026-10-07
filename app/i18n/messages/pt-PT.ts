@@ -934,6 +934,10 @@ export const ptPT = {
       metaDescription: "Veja {tab} do bloco {height} na blockchain Aptos.",
       listDescription:
         "Veja os blocos mais recentes produzidos na blockchain Aptos. Monitore altura do bloco, época, rodada, carimbos de data/hora, proponentes e transações incluídas. Explorador de blocos em tempo real.",
+      heightRange: "Alturas {start}–{end}",
+      rangeNav: "Intervalo de alturas de bloco",
+      olderBlocks: "Blocos anteriores",
+      newerBlocks: "Blocos seguintes",
     },
     coins: {
       title: "Moedas e ativos fungíveis",

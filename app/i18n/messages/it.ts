@@ -940,6 +940,10 @@ export const it = {
         "Visualizza {tab} per il blocco {height} sulla blockchain Aptos.",
       listDescription:
         "Visualizza gli ultimi blocchi prodotti sulla blockchain Aptos. Monitora altezza del blocco, epoca, round, timestamp, proponenti e transazioni incluse. Explorer di blocchi in tempo reale.",
+      heightRange: "Altezze {start}–{end}",
+      rangeNav: "Intervallo di altezza dei blocchi",
+      olderBlocks: "Blocchi precedenti",
+      newerBlocks: "Blocchi successivi",
     },
     coins: {
       title: "Monete e asset fungibili",

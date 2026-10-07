@@ -932,6 +932,10 @@ export const ja = {
         "Aptos ブロックチェーン上のブロック {height} の {tab} を表示します。",
       listDescription:
         "Aptos ブロックチェーンで生成された最新ブロックを表示します。ブロック高、エポック、ラウンド、タイムスタンプ、提案者、含まれるトランザクションを監視します。リアルタイムのブロックエクスプローラー。",
+      heightRange: "高さ {start}–{end}",
+      rangeNav: "ブロック高さの範囲",
+      olderBlocks: "古いブロック",
+      newerBlocks: "新しいブロック",
     },
     coins: {
       title: "コインとファンジブルアセット",

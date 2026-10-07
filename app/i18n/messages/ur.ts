@@ -931,6 +931,10 @@ export const ur = {
       metaDescription: "Aptos بلاک چین پر بلاک {height} کے لیے {tab} دیکھیں۔",
       listDescription:
         "Aptos بلاک چین پر تیار تازہ ترین بلاکس دیکھیں۔ بلاک اونچائی، epoch، راؤنڈ، ٹائم اسٹیمپس، تجویز کنندگان، اور شامل ٹرانزیکشنز مانیٹر کریں۔ حقیقی وقت بلاک ایکسپلورر۔",
+      heightRange: "اونچائیاں {start}–{end}",
+      rangeNav: "بلاک اونچائی کی حد",
+      olderBlocks: "پرانے بلاکس",
+      newerBlocks: "نئے بلاکس",
     },
     coins: {
       title: "کوائنز اور فنگیبل اثاثے",

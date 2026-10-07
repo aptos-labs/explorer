@@ -947,6 +947,10 @@ export const de = {
         "{tab} für Block {height} auf der Aptos-Blockchain anzeigen.",
       listDescription:
         "Sehen Sie die neuesten auf der Aptos-Blockchain erzeugten Blöcke. Überwachen Sie Blockhöhe, Epoch, Runde, Zeitstempel, Proposer und enthaltene Transaktionen. Echtzeit-Block-Explorer.",
+      heightRange: "Höhen {start}–{end}",
+      rangeNav: "Blockhöhenbereich",
+      olderBlocks: "Ältere Blöcke",
+      newerBlocks: "Neuere Blöcke",
     },
     coins: {
       title: "Coins & Fungible Assets",

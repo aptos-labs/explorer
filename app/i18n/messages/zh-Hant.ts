@@ -911,6 +911,10 @@ export const zhHant = {
       metaDescription: "查看 Aptos 區塊鏈上區塊 {height} 的{tab}。",
       listDescription:
         "查看 Aptos 區塊鏈上最新產出的區塊。監控區塊高度、紀元、輪次、時間戳、提議者以及包含的交易。即時區塊瀏覽器。",
+      heightRange: "高度 {start}–{end}",
+      rangeNav: "區塊高度範圍",
+      olderBlocks: "較早的區塊",
+      newerBlocks: "較新的區塊",
     },
     coins: {
       title: "代幣與同質化資產",

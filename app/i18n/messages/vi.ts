@@ -928,6 +928,10 @@ export const vi = {
       metaDescription: "Xem {tab} của khối {height} trên blockchain Aptos.",
       listDescription:
         "Xem các khối mới nhất được tạo trên blockchain Aptos. Theo dõi chiều cao khối, epoch, vòng, dấu thời gian, người đề xuất và giao dịch đi kèm. Trình khám phá khối theo thời gian thực.",
+      heightRange: "Chiều cao {start}–{end}",
+      rangeNav: "Khoảng chiều cao khối",
+      olderBlocks: "Khối cũ hơn",
+      newerBlocks: "Khối mới hơn",
     },
     coins: {
       title: "Coin và tài sản fungible",

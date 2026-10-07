@@ -934,6 +934,10 @@ export const pl = {
       metaDescription: "Zobacz {tab} bloku {height} w blockchainie Aptos.",
       listDescription:
         "Zobacz najnowsze bloki wyprodukowane w blockchainie Aptos. Monitoruj wysokość bloku, epokę, rundę, znaczniki czasu, proponentów i zawarte transakcje. Eksplorator bloków w czasie rzeczywistym.",
+      heightRange: "Wysokości {start}–{end}",
+      rangeNav: "Zakres wysokości bloków",
+      olderBlocks: "Starsze bloki",
+      newerBlocks: "Nowsze bloki",
     },
     coins: {
       title: "Monety i aktywa zbywalne",

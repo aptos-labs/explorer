@@ -940,6 +940,10 @@ export const nl = {
         "Bekijk {tab} voor blok {height} op de Aptos-blockchain.",
       listDescription:
         "Bekijk de laatste blokken die op de Aptos-blockchain zijn geproduceerd. Volg blokhoogte, epoch, ronde, tijdstempels, proposers en opgenomen transacties. Realtime block explorer.",
+      heightRange: "Hoogten {start}–{end}",
+      rangeNav: "Blokhoogtebereik",
+      olderBlocks: "Oudere blokken",
+      newerBlocks: "Nieuwere blokken",
     },
     coins: {
       title: "Coins en fungible assets",

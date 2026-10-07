@@ -936,6 +936,10 @@ export const tr = {
         "Aptos blockchain'de {height} bloğunun {tab} görünümünü açın.",
       listDescription:
         "Aptos blockchain'de üretilen en son blokları görün. Blok yüksekliği, epoch, tur, zaman damgaları, önerenler ve dahil edilen işlemleri izleyin. Gerçek zamanlı blok gezgini.",
+      heightRange: "Yükseklikler {start}–{end}",
+      rangeNav: "Blok yükseklik aralığı",
+      olderBlocks: "Daha eski bloklar",
+      newerBlocks: "Daha yeni bloklar",
     },
     coins: {
       title: "Coinler ve Fungible Varlıklar",
