@@ -285,7 +285,7 @@ export const zh = {
     releases: {
       title: "发布、AIP 与工具",
       paragraphs: [
-        "[发布中心](/releases)有三个标签：**网络**（主网、测试网和开发网的纪元、高度、框架/节点版本、功能开关）、**AIPs**（来自公开 AIP 仓库的 Aptos Improvement Proposals）以及 **SDKs**（CLI、`aptos-node` 和官方 SDK 发布）。",
+        "[发布中心](/releases)有三个标签：**网络**（主网、测试网和开发网的纪元、高度、创世时间、框架/节点版本、功能开关）、**AIPs**（来自公开 AIP 仓库的 Aptos Improvement Proposals）以及 **SDKs**（CLI、`aptos-node` 和官方 SDK 发布）。",
         "旧 URL `/deployments` 和 `/aips` 会重定向到此处。",
       ],
     },
@@ -1008,7 +1008,7 @@ export const zh = {
       title: "发布",
       metaTitle: "{tab} | 发布",
       networksDescription:
-        "Aptos 主网、测试网和开发网的实时链上状态 — 纪元、区块高度、框架发布（来自 Gas 计划）、最大字节码格式、节点发布以及功能开关对比。",
+        "Aptos 主网、测试网和开发网的实时链上状态 — 纪元、区块高度、创世时间、框架发布（来自 Gas 计划）、最大字节码格式、节点发布以及功能开关对比。",
       aipsDescription:
         "跟踪所有 Aptos Improvement Proposals（AIPs）— 状态、作者及源链接。",
       sdksDescription:
@@ -1531,6 +1531,9 @@ export const zh = {
     gasUnmappedTip:
       "Gas 计划 feature_version {version} 未映射到本浏览器中已知的框架发布 — 请更新 GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE",
     nodeCommit: "节点 Commit",
+    genesis: "创世时间",
+    genesisTip:
+      "该网络的启动时间。创世区块的时间戳通常未设置（0）；交易 1 带有链的启动时间。",
     validators: "验证者",
   },
   aips: {

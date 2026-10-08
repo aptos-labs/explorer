@@ -295,7 +295,7 @@ export const es = {
     releases: {
       title: "Lanzamientos, AIP y herramientas",
       paragraphs: [
-        "El [centro de lanzamientos](/releases) tiene tres pestañas: **Redes** (época, altura, versiones de framework/nodo, indicadores de funciones en Mainnet, Testnet y Devnet), **AIPs** (Aptos Improvement Proposals del repositorio público de AIP) y **SDK** (CLI, `aptos-node` y lanzamientos oficiales de SDK).",
+        "El [centro de lanzamientos](/releases) tiene tres pestañas: **Redes** (época, altura, hora de génesis, versiones de framework/nodo, indicadores de funciones en Mainnet, Testnet y Devnet), **AIPs** (Aptos Improvement Proposals del repositorio público de AIP) y **SDK** (CLI, `aptos-node` y lanzamientos oficiales de SDK).",
         "Las URL antiguas `/deployments` y `/aips` redirigen aquí.",
       ],
     },
@@ -1051,7 +1051,7 @@ export const es = {
       title: "Lanzamientos",
       metaTitle: "{tab} | Lanzamientos",
       networksDescription:
-        "Estado en cadena en vivo de Mainnet, Testnet y Devnet de Aptos: época, altura de bloque, lanzamiento del framework (desde el programa de gas), formato máximo de bytecode, lanzamiento del nodo y comparación de indicadores de funciones.",
+        "Estado en cadena en vivo de Mainnet, Testnet y Devnet de Aptos: época, altura de bloque, hora de génesis, lanzamiento del framework (desde el programa de gas), formato máximo de bytecode, lanzamiento del nodo y comparación de indicadores de funciones.",
       aipsDescription:
         "Sigue todas las Aptos Improvement Proposals (AIP): estado, autores y enlaces a la fuente.",
       sdksDescription:
@@ -1646,6 +1646,9 @@ export const es = {
     gasUnmappedTip:
       "La feature_version del programa de gas {version} no está asignada a un lanzamiento de framework conocido en este explorador — actualiza GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE",
     nodeCommit: "Commit del nodo",
+    genesis: "Hora de génesis",
+    genesisTip:
+      "Cuándo empezó esta red. La marca de tiempo del bloque génesis suele estar sin definir (0); la transacción 1 tiene la hora de inicio de la cadena.",
     validators: "Validadores",
   },
   aips: {

@@ -288,7 +288,7 @@ export const th = {
     releases: {
       title: "รีลีส AIP และเครื่องมือ",
       paragraphs: [
-        "[ศูนย์รีลีส](/releases) มีสามแท็บ: **เครือข่าย** (epoch ความสูง เวอร์ชัน framework/โหนด feature flags บน mainnet testnet และ devnet) **AIP** (Aptos Improvement Proposals จากที่เก็บ AIP สาธารณะ) และ **SDK** (CLI `aptos-node` และรีลีส SDK อย่างเป็นทางการ)",
+        "[ศูนย์รีลีส](/releases) มีสามแท็บ: **เครือข่าย** (epoch ความสูง เวลาเจเนซิส เวอร์ชัน framework/โหนด feature flags บน mainnet testnet และ devnet) **AIP** (Aptos Improvement Proposals จากที่เก็บ AIP สาธารณะ) และ **SDK** (CLI `aptos-node` และรีลีส SDK อย่างเป็นทางการ)",
         "URL เก่า `/deployments` และ `/aips` เปลี่ยนเส้นทางมาที่นี่",
       ],
     },
@@ -1015,7 +1015,7 @@ export const th = {
       title: "รีลีส",
       metaTitle: "{tab} | รีลีส",
       networksDescription:
-        "สถานะบนเชนแบบสดของ Aptos mainnet, testnet และ devnet — epoch ความสูงบล็อก รีลีส framework (จากตารางแก๊ส) รูปแบบ bytecode สูงสุด รีลีสโหนด และการเปรียบเทียบ feature flag",
+        "สถานะบนเชนแบบสดของ Aptos mainnet, testnet และ devnet — epoch ความสูงบล็อก เวลาเจเนซิส รีลีส framework (จากตารางแก๊ส) รูปแบบ bytecode สูงสุด รีลีสโหนด และการเปรียบเทียบ feature flag",
       aipsDescription:
         "ติดตาม Aptos Improvement Proposals (AIP) ทั้งหมด — สถานะ ผู้เขียน และลิงก์ไปแหล่งที่มา",
       sdksDescription:
@@ -1553,6 +1553,9 @@ export const th = {
     gasUnmappedTip:
       "gas schedule feature_version {version} ไม่ได้แมปไปยังรีลีส framework ที่รู้จักใน Explorer นี้ — อัปเดต GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE",
     nodeCommit: "Commit ของโหนด",
+    genesis: "เวลาเจเนซิส",
+    genesisTip:
+      "เวลาที่เครือข่ายนี้เริ่มทำงาน ตราประทับเวลาของบล็อกเจเนซิสมักไม่ถูกตั้งค่า (0) ธุรกรรม 1 มีเวลาเริ่มของเชน",
     validators: "ตัวตรวจสอบ",
   },
   aips: {

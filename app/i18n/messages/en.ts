@@ -10,8 +10,18 @@ import {
   share,
   wallet,
 } from "./en/common";
-import {fields} from "./en/fields";
 import {contract, script} from "./en/contract";
+import {decibel, multisig} from "./en/decibel";
+import {fields} from "./en/fields";
+import {
+  accountUi,
+  confidential,
+  modules,
+  releasesUi,
+  signature,
+  trace,
+} from "./en/modules";
+import {notFound, pages, verificationPage} from "./en/pages";
 import {
   activity,
   hexBytes,
@@ -20,6 +30,10 @@ import {
   snackbar,
   txnModules,
 } from "./en/payments";
+import {table} from "./en/table";
+import {tabs} from "./en/tabs";
+import {tooltips} from "./en/tooltips";
+import {txn} from "./en/txn";
 import {
   aips,
   analytics,
@@ -30,20 +44,6 @@ import {
   staking,
   verified,
 } from "./en/verified";
-import {
-  accountUi,
-  confidential,
-  modules,
-  releasesUi,
-  signature,
-  trace,
-} from "./en/modules";
-import {decibel, multisig} from "./en/decibel";
-import {pages, notFound, verificationPage} from "./en/pages";
-import {table} from "./en/table";
-import {tabs} from "./en/tabs";
-import {tooltips} from "./en/tooltips";
-import {txn} from "./en/txn";
 
 /**
  * English is the source catalog. Add another file (e.g. `es.ts`) and register
@@ -318,7 +318,7 @@ export const en = {
     releases: {
       title: "Releases, AIPs, and tools",
       paragraphs: [
-        "The [releases hub](/releases) has three tabs: **Networks** (epoch, height, framework/node versions, feature flags across mainnet, testnet, and devnet), **AIPs** (Aptos Improvement Proposals from the public AIP repository), and **SDKs** (CLI, `aptos-node`, and official SDK releases).",
+        "The [releases hub](/releases) has three tabs: **Networks** (epoch, height, genesis time, framework/node versions, feature flags across mainnet, testnet, and devnet), **AIPs** (Aptos Improvement Proposals from the public AIP repository), and **SDKs** (CLI, `aptos-node`, and official SDK releases).",
         "Older URLs `/deployments` and `/aips` redirect here.",
       ],
     },

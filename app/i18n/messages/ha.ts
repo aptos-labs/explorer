@@ -293,7 +293,7 @@ export const ha = {
     releases: {
       title: "Saki, AIP, da kayan aiki",
       paragraphs: [
-        "[Cibiyar saki](/releases) tana da shafuka uku: **Hanyoyin sadarwa** (epoch, tsayi, sigogin tsari/node, alamomin fasali a kan mainnet, testnet, da devnet), **AIP** (Aptos Improvement Proposals daga ma'ajiyar AIP ta jama'a), da **SDK** (saki na CLI, `aptos-node`, da SDK na hukuma).",
+        "[Cibiyar saki](/releases) tana da shafuka uku: **Hanyoyin sadarwa** (epoch, tsayi, lokacin genesis, sigogin tsari/node, alamomin fasali a kan mainnet, testnet, da devnet), **AIP** (Aptos Improvement Proposals daga ma'ajiyar AIP ta jama'a), da **SDK** (saki na CLI, `aptos-node`, da SDK na hukuma).",
         "Tsofaffin URL `/deployments` da `/aips` suna tura zuwa nan.",
       ],
     },
@@ -1042,7 +1042,7 @@ export const ha = {
       title: "Saki",
       metaTitle: "{tab} | Saki",
       networksDescription:
-        "Matsayin kan sarkar mai aiki don Aptos mainnet, testnet, da devnet — epoch, tsayin bulo, sakin tsari (daga jadawalin gas), mafi girman tsarin bytecode, sakin node, da kwatancen alamar fasali.",
+        "Matsayin kan sarkar mai aiki don Aptos mainnet, testnet, da devnet — epoch, tsayin bulo, lokacin genesis, sakin tsari (daga jadawalin gas), mafi girman tsarin bytecode, sakin node, da kwatancen alamar fasali.",
       aipsDescription:
         "Bi duk Aptos Improvement Proposals (AIP) — matsayi, marubuta, da hanyoyin haɗi zuwa tushen.",
       sdksDescription:
@@ -1634,6 +1634,9 @@ export const ha = {
     gasUnmappedTip:
       "Jadawalin gas feature_version {version} ba a taswira zuwa sakin tsari da aka sani a wannan bincike ba — sabunta GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE",
     nodeCommit: "Commit na node",
+    genesis: "Lokacin genesis",
+    genesisTip:
+      "Lokacin da wannan hanyar sadarwa ta fara. Tambarin lokacin toshe na genesis sau da yawa bai saita ba (0); ma'amala 1 tana da lokacin farawar sarkar.",
     validators: "Masu tabbatarwa",
   },
   aips: {

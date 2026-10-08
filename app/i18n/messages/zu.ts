@@ -295,7 +295,7 @@ export const zu = {
     releases: {
       title: "Ukukhishwa, ama-AIP, nezinsiza",
       paragraphs: [
-        "Isikhungo [sokukhishwa](/releases) sinezithebhu ezintathu: **Networks** (i-epoch, ubude, izinguqulo ze-framework/node, ama-feature flag ku-mainnet, testnet, ne-devnet), **AIPs** (Aptos Improvement Proposals kusuka kurepository ye-AIP yomphakathi), ne-**SDKs** (i-CLI, `aptos-node`, nokukhishwa kwe-SDK esemthethweni).",
+        "Isikhungo [sokukhishwa](/releases) sinezithebhu ezintathu: **Networks** (i-epoch, ubude, isikhathi se-Genesis, izinguqulo ze-framework/node, ama-feature flag ku-mainnet, testnet, ne-devnet), **AIPs** (Aptos Improvement Proposals kusuka kurepository ye-AIP yomphakathi), ne-**SDKs** (i-CLI, `aptos-node`, nokukhishwa kwe-SDK esemthethweni).",
         "Ama-URL amadala `/deployments` ne-`/aips` aqondisa lapha.",
       ],
     },
@@ -1045,7 +1045,7 @@ export const zu = {
       title: "Ukukhishwa",
       metaTitle: "{tab} | Ukukhishwa",
       networksDescription:
-        "Isimo esibukhoma esiqeshini se-Aptos mainnet, testnet, ne-devnet — i-epoch, ubude bebhulokhi, ukukhishwa kwe-framework (kusuka kuhlelo lwe-gas), ifomethi ye-bytecode ephezulu, ukukhishwa kwe-node, nokuqhathaniswa kwama-feature-flag.",
+        "Isimo esibukhoma esiqeshini se-Aptos mainnet, testnet, ne-devnet — i-epoch, ubude bebhulokhi, isikhathi se-Genesis, ukukhishwa kwe-framework (kusuka kuhlelo lwe-gas), ifomethi ye-bytecode ephezulu, ukukhishwa kwe-node, nokuqhathaniswa kwama-feature-flag.",
       aipsDescription:
         "Landelela zonke i-Aptos Improvement Proposals (ama-AIP) — isimo, ababhali, nezixhumanisi zomthombo.",
       sdksDescription:
@@ -1634,6 +1634,9 @@ export const zu = {
     gasUnmappedTip:
       "I-gas schedule feature_version {version} ayimaphiwe ekukhishweni kwe-framework okwaziwayo kule explorer — buyekeza i-GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE",
     nodeCommit: "I-Commit Ye-Node",
+    genesis: "Isikhathi se-Genesis",
+    genesisTip:
+      "Nini le nethiwekhi yaqala. Isitembu sesikhathi sebhlokhi ye-genesis ngokuvamile asisethiwe (0); ukuthengiselana 1 kunesikhathi sokuqala kwe-chain.",
     validators: "Abaqinisekisi",
   },
   aips: {

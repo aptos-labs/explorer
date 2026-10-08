@@ -290,7 +290,7 @@ export const vi = {
     releases: {
       title: "Phát hành, AIPs và công cụ",
       paragraphs: [
-        "[Trung tâm phát hành](/releases) có ba tab: **Mạng** (epoch, chiều cao, phiên bản framework/node, cờ tính năng trên Mainnet, Testnet và Devnet), **AIPs** (Aptos Improvement Proposals từ kho AIP công khai) và **SDK** (CLI, `aptos-node` và các bản phát hành SDK chính thức).",
+        "[Trung tâm phát hành](/releases) có ba tab: **Mạng** (epoch, chiều cao, thời gian genesis, phiên bản framework/node, cờ tính năng trên Mainnet, Testnet và Devnet), **AIPs** (Aptos Improvement Proposals từ kho AIP công khai) và **SDK** (CLI, `aptos-node` và các bản phát hành SDK chính thức).",
         "URL cũ `/deployments` và `/aips` chuyển hướng về đây.",
       ],
     },
@@ -1034,7 +1034,7 @@ export const vi = {
       title: "Phát hành",
       metaTitle: "{tab} | Phát hành",
       networksDescription:
-        "Trạng thái on-chain trực tiếp của Aptos Mainnet, Testnet và Devnet — epoch, chiều cao khối, phát hành framework (từ lịch gas), định dạng bytecode tối đa, phát hành node và so sánh cờ tính năng.",
+        "Trạng thái on-chain trực tiếp của Aptos Mainnet, Testnet và Devnet — epoch, chiều cao khối, thời gian genesis, phát hành framework (từ lịch gas), định dạng bytecode tối đa, phát hành node và so sánh cờ tính năng.",
       aipsDescription:
         "Theo dõi tất cả Aptos Improvement Proposals (AIPs) — trạng thái, tác giả và liên kết tới nguồn.",
       sdksDescription:
@@ -1604,6 +1604,9 @@ export const vi = {
     gasUnmappedTip:
       "feature_version lịch gas {version} chưa được ánh xạ tới phát hành framework đã biết trong explorer này — hãy cập nhật GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE",
     nodeCommit: "Commit node",
+    genesis: "Thời gian genesis",
+    genesisTip:
+      "Khi mạng này bắt đầu. Dấu thời gian của khối genesis thường không được đặt (0); giao dịch 1 mang thời điểm chuỗi bắt đầu.",
     validators: "Validator",
   },
   aips: {

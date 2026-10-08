@@ -292,7 +292,7 @@ export const ptPT = {
     releases: {
       title: "Lançamentos, AIPs e ferramentas",
       paragraphs: [
-        "O [hub de lançamentos](/releases) tem três separadores: **Redes** (época, altura, versões de framework/nó, sinalizadores de funcionalidade em mainnet, testnet e devnet), **AIPs** (propostas de melhoria da Aptos do repositório público de AIP) e **SDKs** (CLI, `aptos-node` e lançamentos oficiais de SDK).",
+        "O [hub de lançamentos](/releases) tem três separadores: **Redes** (época, altura, hora da génese, versões de framework/nó, sinalizadores de funcionalidade em mainnet, testnet e devnet), **AIPs** (propostas de melhoria da Aptos do repositório público de AIP) e **SDKs** (CLI, `aptos-node` e lançamentos oficiais de SDK).",
         "URLs antigos `/deployments` e `/aips` redirecionam para aqui.",
       ],
     },
@@ -1038,7 +1038,7 @@ export const ptPT = {
       title: "Lançamentos",
       metaTitle: "{tab} | Lançamentos",
       networksDescription:
-        "Estado on-chain ao vivo da Mainnet, Testnet e Devnet Aptos — época, altura do bloco, lançamento do framework (a partir do gas schedule), formato máximo de bytecode, lançamento do nó e comparação de feature flags.",
+        "Estado on-chain ao vivo da Mainnet, Testnet e Devnet Aptos — época, altura do bloco, hora da génese, lançamento do framework (a partir do gas schedule), formato máximo de bytecode, lançamento do nó e comparação de feature flags.",
       aipsDescription:
         "Acompanhe todas as Aptos Improvement Proposals (AIPs) — status, autores e ligações para a origem.",
       sdksDescription:
@@ -1627,6 +1627,9 @@ export const ptPT = {
     gasUnmappedTip:
       "O gas schedule feature_version {version} não está mapeado para um lançamento conhecido de framework neste explorador — atualize GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE",
     nodeCommit: "Commit do nó",
+    genesis: "Hora da génese",
+    genesisTip:
+      "Quando esta rede começou. A data/hora do bloco génese fica muitas vezes por definir (0); a transação 1 tem a hora de início da cadeia.",
     validators: "Validadores",
   },
   aips: {

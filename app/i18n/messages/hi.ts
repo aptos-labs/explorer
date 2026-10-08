@@ -291,7 +291,7 @@ export const hi = {
     releases: {
       title: "रिलीज़, AIP और उपकरण",
       paragraphs: [
-        "[रिलीज़ हब](/releases) में तीन टैब हैं: **नेटवर्क** (मेननेट, टेस्टनेट और डेवनेट पर युग, ऊँचाई, फ्रेमवर्क/नोड संस्करण, फ़ीचर फ़्लैग), **AIP** (सार्वजनिक AIP रिपॉजिटरी से Aptos Improvement Proposals) और **SDK** (CLI, `aptos-node` और आधिकारिक SDK रिलीज़)।",
+        "[रिलीज़ हब](/releases) में तीन टैब हैं: **नेटवर्क** (मेननेट, टेस्टनेट और डेवनेट पर युग, ऊँचाई, जेनेसिस समय, फ्रेमवर्क/नोड संस्करण, फ़ीचर फ़्लैग), **AIP** (सार्वजनिक AIP रिपॉजिटरी से Aptos Improvement Proposals) और **SDK** (CLI, `aptos-node` और आधिकारिक SDK रिलीज़)।",
         "पुराने URL `/deployments` और `/aips` यहाँ रीडायरेक्ट होते हैं।",
       ],
     },
@@ -1024,7 +1024,7 @@ export const hi = {
       title: "रिलीज़",
       metaTitle: "{tab} | रिलीज़",
       networksDescription:
-        "Aptos mainnet, testnet और devnet की लाइव ऑन-चेन स्थिति — एपोक, ब्लॉक ऊँचाई, फ्रेमवर्क रिलीज़ (gas शेड्यूल से), अधिकतम bytecode प्रारूप, नोड रिलीज़, और फीचर-फ्लैग तुलना।",
+        "Aptos mainnet, testnet और devnet की लाइव ऑन-चेन स्थिति — एपोक, ब्लॉक ऊँचाई, जेनेसिस समय, फ्रेमवर्क रिलीज़ (gas शेड्यूल से), अधिकतम bytecode प्रारूप, नोड रिलीज़, और फीचर-फ्लैग तुलना।",
       aipsDescription:
         "सभी Aptos Improvement Proposals (AIP) ट्रैक करें — स्थिति, लेखक और स्रोत लिंक।",
       sdksDescription:
@@ -1570,6 +1570,9 @@ export const hi = {
     gasUnmappedTip:
       "Gas शेड्यूल feature_version {version} इस एक्सप्लोरर में ज्ञात फ्रेमवर्क रिलीज़ से मैप नहीं है — GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE अपडेट करें",
     nodeCommit: "नोड Commit",
+    genesis: "जेनेसिस समय",
+    genesisTip:
+      "यह नेटवर्क कब शुरू हुआ। जेनेसिस ब्लॉक का टाइमस्टैम्प अक्सर सेट नहीं होता (0); लेन-देन 1 में चेन का आरंभ समय होता है।",
     validators: "वैलिडेटर",
   },
   aips: {
