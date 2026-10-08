@@ -43,6 +43,10 @@ export const testnetKnownAddresses: Record<string, string> = {
   "0x5363e11af645b92da4809a40e0de8002aa0d8640476b2a1b7698caa8472cc31e":
     "Chunking Contract",
 
+  // Aptos Names (https://aptosnames.com)
+  "0xb1ae61606dfbe0ea5b5c45ffdb4fb08da0dba18c5125182ff63ab280a450ecf4":
+    "Aptos Names",
+
   // Burn Address
   "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff":
     "Burn Address",
