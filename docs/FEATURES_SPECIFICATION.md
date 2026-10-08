@@ -1440,6 +1440,7 @@ top of the HTML site.
 | `app/utils/syntaxHighlighterCreateElement.test.ts` | FEAT-MODULES-001 (module code view syntax highlighting) |
 | `app/utils/moduleErrorHandler.test.ts` | FEAT-ERROR-001 (chunk error handling, reload behavior) |
 | `app/utils/llmsRouteCoverage.test.ts` | FEAT-SEO-003 (LLM doc drift) |
+| `app/utils/serovalCve.test.ts` | CVE-2026-104846 / GHSA-p6vx-979v-rg4c (lockfile and installed `seroval` stay on `>=1.6.2`; dist includes the thenable guard) |
 | `app/utils/agentSkillsIndex.test.ts` | FEAT-SEO-004 (agent-skills index schema, digest integrity, frontmatter) |
 | `app/utils/vercelHeaders.test.ts` | FEAT-SEO-004 (homepage and global RFC 8288 discovery `Link` headers; `framework: tanstack-start`, `buildCommand`, and no pinned `outputDirectory` so production is Nitro SSR), FEAT-SEC-001 (`Content-Security-Policy: frame-ancestors` allowlist; no `X-Frame-Options`) |
 | `app/utils/frameAncestors.test.ts` | FEAT-SEC-001 (CSP allowlist is `'self'` + Petra Vault; SSR helper sets CSP when missing and does not send `X-Frame-Options`) |

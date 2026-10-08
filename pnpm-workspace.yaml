@@ -91,6 +91,11 @@ overrides:
   uuid: 14.0.2
   undici: 8.11.2
   nanoid: 6.0.1
+  # CVE-2026-104846 / GHSA-p6vx-979v-rg4c. solid-js 1.9.15 still resolves
+  # seroval@1.5.6 (affected: >=0.12.0 <1.6.2). Pin the patched line so every
+  # copy, including that Solid tree, stays on 1.6.8.
+  seroval: 1.6.8
+  seroval-plugins: 1.6.8
 
 patchedDependencies:
   "@babel/core@8.0.6": patches/@babel__core@8.0.6.patch
