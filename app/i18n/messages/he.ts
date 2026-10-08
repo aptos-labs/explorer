@@ -289,7 +289,7 @@ export const he = {
     releases: {
       title: "גרסאות, AIP וכלים",
       paragraphs: [
-        "[מרכז הגרסאות](/releases) כולל שלוש לשוניות: **Networks** (epoch, height, גרסאות framework/node, feature flags ב-mainnet, testnet ו-devnet), **AIPs** (Aptos Improvement Proposals ממאגר AIP הציבורי) ו-**SDKs** (CLI, `aptos-node` וגרסאות SDK רשמיות).",
+        "[מרכז הגרסאות](/releases) כולל שלוש לשוניות: **Networks** (epoch, height, זמן ג'נסיס, גרסאות framework/node, feature flags ב-mainnet, testnet ו-devnet), **AIPs** (Aptos Improvement Proposals ממאגר AIP הציבורי) ו-**SDKs** (CLI, `aptos-node` וגרסאות SDK רשמיות).",
         "כתובות URL ישנות `/deployments` ו-`/aips` מפנות לכאן.",
       ],
     },
@@ -1019,7 +1019,7 @@ export const he = {
       title: "גרסאות",
       metaTitle: "{tab} | גרסאות",
       networksDescription:
-        "סטטוס חי בשרשרת עבור mainnet, testnet ו-devnet של Aptos — epoch, גובה בלוק, גרסת framework (מלוח הזמנים של gas), פורמט bytecode מרבי, גרסת node והשוואת feature flags.",
+        "סטטוס חי בשרשרת עבור mainnet, testnet ו-devnet של Aptos — epoch, גובה בלוק, זמן ג'נסיס, גרסת framework (מלוח הזמנים של gas), פורמט bytecode מרבי, גרסת node והשוואת feature flags.",
       aipsDescription:
         "עקוב אחר כל הצעות השיפור של Aptos (AIPs) — סטטוס, מחברים וקישורים למקור.",
       sdksDescription:
@@ -1572,6 +1572,9 @@ export const he = {
     gasUnmappedTip:
       "Gas schedule feature_version {version} אינו ממופה לגרסת framework ידועה בסייר הזה — עדכן את GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE",
     nodeCommit: "Commit של Node",
+    genesis: "זמן ג'נסיס",
+    genesisTip:
+      "מתי הרשת הזו התחילה. חותמת הזמן של בלוק הג'נסיס לרוב אינה מוגדרת (0); לעסקה 1 יש את זמן תחילת הרשת.",
     validators: "מאמתים",
   },
   aips: {

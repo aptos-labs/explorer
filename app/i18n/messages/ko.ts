@@ -291,7 +291,7 @@ export const ko = {
     releases: {
       title: "릴리스, AIP, 도구",
       paragraphs: [
-        "[릴리스 허브](/releases)에는 세 탭이 있습니다: **네트워크**(에포크, 높이, 프레임워크/노드 버전, 메인넷·테스트넷·개발넷의 기능 플래그), **AIPs**(공개 AIP 저장소의 Aptos Improvement Proposals), **SDKs**(CLI, `aptos-node`, 공식 SDK 릴리스).",
+        "[릴리스 허브](/releases)에는 세 탭이 있습니다: **네트워크**(에포크, 높이, 제네시스 시각, 프레임워크/노드 버전, 메인넷·테스트넷·개발넷의 기능 플래그), **AIPs**(공개 AIP 저장소의 Aptos Improvement Proposals), **SDKs**(CLI, `aptos-node`, 공식 SDK 릴리스).",
         "이전 URL `/deployments`와 `/aips`는 여기로 리디렉션됩니다.",
       ],
     },
@@ -1034,7 +1034,7 @@ export const ko = {
       title: "릴리스",
       metaTitle: "{tab} | 릴리스",
       networksDescription:
-        "Aptos 메인넷, 테스트넷, 개발넷의 실시간 온체인 상태 — 에포크, 블록 높이, 프레임워크 릴리스(가스 스케줄에서), 최대 바이트코드 형식, 노드 릴리스, 기능 플래그 비교.",
+        "Aptos 메인넷, 테스트넷, 개발넷의 실시간 온체인 상태 — 에포크, 블록 높이, 제네시스 시각, 프레임워크 릴리스(가스 스케줄에서), 최대 바이트코드 형식, 노드 릴리스, 기능 플래그 비교.",
       aipsDescription:
         "모든 Aptos Improvement Proposals (AIPs)를 추적합니다 — 상태, 작성자, 소스 링크.",
       sdksDescription:
@@ -1594,6 +1594,9 @@ export const ko = {
     gasUnmappedTip:
       "가스 스케줄 feature_version {version}은 이 탐색기에서 알려진 프레임워크 릴리스에 매핑되지 않습니다 — GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE를 업데이트하세요",
     nodeCommit: "노드 커밋",
+    genesis: "제네시스 시각",
+    genesisTip:
+      "이 네트워크가 시작된 시각입니다. 제네시스 블록 타임스탬프는 설정되지 않은 경우(0)가 많고, 트랜잭션 1이 체인 시작 시각을 가집니다.",
     validators: "밸리데이터",
   },
   aips: {

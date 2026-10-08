@@ -287,7 +287,7 @@ export const am = {
     releases: {
       title: "ሪሊዞች፣ AIPዎች እና መሳሪያዎች",
       paragraphs: [
-        "[የሪሊዝ ማዕከል](/releases) ሶስት ትሮች አሉት፦ **አውታረ መረቦች** (ኤፖክ፣ ቁመት፣ የፍሬምወርክ/ኖድ ስሪቶች፣ በmainnet፣ testnet እና devnet ባህሪ ባዶሮች)፣ **AIPዎች** (ከህዝባዊ AIP ማከማቻ Aptos Improvement Proposals) እና **SDKዎች** (CLI፣ `aptos-node` እና ኦፊሴላዊ SDK ሪሊዞች)።",
+        "[የሪሊዝ ማዕከል](/releases) ሶስት ትሮች አሉት፦ **አውታረ መረቦች** (ኤፖክ፣ ቁመት፣ የጀነሲስ ጊዜ፣ የፍሬምወርክ/ኖድ ስሪቶች፣ በmainnet፣ testnet እና devnet ባህሪ ባዶሮች)፣ **AIPዎች** (ከህዝባዊ AIP ማከማቻ Aptos Improvement Proposals) እና **SDKዎች** (CLI፣ `aptos-node` እና ኦፊሴላዊ SDK ሪሊዞች)።",
         "የቆዩ URLዎች `/deployments` እና `/aips` ወደዚህ ይዛወራሉ።",
       ],
     },
@@ -1011,7 +1011,7 @@ export const am = {
       title: "ሪሊዞች",
       metaTitle: "{tab} | ሪሊዞች",
       networksDescription:
-        "ለAptos mainnet፣ testnet እና devnet የቀጥታ በሰንሰለት ሁኔታ — ኤፖክ፣ የብሎክ ቁመት፣ የፍሬምወርክ ሪሊዝ (ከጋዝ መርሃ ግብር)፣ ከፍተኛ የባይትኮድ ቅርጸት፣ የኖድ ሪሊዝ እና የባህሪ ባንዲራ ንጽጽር።",
+        "ለAptos mainnet፣ testnet እና devnet የቀጥታ በሰንሰለት ሁኔታ — ኤፖክ፣ የብሎክ ቁመት፣ የጀነሲስ ጊዜ፣ የፍሬምወርክ ሪሊዝ (ከጋዝ መርሃ ግብር)፣ ከፍተኛ የባይትኮድ ቅርጸት፣ የኖድ ሪሊዝ እና የባህሪ ባንዲራ ንጽጽር።",
       aipsDescription:
         "ሁሉንም Aptos Improvement Proposals (AIPዎች) ይከታተሉ — ሁኔታ፣ ደራሲዎች እና ወደ ምንጭ አገናኞች።",
       sdksDescription:
@@ -1548,6 +1548,9 @@ export const am = {
     gasUnmappedTip:
       "የጋዝ መርሃ ግብር feature_version {version} በዚህ አሳሽ ውስጥ ከታወቀ የፍሬምወርክ ሪሊዝ ጋር አልተመደበም — GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE ያዘምኑ",
     nodeCommit: "የኖድ Commit",
+    genesis: "የጀነሲስ ጊዜ",
+    genesisTip:
+      "ይህ አውታረ መረብ የተጀመረበት ጊዜ። የጀነሲስ ብሎክ የጊዜ ማህተም ብዙ ጊዜ አልተቀናም (0)፤ ግብይት 1 የሰንሰለቱ መጀመሪያ ጊዜ አለው።",
     validators: "ማረጋገጫዎች",
   },
   aips: {

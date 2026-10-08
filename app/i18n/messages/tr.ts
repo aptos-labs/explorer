@@ -292,7 +292,7 @@ export const tr = {
     releases: {
       title: "Sürümler, AIP'ler ve araçlar",
       paragraphs: [
-        "[Sürümler merkezi](/releases) üç sekme içerir: **Ağlar** (epoch, yükseklik, framework/düğüm sürümleri, mainnet, testnet ve devnet genelinde özellik bayrakları), **AIP'ler** (kamuya açık AIP deposundan Aptos İyileştirme Önerileri) ve **SDK'lar** (CLI, `aptos-node` ve resmi SDK sürümleri).",
+        "[Sürümler merkezi](/releases) üç sekme içerir: **Ağlar** (epoch, yükseklik, genesis zamanı, framework/düğüm sürümleri, mainnet, testnet ve devnet genelinde özellik bayrakları), **AIP'ler** (kamuya açık AIP deposundan Aptos İyileştirme Önerileri) ve **SDK'lar** (CLI, `aptos-node` ve resmi SDK sürümleri).",
         "Eski URL'ler `/deployments` ve `/aips` buraya yönlendirir.",
       ],
     },
@@ -1042,7 +1042,7 @@ export const tr = {
       title: "Sürümler",
       metaTitle: "{tab} | Sürümler",
       networksDescription:
-        "Aptos mainnet, testnet ve devnet için canlı zincir üzeri durum — epoch, blok yüksekliği, framework sürümü (gas tarifesinden), maks. bytecode biçimi, düğüm sürümü ve özellik bayrağı karşılaştırması.",
+        "Aptos mainnet, testnet ve devnet için canlı zincir üzeri durum — epoch, blok yüksekliği, genesis zamanı, framework sürümü (gas tarifesinden), maks. bytecode biçimi, düğüm sürümü ve özellik bayrağı karşılaştırması.",
       aipsDescription:
         "Tüm Aptos Improvement Proposals (AIP) öğelerini izleyin — durum, yazarlar ve kaynak bağlantıları.",
       sdksDescription:
@@ -1620,6 +1620,9 @@ export const tr = {
     gasUnmappedTip:
       "Gas tarifesi feature_version {version} bu explorer'da bilinen bir framework sürümüne eşlenmemiş — GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE güncelleyin",
     nodeCommit: "Düğüm Commit'i",
+    genesis: "Genesis zamanı",
+    genesisTip:
+      "Bu ağın başladığı zaman. Genesis bloğunun zaman damgası çoğu zaman ayarlı değildir (0); işlem 1 zincirin başlangıç zamanını taşır.",
     validators: "Doğrulayıcılar",
   },
   aips: {

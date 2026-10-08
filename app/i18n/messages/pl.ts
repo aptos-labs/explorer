@@ -292,7 +292,7 @@ export const pl = {
     releases: {
       title: "Wydania, AIP i narzędzia",
       paragraphs: [
-        "[Centrum wydań](/releases) ma trzy zakładki: **Sieci** (epoka, wysokość, wersje frameworka/węzła, flagi funkcji w mainnecie, testnecie i devnecie), **AIP** (Aptos Improvement Proposals z publicznego repozytorium AIP) oraz **SDK** (CLI, `aptos-node` i oficjalne wydania SDK).",
+        "[Centrum wydań](/releases) ma trzy zakładki: **Sieci** (epoka, wysokość, czas genezy, wersje frameworka/węzła, flagi funkcji w mainnecie, testnecie i devnecie), **AIP** (Aptos Improvement Proposals z publicznego repozytorium AIP) oraz **SDK** (CLI, `aptos-node` i oficjalne wydania SDK).",
         "Starsze URL `/deployments` i `/aips` przekierowują tutaj.",
       ],
     },
@@ -1037,7 +1037,7 @@ export const pl = {
       title: "Wydania",
       metaTitle: "{tab} | Wydania",
       networksDescription:
-        "Bieżący status on-chain dla Aptos mainnet, testnet i devnet — epoka, wysokość bloku, wydanie frameworku (z harmonogramu gas), maksymalny format bajtkodu, wydanie węzła i porównanie flag funkcji.",
+        "Bieżący status on-chain dla Aptos mainnet, testnet i devnet — epoka, wysokość bloku, czas genezy, wydanie frameworku (z harmonogramu gas), maksymalny format bajtkodu, wydanie węzła i porównanie flag funkcji.",
       aipsDescription:
         "Śledź wszystkie Aptos Improvement Proposals (AIP) — status, autorzy i linki do źródła.",
       sdksDescription:
@@ -1616,6 +1616,9 @@ export const pl = {
     gasUnmappedTip:
       "feature_version harmonogramu gas {version} nie jest zmapowana do znanego wydania frameworku w tym eksploratorze — zaktualizuj GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE",
     nodeCommit: "Commit węzła",
+    genesis: "Czas genezy",
+    genesisTip:
+      "Kiedy ta sieć wystartowała. Znacznik czasu bloku genezy często nie jest ustawiony (0); transakcja 1 ma czas startu łańcucha.",
     validators: "Walidatorzy",
   },
   aips: {

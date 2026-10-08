@@ -293,7 +293,7 @@ export const fr = {
     releases: {
       title: "Versions, AIPs et outils",
       paragraphs: [
-        "Le [hub des versions](/releases) a trois onglets : **Réseaux** (époque, hauteur, versions framework/nœud, indicateurs de fonctionnalités sur Mainnet, Testnet et Devnet), **AIPs** (Aptos Improvement Proposals depuis le dépôt public des AIP) et **SDKs** (CLI, `aptos-node`, et versions officielles des SDK).",
+        "Le [hub des versions](/releases) a trois onglets : **Réseaux** (époque, hauteur, heure de genèse, versions framework/nœud, indicateurs de fonctionnalités sur Mainnet, Testnet et Devnet), **AIPs** (Aptos Improvement Proposals depuis le dépôt public des AIP) et **SDKs** (CLI, `aptos-node`, et versions officielles des SDK).",
         "Les anciennes URL `/deployments` et `/aips` redirigent ici.",
       ],
     },
@@ -1052,7 +1052,7 @@ export const fr = {
       title: "Versions",
       metaTitle: "{tab} | Versions",
       networksDescription:
-        "État on-chain en direct pour Aptos Mainnet, Testnet et Devnet — époque, hauteur de bloc, version du framework (d'après le barème de gas), format de bytecode maximal, version du nœud et comparaison des indicateurs de fonctionnalités.",
+        "État on-chain en direct pour Aptos Mainnet, Testnet et Devnet — époque, hauteur de bloc, heure de genèse, version du framework (d'après le barème de gas), format de bytecode maximal, version du nœud et comparaison des indicateurs de fonctionnalités.",
       aipsDescription:
         "Suivez toutes les Aptos Improvement Proposals (AIPs) — statut, auteurs et liens vers la source.",
       sdksDescription:
@@ -1648,6 +1648,9 @@ export const fr = {
     gasUnmappedTip:
       "La feature_version du barème de gas {version} n'est pas associée à une version de framework connue dans cet explorer — mettez à jour GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE",
     nodeCommit: "Commit du nœud",
+    genesis: "Heure de genèse",
+    genesisTip:
+      "Date de démarrage de ce réseau. L'horodatage du bloc de genèse est souvent non défini (0) ; la transaction 1 porte l'heure de démarrage de la chaîne.",
     validators: "Validateurs",
   },
   aips: {

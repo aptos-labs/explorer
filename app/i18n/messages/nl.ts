@@ -293,7 +293,7 @@ export const nl = {
     releases: {
       title: "Releases, AIP's en tools",
       paragraphs: [
-        "De [releases-hub](/releases) heeft drie tabs: **Netwerken** (epoch, hoogte, framework-/nodeversies, feature flags over mainnet, testnet en devnet), **AIP's** (Aptos Improvement Proposals uit de openbare AIP-repository) en **SDK's** (CLI, `aptos-node` en officiële SDK-releases).",
+        "De [releases-hub](/releases) heeft drie tabs: **Netwerken** (epoch, hoogte, genesis-tijd, framework-/nodeversies, feature flags over mainnet, testnet en devnet), **AIP's** (Aptos Improvement Proposals uit de openbare AIP-repository) en **SDK's** (CLI, `aptos-node` en officiële SDK-releases).",
         "Oudere URL's `/deployments` en `/aips` leiden hierheen.",
       ],
     },
@@ -1049,7 +1049,7 @@ export const nl = {
       title: "Releases",
       metaTitle: "{tab} | Releases",
       networksDescription:
-        "Live on-chain-status voor Aptos mainnet, testnet en devnet — epoch, blokhoogte, framework-release (uit het gas-schedule), max. bytecodeformaat, node-release en vergelijking van feature flags.",
+        "Live on-chain-status voor Aptos mainnet, testnet en devnet — epoch, blokhoogte, genesis-tijd, framework-release (uit het gas-schedule), max. bytecodeformaat, node-release en vergelijking van feature flags.",
       aipsDescription:
         "Volg alle Aptos Improvement Proposals (AIP's) — status, auteurs en links naar de bron.",
       sdksDescription:
@@ -1640,6 +1640,9 @@ export const nl = {
     gasUnmappedTip:
       "Gas-schedule feature_version {version} is in deze explorer niet gekoppeld aan een bekende framework-release — werk GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE bij",
     nodeCommit: "Node-commit",
+    genesis: "Genesis-tijd",
+    genesisTip:
+      "Wanneer dit netwerk is gestart. De timestamp van het genesisblok is vaak niet ingesteld (0); transactie 1 heeft de starttijd van de chain.",
     validators: "Validators",
   },
   aips: {

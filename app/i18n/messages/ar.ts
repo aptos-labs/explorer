@@ -289,7 +289,7 @@ export const ar = {
     releases: {
       title: "الإصدارات وAIPs والأدوات",
       paragraphs: [
-        "يضم [مركز الإصدارات](/releases) ثلاثة تبويبات: **الشبكات** (الحقبة والارتفاع وإصدارات الإطار/العقدة وعلامات الميزات عبر Mainnet وTestnet وDevnet) و**AIPs** (مقترحات تحسين Aptos من مستودع AIP العام) و**SDKs** (CLI و`aptos-node` وإصدارات SDK الرسمية).",
+        "يضم [مركز الإصدارات](/releases) ثلاثة تبويبات: **الشبكات** (الحقبة والارتفاع ووقت التكوين وإصدارات الإطار/العقدة وعلامات الميزات عبر Mainnet وTestnet وDevnet) و**AIPs** (مقترحات تحسين Aptos من مستودع AIP العام) و**SDKs** (CLI و`aptos-node` وإصدارات SDK الرسمية).",
         "تُعاد توجيه عناوين URL الأقدم `/deployments` و`/aips` إلى هنا.",
       ],
     },
@@ -1021,7 +1021,7 @@ export const ar = {
       title: "الإصدارات",
       metaTitle: "{tab} | الإصدارات",
       networksDescription:
-        "حالة حية على السلسلة لـ Aptos Mainnet وTestnet وDevnet — الحقبة وارتفاع الكتلة وإصدار الإطار (من جدول الغاز) وأقصى تنسيق بايت كود وإصدار العقدة ومقارنة علامات الميزات.",
+        "حالة حية على السلسلة لـ Aptos Mainnet وTestnet وDevnet — الحقبة وارتفاع الكتلة ووقت التكوين وإصدار الإطار (من جدول الغاز) وأقصى تنسيق بايت كود وإصدار العقدة ومقارنة علامات الميزات.",
       aipsDescription:
         "تتبّع جميع مقترحات تحسين Aptos (AIPs) — الحالة والمؤلفون والروابط إلى المصدر.",
       sdksDescription:
@@ -1575,6 +1575,9 @@ export const ar = {
     gasUnmappedTip:
       "جدول الغاز feature_version {version} غير معيَّن إلى إصدار إطار معروف في هذا المستكشف — حدّث GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE",
     nodeCommit: "التزام العقدة",
+    genesis: "وقت التكوين",
+    genesisTip:
+      "وقت بدء هذه الشبكة. طابع وقت كتلة التكوين غالبًا غير مضبوط (0)؛ المعاملة 1 تحمل وقت بدء السلسلة.",
     validators: "المدققون",
   },
   aips: {

@@ -294,7 +294,7 @@ export const de = {
     releases: {
       title: "Releases, AIPs und Tools",
       paragraphs: [
-        "Der [Releases-Hub](/releases) hat drei Tabs: **Netzwerke** (Epoch, Höhe, Framework-/Knotenversionen, Feature-Flags über Mainnet, Testnet und Devnet), **AIPs** (Aptos Improvement Proposals aus dem öffentlichen AIP-Repository) und **SDKs** (CLI, `aptos-node` und offizielle SDK-Releases).",
+        "Der [Releases-Hub](/releases) hat drei Tabs: **Netzwerke** (Epoch, Höhe, Genesis-Zeit, Framework-/Knotenversionen, Feature-Flags über Mainnet, Testnet und Devnet), **AIPs** (Aptos Improvement Proposals aus dem öffentlichen AIP-Repository) und **SDKs** (CLI, `aptos-node` und offizielle SDK-Releases).",
         "Ältere URLs `/deployments` und `/aips` leiten hierher um.",
       ],
     },
@@ -1056,7 +1056,7 @@ export const de = {
       title: "Releases",
       metaTitle: "{tab} | Releases",
       networksDescription:
-        "Live-On-Chain-Status für Aptos Mainnet, Testnet und Devnet — Epoch, Blockhöhe, Framework-Release (aus dem Gas-Schedule), max. Bytecode-Format, Node-Release und Feature-Flag-Vergleich.",
+        "Live-On-Chain-Status für Aptos Mainnet, Testnet und Devnet — Epoch, Blockhöhe, Genesis-Zeit, Framework-Release (aus dem Gas-Schedule), max. Bytecode-Format, Node-Release und Feature-Flag-Vergleich.",
       aipsDescription:
         "Verfolgen Sie alle Aptos Improvement Proposals (AIPs) — Status, Autoren und Links zur Quelle.",
       sdksDescription:
@@ -1650,6 +1650,9 @@ export const de = {
     gasUnmappedTip:
       "Gas-Schedule feature_version {version} ist in diesem Explorer keinem bekannten Framework-Release zugeordnet — GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE aktualisieren",
     nodeCommit: "Node-Commit",
+    genesis: "Genesis-Zeit",
+    genesisTip:
+      "Wann dieses Netzwerk gestartet ist. Der Zeitstempel des Genesis-Blocks ist oft nicht gesetzt (0); Transaktion 1 enthält die Startzeit der Chain.",
     validators: "Validatoren",
   },
   aips: {

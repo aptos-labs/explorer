@@ -55,7 +55,7 @@
     {
       "name": "open_releases",
       "title": "Open releases hub",
-      "description": "Open the releases hub for network deployment status, AIPs, or SDK and tool releases."
+      "description": "Open the releases hub for network deployment status (including genesis time), AIPs, or SDK and tool releases."
     },
     {
       "name": "open_coin",

@@ -293,7 +293,7 @@ export const it = {
     releases: {
       title: "Release, AIP e strumenti",
       paragraphs: [
-        "L'[hub release](/releases) ha tre schede: **Reti** (epoch, altezza, versioni framework/nodo, feature flag su mainnet, testnet e devnet), **AIP** (Aptos Improvement Proposals dal repository pubblico AIP) e **SDK** (CLI, `aptos-node` e release ufficiali degli SDK).",
+        "L'[hub release](/releases) ha tre schede: **Reti** (epoch, altezza, ora di genesi, versioni framework/nodo, feature flag su mainnet, testnet e devnet), **AIP** (Aptos Improvement Proposals dal repository pubblico AIP) e **SDK** (CLI, `aptos-node` e release ufficiali degli SDK).",
         "Gli URL più vecchi `/deployments` e `/aips` reindirizzano qui.",
       ],
     },
@@ -1047,7 +1047,7 @@ export const it = {
       title: "Release",
       metaTitle: "{tab} | Release",
       networksDescription:
-        "Stato on-chain in tempo reale di Aptos mainnet, testnet e devnet — epoca, altezza del blocco, release del framework (dallo gas schedule), formato bytecode massimo, release del nodo e confronto delle feature flag.",
+        "Stato on-chain in tempo reale di Aptos mainnet, testnet e devnet — epoca, altezza del blocco, ora di genesi, release del framework (dallo gas schedule), formato bytecode massimo, release del nodo e confronto delle feature flag.",
       aipsDescription:
         "Segui tutte le Aptos Improvement Proposals (AIP) — stato, autori e link alla fonte.",
       sdksDescription:
@@ -1643,6 +1643,9 @@ export const it = {
     gasUnmappedTip:
       "Il gas schedule feature_version {version} non è mappato a una release nota del framework in questo explorer — aggiorna GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE",
     nodeCommit: "Commit del nodo",
+    genesis: "Ora di genesi",
+    genesisTip:
+      "Quando è partita questa rete. Il timestamp del blocco di genesi spesso non è impostato (0); la transazione 1 ha l'ora di avvio della chain.",
     validators: "Validatori",
   },
   aips: {
