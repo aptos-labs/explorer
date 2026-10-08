@@ -490,8 +490,6 @@ export const he = {
     unavailableHint: "כדי להשתמש ב-localnet, הפעל node מקומי של Aptos עם:",
     unavailableSwitch: "או עבור לרשת אחרת למטה.",
     switchToMainnet: "עבור ל-Mainnet",
-    testnetResetBanner:
-      "Testnet is currently being reset, and will be back up by 10/9.",
   },
   errors: {
     somethingWentWrong: "משהו השתבש",

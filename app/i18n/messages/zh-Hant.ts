@@ -485,8 +485,6 @@ export const zhHant = {
     unavailableHint: "要使用本機網路，請用以下命令啟動本地 Aptos 節點：",
     unavailableSwitch: "或在下方切換到其他網路。",
     switchToMainnet: "切換到主網",
-    testnetResetBanner:
-      "Testnet is currently being reset, and will be back up by 10/9.",
   },
   errors: {
     somethingWentWrong: "出錯了",

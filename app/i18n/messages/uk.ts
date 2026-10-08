@@ -496,8 +496,6 @@ export const uk = {
       "Щоб користуватися localnet, запустіть локальний вузол Aptos командою:",
     unavailableSwitch: "Або перемкніться на іншу мережу нижче.",
     switchToMainnet: "Перемкнутися на Mainnet",
-    testnetResetBanner:
-      "Testnet is currently being reset, and will be back up by 10/9.",
   },
   errors: {
     somethingWentWrong: "Щось пішло не так",
