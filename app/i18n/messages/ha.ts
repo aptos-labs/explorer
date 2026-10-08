@@ -494,8 +494,6 @@ export const ha = {
     unavailableHint: "Don amfani da localnet, fara node na Aptos na gida da:",
     unavailableSwitch: "Ko kuma canja zuwa wata hanyar sadarwa a ƙasa.",
     switchToMainnet: "Canja zuwa Mainnet",
-    testnetResetBanner:
-      "Testnet is currently being reset, and will be back up by 10/9.",
   },
   errors: {
     somethingWentWrong: "Wani abu ya tafi ba daidai ba",

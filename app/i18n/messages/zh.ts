@@ -485,8 +485,6 @@ export const zh = {
     unavailableHint: "要使用本地网，请用以下命令启动本地 Aptos 节点：",
     unavailableSwitch: "或在下方切换到其他网络。",
     switchToMainnet: "切换到主网",
-    testnetResetBanner:
-      "Testnet is currently being reset, and will be back up by 10/9.",
   },
   errors: {
     somethingWentWrong: "出错了",

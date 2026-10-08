@@ -493,8 +493,6 @@ export const ta = {
     unavailableHint: "Localnet பயன்படுத்த, உள்ளூர் Aptos நோடை இதனுடன் தொடங்கவும்:",
     unavailableSwitch: "அல்லது கீழே வேறு நெட்வொர்க்குக்கு மாறவும்.",
     switchToMainnet: "Mainnetக்கு மாறு",
-    testnetResetBanner:
-      "Testnet is currently being reset, and will be back up by 10/9.",
   },
   errors: {
     somethingWentWrong: "ஏதோ தவறு நடந்தது",

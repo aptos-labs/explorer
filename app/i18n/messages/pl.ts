@@ -494,8 +494,6 @@ export const pl = {
       "Aby użyć localnetu, uruchom lokalny węzeł Aptos poleceniem:",
     unavailableSwitch: "Albo przełącz na inną sieć poniżej.",
     switchToMainnet: "Przełącz na Mainnet",
-    testnetResetBanner:
-      "Testnet is currently being reset, and will be back up by 10/9.",
   },
   errors: {
     somethingWentWrong: "Coś poszło nie tak",

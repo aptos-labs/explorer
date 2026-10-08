@@ -492,8 +492,6 @@ export const hi = {
     unavailableHint: "Localnet इस्तेमाल करने के लिए स्थानीय Aptos नोड ऐसे शुरू करें:",
     unavailableSwitch: "या नीचे किसी अन्य नेटवर्क पर स्विच करें।",
     switchToMainnet: "Mainnet पर स्विच करें",
-    testnetResetBanner:
-      "Testnet is currently being reset, and will be back up by 10/9.",
   },
   errors: {
     somethingWentWrong: "कुछ गलत हो गया",

@@ -495,8 +495,6 @@ export const nl = {
       "Om localnet te gebruiken, start u een lokale Aptos-node met:",
     unavailableSwitch: "Of schakel hieronder over naar een ander netwerk.",
     switchToMainnet: "Overschakelen naar Mainnet",
-    testnetResetBanner:
-      "Testnet is currently being reset, and will be back up by 10/9.",
   },
   errors: {
     somethingWentWrong: "Er is iets misgegaan",

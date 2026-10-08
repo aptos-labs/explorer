@@ -494,8 +494,6 @@ export const ja = {
       "ローカルネットを使うには、次のコマンドでローカル Aptos ノードを起動してください。",
     unavailableSwitch: "または下で別のネットワークに切り替えてください。",
     switchToMainnet: "メインネットに切り替え",
-    testnetResetBanner:
-      "Testnet is currently being reset, and will be back up by 10/9.",
   },
   errors: {
     somethingWentWrong: "問題が発生しました",

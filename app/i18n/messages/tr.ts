@@ -494,8 +494,6 @@ export const tr = {
       "Localnet kullanmak için yerel bir Aptos düğümünü şununla başlatın:",
     unavailableSwitch: "Veya aşağıdan başka bir ağa geçin.",
     switchToMainnet: "Mainnet'e geç",
-    testnetResetBanner:
-      "Testnet is currently being reset, and will be back up by 10/9.",
   },
   errors: {
     somethingWentWrong: "Bir şeyler ters gitti",

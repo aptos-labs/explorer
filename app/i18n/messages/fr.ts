@@ -495,8 +495,6 @@ export const fr = {
       "Pour utiliser Localnet, démarrez un nœud Aptos local avec :",
     unavailableSwitch: "Ou basculez vers un autre réseau ci-dessous.",
     switchToMainnet: "Basculer vers Mainnet",
-    testnetResetBanner:
-      "Testnet is currently being reset, and will be back up by 10/9.",
   },
   errors: {
     somethingWentWrong: "Une erreur s'est produite",
