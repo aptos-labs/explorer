@@ -32,6 +32,31 @@ describe("FEAT-DATA-002 — Known address system", () => {
       expect(addresses[fullAddr]).toBeDefined();
     });
 
+    it("includes Decibel Testnet, Chunking Contract, and Aptos Names on testnet", () => {
+      // Covers FEAT-DATA-002 — testnet known-address labels
+      const addresses = getKnownAddresses("testnet");
+      expect(
+        addresses[
+          "0xd368b820fdfbfe004679cdb0facef4b920c4fc0c2c80bd2fecf3843a93427bd1"
+        ],
+      ).toBe("Decibel Testnet");
+      expect(
+        addresses[
+          "0x5363e11af645b92da4809a40e0de8002aa0d8640476b2a1b7698caa8472cc31e"
+        ],
+      ).toBe("Chunking Contract");
+      expect(
+        addresses[
+          "0xb1ae61606dfbe0ea5b5c45ffdb4fb08da0dba18c5125182ff63ab280a450ecf4"
+        ],
+      ).toBe("Aptos Names");
+      expect(
+        getKnownAddresses("mainnet")[
+          "0xd368b820fdfbfe004679cdb0facef4b920c4fc0c2c80bd2fecf3843a93427bd1"
+        ],
+      ).toBeUndefined();
+    });
+
     it("includes Near WBTC fungible asset metadata object on mainnet", () => {
       // Covers FEAT-DATA-002 — known address label for Labs-verified NBTC
       const addresses = getKnownAddresses("mainnet");

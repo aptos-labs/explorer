@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Testnet known addresses**: Explorer labels for Decibel Testnet (`0xd368…7bd1`), Chunking Contract (`0x5363…c31e`), and Aptos Names (`0xb1ae…ecf4`).
 - **Genesis time on Releases**: Each network card on `/releases/networks` shows when that chain started. The genesis block timestamp is used when it is set; Aptos leaves it at `0`, so the time comes from transaction 1 (block 1). The time links to that transaction. Pruned history is read from the archive node.
 - **Blocks list range navigation**: The blocks page has Previous and Next controls that move between inclusive block-height ranges (`?start=` is the oldest height, `?end=` is the newest). The default view stays on the chain tip instead of a page number, because the tip moves continuously. `?start=` alone still opens a 20-block window ending at that height.
 - **Local timestamp switch**: Settings includes a Timestamps switch (off by default). Chain times stay in UTC until you turn it on and save; after that, transaction, block, module, release, and multisig timestamps use your browser’s time zone. The first paint stays UTC so the page does not mismatch during load, then updates. CSV export and copied raw timestamps stay UTC. Analytics day labels stay on the UTC date.

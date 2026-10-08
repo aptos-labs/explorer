@@ -36,6 +36,16 @@ export const testnetKnownAddresses: Record<string, string> = {
   // Decibel
   "0xe7da2794b1d8af76532ed95f38bfdf1136abfd8ea3a240189971988a83101b7f":
     "Decibel",
+  "0xd368b820fdfbfe004679cdb0facef4b920c4fc0c2c80bd2fecf3843a93427bd1":
+    "Decibel Testnet",
+
+  // Chunking Contract
+  "0x5363e11af645b92da4809a40e0de8002aa0d8640476b2a1b7698caa8472cc31e":
+    "Chunking Contract",
+
+  // Aptos Names (https://aptosnames.com)
+  "0xb1ae61606dfbe0ea5b5c45ffdb4fb08da0dba18c5125182ff63ab280a450ecf4":
+    "Aptos Names",
 
   // Burn Address
   "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff":
