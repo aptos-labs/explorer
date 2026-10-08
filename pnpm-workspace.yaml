@@ -39,6 +39,10 @@ minimumReleaseAgeExclude:
     "@tanstack/start-plugin-core@1.171.49",
     "@tanstack/start-server-core@1.169.39",
     "@tanstack/start-storage-context@1.167.36",
+    # First-party Aptos SDK; Safe Chain already exempts @aptos-labs/* from its
+    # 48h floor. The 7.4.0 release (2026-10-05) is inside pnpm's 5-day gate.
+    # Remove once it is older than 2026-10-10.
+    "@aptos-labs/ts-sdk@7.4.0",
   ]
 
 allowBuilds:
@@ -49,22 +53,22 @@ allowBuilds:
 
 overrides:
   "@aptos-labs/wallet-standard": 2.0.0
-  "@aptos-labs/ts-sdk": 7.3.0
-  "@babel/core": 8.0.1
-  "@opentelemetry/core": 2.10.0
-  "@opentelemetry/propagator-jaeger": 2.10.0
+  "@aptos-labs/ts-sdk": 7.4.0
+  "@babel/core": 8.0.6
+  "@opentelemetry/core": 2.11.0
+  "@opentelemetry/propagator-jaeger": 2.11.0
   axios: 1.20.0
-  baseline-browser-mapping: 2.11.21
-  brace-expansion: 5.0.9
-  browserslist: 4.28.9
+  baseline-browser-mapping: 2.11.27
+  brace-expansion: 5.0.12
+  browserslist: 4.29.3
   esbuild: 0.28.2
   form-data: 4.0.6
   "@fastify/busboy": 3.2.2
   image-size: 2.0.4
   js-yaml: 5.4.2
-  postcss: 8.5.26
-  sharp: 0.35.3
-  svgo: 4.0.2
+  postcss: 8.5.28
+  sharp: 0.35.5
+  svgo: 4.1.0
   tar: 7.5.22
   tmp: 0.2.7
   d3-array: 3.2.4
@@ -74,8 +78,8 @@ overrides:
   d3-ease: 3.0.1
   d3-interpolate: 3.0.1
   defu: 6.1.7
-  fast-uri: 4.1.2
-  h3-v2: npm:h3@2.0.1-rc.26
+  fast-uri: 4.2.1
+  h3-v2: npm:h3@2.0.1-rc.32
   d3-geo: 3.1.1
   d3-selection: 3.0.0
   d3-timer: 3.0.1
@@ -84,13 +88,13 @@ overrides:
   "@tootallnate/once": 3.0.1
   lodash: 4.18.1
   node-forge: 1.4.0
-  uuid: 14.0.1
+  uuid: 14.0.2
   undici: 8.11.2
   nanoid: 6.0.1
 
 patchedDependencies:
-  "@babel/core@8.0.1": patches/@babel__core@8.0.1.patch
-  "@babel/traverse@8.0.4": patches/@babel__traverse@8.0.4.patch
+  "@babel/core@8.0.6": patches/@babel__core@8.0.6.patch
+  "@babel/traverse@8.0.6": patches/@babel__traverse@8.0.6.patch
   # CVE-2026-93748 / GHSA-ch52-4w7c-c8xp. Upstream 4.3.0 (2026-10-04) is still
   # inside Safe Chain's 48h floor and does not change the max-stale path.
   # This patch closes that path on the locked 4.2.0. Drop it when an upstream
