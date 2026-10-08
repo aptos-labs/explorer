@@ -14,9 +14,11 @@ import {useQueryClient} from "@tanstack/react-query";
 import type {ReactNode} from "react";
 import {useGetNetworkStatus} from "../../api/hooks/useGetNetworkStatus";
 import {useGetNodeReleaseFromCommit} from "../../api/hooks/useGetNodeReleaseFromCommit";
-import type {NetworkName} from "../../lib/constants";
-import {translateNetworkName, useTranslation} from "../../i18n";
 import IntegerValue from "../../components/IndividualPageContent/ContentValue/IntegerValue";
+import {translateNetworkName, useTranslation} from "../../i18n";
+import type {NetworkName} from "../../lib/constants";
+import {Link as RouterLink} from "../../routing";
+import {parseTimestamp} from "../utils";
 
 function StatusRow({label, value}: {label: string; value: ReactNode}) {
   return (
@@ -56,7 +58,7 @@ function StatusRow({label, value}: {label: string; value: ReactNode}) {
 }
 
 export function NetworkCard({network}: {network: NetworkName}) {
-  const {t, formatInteger} = useTranslation();
+  const {t, formatInteger, formatTimestamp} = useTranslation();
   const queryClient = useQueryClient();
   const {data, isFetching, isError} = useGetNetworkStatus(network);
 
@@ -199,6 +201,29 @@ export function NetworkCard({network}: {network: NetworkName}) {
                     >
                       {shortHash}
                     </Link>
+                  </Tooltip>
+                ) : null
+              }
+            />
+            <StatusRow
+              label={t("deployments.genesis")}
+              value={
+                data.genesisTimestamp && data.genesisVersion ? (
+                  <Tooltip title={t("deployments.genesisTip")}>
+                    <RouterLink
+                      to="/txn/$txnHashOrVersion/$tab"
+                      // The shared Link types params/search as reducers, not
+                      // route objects. These are the runtime shapes TanStack uses.
+                      params={
+                        {
+                          txnHashOrVersion: data.genesisVersion,
+                          tab: "overview",
+                        } as never
+                      }
+                      search={{network} as never}
+                    >
+                      {formatTimestamp(parseTimestamp(data.genesisTimestamp))}
+                    </RouterLink>
                   </Tooltip>
                 ) : null
               }

@@ -246,7 +246,7 @@ export function buildWebMcpTools(navigate: NavigateFn): WebMCPTool[] {
       name: "open_releases",
       title: "Open releases hub",
       description:
-        "Open the Aptos Explorer releases hub at /releases. This page consolidates live network deployment status (per-chain aptos-node version + git commit + feature-flag comparison), the AIPs index, and SDK/tool releases under one URL with three tabs. Use when the user asks about deployed network versions, feature flags across mainnet/testnet/devnet, AIP status, or the latest CLI / SDK releases.",
+        "Open the Aptos Explorer releases hub at /releases. This page consolidates live network deployment status (per-chain aptos-node version + git commit + genesis time + feature-flag comparison), the AIPs index, and SDK/tool releases under one URL with three tabs. Use when the user asks about deployed network versions, when a network started, feature flags across mainnet/testnet/devnet, AIP status, or the latest CLI / SDK releases.",
       inputSchema: {
         type: "object",
         additionalProperties: false,

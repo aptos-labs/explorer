@@ -65,6 +65,49 @@ describe("fetchNetworkStatus", () => {
     expect(result.bytecodeFormatVersion).toBe(6);
     expect(result.validatorCount).toBe(104);
     expect(result.enabledFeatures).toEqual([1, 5, 17, 23]);
+    // Block endpoints are not stubbed here; genesis time stays unset.
+    expect(result.genesisTimestamp).toBeNull();
+    expect(result.genesisVersion).toBeNull();
+  });
+
+  it("reports genesis time from transaction 1 when the genesis block timestamp is 0", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockImplementation((url: string) => {
+        if (url.endsWith("/")) {
+          return Promise.resolve({
+            ok: true,
+            json: () => Promise.resolve(mockLedger),
+          });
+        }
+        if (url.includes("/blocks/by_height/0")) {
+          return Promise.resolve({
+            ok: true,
+            status: 200,
+            headers: {get: () => null},
+            json: () => Promise.resolve({block_timestamp: "0"}),
+          });
+        }
+        if (url.includes("/blocks/by_height/1")) {
+          return Promise.resolve({
+            ok: true,
+            status: 200,
+            headers: {get: () => null},
+            json: () =>
+              Promise.resolve({
+                block_timestamp: "1665609760857472",
+                first_version: "1",
+              }),
+          });
+        }
+        return Promise.resolve({ok: false, status: 404});
+      }),
+    );
+
+    const result = await fetchNetworkStatus("mainnet");
+    expect(result.genesisTimestamp).toBe("1665609760857472");
+    expect(result.genesisVersion).toBe("1");
+    expect(result.healthy).toBe(true);
   });
 
   it("throws when fullnode is unreachable", async () => {

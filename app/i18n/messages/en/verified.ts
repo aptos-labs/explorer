@@ -365,6 +365,9 @@ export const deployments = {
   gasUnmappedTip:
     "Gas schedule feature_version {version} is not mapped to a known framework release in this explorer — update GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE",
   nodeCommit: "Node Commit",
+  genesis: "Genesis Time",
+  genesisTip:
+    "When this network started. The genesis block timestamp is often unset (0); transaction 1 has the chain start time.",
   validators: "Validators",
 } as const;
 

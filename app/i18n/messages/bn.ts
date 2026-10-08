@@ -290,7 +290,7 @@ export const bn = {
     releases: {
       title: "রিলিজ, AIP ও টুল",
       paragraphs: [
-        "[রিলিজ হাব](/releases)-এ তিনটি ট্যাব: **নেটওয়ার্ক** (ইপক, উচ্চতা, ফ্রেমওয়ার্ক/নোড সংস্করণ, mainnet, testnet ও devnet-এ ফিচার ফ্ল্যাগ), **AIP** (পাবলিক AIP রিপোজিটরি থেকে Aptos Improvement Proposals) ও **SDK** (CLI, `aptos-node` ও অফিসিয়াল SDK রিলিজ)।",
+        "[রিলিজ হাব](/releases)-এ তিনটি ট্যাব: **নেটওয়ার্ক** (ইপক, উচ্চতা, জেনেসিস সময়, ফ্রেমওয়ার্ক/নোড সংস্করণ, mainnet, testnet ও devnet-এ ফিচার ফ্ল্যাগ), **AIP** (পাবলিক AIP রিপোজিটরি থেকে Aptos Improvement Proposals) ও **SDK** (CLI, `aptos-node` ও অফিসিয়াল SDK রিলিজ)।",
         "পুরনো URL `/deployments` ও `/aips` এখানে রিডাইরেক্ট।",
       ],
     },
@@ -1025,7 +1025,7 @@ export const bn = {
       title: "রিলিজ",
       metaTitle: "{tab} | রিলিজ",
       networksDescription:
-        "Aptos mainnet, testnet ও devnet-এর লাইভ অন-চেইন স্ট্যাটাস — এপক, ব্লক উচ্চতা, ফ্রেমওয়ার্ক রিলিজ (গ্যাস শিডিউল থেকে), সর্বোচ্চ বাইটকোড ফরম্যাট, নোড রিলিজ এবং ফিচার-ফ্ল্যাগ তুলনা।",
+        "Aptos mainnet, testnet ও devnet-এর লাইভ অন-চেইন স্ট্যাটাস — এপক, ব্লক উচ্চতা, জেনেসিস সময়, ফ্রেমওয়ার্ক রিলিজ (গ্যাস শিডিউল থেকে), সর্বোচ্চ বাইটকোড ফরম্যাট, নোড রিলিজ এবং ফিচার-ফ্ল্যাগ তুলনা।",
       aipsDescription:
         "সব Aptos Improvement Proposals (AIP) ট্র্যাক করুন — স্ট্যাটাস, লেখক ও উৎসের লিঙ্ক।",
       sdksDescription:
@@ -1570,6 +1570,9 @@ export const bn = {
     gasUnmappedTip:
       "Gas schedule feature_version {version} এই এক্সপ্লোরারে কোনো পরিচিত ফ্রেমওয়ার্ক রিলিজে ম্যাপ করা হয়নি — GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE আপডেট করুন",
     nodeCommit: "নোড কমিট",
+    genesis: "জেনেসিস সময়",
+    genesisTip:
+      "এই নেটওয়ার্ক কখন শুরু হয়েছে। জেনেসিস ব্লকের টাইমস্ট্যাম্প প্রায়ই সেট থাকে না (0); লেনদেন 1-এ চেইন শুরুর সময় থাকে।",
     validators: "ভ্যালিডেটর",
   },
   aips: {

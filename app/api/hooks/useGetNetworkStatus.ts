@@ -6,6 +6,7 @@ import {
   maxBytecodeFormatVersionFromFlags,
 } from "../../utils/aptosDeploymentVersions";
 import {decodeFeatureBitmap} from "./aptosFeatureFlags";
+import {fetchGenesisTimestamp} from "./genesisTimestamp";
 
 export type NetworkStatus = {
   healthy: boolean;
@@ -32,6 +33,14 @@ export type NetworkStatus = {
   validatorCount: number | null;
   /** Sorted list of enabled feature flag IDs from `0x1::features::Features`. */
   enabledFeatures: number[] | null;
+  /**
+   * Chain start time in microseconds. The genesis block timestamp when that
+   * value is a real time; otherwise transaction 1 (block 1), which Aptos uses
+   * when genesis is unset (`0`).
+   */
+  genesisTimestamp: string | null;
+  /** Ledger version `genesisTimestamp` was read from (`"0"` or `"1"`). */
+  genesisVersion: "0" | "1" | null;
 };
 
 export async function fetchNetworkStatus(
@@ -52,17 +61,23 @@ export async function fetchNetworkStatus(
   };
   const ledger = (await res.json()) as LedgerInfo;
 
-  const [gasResult, sResult, fResult] = await Promise.allSettled([
-    fetch(`${baseUrl}/accounts/0x1/resource/0x1::gas_schedule::GasScheduleV2`, {
-      headers,
-    }),
-    fetch(`${baseUrl}/accounts/0x1/resource/0x1::stake::ValidatorSet`, {
-      headers,
-    }),
-    fetch(`${baseUrl}/accounts/0x1/resource/0x1::features::Features`, {
-      headers,
-    }),
-  ]);
+  const [gasResult, sResult, fResult, genesisResult] = await Promise.allSettled(
+    [
+      fetch(
+        `${baseUrl}/accounts/0x1/resource/0x1::gas_schedule::GasScheduleV2`,
+        {
+          headers,
+        },
+      ),
+      fetch(`${baseUrl}/accounts/0x1/resource/0x1::stake::ValidatorSet`, {
+        headers,
+      }),
+      fetch(`${baseUrl}/accounts/0x1/resource/0x1::features::Features`, {
+        headers,
+      }),
+      fetchGenesisTimestamp(networkName, baseUrl, headers),
+    ],
+  );
 
   let gasFeatureVersion: number | null = null;
   if (gasResult.status === "fulfilled" && gasResult.value.ok) {
@@ -97,6 +112,9 @@ export async function fetchNetworkStatus(
     bytecodeFormatVersion = maxBytecodeFormatVersionFromFlags(enabledFeatures);
   }
 
+  const genesis =
+    genesisResult.status === "fulfilled" ? genesisResult.value : null;
+
   return {
     healthy: true,
     epoch: String(ledger.epoch),
@@ -109,6 +127,8 @@ export async function fetchNetworkStatus(
     bytecodeFormatVersion,
     validatorCount,
     enabledFeatures,
+    genesisTimestamp: genesis?.timestamp ?? null,
+    genesisVersion: genesis?.version ?? null,
   };
 }
 

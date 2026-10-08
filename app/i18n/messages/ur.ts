@@ -291,7 +291,7 @@ export const ur = {
     releases: {
       title: "ریلیزز، AIP، اور ٹولز",
       paragraphs: [
-        "[ریلیزز hub](/releases) میں تین ٹیبز: **Networks** (epoch، height، framework/node ورژنز، mainnet، testnet، devnet میں feature flags)، **AIPs** (عوامی AIP repository سے Aptos Improvement Proposals)، **SDKs** (CLI، `aptos-node`، اور سرکاری SDK ریلیزز)۔",
+        "[ریلیزز hub](/releases) میں تین ٹیبز: **Networks** (epoch، height، جینیسس کا وقت، framework/node ورژنز، mainnet، testnet، devnet میں feature flags)، **AIPs** (عوامی AIP repository سے Aptos Improvement Proposals)، **SDKs** (CLI، `aptos-node`، اور سرکاری SDK ریلیزز)۔",
         "پرانے URLs `/deployments` اور `/aips` یہاں redirect کرتے ہیں۔",
       ],
     },
@@ -1035,7 +1035,7 @@ export const ur = {
       title: "ریلیزز",
       metaTitle: "{tab} | ریلیزز",
       networksDescription:
-        "Aptos mainnet، testnet، اور devnet کی لائیو آن چین حیثیت — epoch، بلاک اونچائی، فریم ورک ریلیز (گیس شیڈول سے)، زیادہ سے زیادہ بائٹ کوڈ فارمیٹ، نوڈ ریلیز، اور فیچر فلیگ موازنہ۔",
+        "Aptos mainnet، testnet، اور devnet کی لائیو آن چین حیثیت — epoch، بلاک اونچائی، جینیسس کا وقت، فریم ورک ریلیز (گیس شیڈول سے)، زیادہ سے زیادہ بائٹ کوڈ فارمیٹ، نوڈ ریلیز، اور فیچر فلیگ موازنہ۔",
       aipsDescription:
         "تمام Aptos Improvement Proposals (AIPs) ٹریک کریں — حیثیت، مصنفین، اور ماخذ کے لنکس۔",
       sdksDescription:
@@ -1593,6 +1593,9 @@ export const ur = {
     gasUnmappedTip:
       "گیس شیڈول feature_version {version} اس ایکسپلورر میں معروف فریم ورک ریلیز سے میپ نہیں — GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE اپ ڈیٹ کریں",
     nodeCommit: "نوڈ Commit",
+    genesis: "جینیسس کا وقت",
+    genesisTip:
+      "یہ نیٹ ورک کب شروع ہوا۔ جینیسس بلاک کا ٹائم اسٹیمپ اکثر سیٹ نہیں ہوتا (0)؛ ٹرانزیکشن 1 میں چین کے آغاز کا وقت ہوتا ہے۔",
     validators: "ویلیڈیٹرز",
   },
   aips: {

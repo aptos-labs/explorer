@@ -292,7 +292,7 @@ export const ja = {
     releases: {
       title: "リリース、AIP、ツール",
       paragraphs: [
-        "[リリースハブ](/releases) には 3 つのタブがあります。**ネットワーク**（エポック、高さ、フレームワーク/ノードバージョン、メインネット・テストネット・開発ネットのフィーチャーフラグ）、**AIP**（公開 AIP リポジトリの Aptos Improvement Proposals）、**SDK**（CLI、`aptos-node`、公式 SDK リリース）。",
+        "[リリースハブ](/releases) には 3 つのタブがあります。**ネットワーク**（エポック、高さ、ジェネシス時刻、フレームワーク/ノードバージョン、メインネット・テストネット・開発ネットのフィーチャーフラグ）、**AIP**（公開 AIP リポジトリの Aptos Improvement Proposals）、**SDK**（CLI、`aptos-node`、公式 SDK リリース）。",
         "古い URL `/deployments` と `/aips` はここにリダイレクトされます。",
       ],
     },
@@ -1041,7 +1041,7 @@ export const ja = {
       title: "リリース",
       metaTitle: "{tab} | リリース",
       networksDescription:
-        "Aptos のメインネット、テストネット、開発ネットのライブオンチェーン状態 — エポック、ブロック高、フレームワークリリース（ガススケジュールから）、最大バイトコード形式、ノードリリース、フィーチャーフラグ比較。",
+        "Aptos のメインネット、テストネット、開発ネットのライブオンチェーン状態 — エポック、ブロック高、ジェネシス時刻、フレームワークリリース（ガススケジュールから）、最大バイトコード形式、ノードリリース、フィーチャーフラグ比較。",
       aipsDescription:
         "すべての Aptos Improvement Proposals（AIP）を追跡します — ステータス、著者、ソースへのリンク。",
       sdksDescription:
@@ -1613,6 +1613,9 @@ export const ja = {
     gasUnmappedTip:
       "ガススケジュール feature_version {version} は、このエクスプローラーの既知のフレームワークリリースにマップされていません — GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE を更新してください",
     nodeCommit: "ノードコミット",
+    genesis: "ジェネシス時刻",
+    genesisTip:
+      "このネットワークが開始した時刻。ジェネシスブロックのタイムスタンプは未設定（0）のことが多く、トランザクション 1 がチェーン開始時刻を持ちます。",
     validators: "バリデータ",
   },
   aips: {

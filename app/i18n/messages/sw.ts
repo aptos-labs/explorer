@@ -292,7 +292,7 @@ export const sw = {
     releases: {
       title: "Matoleo, AIP, na zana",
       paragraphs: [
-        "[Kitovu cha matoleo](/releases) kina vichupo vitatu: **Mitandao** (kipindi, urefu, matoleo ya framework/nodi, alama za vipengele kwenye mainnet, testnet, na devnet), **AIP** (Mapendekezo ya Uboreshaji wa Aptos kutoka hifadhi ya umma ya AIP), na **SDK** (CLI, `aptos-node`, na matoleo rasmi ya SDK).",
+        "[Kitovu cha matoleo](/releases) kina vichupo vitatu: **Mitandao** (kipindi, urefu, muda wa genesis, matoleo ya framework/nodi, alama za vipengele kwenye mainnet, testnet, na devnet), **AIP** (Mapendekezo ya Uboreshaji wa Aptos kutoka hifadhi ya umma ya AIP), na **SDK** (CLI, `aptos-node`, na matoleo rasmi ya SDK).",
         "URL za zamani `/deployments` na `/aips` huelekeza hapa.",
       ],
     },
@@ -1046,7 +1046,7 @@ export const sw = {
       title: "Matoleo",
       metaTitle: "{tab} | Matoleo",
       networksDescription:
-        "Hali ya moja kwa moja kwenye mnyororo kwa Aptos mainnet, testnet, na devnet — kipindi, urefu wa kizuizi, toleo la framework (kutoka ratiba ya gesi), umbizo kuu la bytecode, toleo la nodi, na ulinganisho wa alama za vipengele.",
+        "Hali ya moja kwa moja kwenye mnyororo kwa Aptos mainnet, testnet, na devnet — kipindi, urefu wa kizuizi, muda wa genesis, toleo la framework (kutoka ratiba ya gesi), umbizo kuu la bytecode, toleo la nodi, na ulinganisho wa alama za vipengele.",
       aipsDescription:
         "Fuatilia Mapendekezo yote ya Uboreshaji wa Aptos (AIP) — hali, waandishi, na viungo vya chanzo.",
       sdksDescription:
@@ -1639,6 +1639,9 @@ export const sw = {
     gasUnmappedTip:
       "Ratiba ya gesi feature_version {version} haijaoanishwa na toleo la framework linalojulikana katika kichunguzi hiki — sasisha GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE",
     nodeCommit: "Commit ya nodi",
+    genesis: "Muda wa genesis",
+    genesisTip:
+      "Muda ambapo mtandao huu ulianza. Stempu ya muda ya bloku ya genesis mara nyingi haijawekwa (0); muamala 1 una muda wa kuanza kwa mnyororo.",
     validators: "Wathibitishaji",
   },
   aips: {

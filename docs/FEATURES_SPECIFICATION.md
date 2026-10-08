@@ -1324,6 +1324,7 @@ top of the HTML site.
 | **Framework release** | Shown per network from `0x1::gas_schedule::GasScheduleV2.feature_version`, mapped to a framework train via aptos-core `gas_feature_versions` (`app/utils/aptosDeploymentVersions.ts`). When unmapped, UI shows `gas N (unmapped)` and `frameworkRelease` in API data is `null`. |
 | **Bytecode format (max)** | Highest Move module bytecode format enabled, derived from VM Binary Format feature flags (see `maxBytecodeFormatVersionFromFlags`). |
 | **Feature flags** | Table compares on-chain `0x1::features::Features` per network. Static labels mirror aptos-core `FeatureFlag`; labels not yet in the static list are filled from live aptos-core source when available (jsDelivr mirror). |
+| **Genesis time** | Each network card shows when that chain started. The genesis block (`block_timestamp` on height 0, same instant as the genesis transaction) is used when it is a real timestamp. Aptos leaves that value unset (`0`, and the genesis transaction omits `timestamp`); the card then shows block 1, whose timestamp is transaction version 1. The time links to that transaction on the card's network. Pruned fullnodes (410) are retried on the advertised archive without the gateway API key. |
 
 ---
 
@@ -1474,7 +1475,8 @@ top of the HTML site.
 | `app/pages/Guide/useGuideActiveSection.test.ts` | FEAT-GUIDE-001 (TOC active-section selection from intersection ratios and scroll spy hook) |
 | `app/utils/routerParams.test.ts` | FEAT-ROUTING-003 (`pathSplatToSegments` normalization) |
 | `app/api/hooks/aptosFeatureFlagsUpstream.test.ts` | FEAT-RELEASES-001 (upstream Rust enum parse for unlisted feature flag names) |
-| `app/api/hooks/useGetNetworkStatus.test.ts` | FEAT-RELEASES-001 (`fetchNetworkStatus`) |
+| `app/api/hooks/useGetNetworkStatus.test.ts` | FEAT-RELEASES-001 (`fetchNetworkStatus`, genesis time from transaction 1) |
+| `app/api/hooks/genesisTimestamp.test.ts` | FEAT-RELEASES-001 (genesis timestamp selection; archive retry without the gateway key) |
 | `app/utils/mapWithConcurrencyLimit.test.ts` | FEAT-BLOCKS-001 (bounded concurrency for batched REST fetches) |
 | `app/pages/Blocks/blockRange.test.ts` | FEAT-BLOCKS-001 (inclusive `start`/`end` height ranges, legacy `?start=` cursor, live tip, previous/next steps, fetch cap) |
 | `app/utils/sentioCallTrace.test.ts` | FEAT-TXN-010 (Sentio helpers: network ID, paths, address normalization, node validation) |

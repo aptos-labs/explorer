@@ -137,7 +137,7 @@ export const pages = {
     title: "Releases",
     metaTitle: "{tab} | Releases",
     networksDescription:
-      "Live on-chain status for Aptos mainnet, testnet, and devnet — epoch, block height, framework release (from gas schedule), max bytecode format, node release, and feature-flag comparison.",
+      "Live on-chain status for Aptos mainnet, testnet, and devnet — epoch, block height, genesis time, framework release (from gas schedule), max bytecode format, node release, and feature-flag comparison.",
     aipsDescription:
       "Track all Aptos Improvement Proposals (AIPs) — status, authors, and links to source.",
     sdksDescription:

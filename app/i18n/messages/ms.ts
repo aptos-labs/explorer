@@ -291,7 +291,7 @@ export const ms = {
     releases: {
       title: "Keluaran, AIP, dan alat",
       paragraphs: [
-        "[Hab keluaran](/releases) mempunyai tiga tab: **Rangkaian** (epoch, ketinggian, versi framework/nod, bendera ciri merentasi mainnet, testnet, dan devnet), **AIP** (Aptos Improvement Proposals daripada repositori AIP awam), dan **SDK** (CLI, `aptos-node`, dan keluaran SDK rasmi).",
+        "[Hab keluaran](/releases) mempunyai tiga tab: **Rangkaian** (epoch, ketinggian, masa genesis, versi framework/nod, bendera ciri merentasi mainnet, testnet, dan devnet), **AIP** (Aptos Improvement Proposals daripada repositori AIP awam), dan **SDK** (CLI, `aptos-node`, dan keluaran SDK rasmi).",
         "URL lama `/deployments` dan `/aips` mengalihkan ke sini.",
       ],
     },
@@ -1042,7 +1042,7 @@ export const ms = {
       title: "Keluaran",
       metaTitle: "{tab} | Keluaran",
       networksDescription:
-        "Status on-chain langsung untuk Aptos mainnet, testnet, dan devnet — epoch, ketinggian blok, keluaran rangka kerja (daripada jadual gas), format bytecode maksimum, keluaran nod, dan perbandingan bendera ciri.",
+        "Status on-chain langsung untuk Aptos mainnet, testnet, dan devnet — epoch, ketinggian blok, masa genesis, keluaran rangka kerja (daripada jadual gas), format bytecode maksimum, keluaran nod, dan perbandingan bendera ciri.",
       aipsDescription:
         "Jejaki semua Aptos Improvement Proposals (AIP) — status, pengarang, dan pautan ke sumber.",
       sdksDescription:
@@ -1624,6 +1624,9 @@ export const ms = {
     gasUnmappedTip:
       "feature_version jadual gas {version} tidak dipetakan ke keluaran rangka kerja yang diketahui dalam explorer ini — kemas kini GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE",
     nodeCommit: "Commit nod",
+    genesis: "Masa genesis",
+    genesisTip:
+      "Bila rangkaian ini bermula. Cap masa blok genesis sering tidak ditetapkan (0); transaksi 1 menyimpan masa mula rantai.",
     validators: "Validator",
   },
   aips: {

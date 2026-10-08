@@ -291,7 +291,7 @@ export const id = {
     releases: {
       title: "Rilis, AIP, dan alat",
       paragraphs: [
-        "[Hub rilis](/releases) memiliki tiga tab: **Jaringan** (epoch, tinggi, versi framework/node, feature flag di mainnet, testnet, dan devnet), **AIP** (Aptos Improvement Proposals dari repositori AIP publik), dan **SDK** (CLI, `aptos-node`, dan rilis SDK resmi).",
+        "[Hub rilis](/releases) memiliki tiga tab: **Jaringan** (epoch, tinggi, waktu genesis, versi framework/node, feature flag di mainnet, testnet, dan devnet), **AIP** (Aptos Improvement Proposals dari repositori AIP publik), dan **SDK** (CLI, `aptos-node`, dan rilis SDK resmi).",
         "URL lama `/deployments` dan `/aips` mengalihkan ke sini.",
       ],
     },
@@ -1037,7 +1037,7 @@ export const id = {
       title: "Rilis",
       metaTitle: "{tab} | Rilis",
       networksDescription:
-        "Status on-chain langsung untuk Aptos mainnet, testnet, dan devnet — epoch, tinggi blok, rilis framework (dari jadwal gas), format bytecode maks, rilis node, dan perbandingan flag fitur.",
+        "Status on-chain langsung untuk Aptos mainnet, testnet, dan devnet — epoch, tinggi blok, waktu genesis, rilis framework (dari jadwal gas), format bytecode maks, rilis node, dan perbandingan flag fitur.",
       aipsDescription:
         "Lacak semua Aptos Improvement Proposals (AIP) — status, penulis, dan tautan sumber.",
       sdksDescription:
@@ -1615,6 +1615,9 @@ export const id = {
     gasUnmappedTip:
       "Jadwal gas feature_version {version} tidak dipetakan ke rilis framework yang dikenal di explorer ini — perbarui GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE",
     nodeCommit: "Commit node",
+    genesis: "Waktu genesis",
+    genesisTip:
+      "Kapan jaringan ini dimulai. Stempel waktu blok genesis sering tidak diatur (0); transaksi 1 menyimpan waktu mulai chain.",
     validators: "Validator",
   },
   aips: {

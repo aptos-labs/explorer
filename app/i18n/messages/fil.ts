@@ -293,7 +293,7 @@ export const fil = {
     releases: {
       title: "Mga release, AIP, at tool",
       paragraphs: [
-        "Ang [releases hub](/releases) ay may tatlong tab: **Networks** (epoch, height, bersyon ng framework/node, feature flag sa mainnet, testnet, at devnet), **AIPs** (Aptos Improvement Proposals mula sa pampublikong AIP repository), at **SDKs** (CLI, `aptos-node`, at opisyal na SDK release).",
+        "Ang [releases hub](/releases) ay may tatlong tab: **Networks** (epoch, height, oras ng genesis, bersyon ng framework/node, feature flag sa mainnet, testnet, at devnet), **AIPs** (Aptos Improvement Proposals mula sa pampublikong AIP repository), at **SDKs** (CLI, `aptos-node`, at opisyal na SDK release).",
         "Nireredirect dito ang lumang URL na `/deployments` at `/aips`.",
       ],
     },
@@ -1051,7 +1051,7 @@ export const fil = {
       title: "Mga release",
       metaTitle: "{tab} | Mga release",
       networksDescription:
-        "Live na on-chain status para sa Aptos mainnet, testnet, at devnet — epoch, block height, framework release (mula sa gas schedule), max bytecode format, node release, at paghahambing ng feature flag.",
+        "Live na on-chain status para sa Aptos mainnet, testnet, at devnet — epoch, block height, oras ng genesis, framework release (mula sa gas schedule), max bytecode format, node release, at paghahambing ng feature flag.",
       aipsDescription:
         "Subaybayan ang lahat ng Aptos Improvement Proposal (AIP) — status, may-akda, at mga link sa source.",
       sdksDescription:
@@ -1642,6 +1642,9 @@ export const fil = {
     gasUnmappedTip:
       "Hindi naka-map ang gas schedule feature_version {version} sa kilalang framework release sa explorer na ito — i-update ang GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE",
     nodeCommit: "Node commit",
+    genesis: "Oras ng genesis",
+    genesisTip:
+      "Kailan nagsimula ang network na ito. Ang timestamp ng genesis block ay madalas na hindi naka-set (0); ang transaksyon 1 ang may chain start time.",
     validators: "Mga validator",
   },
   aips: {

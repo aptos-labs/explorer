@@ -293,7 +293,7 @@ export const pt = {
     releases: {
       title: "Lançamentos, AIPs e ferramentas",
       paragraphs: [
-        "O [hub de lançamentos](/releases) tem três abas: **Redes** (época, altura, versões de framework/nó, feature flags em Mainnet, Testnet e Devnet), **AIPs** (Aptos Improvement Proposals do repositório público de AIP) e **SDKs** (CLI, `aptos-node` e lançamentos oficiais de SDK).",
+        "O [hub de lançamentos](/releases) tem três abas: **Redes** (época, altura, hora da gênese, versões de framework/nó, feature flags em Mainnet, Testnet e Devnet), **AIPs** (Aptos Improvement Proposals do repositório público de AIP) e **SDKs** (CLI, `aptos-node` e lançamentos oficiais de SDK).",
         "URLs antigas `/deployments` e `/aips` redirecionam para cá.",
       ],
     },
@@ -1040,7 +1040,7 @@ export const pt = {
       title: "Lançamentos",
       metaTitle: "{tab} | Lançamentos",
       networksDescription:
-        "Status on-chain ao vivo da Mainnet, Testnet e Devnet Aptos — época, altura do bloco, lançamento do framework (a partir do gas schedule), formato máximo de bytecode, lançamento do nó e comparação de feature flags.",
+        "Status on-chain ao vivo da Mainnet, Testnet e Devnet Aptos — época, altura do bloco, hora da gênese, lançamento do framework (a partir do gas schedule), formato máximo de bytecode, lançamento do nó e comparação de feature flags.",
       aipsDescription:
         "Acompanhe todas as Aptos Improvement Proposals (AIPs) — status, autores e links para a origem.",
       sdksDescription:
@@ -1630,6 +1630,9 @@ export const pt = {
     gasUnmappedTip:
       "O gas schedule feature_version {version} não está mapeado para um lançamento conhecido de framework neste explorer — atualize GAS_FEATURE_VERSION_TO_FRAMEWORK_RELEASE",
     nodeCommit: "Commit do nó",
+    genesis: "Hora da gênese",
+    genesisTip:
+      "Quando esta rede começou. O timestamp do bloco gênese costuma não estar definido (0); a transação 1 tem o horário de início da chain.",
     validators: "Validadores",
   },
   aips: {
