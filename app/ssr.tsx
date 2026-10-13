@@ -2,7 +2,9 @@ import {defineHandlerCallback} from "@tanstack/react-router/ssr/server";
 import {
   createStartHandler,
   defaultRenderHandler,
+  handleStartError,
 } from "@tanstack/react-start/server";
+import {createServerEntry} from "@tanstack/react-start/server-entry";
 import llmsReference from "../public/llms.txt?raw";
 import {attachAgentDiscoveryHeaders} from "./utils/agentDiscoveryHeaders";
 import {attachFrameAncestorsHeader} from "./utils/frameAncestors";
@@ -69,7 +71,7 @@ const startFetch = createStartHandler(cacheAwareRenderHandler);
 /**
  * Wrap TanStack Start so agent clients are not rejected before our handlers
  * run. createStartHandler only allows Accept text/html or a wildcard
- * Accept and otherwise returns HTTP 500 JSON ("Only HTML requests are
+ * Accept and otherwise returns HTTP 406 JSON ("Only HTML requests are
  * supported here").
  * Markdown negotiation therefore has to happen on this outer fetch, not
  * inside the render callback. Discovery Link / Vary: Accept and CSP
@@ -77,18 +79,26 @@ const startFetch = createStartHandler(cacheAwareRenderHandler);
  * host-level header rules (Vercel `headers` in `vercel.json`, formerly
  * Netlify `[[headers]]`) apply to static assets, not always to SSR
  * function responses.
+ *
+ * Start 1.0's createStartHandler rethrows. createServerEntry converts
+ * errors that escape this callback; we catch first so discovery headers
+ * and frame-ancestors still land on that error response.
  */
 // Nitro / Vercel invoke this module as a Fetch API handler
-// (`serverEntrypoint.fetch`). The framework's own `default-entry/server.js`
-// wraps the handler in `{ fetch }` for the same reason. Exporting the
-// raw handler here would make `.fetch` resolve to `undefined`.
-export default {
-  async fetch(...args: Parameters<typeof startFetch>) {
-    const request = args[0];
+// (`serverEntrypoint.fetch`). createServerEntry returns `{ fetch }`,
+// which is the shape the framework's own server entry uses.
+export default createServerEntry({
+  async fetch(request, opts) {
     const markdown = negotiateMarkdownRequest(request, llmsReference);
     if (markdown) return attachFrameAncestorsHeader(markdown);
 
-    const response = await startFetch(...args);
-    return attachFrameAncestorsHeader(attachAgentDiscoveryHeaders(response));
+    try {
+      const response = await startFetch(request, opts);
+      return attachFrameAncestorsHeader(attachAgentDiscoveryHeaders(response));
+    } catch (error) {
+      return attachFrameAncestorsHeader(
+        attachAgentDiscoveryHeaders(handleStartError(error)),
+      );
+    }
   },
-};
+});

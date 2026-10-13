@@ -6,7 +6,7 @@
 > code. Tests (unit, integration, E2E) should reference the feature IDs defined
 > here (e.g. `// Covers FEAT-SEARCH-001`).
 >
-> **Last updated**: 2026-10-06
+> **Last updated**: 2026-10-13
 
 ---
 
@@ -1120,7 +1120,7 @@ top of the HTML site.
 | **auth.md** | `public/auth.md` (H1 contains `auth.md`). Documents that the explorer is a public read-only site: no agent registration, no OAuth Authorization Server, no `POST /agent/auth`. |
 | **OAuth Protected Resource (RFC 9728)** | `public/.well-known/oauth-protected-resource` with `resource` = `https://explorer.aptoslabs.com/`, empty `authorization_servers`, and `resource_documentation` pointing at `/auth.md`. There is **no** `/.well-known/oauth-authorization-server` / OpenID configuration — inventing token endpoints would be misleading. |
 | **Content Signals** | `public/robots.txt` declares `Content-Signal: ai-train=no, search=yes, ai-input=yes` at the top of the file and inside every AI-crawler `User-agent` group (contentsignals.org / draft-romm-aipref-contentsignals). |
-| **Markdown negotiation** | The SSR **outer** `fetch` in `app/ssr.tsx` (via `negotiateMarkdownRequest`) runs **before** TanStack Start's HTML-only Accept gate, which otherwise returns HTTP 500 JSON for `Accept: text/markdown`. Homepage serves bundled `public/llms.txt`; other HTML routes serve a short path stub. Headers: `Content-Type: text/markdown`, `Vary: Accept`, `X-Markdown-Source`, `X-Markdown-Tokens`. Helper: `app/utils/acceptMarkdown.ts` (`prefersMarkdown`). |
+| **Markdown negotiation** | The SSR **outer** `fetch` in `app/ssr.tsx` (via `negotiateMarkdownRequest`) runs **before** TanStack Start's HTML-only Accept gate, which otherwise returns HTTP 406 JSON for `Accept: text/markdown`. Homepage serves bundled `public/llms.txt`; other HTML routes serve a short path stub. Headers: `Content-Type: text/markdown`, `Vary: Accept`, `X-Markdown-Source`, `X-Markdown-Tokens`. Helper: `app/utils/acceptMarkdown.ts` (`prefersMarkdown`). |
 | **WebMCP** | `app/components/WebMCPProvider.tsx` registers read-only navigation tools (`search_explorer`, `open_transaction`, `open_account`, `open_block`, `open_releases`, `open_coin`, `open_guide`) on `navigator.modelContext` when supported. Tool definitions live in `app/components/webMcpTools.ts`; registration is cleaned up via `AbortSignal` on unmount. |
 | **Out of repo** | DNS-AID (`_index._agents.explorer.aptoslabs.com` SVCB/HTTPS) and Web Bot Auth (`/.well-known/http-message-signatures-directory`) require DNS / outbound-bot signing keys and are documented in `docs/LLM_ACCESS.md`, not implemented as fake records. |
 

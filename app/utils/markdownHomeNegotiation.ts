@@ -113,7 +113,7 @@ function markdownHeaders(body: string, source: string): Headers {
  * instead of running TanStack Start HTML SSR.
  *
  * Must run before createStartHandler: Start only accepts text/html or
- * a wildcard Accept and otherwise returns HTTP 500 JSON ("Only HTML
+ * a wildcard Accept and otherwise returns HTTP 406 JSON ("Only HTML
  * requests are supported here"), which is what production agent scanners hit.
  *
  * Homepage (/ and /index.html) serves bundled llms.txt. Other HTML

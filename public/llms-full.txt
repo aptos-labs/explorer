@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-10-08 (rev 36)
+> Last updated: 2026-10-13 (rev 37)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -370,7 +370,7 @@ The explorer **cannot** do the following:
 ## Technical Stack
 
 - **Frontend**: React 19 with TypeScript 7.0
-- **Routing**: TanStack Router (file-based routing) with SSR via TanStack Start
+- **Routing**: TanStack Router (file-based routing) with SSR via TanStack Start 1.0
 - **Data Fetching**: TanStack Query v5 (React Query) with prefetching and caching
 - **UI**: Material-UI (MUI) v9
 - **Build**: Vite 8 (Rolldown + Oxc) with SSR and Vercel deployment
@@ -450,7 +450,7 @@ Link: </.well-known/api-catalog>; rel="api-catalog"; type="application/linkset+j
 
 `Accept: text/markdown` is handled on the **outer** SSR `fetch` wrapper in
 `app/ssr.tsx` **before** TanStack Start's HTML-only Accept gate (which
-otherwise returns HTTP 500 `{"error":"Only HTML requests are supported
+otherwise returns HTTP 406 `{"error":"Only HTML requests are supported
 here"}`). Homepage (`/` / `/index.html`) serves bundled `/llms.txt` with
 `Content-Type: text/markdown; charset=utf-8`, `Vary: Accept`,
 `X-Markdown-Source`, and `X-Markdown-Tokens`. Other HTML routes get a short
