@@ -9,15 +9,15 @@ import {Box} from "@mui/material";
 import {useParams} from "@tanstack/react-router";
 import type * as React from "react";
 import type {Types} from "~/types/aptos";
-import StyledTab from "../../components/StyledTab";
-import StyledTabs from "../../components/StyledTabs";
 import {
   ContentRowsSkeleton,
   ResourcesListSkeleton,
   TabStripSkeleton,
 } from "../../components/PageLoadSkeletons";
-import {useNavigate} from "../../routing";
+import StyledTab from "../../components/StyledTab";
+import StyledTabs from "../../components/StyledTabs";
 import {useTranslation} from "../../i18n";
+import {useNavigate} from "../../routing";
 import {assertNever} from "../../utils";
 import {accountPagePath} from "./Index";
 import CoinsTab from "./Tabs/CoinsTab";
@@ -92,6 +92,7 @@ type TabPanelProps = {
   resourceData: Types.MoveResource[] | undefined;
   isObject: boolean;
   resourcesIsLoading: boolean;
+  accountInfoPending?: boolean;
 };
 
 function TabPanel({
@@ -102,6 +103,7 @@ function TabPanel({
   resourceData,
   isObject,
   resourcesIsLoading,
+  accountInfoPending,
 }: TabPanelProps): React.JSX.Element {
   if (value === "resources") {
     return (
@@ -119,6 +121,7 @@ function TabPanel({
       objectData={objectData}
       resourceData={resourceData}
       isObject={isObject}
+      accountInfoPending={accountInfoPending}
     />
   );
 }
@@ -137,6 +140,8 @@ type AccountTabsProps = {
   children?: React.ReactNode;
   /** Layout flags (object/multisig) are still loading */
   tabsPending?: boolean;
+  /** Stateless account info (funds or sent transactions) is still loading */
+  accountInfoPending?: boolean;
 };
 
 function isTabValue(tab: string | undefined): tab is TabValue {
@@ -155,6 +160,7 @@ export default function AccountTabs({
   currentTab,
   children,
   tabsPending = false,
+  accountInfoPending = false,
 }: AccountTabsProps) {
   // Use path params for tab selection in TanStack Router
   const params = useParams({strict: false}) as {tab?: string};
@@ -238,6 +244,7 @@ export default function AccountTabs({
               resourceData={resourceData}
               isObject={isObject}
               resourcesIsLoading={resourcesIsLoading}
+              accountInfoPending={accountInfoPending}
             />
           ))}
       </Box>

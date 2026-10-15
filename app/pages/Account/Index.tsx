@@ -4,11 +4,7 @@ import {useLocation, useParams} from "@tanstack/react-router";
 import type React from "react";
 import {useEffect} from "react";
 import type {Types} from "~/types/aptos";
-import {
-  isNotFoundError,
-  type ResponseError,
-  ResponseErrorType,
-} from "../../api/client";
+import {type ResponseError, ResponseErrorType} from "../../api/client";
 import {useGetAccountResources} from "../../api/hooks/useGetAccountResources";
 import {useGetAddressFromName} from "../../api/hooks/useGetANS";
 import {ACCOUNT_RESOURCE_TYPE} from "../../api/queries";
@@ -26,13 +22,18 @@ import {DefunctProtocolBanner} from "./Components/DefunctProtocolBanner";
 import {KnownAddressBrandingBanner} from "./Components/KnownAddressBrandingBanner";
 import {PetraVaultBanner} from "./Components/PetraVaultBanner";
 import AccountError from "./Error";
+import {useAccountOnChainActivity} from "./hooks/useAccountOnChainActivity";
 import {
-  useAccountPageLayout,
   shouldRedirectAccountToObject,
+  useAccountPageLayout,
 } from "./hooks/useAccountPageLayout";
 import {useAccountTabValues} from "./hooks/useAccountTabValues";
 import AccountTabs from "./Tabs";
 import AccountTitle from "./Title";
+import {
+  displayedAccountData,
+  selectAccountPageError,
+} from "./utils/accountInfo";
 
 type AccountPageProps = {
   isObject?: boolean;
@@ -124,11 +125,25 @@ export default function AccountPage({
     layout.multisigData,
   ].filter((resource): resource is Types.MoveResource => Boolean(resource));
 
-  const accountData =
+  const onChainAccountData =
     layout.accountData ??
     (resourceData?.find((r) => r.type === ACCOUNT_RESOURCE_TYPE)?.data as
       | Types.AccountData
       | undefined);
+  const activity = useAccountOnChainActivity(
+    address,
+    !!address &&
+      layout.isFetched &&
+      !layout.error &&
+      !onChainAccountData &&
+      !addressError,
+  );
+  const accountData = displayedAccountData(
+    address,
+    onChainAccountData,
+    activity.activity,
+  );
+  const accountInfoPending = !onChainAccountData && activity.pending;
   const objectData =
     layout.objectData ??
     resourceData?.find((r) => r.type === objectCoreResource);
@@ -141,31 +156,11 @@ export default function AccountPage({
   const isMultisig = layout.isFetched ? layout.isMultisig : false;
 
   const resolvingAddress = !!isAptName && ansQuery.isLoading;
-  let error: ResponseError | null = null;
-  if (addressError) {
-    error = addressError;
-  } else if (layout.error) {
-    error = layout.error;
-  } else if (resourceError && !isNotFoundError(resourceError)) {
-    error = resourceError;
-  } else if (
-    layout.isFetched &&
-    !layout.isAccount &&
-    !layout.isObject &&
-    !layout.error &&
-    resourcesIsFetched &&
-    (!resourceData ||
-      resourceData.length === 0 ||
-      isNotFoundError(resourceError))
-  ) {
-    error = {
-      type: ResponseErrorType.NOT_FOUND,
-      message:
-        resourceError && isNotFoundError(resourceError)
-          ? resourceError.message
-          : undefined,
-    };
-  }
+  const error = selectAccountPageError({
+    addressError,
+    layoutError: layout.error,
+    resourceError,
+  });
 
   useEffect(() => {
     if (
@@ -216,6 +211,7 @@ export default function AccountPage({
       tabValues={tabValues}
       isObject={isObject}
       currentTab={children ? "modules" : undefined}
+      accountInfoPending={accountInfoPending}
       tabsPending={resolvingAddress || (!!address && !layout.isFetched)}
     >
       {children}
