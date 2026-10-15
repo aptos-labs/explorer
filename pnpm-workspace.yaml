@@ -22,8 +22,8 @@ minimumReleaseAge: 7200
 minimumReleaseAgeExclude:
   [
     # TanStack Start 1.0 (first stable is @tanstack/react-start 1.169).
-    # Published 2026-10-12/13, inside both Safe Chain's 48h floor and pnpm's
-    # 5-day gate. Remove after 2026-10-18 (5 days after 1.169.1).
+    # Published 2026-10-12/13. Past Safe Chain's 48h floor as of 2026-10-15.
+    # Still inside pnpm's 5-day gate. Remove after 2026-10-18.
     "@tanstack/react-start@1.169.1",
     "@tanstack/react-router@1.170.44",
     "@tanstack/react-start-client@1.168.42",
@@ -37,9 +37,6 @@ minimumReleaseAgeExclude:
     "@tanstack/start-plugin-core@1.171.52",
     "@tanstack/start-server-core@1.169.42",
     "@tanstack/start-storage-context@1.167.39",
-    # Published 2026-10-10. Past Safe Chain's 48h floor, still inside the
-    # 5-day gate. Remove after 2026-10-15.
-    "@tanstack/history@1.162.5",
   ]
 
 allowBuilds:
