@@ -172,6 +172,8 @@ export const pages = {
 
 export const notFound = {
   accountTitle: "Account Not Found",
+  // Kept so locale catalogs stay aligned. The account page no longer shows
+  // this: a missing Account resource is a stateless account, not a missing one.
   accountBody:
     "Account not found. Please take a look at the Coins and Token tabs. The account has never submitted a transaction, but it may still hold assets.",
   accountLoad: "Error Loading Account",

@@ -458,7 +458,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Account info** | Sequence number, auth key (rotation hint), key type. |
+| **Account info** | Sequence number, auth key (rotation hint), key type. When `0x1::account::Account` is missing, the address is a stateless account (AIP-115). If it holds funds (positive fungible-asset or APT balance) or has sent a transaction, the tab shows sequence number `0` and an authentication key equal to the address. An unused address stays empty. The on-chain resource wins when it exists. |
 | **Key type** | Authentication scheme inferred from the latest transaction submitted by the account via `useGetAccountKeyType`. Recognizes `ed25519_signature` (Ed25519), `multi_ed25519_signature` (Multi-Ed25519, K-of-N), and `single_sender` in both SingleKey (`public_key.type`) and MultiKey (`public_keys[]`, `signatures_required`) variants. Multi-agent and fee-payer authenticators are unwrapped to the primary signer first. For MultiKey / Multi-Ed25519, each constituent sub-key type is listed in order. Loading, error, and "no transactions yet" (sequence number 0) states are handled. |
 | **Object info** | Owner, transferability. |
 | **Object refs** | Transfer/delete/extend ref chips via `useGetObjectRefs` (scans nested structures in transaction data). |
@@ -484,7 +484,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **Route loader** | Does not `await` data. Prefetches four layout resources first (`0x1::account::Account`, `ObjectCore`, `0x4::token::Token`, `MultisigAccount`), plus APT balance and the default-tab transaction list in the same tick. The full `getAccountResources` list starts only after those layout probes settle. |
 | **First paint** | Header, title (address hash when known), a balance-card skeleton, and default tabs render immediately. The blocking `LoadingModal` overlay is gone. |
 | **Organize then fill** | Title flags (object / token / multisig / deleted) and the object-page redirect wait on the four layout probes, not the full resource list. GraphQL transaction history starts as soon as the address is known. Resources / Info / Multisig tab bodies skeleton until layout (and, for Resources, the full list) arrives. |
-| **404s** | Missing layout resources are treated as absent, not page failures. "Account Not Found" still appears (with coins/tokens tabs) after layout and the full resource list confirm there is no Account or ObjectCore. |
+| **404s** | Missing layout resources are treated as absent, not page failures. A missing `0x1::account::Account` resource is a stateless account, so the page does not show an "Account Not Found" warning. Invalid addresses, unresolved ANS names, and non-404 load failures still show an error. |
 
 ---
 
@@ -1552,6 +1552,7 @@ top of the HTML site.
 | `app/pages/Transaction/confidentialAsset/parseConfidentialAssetEvents.test.ts` | FEAT-TXN-009 (confidential asset event and payload parsing) |
 | `app/pages/Account/hooks/useAccountTabValues.test.ts` | FEAT-ACCOUNT-005 (tab set computation: all GraphQL/object/multisig combos, invariants) |
 | `app/pages/Account/hooks/useAccountPageLayout.test.ts` | FEAT-ACCOUNT-013 (layout 404s vs hard errors, derived flags), FEAT-ACCOUNT-004 (object redirect gating) |
+| `app/pages/Account/utils/accountInfo.test.ts` | FEAT-ACCOUNT-010 (stateless account info: auth key = address, sequence number 0, only when the address holds funds or has sent a transaction; on-chain Account resource wins), FEAT-ACCOUNT-013 (missing Account resource is not a page error) |
 | `app/api/prefetchEntityPages.test.ts` | FEAT-ACCOUNT-013 (layout resources before full resource list), FEAT-TXN-015 (non-blocking transaction prefetch) |
 | `app/pages/Account/Tabs/ModulesTab/Contract.test.ts` | FEAT-MODULES-001 (contract result utilities, copy serialization) |
 | `app/pages/Account/Error.test.tsx` | FEAT-MODULES-008 (`AccountError` optional NOT_FOUND title/message) |

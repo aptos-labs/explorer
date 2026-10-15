@@ -14,16 +14,19 @@ import {useGetObjectRefs} from "../../../api/hooks/useGetObjectRefs";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
-import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import IntegerValue from "../../../components/IndividualPageContent/ContentValue/IntegerValue";
+import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import {ContentRowsSkeleton} from "../../../components/PageLoadSkeletons";
+import {useTranslation} from "../../../i18n";
 import {tryStandardizeAddress} from "../../../utils";
 import {getLearnMoreTooltip} from "../../Transaction/helpers";
-import {useTranslation} from "../../../i18n";
 
 type InfoTabProps = {
   address: string;
   accountData: Types.AccountData | undefined;
   objectData: Types.MoveResource | undefined;
+  /** True while checking whether a stateless address holds funds or has sent transactions. */
+  accountInfoPending?: boolean;
 };
 
 function RefChip({label, exists}: {label: string; exists: boolean}) {
@@ -42,6 +45,7 @@ export default function InfoTab({
   address,
   accountData,
   objectData,
+  accountInfoPending = false,
 }: InfoTabProps) {
   const {t} = useTranslation();
   const theme = useTheme();
@@ -58,6 +62,10 @@ export default function InfoTab({
   } = useGetAccountKeyType(address, accountData?.sequence_number, {
     enabled: !!accountData,
   });
+
+  if (accountInfoPending && !accountData && !objectData) {
+    return <ContentRowsSkeleton rows={3} />;
+  }
 
   if (!accountData && !objectData) {
     return <EmptyTabContent />;

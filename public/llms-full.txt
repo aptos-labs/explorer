@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-10-13 (rev 37)
+> Last updated: 2026-10-15 (rev 38)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -187,8 +187,9 @@ Example: `https://explorer.aptoslabs.com/account/0x1/modules?network=testnet`
 - Epoch boundaries trigger staking reward distribution
 
 ### Sequence Numbers
-- Each account has a sequence number that increments with every transaction sent
-- Analogous to nonces in Ethereum
+- Each account has a sequence number that increments with every sequence-number transaction it sends
+- Orderless transactions use a nonce and do not create or bump `0x1::account::Account`
+- A stateless account (AIP-115) has no Account resource until one is needed. If that address holds funds or has sent a transaction, the info tab shows sequence number 0 and an authentication key equal to the address. The explorer does not warn that the account is missing
 - Visible on the account info tab
 
 ### ANS (Aptos Name Service)
@@ -277,7 +278,7 @@ Tabs include:
 - **Modules**: Smart contract code deployed by this account (with source if verified). A version selector lets you browse the full publish history and view packages, source, and ABI at any previous ledger version. A "Compare" button opens a side-by-side diff view to see exactly what changed between two versions.
   - Code tab supports Published Source, Decompiled (client-side WASM), and Disassembly views
 - **Multisig**: Pending and completed multisig transactions (if applicable)
-- **Info**: Account sequence number, authentication key, account type
+- **Info**: Account sequence number and authentication key. Stateless accounts (no `0x1::account::Account` resource) that hold funds or have sent a transaction show sequence number 0 and an authentication key equal to the address. The page does not warn that the account is missing
 
 ### Block Pages (`/block/{height}`)
 

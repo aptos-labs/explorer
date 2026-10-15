@@ -60,17 +60,7 @@ export default function AccountError({
     case ResponseErrorType.NOT_FOUND:
       return renderErrorContent(
         notFoundTitle ?? t("notFound.accountTitle"),
-        notFoundMessage ?? (
-          <>
-            {error.message && (
-              <>
-                {error.message}
-                <br />
-              </>
-            )}
-            {t("notFound.accountBody")}
-          </>
-        ),
+        notFoundMessage ?? error.message ?? null,
       );
     case ResponseErrorType.INVALID_INPUT:
       return renderErrorContent(
