@@ -805,6 +805,10 @@ export const hi = {
   txn: {
     entity: "लेन-देन",
     tokenTransfers: "टोकन ट्रांसफर",
+    functionLabel: {
+      coinTransfer: "कॉइन ट्रांसफर",
+      fungibleAssetTransfer: "फंजिबल एसेट ट्रांसफर",
+    },
     multisigEntity: "मल्टीसिग लेन-देन",
     multisigChip: "मल्टीसिग",
     hashUnavailable: "इंडेक्सर से लेन-देन हैश उपलब्ध नहीं",

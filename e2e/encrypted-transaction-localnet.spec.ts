@@ -94,8 +94,9 @@ test.describe("encrypted transaction localnet", () => {
     });
     await expect(page.getByText("Decrypted", {exact: true})).toBeVisible();
 
-    // Function line should resolve the inner transfer (Coin Transfer shortcut
-    // only for 0x1::coin::transfer / aptos_account::transfer — shows "Coin Transfer").
+    // Function line should resolve the inner transfer (Coin Transfer for
+    // 0x1::coin::transfer / aptos_account::transfer; FA sends use
+    // "Fungible Asset Transfer"). This encrypted transfer is a coin send.
     await expect(page.getByText("Coin Transfer")).toBeVisible();
 
     // Payload tab

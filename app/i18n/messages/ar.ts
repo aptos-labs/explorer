@@ -802,6 +802,10 @@ export const ar = {
   txn: {
     entity: "معاملة",
     tokenTransfers: "تحويلات الرموز",
+    functionLabel: {
+      coinTransfer: "تحويل عملة",
+      fungibleAssetTransfer: "تحويل أصل قابل للاستبدال",
+    },
     multisigEntity: "معاملة متعددة التوقيعات",
     multisigChip: "متعدد التوقيعات",
     hashUnavailable: "تجزئة المعاملة غير متاحة من المفهرس",

@@ -803,6 +803,10 @@ export const bn = {
   txn: {
     entity: "লেনদেন",
     tokenTransfers: "টোকেন স্থানান্তর",
+    functionLabel: {
+      coinTransfer: "কয়েন স্থানান্তর",
+      fungibleAssetTransfer: "ফাঞ্জিবল অ্যাসেট স্থানান্তর",
+    },
     multisigEntity: "মাল্টিসিগ লেনদেন",
     multisigChip: "মাল্টিসিগ",
     hashUnavailable: "ইনডেক্সার থেকে লেনদেনের হ্যাশ পাওয়া যায়নি",

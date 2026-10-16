@@ -798,6 +798,10 @@ export const am = {
   txn: {
     entity: "ግብይት",
     tokenTransfers: "የቶከን ማስተላለፎች",
+    functionLabel: {
+      coinTransfer: "የሳንቲም ማስተላለፍ",
+      fungibleAssetTransfer: "ተለዋዋጭ ንብረት ማስተላለፍ",
+    },
     multisigEntity: "የሙልቲሲግ ግብይት",
     multisigChip: "ሙልቲሲግ",
     hashUnavailable: "የግብይት ሃሽ ከኢንዴክሰር አይገኝም",

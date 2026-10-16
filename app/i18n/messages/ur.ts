@@ -808,6 +808,10 @@ export const ur = {
   txn: {
     entity: "ٹرانزیکشن",
     tokenTransfers: "ٹوکن ٹرانسفرز",
+    functionLabel: {
+      coinTransfer: "کوائن ٹرانسفر",
+      fungibleAssetTransfer: "فنگیبل اثاثہ ٹرانسفر",
+    },
     multisigEntity: "ملٹی سگ ٹرانزیکشن",
     multisigChip: "ملٹی سگ",
     hashUnavailable: "انڈیکسر سے ٹرانزیکشن ہیش دستیاب نہیں",

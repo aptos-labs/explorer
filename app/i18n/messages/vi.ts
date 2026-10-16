@@ -805,6 +805,10 @@ export const vi = {
   txn: {
     entity: "Giao dịch",
     tokenTransfers: "Chuyển token",
+    functionLabel: {
+      coinTransfer: "Chuyển coin",
+      fungibleAssetTransfer: "Chuyển tài sản fungible",
+    },
     multisigEntity: "Giao dịch multisig",
     multisigChip: "Multisig",
     hashUnavailable: "Hash giao dịch không có từ indexer",
