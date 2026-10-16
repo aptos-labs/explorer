@@ -807,6 +807,10 @@ export const ja = {
   txn: {
     entity: "トランザクション",
     tokenTransfers: "トークン送金",
+    functionLabel: {
+      coinTransfer: "コイン送金",
+      fungibleAssetTransfer: "ファンジブルアセット送金",
+    },
     multisigEntity: "マルチシグトランザクション",
     multisigChip: "マルチシグ",
     hashUnavailable: "Indexer からトランザクションハッシュを取得できません",

@@ -8,6 +8,7 @@ import type React from "react";
 import type {Types} from "~/types/aptos";
 import {CodeLineBox} from "../../../../components/CodeLineBox";
 import {useNetworkName} from "../../../../global-config/GlobalConfig";
+import {useTranslation} from "../../../../i18n";
 import {Link} from "../../../../routing";
 import {getSemanticColors} from "../../../../themes/colors/aptosBrandColors";
 import {tryStandardizeAddress} from "../../../../utils";
@@ -18,16 +19,53 @@ import {
   isEncryptedTransactionPayload,
 } from "../../../../utils/transactionPayload";
 
-function CoinTransferCodeLine({
+/** Entry functions shown as the highlighted "Coin Transfer" label. */
+const COIN_TRANSFER_FUNCTIONS = new Set([
+  "0x1::coin::transfer",
+  "0x1::aptos_account::transfer",
+]);
+
+/**
+ * Primary-store fungible-asset sends shown as "Fungible Asset Transfer".
+ * Same highlighted treatment as coin transfer; the asset is an FA metadata
+ * object, so the label stays distinct from coin.
+ */
+const FUNGIBLE_ASSET_TRANSFER_FUNCTIONS = new Set([
+  "0x1::aptos_account::transfer_fungible_assets",
+  "0x1::primary_fungible_store::transfer",
+]);
+
+export type SpecialTransferKind = "coin" | "fungibleAsset";
+
+export function specialTransferKind(
+  functionId: string,
+): SpecialTransferKind | undefined {
+  if (COIN_TRANSFER_FUNCTIONS.has(functionId)) {
+    return "coin";
+  }
+  if (FUNGIBLE_ASSET_TRANSFER_FUNCTIONS.has(functionId)) {
+    return "fungibleAsset";
+  }
+  return undefined;
+}
+
+const SPECIAL_TRANSFER_LABEL_KEY: Record<SpecialTransferKind, string> = {
+  coin: "txn.functionLabel.coinTransfer",
+  fungibleAsset: "txn.functionLabel.fungibleAssetTransfer",
+};
+
+function SpecialTransferCodeLine({
   sx,
   address,
   functionName,
   moduleName,
+  label,
 }: {
   sx?: SxProps<Theme>;
   address: string;
   moduleName: string;
   functionName: string;
+  label: string;
 }): React.JSX.Element {
   return (
     <CodeLineBox clickable sx={[...(Array.isArray(sx) ? sx : [sx])]}>
@@ -44,7 +82,7 @@ function CoinTransferCodeLine({
           }}
         >
           <CurrencyExchangeOutlinedIcon sx={{fontSize: 17, padding: 0}} />
-          <Box>{`Coin Transfer`}</Box>
+          <Box>{label}</Box>
         </Stack>
       </Link>
     </CodeLineBox>
@@ -144,6 +182,7 @@ export default function TransactionFunction({
   const theme = useTheme();
   const semanticColors = getSemanticColors(theme.palette.mode);
   const networkName = useNetworkName();
+  const {t} = useTranslation();
   if (!("payload" in transaction)) {
     return null;
   }
@@ -190,15 +229,14 @@ export default function TransactionFunction({
   const [rawAddress, moduleName, functionName] = functionFullStr.split("::");
   const address = tryStandardizeAddress(rawAddress) ?? rawAddress;
 
-  if (
-    functionFullStr === "0x1::coin::transfer" ||
-    functionFullStr === "0x1::aptos_account::transfer"
-  ) {
+  const transferKind = specialTransferKind(functionFullStr);
+  if (transferKind) {
     return (
-      <CoinTransferCodeLine
+      <SpecialTransferCodeLine
         address={address}
         moduleName={moduleName}
         functionName={functionName}
+        label={t(SPECIAL_TRANSFER_LABEL_KEY[transferKind])}
         sx={[
           ...(Array.isArray(sx) ? sx : [sx]),
           {

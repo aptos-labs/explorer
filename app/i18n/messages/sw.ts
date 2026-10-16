@@ -810,6 +810,10 @@ export const sw = {
   txn: {
     entity: "Muamala",
     tokenTransfers: "Uhamisho wa tokeni",
+    functionLabel: {
+      coinTransfer: "Uhamisho wa sarafu",
+      fungibleAssetTransfer: "Uhamisho wa mali inayoweza kubadilishana",
+    },
     multisigEntity: "Muamala wa multisig",
     multisigChip: "Multisig",
     hashUnavailable: "Hash ya muamala haipatikani kutoka indexer",

@@ -804,6 +804,10 @@ export const ko = {
   txn: {
     entity: "트랜잭션",
     tokenTransfers: "토큰 전송",
+    functionLabel: {
+      coinTransfer: "코인 전송",
+      fungibleAssetTransfer: "대체 가능 자산 전송",
+    },
     multisigEntity: "멀티시그 트랜잭션",
     multisigChip: "멀티시그",
     hashUnavailable: "인덱서에서 트랜잭션 해시를 사용할 수 없음",

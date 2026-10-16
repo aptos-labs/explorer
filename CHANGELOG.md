@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Fungible asset transfers**: `0x1::aptos_account::transfer_fungible_assets` and `0x1::primary_fungible_store::transfer` use the same highlighted transfer chip as coin transfers. The label is **Fungible Asset Transfer** (coin sends stay **Coin Transfer**) in the transactions table and on the transaction overview.
 - **Stateless accounts**: An address with no `0x1::account::Account` resource is no longer marked "Account Not Found". If it holds funds or has sent a transaction, the info tab shows sequence number 0 and an authentication key equal to the address (AIP-115). The old warning that the account does not exist, but might still hold assets, is gone.
 - **Filipino**: Phrases that were still English now follow the rest of the Filipino catalog. Staking status, suggested max, commission, and node counts; partner and protocol fees; signature key descriptions; multisig votes, abort location, and error codes; and guide labels that still used the English tab names (**All Nodes**, **User vs All**). Loanwords the catalog already uses (Account, Address, Block, user transaction) stay as they are.
 ### Security

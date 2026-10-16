@@ -795,6 +795,10 @@ export const zhHant = {
   txn: {
     entity: "交易",
     tokenTransfers: "Token轉帳",
+    functionLabel: {
+      coinTransfer: "代幣轉帳",
+      fungibleAssetTransfer: "同質化資產轉帳",
+    },
     multisigEntity: "多簽交易",
     multisigChip: "多簽",
     hashUnavailable: "索引器未提供交易雜湊",

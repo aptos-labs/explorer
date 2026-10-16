@@ -1,6 +1,10 @@
 export const txn = {
   entity: "Transaction",
   tokenTransfers: "Token Transfers",
+  functionLabel: {
+    coinTransfer: "Coin Transfer",
+    fungibleAssetTransfer: "Fungible Asset Transfer",
+  },
   multisigEntity: "Multisig Transaction",
   multisigChip: "Multisig",
   hashUnavailable: "Transaction hash unavailable from indexer",

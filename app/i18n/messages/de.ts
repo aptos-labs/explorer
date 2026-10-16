@@ -817,6 +817,10 @@ export const de = {
   txn: {
     entity: "Transaktion",
     tokenTransfers: "Token-Transfers",
+    functionLabel: {
+      coinTransfer: "Coin-Transfer",
+      fungibleAssetTransfer: "Fungible-Asset-Transfer",
+    },
     multisigEntity: "Multisig-Transaktion",
     multisigChip: "Multisig",
     hashUnavailable: "Transaktionshash vom Indexer nicht verfügbar",

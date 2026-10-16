@@ -807,6 +807,10 @@ export const ta = {
   txn: {
     entity: "பரிவர்த்தனை",
     tokenTransfers: "டோக்கன் பரிமாற்றங்கள்",
+    functionLabel: {
+      coinTransfer: "நாணய பரிமாற்றம்",
+      fungibleAssetTransfer: "பிரித்தெடுக்கக்கூடிய சொத்து பரிமாற்றம்",
+    },
     multisigEntity: "மல்டிசிக் பரிவர்த்தனை",
     multisigChip: "மல்டிசிக்",
     hashUnavailable: "இண்டெக்ஸரிலிருந்து பரிவர்த்தனை ஹாஷ் கிடைக்கவில்லை",
