@@ -1567,6 +1567,7 @@ export const ar = {
     ledgerVersion: "إصدار الدفتر",
     chainId: "معرّف السلسلة",
     frameworkRelease: "إصدار الإطار",
+    gasScheduleRelease: "Gas Schedule Release",
     bytecodeFormat: "تنسيق البايت كود (الحد الأقصى)",
     nodeRelease: "إصدار العقدة",
     gasUnmapped: "غاز {version} (غير معيَّن)",

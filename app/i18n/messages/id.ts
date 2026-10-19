@@ -1607,6 +1607,7 @@ export const id = {
     ledgerVersion: "Versi ledger",
     chainId: "Chain ID",
     frameworkRelease: "Rilis framework",
+    gasScheduleRelease: "Gas Schedule Release",
     bytecodeFormat: "Format bytecode (maks)",
     nodeRelease: "Rilis node",
     gasUnmapped: "gas {version} (tidak dipetakan)",

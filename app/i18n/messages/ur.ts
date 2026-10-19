@@ -1585,6 +1585,7 @@ export const ur = {
     ledgerVersion: "لیجر ورژن",
     chainId: "چین ID",
     frameworkRelease: "فریم ورک ریلیز",
+    gasScheduleRelease: "Gas Schedule Release",
     bytecodeFormat: "بائٹ کوڈ فارمیٹ (زیادہ سے زیادہ)",
     nodeRelease: "نوڈ ریلیز",
     gasUnmapped: "گیس {version} (غیر میپ)",

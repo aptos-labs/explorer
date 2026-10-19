@@ -1616,6 +1616,7 @@ export const ms = {
     ledgerVersion: "Versi ledger",
     chainId: "ID rantaian",
     frameworkRelease: "Keluaran rangka kerja",
+    gasScheduleRelease: "Gas Schedule Release",
     bytecodeFormat: "Format bytecode (maks)",
     nodeRelease: "Keluaran nod",
     gasUnmapped: "gas {version} (tidak dipetakan)",

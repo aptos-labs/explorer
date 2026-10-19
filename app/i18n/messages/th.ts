@@ -1545,6 +1545,7 @@ export const th = {
     ledgerVersion: "เวอร์ชัน Ledger",
     chainId: "Chain ID",
     frameworkRelease: "รีลีส Framework",
+    gasScheduleRelease: "Gas Schedule Release",
     bytecodeFormat: "รูปแบบ Bytecode (สูงสุด)",
     nodeRelease: "รีลีสโหนด",
     gasUnmapped: "แก๊ส {version} (ไม่ได้แมป)",

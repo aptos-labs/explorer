@@ -1638,6 +1638,7 @@ export const es = {
     ledgerVersion: "Versión del ledger",
     chainId: "ID de cadena",
     frameworkRelease: "Lanzamiento del framework",
+    gasScheduleRelease: "Gas Schedule Release",
     bytecodeFormat: "Formato de bytecode (máx.)",
     nodeRelease: "Lanzamiento del nodo",
     gasUnmapped: "gas {version} (sin asignar)",

@@ -1523,6 +1523,7 @@ export const zh = {
     ledgerVersion: "账本版本",
     chainId: "链 ID",
     frameworkRelease: "框架发布",
+    gasScheduleRelease: "Gas Schedule Release",
     bytecodeFormat: "字节码格式（最大）",
     nodeRelease: "节点发布",
     gasUnmapped: "gas {version}（未映射）",

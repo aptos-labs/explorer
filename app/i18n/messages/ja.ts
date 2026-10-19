@@ -1605,6 +1605,7 @@ export const ja = {
     ledgerVersion: "レジャーバージョン",
     chainId: "チェーン ID",
     frameworkRelease: "フレームワークリリース",
+    gasScheduleRelease: "Gas Schedule Release",
     bytecodeFormat: "バイトコード形式（最大）",
     nodeRelease: "ノードリリース",
     gasUnmapped: "gas {version}（未マップ）",

@@ -1596,6 +1596,7 @@ export const ta = {
     ledgerVersion: "லெட்ஜர் பதிப்பு",
     chainId: "சங்கிலி ID",
     frameworkRelease: "கட்டமைப்பு வெளியீடு",
+    gasScheduleRelease: "Gas Schedule Release",
     bytecodeFormat: "பைட்கோட் வடிவம் (அதிகபட்சம்)",
     nodeRelease: "நோடு வெளியீடு",
     gasUnmapped: "gas {version} (மேப் செய்யப்படவில்லை)",

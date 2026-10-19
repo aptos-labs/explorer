@@ -1634,6 +1634,7 @@ export const fil = {
     ledgerVersion: "Ledger version",
     chainId: "Chain ID",
     frameworkRelease: "Framework release",
+    gasScheduleRelease: "Gas Schedule Release",
     bytecodeFormat: "Bytecode format (max)",
     nodeRelease: "Node release",
     gasUnmapped: "gas {version} (hindi naka-map)",

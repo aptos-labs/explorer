@@ -1540,6 +1540,7 @@ export const am = {
     ledgerVersion: "የመዝገብ ስሪት",
     chainId: "የሰንሰለት መታወቂያ",
     frameworkRelease: "የፍሬምወርክ ሪሊዝ",
+    gasScheduleRelease: "Gas Schedule Release",
     bytecodeFormat: "የባይትኮድ ቅርጸት (ከፍተኛ)",
     nodeRelease: "የኖድ ሪሊዝ",
     gasUnmapped: "ጋዝ {version} (ያልተመደበ)",

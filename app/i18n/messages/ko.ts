@@ -1586,6 +1586,7 @@ export const ko = {
     ledgerVersion: "원장 버전",
     chainId: "체인 ID",
     frameworkRelease: "프레임워크 릴리스",
+    gasScheduleRelease: "Gas Schedule Release",
     bytecodeFormat: "바이트코드 형식 (최대)",
     nodeRelease: "노드 릴리스",
     gasUnmapped: "가스 {version} (매핑되지 않음)",

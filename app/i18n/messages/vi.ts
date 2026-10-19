@@ -1596,6 +1596,7 @@ export const vi = {
     ledgerVersion: "Phiên bản sổ cái",
     chainId: "Chain ID",
     frameworkRelease: "Phát hành framework",
+    gasScheduleRelease: "Gas Schedule Release",
     bytecodeFormat: "Định dạng bytecode (tối đa)",
     nodeRelease: "Phát hành node",
     gasUnmapped: "gas {version} (chưa ánh xạ)",
