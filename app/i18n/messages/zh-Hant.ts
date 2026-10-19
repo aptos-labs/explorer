@@ -1524,6 +1524,7 @@ export const zhHant = {
     ledgerVersion: "帳本版本",
     chainId: "鏈 ID",
     frameworkRelease: "框架發布",
+    gasScheduleRelease: "Gas Schedule Release",
     bytecodeFormat: "位元組碼格式（最大）",
     nodeRelease: "節點發布",
     gasUnmapped: "gas {version}（未映射）",

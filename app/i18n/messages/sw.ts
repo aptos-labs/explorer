@@ -1631,6 +1631,7 @@ export const sw = {
     ledgerVersion: "Toleo la kitabu",
     chainId: "Kitambulisho cha mnyororo",
     frameworkRelease: "Toleo la framework",
+    gasScheduleRelease: "Gas Schedule Release",
     bytecodeFormat: "Umbizo la bytecode (max)",
     nodeRelease: "Toleo la nodi",
     gasUnmapped: "gesi {version} (haijaoanishwa)",

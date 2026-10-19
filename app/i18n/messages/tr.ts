@@ -1612,6 +1612,7 @@ export const tr = {
     ledgerVersion: "Defter Versiyonu",
     chainId: "Chain ID",
     frameworkRelease: "Framework Sürümü",
+    gasScheduleRelease: "Gas Schedule Release",
     bytecodeFormat: "Bytecode Biçimi (maks.)",
     nodeRelease: "Düğüm Sürümü",
     gasUnmapped: "gas {version} (eşlenmemiş)",

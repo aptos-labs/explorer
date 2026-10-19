@@ -1611,6 +1611,7 @@ export const uk = {
     ledgerVersion: "Версія реєстру",
     chainId: "ID ланцюга",
     frameworkRelease: "Реліз фреймворку",
+    gasScheduleRelease: "Gas Schedule Release",
     bytecodeFormat: "Формат байткоду (макс.)",
     nodeRelease: "Реліз вузла",
     gasUnmapped: "gas {version} (без відповідності)",

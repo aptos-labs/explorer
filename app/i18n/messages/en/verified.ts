@@ -357,6 +357,7 @@ export const deployments = {
   ledgerVersion: "Ledger Version",
   chainId: "Chain ID",
   frameworkRelease: "Framework Release",
+  gasScheduleRelease: "Gas Schedule Release",
   bytecodeFormat: "Bytecode Format (max)",
   nodeRelease: "Node Release",
   gasUnmapped: "gas {version} (unmapped)",

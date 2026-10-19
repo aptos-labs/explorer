@@ -1562,6 +1562,7 @@ export const bn = {
     ledgerVersion: "লেজার সংস্করণ",
     chainId: "Chain ID",
     frameworkRelease: "ফ্রেমওয়ার্ক রিলিজ",
+    gasScheduleRelease: "Gas Schedule Release",
     bytecodeFormat: "বাইটকোড ফরম্যাট (সর্বোচ্চ)",
     nodeRelease: "নোড রিলিজ",
     gasUnmapped: "গ্যাস {version} (ম্যাপ করা হয়নি)",

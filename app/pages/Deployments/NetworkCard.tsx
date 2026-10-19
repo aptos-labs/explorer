@@ -162,6 +162,30 @@ export function NetworkCard({network}: {network: NetworkName}) {
               })()}
             />
             <StatusRow
+              label={t("deployments.gasScheduleRelease")}
+              value={(() => {
+                if (data.gasFeatureVersion === null) return null;
+                const mapped = data.frameworkRelease;
+                const display =
+                  mapped ??
+                  t("deployments.gasUnmapped", {
+                    version: formatInteger(data.gasFeatureVersion),
+                  });
+                const tooltip = mapped
+                  ? t("deployments.gasMappedTip", {
+                      version: formatInteger(data.gasFeatureVersion),
+                    })
+                  : t("deployments.gasUnmappedTip", {
+                      version: formatInteger(data.gasFeatureVersion),
+                    });
+                return (
+                  <Tooltip title={tooltip}>
+                    <span>{display}</span>
+                  </Tooltip>
+                );
+              })()}
+            />
+            <StatusRow
               label={t("deployments.bytecodeFormat")}
               value={
                 data.bytecodeFormatVersion !== null ? (

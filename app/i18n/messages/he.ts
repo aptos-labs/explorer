@@ -1564,6 +1564,7 @@ export const he = {
     ledgerVersion: "גרסת Ledger",
     chainId: "מזהה שרשרת",
     frameworkRelease: "גרסת Framework",
+    gasScheduleRelease: "Gas Schedule Release",
     bytecodeFormat: "פורמט Bytecode (מקס')",
     nodeRelease: "גרסת Node",
     gasUnmapped: "gas {version} (ללא מיפוי)",

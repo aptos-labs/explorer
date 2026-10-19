@@ -1626,6 +1626,7 @@ export const zu = {
     ledgerVersion: "Inguqulo Yeleja",
     chainId: "I-ID Yochungechunge",
     frameworkRelease: "Ukukhishwa Kwe-Framework",
+    gasScheduleRelease: "Gas Schedule Release",
     bytecodeFormat: "Ifomethi Ye-Bytecode (max)",
     nodeRelease: "Ukukhishwa Kwe-Node",
     gasUnmapped: "i-gas {version} (engamaphiwe)",

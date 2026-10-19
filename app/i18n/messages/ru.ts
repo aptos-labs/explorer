@@ -1608,6 +1608,7 @@ export const ru = {
     ledgerVersion: "Версия реестра",
     chainId: "Chain ID",
     frameworkRelease: "Релиз фреймворка",
+    gasScheduleRelease: "Gas Schedule Release",
     bytecodeFormat: "Формат байткода (макс.)",
     nodeRelease: "Релиз узла",
     gasUnmapped: "газ {version} (не сопоставлено)",

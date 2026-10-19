@@ -1626,6 +1626,7 @@ export const ha = {
     ledgerVersion: "Sigar ledger",
     chainId: "ID na sarkar",
     frameworkRelease: "Sakin tsari",
+    gasScheduleRelease: "Gas Schedule Release",
     bytecodeFormat: "Tsarin bytecode (max)",
     nodeRelease: "Sakin node",
     gasUnmapped: "gas {version} (ba a taswira ba)",

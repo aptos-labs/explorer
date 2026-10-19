@@ -1562,6 +1562,7 @@ export const hi = {
     ledgerVersion: "लेजर संस्करण",
     chainId: "Chain ID",
     frameworkRelease: "फ्रेमवर्क रिलीज़",
+    gasScheduleRelease: "Gas Schedule Release",
     bytecodeFormat: "Bytecode प्रारूप (अधिकतम)",
     nodeRelease: "नोड रिलीज़",
     gasUnmapped: "gas {version} (अनमैप्ड)",
