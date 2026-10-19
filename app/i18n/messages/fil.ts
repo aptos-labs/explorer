@@ -813,6 +813,10 @@ export const fil = {
   txn: {
     entity: "Transaksyon",
     tokenTransfers: "Mga transfer ng token",
+    functionLabel: {
+      coinTransfer: "Transfer ng coin",
+      fungibleAssetTransfer: "Transfer ng fungible asset",
+    },
     multisigEntity: "Multisig na transaksyon",
     multisigChip: "Multisig",
     hashUnavailable: "Hindi available ang transaction hash mula sa indexer",

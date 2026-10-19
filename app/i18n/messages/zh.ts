@@ -795,6 +795,10 @@ export const zh = {
   txn: {
     entity: "交易",
     tokenTransfers: "通证转账",
+    functionLabel: {
+      coinTransfer: "代币转账",
+      fungibleAssetTransfer: "同质化资产转账",
+    },
     multisigEntity: "多重签名交易",
     multisigChip: "多重签名",
     hashUnavailable: "索引器未提供交易哈希",

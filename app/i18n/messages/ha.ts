@@ -810,6 +810,10 @@ export const ha = {
   txn: {
     entity: "Ma'amala",
     tokenTransfers: "Canja wurin token",
+    functionLabel: {
+      coinTransfer: "Canja wurin tsabar kudi",
+      fungibleAssetTransfer: "Canja wurin kadari mai musayawa",
+    },
     multisigEntity: "Ma'amalar multisig",
     multisigChip: "Multisig",
     hashUnavailable: "Hash na ma'amala ba ya samuwa daga indexer",

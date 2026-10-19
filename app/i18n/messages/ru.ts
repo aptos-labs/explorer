@@ -810,6 +810,10 @@ export const ru = {
   txn: {
     entity: "Транзакция",
     tokenTransfers: "Переводы токенов",
+    functionLabel: {
+      coinTransfer: "Перевод монеты",
+      fungibleAssetTransfer: "Перевод взаимозаменяемого актива",
+    },
     multisigEntity: "Транзакция с мультиподписью",
     multisigChip: "Мультиподпись",
     hashUnavailable: "Хеш транзакции недоступен из индексатора",

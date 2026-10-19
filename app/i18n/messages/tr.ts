@@ -809,6 +809,10 @@ export const tr = {
   txn: {
     entity: "İşlem",
     tokenTransfers: "Token Transferleri",
+    functionLabel: {
+      coinTransfer: "Coin Transferi",
+      fungibleAssetTransfer: "Fungible Varlık Transferi",
+    },
     multisigEntity: "Multisig İşlemi",
     multisigChip: "Multisig",
     hashUnavailable: "İşlem hash'i indexer'dan alınamadı",

@@ -801,6 +801,10 @@ export const he = {
   txn: {
     entity: "עסקה",
     tokenTransfers: "העברות טוקנים",
+    functionLabel: {
+      coinTransfer: "העברת מטבע",
+      fungibleAssetTransfer: "העברת נכס סחיר",
+    },
     multisigEntity: "עסקת Multisig",
     multisigChip: "Multisig",
     hashUnavailable: "גיבוב העסקה אינו זמין מה-indexer",

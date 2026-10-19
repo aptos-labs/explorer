@@ -814,6 +814,10 @@ export const zu = {
   txn: {
     entity: "Ukuthengiselana",
     tokenTransfers: "Ukudluliswa Kwama-Token",
+    functionLabel: {
+      coinTransfer: "Ukudluliswa Kwemali",
+      fungibleAssetTransfer: "Ukudluliswa Kwempahla Efakwayo",
+    },
     multisigEntity: "Ukuthengiselana Kwe-Multisig",
     multisigChip: "I-Multisig",
     hashUnavailable: "I-hash yokuthengiselana ayitholakali ku-indexer",

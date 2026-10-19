@@ -810,6 +810,10 @@ export const uk = {
   txn: {
     entity: "Транзакція",
     tokenTransfers: "Перекази токенів",
+    functionLabel: {
+      coinTransfer: "Переказ монети",
+      fungibleAssetTransfer: "Переказ взаємозамінного активу",
+    },
     multisigEntity: "Транзакція з мультипідписом",
     multisigChip: "Мультипідпис",
     hashUnavailable: "Хеш транзакції недоступний з індексатора",

@@ -810,6 +810,10 @@ export const id = {
   txn: {
     entity: "Transaksi",
     tokenTransfers: "Transfer token",
+    functionLabel: {
+      coinTransfer: "Transfer koin",
+      fungibleAssetTransfer: "Transfer aset fungible",
+    },
     multisigEntity: "Transaksi multisig",
     multisigChip: "Multisig",
     hashUnavailable: "Hash transaksi tidak tersedia dari indexer",

@@ -799,6 +799,10 @@ export const th = {
   txn: {
     entity: "ธุรกรรม",
     tokenTransfers: "การโอนโทเค็น",
+    functionLabel: {
+      coinTransfer: "การโอนเหรียญ",
+      fungibleAssetTransfer: "การโอนสินทรัพย์ที่แลกเปลี่ยนได้",
+    },
     multisigEntity: "ธุรกรรม Multisig",
     multisigChip: "Multisig",
     hashUnavailable: "แฮชธุรกรรมไม่พร้อมจาก indexer",

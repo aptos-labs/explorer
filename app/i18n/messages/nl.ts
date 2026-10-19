@@ -811,6 +811,10 @@ export const nl = {
   txn: {
     entity: "Transactie",
     tokenTransfers: "Tokentransfers",
+    functionLabel: {
+      coinTransfer: "Coin-transfer",
+      fungibleAssetTransfer: "Fungible-asset-transfer",
+    },
     multisigEntity: "Multisig-transactie",
     multisigChip: "Multisig",
     hashUnavailable: "Transactiehash niet beschikbaar via de indexer",

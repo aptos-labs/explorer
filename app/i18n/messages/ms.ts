@@ -811,6 +811,10 @@ export const ms = {
   txn: {
     entity: "Transaksi",
     tokenTransfers: "Pindahan token",
+    functionLabel: {
+      coinTransfer: "Pindahan syiling",
+      fungibleAssetTransfer: "Pindahan aset fungible",
+    },
     multisigEntity: "Transaksi multisig",
     multisigChip: "Multisig",
     hashUnavailable: "Hash transaksi tidak tersedia daripada pengindeks",
