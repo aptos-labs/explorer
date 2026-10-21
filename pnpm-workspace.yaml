@@ -21,22 +21,54 @@ minimumReleaseAge: 7200
 # https://pnpm.io/settings#minimumreleaseageexclude
 minimumReleaseAgeExclude:
   [
-    # TanStack Start 1.0 (first stable is @tanstack/react-start 1.169).
-    # Published 2026-10-12/13. Past Safe Chain's 48h floor as of 2026-10-15.
-    # Still inside pnpm's 5-day gate. Remove after 2026-10-18.
-    "@tanstack/react-start@1.169.1",
-    "@tanstack/react-router@1.170.44",
-    "@tanstack/react-start-client@1.168.42",
-    "@tanstack/react-start-rsc@0.1.62",
-    "@tanstack/react-start-server@1.167.49",
-    "@tanstack/router-core@1.171.37",
-    "@tanstack/router-plugin@1.168.45",
-    "@tanstack/router-cli@1.167.43",
-    "@tanstack/router-generator@1.167.43",
-    "@tanstack/start-client-core@1.170.37",
-    "@tanstack/start-plugin-core@1.171.52",
-    "@tanstack/start-server-core@1.169.42",
-    "@tanstack/start-storage-context@1.167.39",
+    # TanStack Start 1.0 family. Published 2026-10-16. Inside pnpm 5-day gate.
+    # Remove after 2026-10-21.
+    "@tanstack/react-start@1.169.3",
+    "@tanstack/react-router@1.170.45",
+    "@tanstack/react-start-client@1.168.43",
+    "@tanstack/react-start-rsc@0.1.64",
+    "@tanstack/react-start-server@1.167.51",
+    "@tanstack/router-core@1.171.38",
+    "@tanstack/router-plugin@1.168.47",
+    "@tanstack/router-cli@1.167.45",
+    "@tanstack/router-generator@1.167.45",
+    "@tanstack/start-client-core@1.170.38",
+    "@tanstack/start-plugin-core@1.171.54",
+    "@tanstack/start-server-core@1.169.44",
+    "@tanstack/start-storage-context@1.167.40",
+
+    # TanStack Query 5.104.4 family. Published 2026-10-17. Inside pnpm 5-day gate.
+    # Remove after 2026-10-22.
+    "@tanstack/query-core@5.104.4",
+    "@tanstack/query-devtools@5.104.4",
+    "@tanstack/react-query@5.104.4",
+    "@tanstack/react-query-devtools@5.104.4",
+
+    # TanStack Virtual 3.14.21. Published 2026-10-16. Inside pnpm 5-day gate.
+    # Remove after 2026-10-21.
+    "@tanstack/react-virtual@3.14.21",
+    "@tanstack/virtual-core@3.19.6",
+
+    # Vitest 5.0.5 family. Published 2026-10-15. Inside pnpm 5-day gate.
+    # Remove after 2026-10-20.
+    "vitest@5.0.5",
+    "@vitest/coverage-v8@5.0.5",
+    "@vitest/mocker@5.0.5",
+    "@vitest/spy@5.0.5",
+
+    # Direct dependency updates inside pnpm 5-day gate.
+    # baseline-browser-mapping held at 2.11.27 until 2.11.29 clears Safe Chain 48h floor.
+    # browserslist held at 4.29.3 until 4.29.4 clears Safe Chain 48h floor.
+    # js-yaml held at 5.4.2 until 5.5.0 clears Safe Chain 48h floor.
+    # postcss held at 8.5.28 until 8.5.31 clears Safe Chain 48h floor.
+    # undici held at 8.11.2 until 8.12.2 clears Safe Chain 48h floor.
+    "jsdom@30.1.3",
+
+    # Transitive dependency updates inside pnpm 5-day gate.
+    "argparse@3.0.3",
+    "electron-to-chromium@1.5.459",
+    "node-releases@2.0.59",
+    "@asamuzakjp/dom-selector@10.0.3",
   ]
 
 allowBuilds:
@@ -47,7 +79,7 @@ allowBuilds:
 
 overrides:
   "@aptos-labs/wallet-standard": 2.0.0
-  "@aptos-labs/ts-sdk": 7.4.0
+  "@aptos-labs/ts-sdk": 7.5.0
   "@babel/core": 8.0.6
   "@opentelemetry/core": 2.11.0
   "@opentelemetry/propagator-jaeger": 2.11.0
@@ -85,6 +117,7 @@ overrides:
   uuid: 14.0.2
   undici: 8.11.2
   nanoid: 6.0.1
+  http-cache-semantics: 4.2.0
   # CVE-2026-104846 / GHSA-p6vx-979v-rg4c. solid-js 1.9.15 still resolves
   # seroval@1.5.6 (affected: >=0.12.0 <1.6.2). Pin the patched line so every
   # copy, including that Solid tree, stays on 1.6.8.
@@ -93,11 +126,6 @@ overrides:
 
 patchedDependencies:
   "@babel/core@8.0.6": patches/@babel__core@8.0.6.patch
-  "@babel/traverse@8.0.6": patches/@babel__traverse@8.0.6.patch
-  # CVE-2026-93748 / GHSA-ch52-4w7c-c8xp. Upstream 4.3.0 (2026-10-04) is still
-  # inside Safe Chain's 48h floor and does not change the max-stale path.
-  # This patch closes that path on the locked 4.2.0. Drop it when an upstream
-  # release both fixes the behavior and clears the age gates.
   "http-cache-semantics@4.2.0": patches/http-cache-semantics@4.2.0.patch
 
 # The advisory range is still `<=4.2.0`, so `pnpm audit` matches the locked
