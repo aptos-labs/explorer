@@ -106,7 +106,7 @@
     "nitro": "3.0.260610-beta",
     "rollup-plugin-visualizer": "7.1.1",
     "typescript": "7.0.2",
-    "vite": "8.3.2",
+    "vite": "8.3.3",
     "vite-plugin-compression": "0.5.1",
     "vite-plugin-svgr": "5.2.0",
     "vitest": "5.0.3"
