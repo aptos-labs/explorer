@@ -118,6 +118,7 @@ export type IdentifyPaymentsInput = {
   connectedWallet?: string | null;
   indexerActivities?: import("../utils").FungibleAssetActivity[];
   coinData?: import("../../../api/hooks/useGetCoinList").CoinDescription[];
+  networkName?: import("../../../lib/constants").NetworkName;
   source?: PaymentFlowSource;
   locale?: string;
 };

@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import type * as React from "react";
 import {createContext, useCallback, useContext, useMemo, useState} from "react";
-import {useTranslation} from "../../../i18n";
 import type {Types} from "~/types/aptos";
 import {useGetCoinList} from "../../../api/hooks/useGetCoinList";
 import CurrencyValue from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
@@ -21,6 +20,7 @@ import {
   verifiedLevel,
 } from "../../../components/Table/VerifiedCell";
 import {useNetworkName} from "../../../global-config/GlobalConfig";
+import {useTranslation} from "../../../i18n";
 import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
 import {tryStandardizeAddress} from "../../../utils";
 import {
@@ -345,8 +345,12 @@ export default function TokenTransferDisplay({
 
   const balanceChanges = useMemo(() => {
     if (!("events" in transaction)) return [];
-    return parseRawEventsForBalanceChanges(transaction, coinData?.data);
-  }, [transaction, coinData]);
+    return parseRawEventsForBalanceChanges(
+      transaction,
+      coinData?.data,
+      networkName,
+    );
+  }, [transaction, coinData, networkName]);
 
   const verifiedTransfers = useMemo(
     () => getVerifiedTokenTransfers(balanceChanges, networkName, address),

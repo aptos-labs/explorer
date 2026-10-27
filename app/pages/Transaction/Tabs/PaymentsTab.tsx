@@ -1,3 +1,4 @@
+import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -14,22 +15,22 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import {useMemo} from "react";
 import type * as React from "react";
+import {useMemo} from "react";
 import type {Types} from "~/types/aptos";
 import {
   type CoinDescription,
   useGetCoinList,
 } from "../../../api/hooks/useGetCoinList";
-import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import HashButton, {HashType} from "../../../components/HashButton";
+import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {TransactionTypeName} from "../../../components/TransactionType";
+import {useNetworkName} from "../../../global-config/GlobalConfig";
+import {type TFunction, useTranslation} from "../../../i18n";
 import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";
 import {addressFromWallet} from "../../../utils";
-import {useTranslation, type TFunction} from "../../../i18n";
 import {CLIENT_SIDE_PAYMENT_TRACKER} from "../payments/clientTrace";
 import {
   formatPaymentAmount,
@@ -426,6 +427,7 @@ export default function PaymentsTab({
   const colors = getSemanticColors(theme.palette.mode);
   const {account} = useWallet();
   const connectedWallet = addressFromWallet(account?.address);
+  const networkName = useNetworkName();
   const {data: coinData} = useGetCoinList();
   const {data: indexer} = useTransactionBalanceChanges(
     "version" in transaction ? transaction.version : transaction.hash,
@@ -438,9 +440,10 @@ export default function PaymentsTab({
         connectedWallet: connectedWallet || undefined,
         indexerActivities: indexer?.fungible_asset_activities,
         coinData: coinData?.data,
+        networkName,
         locale,
       }),
-    [transaction, connectedWallet, indexer, coinData, locale],
+    [transaction, connectedWallet, indexer, coinData, networkName, locale],
   );
 
   if (transaction.type !== TransactionTypeName.User) {

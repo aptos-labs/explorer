@@ -181,6 +181,7 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
     const fromRawEvents = parseRawEventsForBalanceChanges(
       transaction,
       coinData?.data,
+      networkName,
     );
 
     // If indexer has activities, use them when they carry usable amounts.
@@ -188,21 +189,21 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
       const changes: BalanceChange[] = indexerActivities
         .filter((a) => a.amount !== null)
         .map((a) => {
-          const entry = findCoinData(coinData?.data, a.asset_type);
+          const entry = findCoinData(coinData?.data, a.asset_type, networkName);
 
           return {
             address: convertAddress(a),
             amount: convertAmount(a),
             type: convertType(a),
             asset: {
-              decimals: a.metadata?.decimals,
+              decimals: entry?.decimals ?? a.metadata?.decimals,
               symbol: getAssetSymbol(
                 entry?.panoraSymbol,
                 entry?.bridge,
-                a.metadata?.symbol,
+                a.metadata?.symbol ?? entry?.symbol,
               ),
               type: a.type,
-              id: entry?.tokenAddress ?? a.asset_type,
+              id: entry?.faAddress ?? entry?.tokenAddress ?? a.asset_type,
             },
             known: entry !== undefined,
             isInPanoraTokenList: entry?.isInPanoraTokenList,
@@ -249,6 +250,7 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
     convertType,
     convertAmount,
     transaction,
+    networkName,
   ]);
 
   // Filter balance changes by verification status (for mobile)

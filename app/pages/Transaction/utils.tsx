@@ -2,7 +2,9 @@ import {useQuery} from "@tanstack/react-query";
 import type {Types} from "~/types/aptos";
 import type {CoinDescription} from "../../api/hooks/useGetCoinList";
 import {TransactionTypeName} from "../../components/TransactionType";
+import {getHardCodedCoins} from "../../data";
 import {useNetworkValue, useSdkV2Client} from "../../global-config";
+import type {NetworkName} from "../../lib/constants";
 import {standardizeAddress, tryStandardizeAddress} from "../../utils";
 import {extractDisplayableEntryFunctionPayload} from "../../utils/transactionPayload";
 
@@ -591,9 +593,37 @@ export function getTransactionAmount(
 
 // --- Shared helpers for parsing balance changes from raw events ---
 
+function findHardCodedCoin(
+  networkName: NetworkName,
+  asset_type: string,
+): CoinDescription | undefined {
+  const hardCoded = getHardCodedCoins(networkName);
+  const standardized = tryStandardizeAddress(asset_type);
+  if (standardized && hardCoded[standardized]) {
+    return hardCoded[standardized];
+  }
+  if (asset_type.includes("::") && hardCoded[asset_type]) {
+    return hardCoded[asset_type];
+  }
+  for (const coin of Object.values(hardCoded)) {
+    if (
+      standardized &&
+      coin.faAddress &&
+      tryStandardizeAddress(coin.faAddress) === standardized
+    ) {
+      return coin;
+    }
+    if (coin.tokenAddress === asset_type) {
+      return coin;
+    }
+  }
+  return undefined;
+}
+
 export function findCoinData(
   coinData: CoinDescription[] | undefined,
   asset_type: string,
+  networkName?: NetworkName,
 ): CoinDescription | undefined {
   if (!asset_type) {
     return undefined;
@@ -612,7 +642,13 @@ export function findCoinData(
       return isMatchingCoin || isMatchingFa;
     });
   }
-  return entry;
+  if (entry) {
+    return entry;
+  }
+  if (networkName) {
+    return findHardCodedCoin(networkName, asset_type);
+  }
+  return undefined;
 }
 
 type FungibleStoreChangeData = {
@@ -679,6 +715,7 @@ function isAptCoinEvent(
 export function parseRawEventsForBalanceChanges(
   transaction: Types.Transaction,
   coinData: CoinDescription[] | undefined,
+  networkName?: NetworkName,
 ): BalanceChange[] {
   if (!("events" in transaction)) {
     return [];
@@ -752,7 +789,8 @@ export function parseRawEventsForBalanceChanges(
         }
       }
 
-      const entry = findCoinData(coinData, assetType);
+      const entry = findCoinData(coinData, assetType, networkName);
+      const assetId = entry?.faAddress ?? entry?.tokenAddress ?? assetType;
 
       changes.push({
         address: ownerAddress,
@@ -762,7 +800,7 @@ export function parseRawEventsForBalanceChanges(
           decimals: entry?.decimals ?? 8,
           symbol: entry?.symbol ?? "FA",
           type: "v2",
-          id: entry?.tokenAddress ?? assetType,
+          id: assetId,
         },
         known: entry !== undefined,
         isInPanoraTokenList: entry?.isInPanoraTokenList,

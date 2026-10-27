@@ -1,14 +1,17 @@
-import type {CoinDescription} from "../../../api/hooks/useGetCoinList";
-import {TransactionTypeName} from "../../../components/TransactionType";
-import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import type {Types} from "~/types/aptos";
-import {extractEntryFunctionPayload} from "../../../utils/cliCommand";
+import {
+  type CoinDescription,
+  getBaselineCoinList,
+} from "../../../api/hooks/useGetCoinList";
+import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import {TransactionTypeName} from "../../../components/TransactionType";
 import {tryStandardizeAddress} from "../../../utils";
+import {extractEntryFunctionPayload} from "../../../utils/cliCommand";
 import {
   CONFIDENTIAL_ASSET_MODULE,
   type ConfidentialAssetAction,
-  parseConfidentialAssetFromPayload,
   confidentialAssetEventParsers,
+  parseConfidentialAssetFromPayload,
 } from "../confidentialAsset/parseConfidentialAssetEvents";
 import type {FungibleAssetActivity} from "../utils";
 import {findCoinData} from "../utils";
@@ -1420,11 +1423,24 @@ function headlineFor(
   };
 }
 
+function resolvePaymentsCoinData(
+  input: IdentifyPaymentsInput,
+): CoinDescription[] | undefined {
+  if (input.coinData && input.coinData.length > 0) {
+    return input.coinData;
+  }
+  if (input.networkName) {
+    return getBaselineCoinList(input.networkName);
+  }
+  return input.coinData;
+}
+
 function identifyFromTransactionBody(
   input: IdentifyPaymentsInput,
 ): PaymentIdentification {
   const locale = input.locale ?? "en";
-  const {transaction, indexerActivities, coinData} = input;
+  const {transaction, indexerActivities} = input;
+  const coinData = resolvePaymentsCoinData(input);
   const connectedWallet = input.connectedWallet
     ? addr(input.connectedWallet)
     : undefined;

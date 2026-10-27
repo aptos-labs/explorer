@@ -5,6 +5,7 @@ import {
   getTransactionAmount,
   getTransactionCounterparty,
   isMultisigTransaction,
+  parseRawEventsForBalanceChanges,
   TRANSACTION_BALANCE_CHANGES_QUERY,
 } from "./utils";
 
@@ -802,6 +803,57 @@ describe("getTransactionAmount", () => {
     } as unknown as Types.Transaction;
 
     expect(getTransactionAmount(txn)).toBe(undefined);
+  });
+});
+
+describe("parseRawEventsForBalanceChanges", () => {
+  const USDt_METADATA =
+    "0x357b0b74bc833e95a115ad22604854d6b0fca151cecd94111770e5d6ffc9dc2b";
+  const RECEIVER =
+    "0xba59f5f436aa48ddddc6ba2b9da870a1fc11632999ac237a3a08fe6dbe0a819f";
+  const STORE =
+    "0xe27e8fc22a03ac8655580e1af33a41c9baffb72d21372274b268091cfb887c02";
+
+  it("resolves USDt from hardcoded coins when Panora list is unavailable", () => {
+    const txn = makeUserTransaction({
+      events: [
+        {
+          type: "0x1::fungible_asset::Deposit",
+          guid: {
+            account_address: STORE,
+            creation_number: "0",
+          },
+          sequence_number: "0",
+          data: {store: STORE, amount: "1560000000"},
+        },
+      ],
+      changes: [
+        {
+          type: "write_resource",
+          address: STORE,
+          state_key_hash: "0x",
+          data: {
+            type: "0x1::fungible_asset::FungibleStore",
+            data: {
+              balance: "1560000000",
+              frozen: false,
+              metadata: {inner: USDt_METADATA},
+            },
+          },
+        } as unknown as Types.WriteSetChange,
+        makeObjectCoreChange(
+          STORE,
+          RECEIVER,
+        ) as unknown as Types.WriteSetChange,
+      ],
+    });
+
+    const changes = parseRawEventsForBalanceChanges(txn, undefined, "mainnet");
+    expect(changes).toHaveLength(1);
+    expect(changes[0].address).toBe(RECEIVER);
+    expect(changes[0].asset.symbol).toBe("USDt");
+    expect(changes[0].asset.decimals).toBe(6);
+    expect(changes[0].amount).toBe(BigInt(1560000000));
   });
 });
 
