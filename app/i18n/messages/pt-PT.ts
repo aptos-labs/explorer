@@ -118,6 +118,13 @@ export const ptPT = {
       localZone: "O fuso horário do seu navegador é {timeZone}.",
       example: "Exemplo: {time}",
     },
+    endpoints: {
+      title: "Endpoints de testnet e devnet",
+      description:
+        "Testnet e devnet usam a API de staging da Aptos Labs por predefinição. Ative isto para usar os endpoints públicos. A mainnet não muda. Um URL definido na compilação mantém-se.",
+      ariaLabel: "Usar os endpoints públicos de testnet e devnet",
+      preview: "Testnet: {testnet}. Devnet: {devnet}.",
+    },
     apiKeys: {
       title: "Substituição de chaves de API",
       whyAriaLabel: "Porquê usar a sua própria chave de API?",
@@ -313,6 +320,7 @@ export const ptPT = {
         "**Descompilação de bytecode Move** — desativada por predefinição. Leia o aviso antes de ativar. Quando desativada, as vistas Descompilado e Desmontagem ficam ocultas.",
         "**Data e hora** — UTC por predefinição, para que uma hora se leia da mesma forma em cada dispositivo. Ative a hora local em [Definições](/settings) para converter as horas da cadeia para o fuso do seu navegador. A exportação CSV e as marcas brutas copiadas mantêm-se em UTC.",
         "**Substituição de chaves de API** — chaves opcionais do [geomi.dev](https://geomi.dev) por rede para que o navegador não fique no limite de taxa anónimo partilhado. As chaves são enviadas como `Authorization: Bearer`. Chaves de cliente Geomi `AG-*` devem permitir o Origin deste site. Marque **Memorizar neste dispositivo** apenas numa máquina em que confia; caso contrário, as chaves duram a sessão do separador.",
+        "**Endpoints de testnet e devnet** — API de staging da Aptos Labs por predefinição. As [Definições](/settings) podem mudar estas duas redes para os endpoints públicos. A mainnet não muda, e um URL definido na compilação mantém-se.",
         "**Tema** — claro ou escuro pelo controlo de sol/lua do cabeçalho. Guardado num cookie (`color_scheme`) e segue o sistema se não escolheu.",
         "**Rede** — seletor do cabeçalho; codificada em `?network=` em vez das definições.",
       ],

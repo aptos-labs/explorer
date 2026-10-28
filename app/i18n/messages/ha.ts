@@ -119,6 +119,13 @@ export const ha = {
       localZone: "Yankin lokacin burauzarku shine {timeZone}.",
       example: "Misali: {time}",
     },
+    endpoints: {
+      title: "Ƙarshen testnet da devnet",
+      description:
+        "Testnet da devnet suna amfani da staging API na Aptos Labs a tsohuwar hanya. Kunna wannan don amfani da ƙarshen jama'a. Mainnet ba ya canzawa. URL da aka saita a lokacin gini ya tsaya kamar yadda aka tsara.",
+      ariaLabel: "Yi amfani da ƙarshen jama'a na testnet da devnet",
+      preview: "Testnet: {testnet}. Devnet: {devnet}.",
+    },
     apiKeys: {
       title: "Canza maɓallin API",
       whyAriaLabel: "Me yasa ku yi amfani da maɓallin API naku?",
@@ -314,6 +321,7 @@ export const ha = {
         "**Cire bytecode na Move** — a kashe a tsohuwa. Karanta gargadin kafin kunna. Lokacin da aka kashe, ra'ayoyin da aka Cire da Cire lamba suna ɓoye.",
         "**Tambarin lokaci** — UTC a tsohuwa don lokaci ɗaya ya kasance iri ɗaya a kowace na'ura. Kunna lokacin gida a [Saituna](/settings) don canza lokutan sarkar zuwa yankin lokacin burauza. Fitar da CSV da tambarin da aka kwafa suna UTC.",
         "**Canza maɓallin API** — maɓallan [geomi.dev](https://geomi.dev) na zaɓi ga kowace hanyar sadarwa don burauzar ku kada ta tsaya a kan iyakar saurin maras suna da aka raba. Ana aika maɓalli a matsayin `Authorization: Bearer`. Maɓallan abokin ciniki na Geomi `AG-*` dole ne su ƙyale Asalin wannan gidan. Duba **Tuna a wannan na'urar** kawai a kan na'urar da kuka amince da ita; in ba haka ba maɓalli suna ƙarewa da zaman shafin.",
+        "**Ƙarshen testnet da devnet** — staging API na Aptos Labs a tsohuwar hanya. [Saituna](/settings) na iya canja waɗannan hanyoyin sadarwa biyu zuwa ƙarshen jama'a. Mainnet ba ya canzawa, kuma URL na gini ya tsaya.",
         "**Jigo** — haske ko duhu daga maɓallin rana/wata a cikin shugaban shafi. Ana adana shi a cikin cookie (`color_scheme`) kuma yana bin tsarin idan ba ku zaɓi ba.",
         "**Hanyar sadarwa** — mai zaɓar shugaban shafi; ana encode shi a cikin `?network=` maimakon saituna.",
       ],

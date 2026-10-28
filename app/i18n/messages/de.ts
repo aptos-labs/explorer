@@ -119,6 +119,13 @@ export const de = {
       localZone: "Die Zeitzone Ihres Browsers ist {timeZone}.",
       example: "Beispiel: {time}",
     },
+    endpoints: {
+      title: "Testnet- und Devnet-Endpunkte",
+      description:
+        "Testnet und Devnet nutzen standardmäßig die Staging-API von Aptos Labs. Aktivieren Sie dies, um die öffentlichen Endpunkte zu verwenden. Mainnet bleibt unverändert. Eine zur Build-Zeit gesetzte URL bleibt bestehen.",
+      ariaLabel: "Öffentliche Testnet- und Devnet-Endpunkte verwenden",
+      preview: "Testnet: {testnet}. Devnet: {devnet}.",
+    },
     apiKeys: {
       title: "API-Schlüssel-Überschreibungen",
       whyAriaLabel: "Warum einen eigenen API-Schlüssel verwenden?",
@@ -315,6 +322,7 @@ export const de = {
         "**Dekompilierung von Move-Bytecode** — standardmäßig aus. Lesen Sie den Haftungsausschluss, bevor Sie aktivieren. Wenn aus, sind die Ansichten Dekompiliert und Disassembly ausgeblendet.",
         "**Zeitstempel** — standardmäßig UTC, damit eine Uhrzeit auf jedem Gerät gleich gelesen wird. Aktivieren Sie die lokale Zeit in den [Einstellungen](/settings), um Kettenzeiten in die Zeitzone Ihres Browsers umzurechnen. CSV-Export und kopierte Rohzeitstempel bleiben in UTC.",
         "**API-Schlüssel-Überschreibungen** — optionale [geomi.dev](https://geomi.dev)-Schlüssel pro Netzwerk, damit Ihr Browser nicht am gemeinsamen anonymen Rate-Limit hängt. Schlüssel werden als `Authorization: Bearer` gesendet. Geomi-`AG-*`-Client-Schlüssel müssen den Origin dieser Site erlauben. Aktivieren Sie **Auf diesem Gerät merken** nur auf einem Rechner, dem Sie vertrauen; andernfalls gelten Schlüssel für die Tab-Sitzung.",
+        "**Testnet- und Devnet-Endpunkte** — standardmäßig die Staging-API von Aptos Labs. In den [Einstellungen](/settings) lassen sich diese beiden Netzwerke auf die öffentlichen Endpunkte umstellen. Mainnet bleibt unverändert, und eine zur Build-Zeit gesetzte URL bleibt bestehen.",
         "**Theme** — hell oder dunkel über die Sonne-/Mond-Steuerung in der Kopfzeile. Gespeichert in einem Cookie (`color_scheme`) und folgt dem System, wenn Sie nichts gewählt haben.",
         "**Netzwerk** — Auswahl in der Kopfzeile; in `?network=` kodiert, nicht in den Einstellungen.",
       ],

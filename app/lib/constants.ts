@@ -10,6 +10,8 @@ import {readProcessEnv} from "./readProcessEnv";
 export const devnetUrl =
   import.meta.env.VITE_APTOS_DEVNET_URL ||
   import.meta.env.APTOS_DEVNET_URL ||
+  // Staging by default. Settings can opt into the public host
+  // (`resolveFullnodeUrl` in `networkEndpoints.ts`).
   "https://api.devnet.staging.aptoslabs.com/v1";
 
 export const networks: Record<string, string> = {
@@ -18,6 +20,8 @@ export const networks: Record<string, string> = {
     "https://api.mainnet.aptoslabs.com/v1",
   testnet:
     import.meta.env.VITE_APTOS_TESTNET_URL ||
+    // Staging by default. Settings can opt into the public host
+    // (`resolveFullnodeUrl` in `networkEndpoints.ts`).
     "https://api.testnet.staging.aptoslabs.com/v1",
   devnet: devnetUrl,
   decibel:

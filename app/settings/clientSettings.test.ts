@@ -8,6 +8,7 @@ import {
   loadExplorerClientSettings,
   LOCAL_TIMESTAMPS_STORAGE_KEY,
   LOCALE_STORAGE_KEY,
+  NON_STAGING_ENDPOINTS_STORAGE_KEY,
   normalizeGeomiDevApiKeyOverride,
   persistExplorerClientSettings,
   sanitizeExplorerClientSettings,
@@ -77,6 +78,7 @@ describe("clientSettings", () => {
         rememberGeomiDevApiKeyOverride: true,
         enableDecompilation: false,
         displayLocalTimestamps: false,
+        useNonStagingEndpoints: false,
         localePreference: "auto",
       });
     });
@@ -108,6 +110,7 @@ describe("clientSettings", () => {
         rememberGeomiDevApiKeyOverride: true,
         enableDecompilation: false,
         displayLocalTimestamps: false,
+        useNonStagingEndpoints: false,
         localePreference: "auto",
       });
     });
@@ -124,6 +127,7 @@ describe("clientSettings", () => {
         rememberGeomiDevApiKeyOverride: true,
         enableDecompilation: false,
         displayLocalTimestamps: false,
+        useNonStagingEndpoints: false,
         localePreference: "auto",
       });
     });
@@ -173,6 +177,7 @@ describe("clientSettings", () => {
         rememberGeomiDevApiKeyOverride: false,
         enableDecompilation: false,
         displayLocalTimestamps: false,
+        useNonStagingEndpoints: false,
         localePreference: "auto",
       });
     });
@@ -189,6 +194,7 @@ describe("clientSettings", () => {
         rememberGeomiDevApiKeyOverride: true,
         enableDecompilation: false,
         displayLocalTimestamps: false,
+        useNonStagingEndpoints: false,
         localePreference: "auto",
       });
     });
@@ -218,6 +224,7 @@ describe("clientSettings", () => {
           rememberGeomiDevApiKeyOverride: false,
           enableDecompilation: false,
           displayLocalTimestamps: false,
+          useNonStagingEndpoints: false,
           localePreference: "auto",
         },
         storages,
@@ -228,6 +235,7 @@ describe("clientSettings", () => {
         rememberGeomiDevApiKeyOverride: false,
         enableDecompilation: false,
         displayLocalTimestamps: false,
+        useNonStagingEndpoints: false,
         localePreference: "auto",
       });
     });
@@ -241,6 +249,7 @@ describe("clientSettings", () => {
           rememberGeomiDevApiKeyOverride: true,
           enableDecompilation: false,
           displayLocalTimestamps: false,
+          useNonStagingEndpoints: false,
           localePreference: "auto",
         },
         storages,
@@ -251,6 +260,7 @@ describe("clientSettings", () => {
         rememberGeomiDevApiKeyOverride: true,
         enableDecompilation: false,
         displayLocalTimestamps: false,
+        useNonStagingEndpoints: false,
         localePreference: "auto",
       });
     });
@@ -271,6 +281,7 @@ describe("clientSettings", () => {
           rememberGeomiDevApiKeyOverride: false,
           enableDecompilation: false,
           displayLocalTimestamps: false,
+          useNonStagingEndpoints: false,
           localePreference: "auto",
         },
         storages,
@@ -307,6 +318,7 @@ describe("clientSettings", () => {
           rememberGeomiDevApiKeyOverride: false,
           enableDecompilation: true,
           displayLocalTimestamps: false,
+          useNonStagingEndpoints: false,
           localePreference: "auto",
         },
         storages,
@@ -317,6 +329,7 @@ describe("clientSettings", () => {
         rememberGeomiDevApiKeyOverride: false,
         enableDecompilation: true,
         displayLocalTimestamps: false,
+        useNonStagingEndpoints: false,
         localePreference: "auto",
       });
     });
@@ -330,6 +343,7 @@ describe("clientSettings", () => {
           rememberGeomiDevApiKeyOverride: false,
           enableDecompilation: true,
           displayLocalTimestamps: false,
+          useNonStagingEndpoints: false,
           localePreference: "auto",
         },
         storages,
@@ -346,6 +360,7 @@ describe("clientSettings", () => {
         rememberGeomiDevApiKeyOverride: false,
         enableDecompilation: true,
         displayLocalTimestamps: false,
+        useNonStagingEndpoints: false,
         localePreference: "auto",
       });
     });
@@ -359,6 +374,7 @@ describe("clientSettings", () => {
           rememberGeomiDevApiKeyOverride: false,
           enableDecompilation: true,
           displayLocalTimestamps: false,
+          useNonStagingEndpoints: false,
           localePreference: "auto",
         },
         storages,
@@ -386,6 +402,7 @@ describe("clientSettings", () => {
           rememberGeomiDevApiKeyOverride: false,
           enableDecompilation: false,
           displayLocalTimestamps: false,
+          useNonStagingEndpoints: false,
           localePreference: "en",
         },
         storages,
@@ -414,6 +431,9 @@ describe("clientSettings", () => {
       expect(isExplorerSettingsStorageKey(LOCAL_TIMESTAMPS_STORAGE_KEY)).toBe(
         true,
       );
+      expect(
+        isExplorerSettingsStorageKey(NON_STAGING_ENDPOINTS_STORAGE_KEY),
+      ).toBe(true);
       expect(isExplorerSettingsStorageKey("unrelated")).toBe(false);
     });
 
@@ -427,6 +447,7 @@ describe("clientSettings", () => {
           rememberGeomiDevApiKeyOverride: false,
           enableDecompilation: false,
           displayLocalTimestamps: true,
+          useNonStagingEndpoints: false,
           localePreference: "auto",
         },
         storages,
@@ -448,6 +469,58 @@ describe("clientSettings", () => {
       ).toBe(true);
     });
 
+    it("persists useNonStagingEndpoints without API keys", () => {
+      // Covers FEAT-SETTINGS-005
+      const storages = createStorageCollection({});
+
+      persistExplorerClientSettings(
+        {
+          geomiDevApiKeyOverridesByNetwork: {},
+          rememberGeomiDevApiKeyOverride: false,
+          enableDecompilation: false,
+          displayLocalTimestamps: false,
+          useNonStagingEndpoints: true,
+          localePreference: "auto",
+        },
+        storages,
+      );
+
+      expect(loadExplorerClientSettings(storages).useNonStagingEndpoints).toBe(
+        true,
+      );
+      expect(
+        storages.localStorage?.getItem(NON_STAGING_ENDPOINTS_STORAGE_KEY),
+      ).toBe("true");
+
+      const freshStorages = {
+        localStorage: storages.localStorage,
+        sessionStorage: createStorageMock(),
+      };
+      expect(
+        loadExplorerClientSettings(freshStorages).useNonStagingEndpoints,
+      ).toBe(true);
+    });
+
+    it("clears the public-endpoint preference when it is turned off", () => {
+      const storages = createStorageCollection({});
+      storages.localStorage?.setItem(NON_STAGING_ENDPOINTS_STORAGE_KEY, "true");
+
+      persistExplorerClientSettings(
+        {
+          ...defaultExplorerClientSettings,
+          useNonStagingEndpoints: false,
+        },
+        storages,
+      );
+
+      expect(
+        storages.localStorage?.getItem(NON_STAGING_ENDPOINTS_STORAGE_KEY),
+      ).toBeNull();
+      expect(loadExplorerClientSettings(storages).useNonStagingEndpoints).toBe(
+        false,
+      );
+    });
+
     it("clears local timestamps when the preference is turned off", () => {
       const storages = createStorageCollection({});
       storages.localStorage?.setItem(LOCAL_TIMESTAMPS_STORAGE_KEY, "true");
@@ -456,6 +529,7 @@ describe("clientSettings", () => {
         {
           ...defaultExplorerClientSettings,
           displayLocalTimestamps: false,
+          useNonStagingEndpoints: false,
         },
         storages,
       );
@@ -478,6 +552,7 @@ describe("clientSettings", () => {
             rememberGeomiDevApiKeyOverride: true,
             enableDecompilation: false,
             displayLocalTimestamps: false,
+            useNonStagingEndpoints: false,
             localePreference: "auto",
           },
           storages,

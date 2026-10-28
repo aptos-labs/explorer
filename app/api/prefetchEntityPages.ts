@@ -9,7 +9,9 @@
 
 import type {Aptos} from "@aptos-labs/ts-sdk";
 import type {QueryClient} from "@tanstack/react-query";
-import {getGraphqlURI, networks, type NetworkName} from "../lib/constants";
+import {getGraphqlURI, type NetworkName} from "../lib/constants";
+import {resolveFullnodeUrl} from "../lib/networkEndpoints";
+import {readStoredNonStagingEndpoints} from "../settings";
 import {tryStandardizeAddress} from "../utils";
 import {getClientFromSearch, getNetworkFromSearch} from "./createClient";
 import {
@@ -139,7 +141,10 @@ export function loadAccountPagePrefetch(args: {
   const search = searchRecord(args.search);
   const client = getClientFromSearch(search);
   const networkName = getNetworkFromSearch(search);
-  const networkValue = networks[networkName];
+  const networkValue = resolveFullnodeUrl(
+    networkName,
+    readStoredNonStagingEndpoints(),
+  );
   const address = tryStandardizeRouteAddress(routeParam(args.address));
   const page = Number(search.page) || 1;
   if (address) {
@@ -164,7 +169,10 @@ export function loadTransactionPagePrefetch(args: {
   const search = searchRecord(args.search);
   const client = getClientFromSearch(search);
   const networkName = getNetworkFromSearch(search);
-  const networkValue = networks[networkName];
+  const networkValue = resolveFullnodeUrl(
+    networkName,
+    readStoredNonStagingEndpoints(),
+  );
   prefetchTransactionPageData(
     args.queryClient,
     routeParam(args.txnHashOrVersion),

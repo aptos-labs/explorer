@@ -1,5 +1,7 @@
 import {useQuery} from "@tanstack/react-query";
-import {type NetworkName, networks} from "../../constants";
+import type {NetworkName} from "../../constants";
+import {resolveFullnodeUrl} from "../../lib/networkEndpoints";
+import {useAppliedNonStagingEndpoints} from "../../settings";
 import {
   getLocalStorageWithExpiry,
   setLocalStorageWithExpiry,
@@ -13,9 +15,13 @@ export function useGetChainIdCached(networkName: NetworkName): string | null {
 }
 
 export function useGetChainIdAndCache(networkName: NetworkName): string | null {
+  const baseUrl = resolveFullnodeUrl(
+    networkName,
+    useAppliedNonStagingEndpoints(),
+  );
   const {data} = useQuery({
-    queryKey: ["ledgerInfo", networks[networkName]],
-    queryFn: () => getLedgerInfoWithoutResponseError(networks[networkName]),
+    queryKey: ["ledgerInfo", baseUrl],
+    queryFn: () => getLedgerInfoWithoutResponseError(baseUrl),
     staleTime: TTL,
     gcTime: TTL,
     refetchOnWindowFocus: false,

@@ -1,18 +1,31 @@
 import {Aptos, AptosConfig, Network as SdkNetwork} from "@aptos-labs/ts-sdk";
-import {useSearch} from "@tanstack/react-router";
+import {useQueryClient} from "@tanstack/react-query";
+import {useRouter, useSearch} from "@tanstack/react-router";
 import Cookies from "js-cookie";
-import React, {createContext, type ReactNode, useContext, useMemo} from "react";
+import React, {
+  createContext,
+  type ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
+import {clearCachedSearchClients} from "../api/createClient";
 import {AptosClient} from "../api/legacyClient";
 import {
   aptosGatewayApiKeyHeaders,
   aptosSdkClientConfig,
 } from "../lib/aptosGatewayAuth";
 import {
+  getClientAppliedNonStagingEndpoints,
+  resolveFullnodeUrl,
+  resolveGraphqlURI,
+} from "../lib/networkEndpoints";
+import {
   defaultFeatureName,
   defaultNetworkName,
   type FeatureName,
   getApiKey,
-  getGraphqlURI,
   isValidFeatureName,
   isValidNetworkName,
   type NetworkName,
@@ -21,6 +34,7 @@ import {
 import {
   getGeomiDevApiKeyOverride,
   normalizeGeomiDevApiKeyOverride,
+  useAppliedNonStagingEndpoints,
   useExplorerSettings,
 } from "../settings";
 
@@ -58,6 +72,29 @@ interface GlobalConfigProviderProps {
 }
 
 export function GlobalConfigProvider({children}: GlobalConfigProviderProps) {
+  const appliedNonStaging = useAppliedNonStagingEndpoints();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const appliedRef = useRef<boolean | null>(null);
+
+  useEffect(() => {
+    // First paint matches SSR (preference off). Once hydration applies a
+    // saved public-endpoint preference, or the user changes it, drop cached
+    // clients and refetch so testnet/devnet reads follow the new host.
+    if (appliedRef.current === null) {
+      appliedRef.current = appliedNonStaging;
+      if (!appliedNonStaging) return;
+    } else if (appliedRef.current === appliedNonStaging) {
+      return;
+    } else {
+      appliedRef.current = appliedNonStaging;
+    }
+    clearCachedV2Clients();
+    clearCachedSearchClients();
+    void queryClient.invalidateQueries();
+    void router.invalidate();
+  }, [appliedNonStaging, queryClient, router]);
+
   const isServer = typeof window === "undefined";
 
   // Get network from URL search params (takes priority)
@@ -163,15 +200,17 @@ export function useNetworkSelector(): [
 
 export function useNetworkValue(): string {
   const networkName = useNetworkName();
-  return networks[networkName];
+  const useNonStaging = useAppliedNonStagingEndpoints();
+  return resolveFullnodeUrl(networkName, useNonStaging);
 }
 
 // Create Aptos clients
 function createAptosClient(
   networkName: NetworkName,
   apiKeyOverride?: string,
+  useNonStagingEndpoints = false,
 ): AptosClient {
-  const nodeUrl = networks[networkName];
+  const nodeUrl = resolveFullnodeUrl(networkName, useNonStagingEndpoints);
   const apiKey = getApiKey(networkName, apiKeyOverride);
   return new AptosClient(nodeUrl, {
     HEADERS: aptosGatewayApiKeyHeaders(apiKey),
@@ -181,10 +220,11 @@ function createAptosClient(
 function createAptosV2Client(
   networkName: NetworkName,
   apiKeyOverride?: string,
+  useNonStagingEndpoints = false,
 ): Aptos {
-  const nodeUrl = networks[networkName];
+  const nodeUrl = resolveFullnodeUrl(networkName, useNonStagingEndpoints);
   const apiKey = getApiKey(networkName, apiKeyOverride);
-  const indexerUrl = getGraphqlURI(networkName);
+  const indexerUrl = resolveGraphqlURI(networkName, useNonStagingEndpoints);
 
   // Map network name to SDK Network enum
   let network: SdkNetwork;
@@ -215,8 +255,13 @@ function createAptosV2Client(
 // Client cache to prevent unnecessary recreations
 const clientCache = new Map<string, Aptos>();
 
-function getClientCacheKey(networkName: NetworkName, apiKeyOverride?: string) {
-  return `${networkName}:${normalizeGeomiDevApiKeyOverride(apiKeyOverride)}`;
+function getClientCacheKey(
+  networkName: NetworkName,
+  apiKeyOverride: string | undefined,
+  useNonStagingEndpoints: boolean,
+) {
+  const nodeUrl = resolveFullnodeUrl(networkName, useNonStagingEndpoints);
+  return `${networkName}:${normalizeGeomiDevApiKeyOverride(apiKeyOverride)}:${nodeUrl}`;
 }
 
 export function clearCachedV2Clients() {
@@ -226,11 +271,20 @@ export function clearCachedV2Clients() {
 export function getCachedV2Client(
   networkName: NetworkName,
   apiKeyOverride = getGeomiDevApiKeyOverride(networkName),
+  useNonStagingEndpoints = getClientAppliedNonStagingEndpoints(),
 ): Aptos {
-  const cacheKey = getClientCacheKey(networkName, apiKeyOverride);
+  const cacheKey = getClientCacheKey(
+    networkName,
+    apiKeyOverride,
+    useNonStagingEndpoints,
+  );
   const existing = clientCache.get(cacheKey);
   if (existing) return existing;
-  const client = createAptosV2Client(networkName, apiKeyOverride);
+  const client = createAptosV2Client(
+    networkName,
+    apiKeyOverride,
+    useNonStagingEndpoints,
+  );
   clientCache.set(cacheKey, client);
   return client;
 }
@@ -238,27 +292,29 @@ export function getCachedV2Client(
 // Aptos client hooks
 export function useAptosClient(): AptosClient {
   const networkName = useNetworkName();
+  const useNonStaging = useAppliedNonStagingEndpoints();
   const {
     settings: {geomiDevApiKeyOverridesByNetwork},
   } = useExplorerSettings();
   const apiKeyOverride = geomiDevApiKeyOverridesByNetwork[networkName];
 
   return useMemo(
-    () => createAptosClient(networkName, apiKeyOverride),
-    [networkName, apiKeyOverride],
+    () => createAptosClient(networkName, apiKeyOverride, useNonStaging),
+    [networkName, apiKeyOverride, useNonStaging],
   );
 }
 
 export function useAptosClientV2(): Aptos {
   const networkName = useNetworkName();
+  const useNonStaging = useAppliedNonStagingEndpoints();
   const {
     settings: {geomiDevApiKeyOverridesByNetwork},
   } = useExplorerSettings();
   const apiKeyOverride = geomiDevApiKeyOverridesByNetwork[networkName];
 
   return useMemo(
-    () => getCachedV2Client(networkName, apiKeyOverride),
-    [networkName, apiKeyOverride],
+    () => getCachedV2Client(networkName, apiKeyOverride, useNonStaging),
+    [networkName, apiKeyOverride, useNonStaging],
   );
 }
 
@@ -275,14 +331,15 @@ export type GlobalState = {
  */
 export function useGlobalState(): GlobalState {
   const networkName = useNetworkName();
-  const networkValue = networks[networkName];
+  const useNonStaging = useAppliedNonStagingEndpoints();
+  const networkValue = resolveFullnodeUrl(networkName, useNonStaging);
   const {
     settings: {geomiDevApiKeyOverridesByNetwork},
   } = useExplorerSettings();
   const apiKeyOverride = geomiDevApiKeyOverridesByNetwork[networkName];
   const sdk_v2_client = useMemo(
-    () => getCachedV2Client(networkName, apiKeyOverride),
-    [networkName, apiKeyOverride],
+    () => getCachedV2Client(networkName, apiKeyOverride, useNonStaging),
+    [networkName, apiKeyOverride, useNonStaging],
   );
 
   return useMemo(

@@ -113,6 +113,13 @@ export const zh = {
       localZone: "您的浏览器时区是 {timeZone}。",
       example: "示例：{time}",
     },
+    endpoints: {
+      title: "测试网与开发网端点",
+      description:
+        "测试网和开发网默认使用 Aptos Labs 的预发（staging）API。打开此开关可改用公开端点。主网不受影响。构建时设置的 URL 保持不变。",
+      ariaLabel: "使用公开的测试网和开发网端点",
+      preview: "测试网：{testnet}。开发网：{devnet}。",
+    },
     apiKeys: {
       title: "API 密钥覆盖",
       whyAriaLabel: "为何使用自己的 API 密钥？",
@@ -306,6 +313,7 @@ export const zh = {
         "**Move 字节码反编译** — 默认关闭。启用前请阅读免责声明。关闭时，反编译和反汇编视图会被隐藏。",
         "**时间戳** — 默认使用 UTC，因此同一时间在每台设备上的读法一致。在 [设置](/settings) 中打开本地时间，可将链上时间转换到浏览器时区。CSV 导出和复制的原始时间戳仍为 UTC。",
         "**API 密钥覆盖** — 可选的按网络 [geomi.dev](https://geomi.dev) 密钥，以免浏览器卡在共享的匿名速率限制上。密钥以 `Authorization: Bearer` 发送。Geomi `AG-*` 客户端密钥必须允许本站 Origin。仅在你信任的设备上勾选**在此设备上记住**；否则密钥仅在标签页会话期间有效。",
+        "**测试网与开发网端点** — 默认使用 Aptos Labs 预发 API。[设置](/settings) 可将这两个网络切换到公开端点。主网不变，构建时设置的 URL 也保持原样。",
         "**主题** — 通过页眉的太阳/月亮控件选择浅色或深色。存储在 cookie（`color_scheme`）中；若未选择则跟随系统。",
         "**网络** — 页眉选择器；编码在 `?network=` 中，而非设置里。",
       ],

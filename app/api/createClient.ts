@@ -8,15 +8,15 @@ import {aptosSdkClientConfig} from "../lib/aptosGatewayAuth";
 import {
   defaultNetworkName,
   getApiKey,
-  getGraphqlURI,
   getServerApiKey,
   isValidNetworkName,
   type NetworkName,
-  networks,
 } from "../lib/constants";
+import {resolveFullnodeUrl, resolveGraphqlURI} from "../lib/networkEndpoints";
 import {
   getGeomiDevApiKeyOverride,
   normalizeGeomiDevApiKeyOverride,
+  readStoredNonStagingEndpoints,
 } from "../settings";
 
 const NETWORK_COOKIE_NAME = "network";
@@ -55,11 +55,16 @@ export function getNetworkFromSearch(
 /**
  * Create an Aptos v2 client for the given network.
  */
+function loaderUsesNonStagingEndpoints(): boolean {
+  return readStoredNonStagingEndpoints();
+}
+
 export function createAptosClient(
   networkName: NetworkName,
   apiKeyOverride?: string,
+  useNonStagingEndpoints = loaderUsesNonStagingEndpoints(),
 ): Aptos {
-  const nodeUrl = networks[networkName];
+  const nodeUrl = resolveFullnodeUrl(networkName, useNonStagingEndpoints);
   const apiKey =
     typeof window === "undefined"
       ? getServerApiKey(networkName)
@@ -67,7 +72,7 @@ export function createAptosClient(
           networkName,
           apiKeyOverride ?? getGeomiDevApiKeyOverride(networkName),
         );
-  const indexerUri = getGraphqlURI(networkName);
+  const indexerUri = resolveGraphqlURI(networkName, useNonStagingEndpoints);
 
   // Map network name to SDK Network enum
   let network: SdkNetwork;
@@ -98,8 +103,13 @@ export function createAptosClient(
 // Cache clients to avoid recreating them
 const clientCache = new Map<string, Aptos>();
 
-function getClientCacheKey(networkName: NetworkName, apiKeyOverride?: string) {
-  return `${networkName}:${normalizeGeomiDevApiKeyOverride(apiKeyOverride)}`;
+function getClientCacheKey(
+  networkName: NetworkName,
+  apiKeyOverride: string | undefined,
+  useNonStagingEndpoints: boolean,
+) {
+  const nodeUrl = resolveFullnodeUrl(networkName, useNonStagingEndpoints);
+  return `${networkName}:${normalizeGeomiDevApiKeyOverride(apiKeyOverride)}:${nodeUrl}`;
 }
 
 export function clearCachedSearchClients() {
@@ -114,10 +124,18 @@ export function getCachedClient(networkName: NetworkName): Aptos {
     typeof window === "undefined"
       ? undefined
       : getGeomiDevApiKeyOverride(networkName);
-  const cacheKey = getClientCacheKey(networkName, apiKeyOverride);
+  const useNonStagingEndpoints = loaderUsesNonStagingEndpoints();
+  const cacheKey = getClientCacheKey(
+    networkName,
+    apiKeyOverride,
+    useNonStagingEndpoints,
+  );
 
   if (!clientCache.has(cacheKey)) {
-    clientCache.set(cacheKey, createAptosClient(networkName, apiKeyOverride));
+    clientCache.set(
+      cacheKey,
+      createAptosClient(networkName, apiKeyOverride, useNonStagingEndpoints),
+    );
   }
   // biome-ignore lint/style/noNonNullAssertion: guaranteed by the .has() check above
   return clientCache.get(cacheKey)!;

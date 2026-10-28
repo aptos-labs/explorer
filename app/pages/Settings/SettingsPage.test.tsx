@@ -14,6 +14,7 @@ import {I18nProvider} from "../../i18n";
 import {
   ExplorerSettingsProvider,
   LOCAL_TIMESTAMPS_STORAGE_KEY,
+  NON_STAGING_ENDPOINTS_STORAGE_KEY,
 } from "../../settings";
 import getDesignTokens from "../../themes/theme";
 import SettingsPage from "./SettingsPage";
@@ -88,6 +89,38 @@ describe("FEAT-SETTINGS-004 — timestamp switch", () => {
       expect(window.localStorage.getItem(LOCAL_TIMESTAMPS_STORAGE_KEY)).toBe(
         "true",
       );
+    });
+  });
+});
+
+describe("FEAT-SETTINGS-005 — public testnet and devnet endpoints", () => {
+  it("saves the public-endpoint preference and previews the hosts", async () => {
+    renderSettingsPage();
+
+    const toggle = screen.getByRole("switch", {
+      name: "Use public testnet and devnet endpoints",
+    });
+    expect((toggle as HTMLInputElement).checked).toBe(false);
+    expect(
+      screen.getByText(/api\.testnet\.staging\.aptoslabs\.com/),
+    ).toBeTruthy();
+    expect(
+      screen.getByText(/api\.devnet\.staging\.aptoslabs\.com/),
+    ).toBeTruthy();
+
+    fireEvent.click(toggle);
+    expect((toggle as HTMLInputElement).checked).toBe(true);
+    expect(screen.getByText(/api\.testnet\.aptoslabs\.com/)).toBeTruthy();
+    expect(
+      screen.queryByText(/api\.testnet\.staging\.aptoslabs\.com/),
+    ).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", {name: "Save"}));
+
+    await waitFor(() => {
+      expect(
+        window.localStorage.getItem(NON_STAGING_ENDPOINTS_STORAGE_KEY),
+      ).toBe("true");
     });
   });
 });

@@ -118,6 +118,13 @@ export const it = {
       localZone: "Il fuso orario del browser è {timeZone}.",
       example: "Esempio: {time}",
     },
+    endpoints: {
+      title: "Endpoint di testnet e devnet",
+      description:
+        "Testnet e devnet usano per impostazione predefinita l'API di staging di Aptos Labs. Attiva questa opzione per usare gli endpoint pubblici. Mainnet non cambia. Un URL impostato in fase di build resta quello configurato.",
+      ariaLabel: "Usa gli endpoint pubblici di testnet e devnet",
+      preview: "Testnet: {testnet}. Devnet: {devnet}.",
+    },
     apiKeys: {
       title: "Sostituzione chiavi API",
       whyAriaLabel: "Perché usare la propria chiave API?",
@@ -314,6 +321,7 @@ export const it = {
         "**Decompilazione bytecode Move** — disattivata per default. Leggi l'avviso prima di abilitarla. Se disattivata, le viste Decompilato e Disassembly sono nascoste.",
         "**Timestamp** — UTC per impostazione predefinita, così un orario si legge allo stesso modo su ogni dispositivo. Attiva l'ora locale in [Impostazioni](/settings) per convertire gli orari della chain nel fuso del browser. L'esportazione CSV e i timestamp grezzi copiati restano in UTC.",
         "**Sostituzione chiavi API** — chiavi opzionali [geomi.dev](https://geomi.dev) per rete così il browser non resta bloccato sul limite di frequenza anonimo condiviso. Le chiavi sono inviate come `Authorization: Bearer`. Le chiavi client Geomi `AG-*` devono consentire l'Origin di questo sito. Seleziona **Ricorda su questo dispositivo** solo su una macchina di cui ti fidi; altrimenti le chiavi durano la sessione della scheda.",
+        "**Endpoint di testnet e devnet** — API di staging di Aptos Labs per impostazione predefinita. Le [Impostazioni](/settings) possono passare queste due reti agli endpoint pubblici. Mainnet non cambia e un URL impostato in fase di build resta quello configurato.",
         "**Tema** — chiaro o scuro dal controllo sole/luna nell'intestazione. Salvato in un cookie (`color_scheme`) e segue il sistema se non hai scelto.",
         "**Rete** — selettore nell'intestazione; codificata in `?network=` anziché nelle impostazioni.",
       ],

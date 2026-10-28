@@ -118,6 +118,13 @@ export const tr = {
       localZone: "Tarayıcınızın saat dilimi {timeZone}.",
       example: "Örnek: {time}",
     },
+    endpoints: {
+      title: "Testnet ve devnet uç noktaları",
+      description:
+        "Testnet ve devnet varsayılan olarak Aptos Labs hazırlık (staging) API'sini kullanır. Herkese açık uç noktalar için bunu açın. Mainnet değişmez. Derleme sırasında ayarlanan URL olduğu gibi kalır.",
+      ariaLabel: "Herkese açık testnet ve devnet uç noktalarını kullan",
+      preview: "Testnet: {testnet}. Devnet: {devnet}.",
+    },
     apiKeys: {
       title: "API Anahtarı Geçersiz Kılmaları",
       whyAriaLabel: "Neden kendi API anahtarınızı kullanmalısınız?",
@@ -313,6 +320,7 @@ export const tr = {
         "**Move bytecode dekompilasyonu** — varsayılan olarak kapalı. Etkinleştirmeden önce sorumluluk reddini okuyun. Kapalı olduğunda Dekompile ve Disassembly görünümleri gizlenir.",
         "**Zaman damgaları** — varsayılan UTC'dir; böylece bir saat her cihazda aynı okunur. Zincir saatlerini tarayıcınızın saat dilimine çevirmek için [Ayarlar](/settings) içinde yerel saati açın. CSV dışa aktarma ve kopyalanan ham zaman damgaları UTC kalır.",
         "**API anahtarı geçersiz kılmaları** — tarayıcınızın paylaşılan anonim hız sınırında takılı kalmaması için ağ bazında isteğe bağlı [geomi.dev](https://geomi.dev) anahtarları. Anahtarlar `Authorization: Bearer` olarak gönderilir. Geomi `AG-*` istemci anahtarları bu sitenin Origin'ine izin vermelidir. **Bu cihazda hatırla**'yı yalnızca güvendiğiniz bir makinede işaretleyin; aksi halde anahtarlar sekme oturumu süresince geçerlidir.",
+        "**Testnet ve devnet uç noktaları** — varsayılan Aptos Labs hazırlık API'sidir. [Ayarlar](/settings) bu iki ağı herkese açık uç noktalara geçirebilir. Mainnet değişmez ve derleme sırasında ayarlanan URL olduğu gibi kalır.",
         "**Tema** — üst bilgi güneş/ay kontrolünden açık veya koyu. Bir çerezde (`color_scheme`) saklanır ve seçim yapmadıysanız sistemi izler.",
         "**Ağ** — üst bilgi seçici; ayarlarda değil `?network=` ile kodlanır.",
       ],

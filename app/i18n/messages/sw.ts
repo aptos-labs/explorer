@@ -118,6 +118,13 @@ export const sw = {
       localZone: "Ukanda wa muda wa kivinjari chako ni {timeZone}.",
       example: "Mfano: {time}",
     },
+    endpoints: {
+      title: "Vituo vya testnet na devnet",
+      description:
+        "Testnet na devnet hutumia API ya staging ya Aptos Labs kwa chaguo-msingi. Washa hii kutumia vituo vya umma. Mainnet haibadiliki. URL iliyowekwa wakati wa build inabaki kama ilivyosanidiwa.",
+      ariaLabel: "Tumia vituo vya umma vya testnet na devnet",
+      preview: "Testnet: {testnet}. Devnet: {devnet}.",
+    },
     apiKeys: {
       title: "Ubadilishaji wa funguo za API",
       whyAriaLabel: "Kwa nini utumie funguo yako ya API?",
@@ -313,6 +320,7 @@ export const sw = {
         "**Uchanganuzi wa bytecode ya Move** — umezimwa kwa chaguomsingi. Soma kanusho kabla ya kuwasha. Ukiwa umezimwa, maoni ya Iliyochanganuliwa na Uchanganuzi hufichwa.",
         "**Mihuri ya muda** — UTC kwa chaguo-msingi ili muda mmoja usomwe sawa kwenye kila kifaa. Washa muda wa karibu katika [Mipangilio](/settings) ili kubadilisha muda wa mnyororo hadi ukanda wa kivinjari. Hamisho la CSV na mihuri ghafi iliyonakiliwa hubaki UTC.",
         "**Ubadilishaji wa funguo za API** — funguo za [geomi.dev](https://geomi.dev) kwa kila mtandao (si lazima) ili kivinjari chako kisikwame kwenye kikomo cha kasi cha pamoja cha wasiojulikana. Funguo hutumwa kama `Authorization: Bearer`. Funguo za mteja za Geomi `AG-*` lazima ziruhusu Origin ya tovuti hii. Weka alama **Kumbuka kwenye kifaa hiki** tu kwenye mashine unayoiamini; vinginevyo funguo hudumu kwa kipindi cha kichupo.",
+        "**Vituo vya testnet na devnet** — API ya staging ya Aptos Labs kwa chaguo-msingi. [Mipangilio](/settings) inaweza kubadili mitandao hii miwili kwenda vituo vya umma. Mainnet haibadiliki, na URL ya build inabaki.",
         "**Mandhari** — mwanga au giza kutoka kidhibiti cha jua/mwezi kwenye kichwa. Huhifadhiwa kwenye kuki (`color_scheme`) na hufuata mfumo ikiwa hujachagua.",
         "**Mtandao** — kichaguzi cha kichwa; husimbwa katika `?network=` badala ya mipangilio.",
       ],

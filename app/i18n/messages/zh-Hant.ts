@@ -113,6 +113,13 @@ export const zhHant = {
       localZone: "您的瀏覽器時區是 {timeZone}。",
       example: "範例：{time}",
     },
+    endpoints: {
+      title: "測試網與開發網端點",
+      description:
+        "測試網和開發網預設使用 Aptos Labs 的預備（staging）API。開啟此開關可改用公開端點。主網不受影響。建置時設定的 URL 維持不變。",
+      ariaLabel: "使用公開的測試網和開發網端點",
+      preview: "測試網：{testnet}。開發網：{devnet}。",
+    },
     apiKeys: {
       title: "API 密鑰覆寫",
       whyAriaLabel: "為什麼使用自己的 API 密鑰？",
@@ -306,6 +313,7 @@ export const zhHant = {
         "**Move 位元組碼反編譯** — 預設關閉。啟用前請閱讀免責聲明。關閉時，反編譯和反組譯視圖會被隱藏。",
         "**時間戳** — 預設為 UTC，因此同一時間在每台裝置上的讀法一致。在 [設定](/settings) 開啟本地時間，可將鏈上時間轉換為瀏覽器時區。CSV 匯出與複製的原始時間戳仍為 UTC。",
         "**API 密鑰覆寫** — 可選的按網路 [geomi.dev](https://geomi.dev) 密鑰，避免瀏覽器困在共用匿名速率限制。密鑰以 `Authorization: Bearer` 傳送。Geomi `AG-*` 用戶端密鑰必須允許本站 Origin。僅在您信任的裝置上勾選**在此裝置上記住**；否則密鑰僅在分頁工作階段期間有效。",
+        "**測試網與開發網端點** — 預設使用 Aptos Labs 預備 API。[設定](/settings) 可將這兩個網路切換到公開端點。主網不變，建置時設定的 URL 也維持原樣。",
         "**主題** — 透過頁首太陽/月亮控制項選擇淺色或深色。儲存在 cookie（`color_scheme`）中；若未選擇則遵循系統。",
         "**網路** — 頁首選擇器；編碼在 `?network=` 中，而非設定裡。",
       ],

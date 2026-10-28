@@ -120,6 +120,13 @@ export const es = {
       localZone: "La zona horaria de tu navegador es {timeZone}.",
       example: "Ejemplo: {time}",
     },
+    endpoints: {
+      title: "Endpoints de testnet y devnet",
+      description:
+        "Testnet y devnet usan la API de staging de Aptos Labs de forma predeterminada. Activa esto para usar los endpoints públicos. Mainnet no cambia. Una URL definida en la compilación se mantiene.",
+      ariaLabel: "Usar los endpoints públicos de testnet y devnet",
+      preview: "Testnet: {testnet}. Devnet: {devnet}.",
+    },
     apiKeys: {
       title: "Sustituciones de claves de API",
       whyAriaLabel: "¿Por qué usar tu propia clave de API?",
@@ -316,6 +323,7 @@ export const es = {
         "**Descompilación de bytecode de Move** — desactivada de forma predeterminada. Lee el aviso antes de activarla. Cuando está desactivada, las vistas Descompilado y Desensamblado se ocultan.",
         "**Marcas de tiempo** — UTC de forma predeterminada, para que una hora se lea igual en cada dispositivo. Activa la hora local en [Configuración](/settings) para convertir las horas de la cadena a la zona horaria de tu navegador. La exportación CSV y las marcas de tiempo sin procesar copiadas siguen en UTC.",
         "**Sustituciones de claves de API** — claves opcionales de [geomi.dev](https://geomi.dev) por red para que tu navegador no quede en el límite de frecuencia anónimo compartido. Las claves se envían como `Authorization: Bearer`. Las claves de cliente `AG-*` de Geomi deben permitir el Origin de este sitio. Marca **Recordar en este dispositivo** solo en una máquina de confianza; de lo contrario las claves duran la sesión de la pestaña.",
+        "**Endpoints de testnet y devnet** — API de staging de Aptos Labs de forma predeterminada. [Configuración](/settings) puede cambiar esas dos redes a los endpoints públicos. Mainnet no cambia, y una URL definida en la compilación se mantiene.",
         "**Tema** — claro u oscuro desde el control de sol/luna del encabezado. Se guarda en una cookie (`color_scheme`) y sigue el sistema si no has elegido.",
         "**Red** — selector del encabezado; se codifica en `?network=` en lugar de en la configuración.",
       ],

@@ -118,6 +118,14 @@ export const fr = {
       localZone: "Le fuseau horaire de votre navigateur est {timeZone}.",
       example: "Exemple : {time}",
     },
+    endpoints: {
+      title: "Points de terminaison testnet et devnet",
+      description:
+        "Testnet et devnet utilisent par défaut l'API de staging d'Aptos Labs. Activez cette option pour utiliser les points de terminaison publics. Le mainnet ne change pas. Une URL définie à la compilation reste en place.",
+      ariaLabel:
+        "Utiliser les points de terminaison publics de testnet et devnet",
+      preview: "Testnet : {testnet}. Devnet : {devnet}.",
+    },
     apiKeys: {
       title: "Substitutions de clés API",
       whyAriaLabel: "Pourquoi utiliser votre propre clé API ?",
@@ -314,6 +322,7 @@ export const fr = {
         "**Décompilation du bytecode Move** — désactivée par défaut. Lisez l'avertissement avant d'activer. Lorsque c'est désactivé, les vues Décompilé et Désassemblage sont masquées.",
         "**Horodatages** — UTC par défaut, pour qu'une heure se lise de la même façon sur chaque appareil. Activez l'heure locale dans les [Paramètres](/settings) pour convertir les heures de la chaîne vers le fuseau de votre navigateur. L'export CSV et les horodatages bruts copiés restent en UTC.",
         "**Substitutions de clés API** — clés [geomi.dev](https://geomi.dev) facultatives par réseau, afin que votre navigateur ne reste pas bloqué sur la limite de débit anonyme partagée. Les clés sont envoyées en `Authorization: Bearer`. Les clés client Geomi `AG-*` doivent autoriser l'origine de ce site. Cochez **Mémoriser sur cet appareil** uniquement sur une machine de confiance ; sinon les clés durent le temps de la session de l'onglet.",
+        "**Points de terminaison testnet et devnet** — API de staging d'Aptos Labs par défaut. Les [Paramètres](/settings) peuvent basculer ces deux réseaux vers les points de terminaison publics. Le mainnet ne change pas, et une URL définie à la compilation reste en place.",
         "**Thème** — clair ou sombre via le contrôle soleil/lune de l'en-tête. Stocké dans un cookie (`color_scheme`) et suit le système si vous n'avez pas choisi.",
         "**Réseau** — sélecteur de l'en-tête ; encodé dans `?network=` plutôt que dans les paramètres.",
       ],
