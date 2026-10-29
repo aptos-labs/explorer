@@ -1,4 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
+import {useMemo} from "react";
 import {getHardCodedCoins} from "../../data";
 import {useNetworkName} from "../../global-config/GlobalConfig";
 import type {NetworkName} from "../../lib/constants";
@@ -40,12 +41,57 @@ export type CoinDescription = {
   native?: boolean; // Added for our own purposes, not from Panora
 };
 
+/** Hardcoded coins for a network (always available without Panora). */
+export function getBaselineCoinList(
+  networkName: NetworkName,
+): CoinDescription[] {
+  return Object.values(getHardCodedCoins(networkName));
+}
+
+function hardcodedCoinMatchesKey(coin: CoinDescription, key: string): boolean {
+  const standardizedKey = tryStandardizeAddress(key);
+  if (coin.tokenAddress === key) {
+    return true;
+  }
+  if (!coin.faAddress || !standardizedKey) {
+    return false;
+  }
+  return tryStandardizeAddress(coin.faAddress) === standardizedKey;
+}
+
+/** Panora list with network hardcoded coins prepended when missing from the API. */
+export function mergePanoraWithHardcodedCoins(
+  networkName: NetworkName,
+  panoraCoins: CoinDescription[],
+): CoinDescription[] {
+  const hardCodedCoins = getHardCodedCoins(networkName);
+  const hardcodedKeys = Object.keys(hardCodedCoins).filter((key) => {
+    return !panoraCoins.some((coin) => hardcodedCoinMatchesKey(coin, key));
+  });
+
+  const prepend: CoinDescription[] = [];
+  for (const key of hardcodedKeys) {
+    prepend.push(hardCodedCoins[key]);
+  }
+  return prepend.concat(panoraCoins);
+}
+
+function baselineCoinListQueryData(networkName: NetworkName): {
+  data: CoinDescription[];
+} {
+  return {data: getBaselineCoinList(networkName)};
+}
+
 /**
  * Fetch coin list from Panora API with network-specific hardcoded coins
  * Note: Panora API is mainnet-only, so testnet/devnet will only show hardcoded coins
  */
 export function useGetCoinList(options?: {retry?: number | boolean}) {
   const networkName = useNetworkName();
+  const baselineData = useMemo(
+    () => baselineCoinListQueryData(networkName),
+    [networkName],
+  );
 
   return useQuery<{data: CoinDescription[]}, ResponseError>({
     queryKey: ["coinList", networkName],
@@ -58,48 +104,37 @@ export function useGetCoinList(options?: {retry?: number | boolean}) {
         return {data: Object.values(hardCodedCoins)};
       }
 
-      const end_point = "https://api.panora.exchange/tokenlist";
+      try {
+        const end_point = "https://api.panora.exchange/tokenlist";
 
-      const query = {
-        panoraUI: "true, false",
-      };
+        const query = {
+          panoraUI: "true, false",
+        };
 
-      const headers = {
-        // public key from their docs page
-        "x-api-key":
-          "a4^KV_EaTf4MW#ZdvgGKX#HUD^3IFEAOV_kzpIE^3BQGA8pDnrkT7JcIy#HNlLGi",
-      };
+        const headers = {
+          // public key from their docs page
+          "x-api-key":
+            "a4^KV_EaTf4MW#ZdvgGKX#HUD^3IFEAOV_kzpIE^3BQGA8pDnrkT7JcIy#HNlLGi",
+        };
 
-      const queryString = new URLSearchParams(query);
-      const url = `${end_point}?${queryString}`;
+        const queryString = new URLSearchParams(query);
+        const url = `${end_point}?${queryString}`;
 
-      const ret: {data: CoinDescription[]} = await (
-        await fetch(url, {
-          method: "GET",
-          headers: headers,
-        })
-      ).json();
+        const ret: {data: CoinDescription[]} = await (
+          await fetch(url, {
+            method: "GET",
+            headers: headers,
+          })
+        ).json();
 
-      // Merge hardcoded coins with the fetched coins only adding missing
-      // TODO: Probably provide a list for bad internet connections / rate limiting
-      const hardcodedKeys = Object.keys(hardCodedCoins).filter((key) => {
-        return !ret.data.find((coin) => {
-          return (
-            coin.tokenAddress === key ||
-            tryStandardizeAddress(coin.faAddress) === key
-          );
-        });
-      });
-
-      // Any that don't exist, add them (and at the beginning)
-      const newData: CoinDescription[] = [];
-      hardcodedKeys.forEach((key) => {
-        newData.push(hardCodedCoins[key]);
-      });
-      ret.data = newData.concat(ret.data);
-
-      return ret;
+        return {
+          data: mergePanoraWithHardcodedCoins(networkName, ret.data ?? []),
+        };
+      } catch {
+        return baselineData;
+      }
     },
+    placeholderData: baselineData,
     retry: options?.retry ?? false,
     // Coin list is static metadata - cache for 1 hour
     staleTime: 60 * 60 * 1000,
@@ -115,5 +150,5 @@ export function useGetCoinList(options?: {retry?: number | boolean}) {
 export function getCoinListForNetwork(
   networkName: NetworkName,
 ): CoinDescription[] {
-  return Object.values(getHardCodedCoins(networkName));
+  return getBaselineCoinList(networkName);
 }
