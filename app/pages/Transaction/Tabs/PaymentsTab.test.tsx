@@ -16,8 +16,17 @@ vi.mock("@aptos-labs/wallet-adapter-react", () => ({
   useWallet: () => walletMock,
 }));
 
-vi.mock("../../../api/hooks/useGetCoinList", () => ({
-  useGetCoinList: () => ({data: {data: []}}),
+vi.mock("../../../api/hooks/useGetCoinList", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("../../../api/hooks/useGetCoinList")>();
+  return {
+    ...actual,
+    useGetCoinList: () => ({data: {data: []}}),
+  };
+});
+
+vi.mock("../../../global-config/GlobalConfig", () => ({
+  useNetworkName: () => "mainnet",
 }));
 
 vi.mock("../../../api/hooks/useGetAssetMetadata", () => ({
