@@ -36,6 +36,7 @@ import {readBrowserTimeZone} from "../../i18n/timestampTimeZone";
 import {emitApiKeySaved} from "../../context/rate-limit";
 import {clearCachedV2Clients} from "../../global-config";
 import {type NetworkName, networks} from "../../lib/constants";
+import {resolveFullnodeUrl} from "../../lib/networkEndpoints";
 import {
   defaultExplorerClientSettings,
   type ExplorerClientSettings,
@@ -265,6 +266,71 @@ export default function SettingsPage() {
                 slotProps={{
                   input: {
                     "aria-label": t("settings.timestamps.ariaLabel"),
+                  },
+                }}
+              />
+            </Stack>
+          </Paper>
+
+          <Paper
+            variant="outlined"
+            sx={{
+              p: 3,
+              borderColor: draftSettings.useNonStagingEndpoints
+                ? theme.palette.success.main
+                : theme.palette.divider,
+            }}
+          >
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+              }}
+            >
+              <Box>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontWeight: 600,
+                  }}
+                >
+                  {t("settings.endpoints.title")}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "text.secondary",
+                    mt: 0.5,
+                  }}
+                >
+                  {t("settings.endpoints.description")}
+                </Typography>
+                <Typography variant="body2" sx={{mt: 1.5}}>
+                  {t("settings.endpoints.preview", {
+                    testnet: resolveFullnodeUrl(
+                      "testnet",
+                      draftSettings.useNonStagingEndpoints,
+                    ),
+                    devnet: resolveFullnodeUrl(
+                      "devnet",
+                      draftSettings.useNonStagingEndpoints,
+                    ),
+                  })}
+                </Typography>
+              </Box>
+              <Switch
+                checked={draftSettings.useNonStagingEndpoints}
+                onChange={(event) =>
+                  setDraftSettings((current) => ({
+                    ...current,
+                    useNonStagingEndpoints: event.target.checked,
+                  }))
+                }
+                slotProps={{
+                  input: {
+                    "aria-label": t("settings.endpoints.ariaLabel"),
                   },
                 }}
               />

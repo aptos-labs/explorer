@@ -118,6 +118,13 @@ export const pt = {
       localZone: "O fuso horário do seu navegador é {timeZone}.",
       example: "Exemplo: {time}",
     },
+    endpoints: {
+      title: "Endpoints de testnet e devnet",
+      description:
+        "Testnet e devnet usam a API de staging da Aptos Labs por padrão. Ative isto para usar os endpoints públicos. A mainnet não muda. Uma URL definida na compilação permanece como configurada.",
+      ariaLabel: "Usar os endpoints públicos de testnet e devnet",
+      preview: "Testnet: {testnet}. Devnet: {devnet}.",
+    },
     apiKeys: {
       title: "Substituições de chave de API",
       whyAriaLabel: "Por que usar sua própria chave de API?",
@@ -314,6 +321,7 @@ export const pt = {
         "**Descompilação de bytecode Move** — desligada por padrão. Leia o aviso antes de ativar. Quando desligada, as visões Descompilado e Desmontagem ficam ocultas.",
         "**Data e hora** — UTC por padrão, para que um horário seja lido igual em cada dispositivo. Ative o horário local em [Configurações](/settings) para converter os horários da cadeia para o fuso do seu navegador. A exportação CSV e os carimbos brutos copiados permanecem em UTC.",
         "**Substituições de chave de API** — chaves opcionais por rede do [geomi.dev](https://geomi.dev) para que seu navegador não fique preso no limite de taxa anônimo compartilhado. As chaves são enviadas como `Authorization: Bearer`. Chaves de cliente Geomi `AG-*` devem permitir a Origin deste site. Marque **Lembrar neste dispositivo** só em uma máquina em que você confie; caso contrário, as chaves duram a sessão da aba.",
+        "**Endpoints de testnet e devnet** — API de staging da Aptos Labs por padrão. [Configurações](/settings) pode mudar essas duas redes para os endpoints públicos. A mainnet não muda, e uma URL definida na compilação permanece.",
         "**Tema** — claro ou escuro pelo controle de sol/lua no cabeçalho. Armazenado em um cookie (`color_scheme`) e segue o sistema se você não tiver escolhido.",
         "**Rede** — seletor do cabeçalho; codificada em `?network=` em vez de nas configurações.",
       ],

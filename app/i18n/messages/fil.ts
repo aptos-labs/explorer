@@ -119,6 +119,13 @@ export const fil = {
       localZone: "Ang time zone ng iyong browser ay {timeZone}.",
       example: "Halimbawa: {time}",
     },
+    endpoints: {
+      title: "Mga endpoint ng testnet at devnet",
+      description:
+        "Gumagamit ang testnet at devnet ng staging Aptos Labs API bilang default. I-on ito para gamitin ang mga pampublikong endpoint. Hindi nagbabago ang mainnet. Mananatili ang URL na itinakda sa build.",
+      ariaLabel: "Gamitin ang mga pampublikong endpoint ng testnet at devnet",
+      preview: "Testnet: {testnet}. Devnet: {devnet}.",
+    },
     apiKeys: {
       title: "Mga override ng API key",
       whyAriaLabel: "Bakit gagamit ng sarili mong API key?",
@@ -314,6 +321,7 @@ export const fil = {
         "**Decompilation ng Move bytecode** — naka-off bilang default. Basahin ang disclaimer bago i-enable. Kapag naka-off, nakatago ang Decompiled at Disassembly view.",
         "**Mga timestamp** — UTC bilang default para pareho ang pagbasa ng isang oras sa bawat device. I-on ang lokal na oras sa [Settings](/settings) para i-convert ang mga oras ng chain sa time zone ng browser. Nananatiling UTC ang CSV export at mga kinopyang raw timestamp.",
         "**Mga override ng API key** — opsyonal na [geomi.dev](https://geomi.dev) key bawat network para hindi maipit ang browser sa shared anonymous rate limit. Ipinapadala ang key bilang `Authorization: Bearer`. Dapat payagan ng Geomi `AG-*` client key ang Origin ng site na ito. I-check ang **Tandaan sa device na ito** sa makina lang na pinagkakatiwalaan mo; kung hindi, tumatagal ang key sa tab session.",
+        "**Mga endpoint ng testnet at devnet** — staging Aptos Labs API bilang default. Maaaring ilipat ng [Mga setting](/settings) ang dalawang network na ito sa mga pampublikong endpoint. Hindi nagbabago ang mainnet, at nananatili ang URL na itinakda sa build.",
         "**Theme** — light o dark mula sa sun/moon control sa header. Naka-store sa cookie (`color_scheme`) at sumusunod sa system kung hindi ka pa pumili.",
         "**Network** — selector sa header; naka-encode sa `?network=` sa halip na sa setting.",
       ],

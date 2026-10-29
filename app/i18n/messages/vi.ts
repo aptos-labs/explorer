@@ -117,6 +117,13 @@ export const vi = {
       localZone: "Múi giờ của trình duyệt là {timeZone}.",
       example: "Ví dụ: {time}",
     },
+    endpoints: {
+      title: "Endpoint testnet và devnet",
+      description:
+        "Testnet và devnet mặc định dùng API staging của Aptos Labs. Bật tùy chọn này để dùng endpoint công khai. Mainnet không đổi. URL đặt lúc build được giữ nguyên.",
+      ariaLabel: "Dùng endpoint công khai của testnet và devnet",
+      preview: "Testnet: {testnet}. Devnet: {devnet}.",
+    },
     apiKeys: {
       title: "Ghi đè khóa API",
       whyAriaLabel: "Tại sao nên dùng khóa API của riêng bạn?",
@@ -311,6 +318,7 @@ export const vi = {
         "**Dịch ngược bytecode Move** — tắt mặc định. Đọc tuyên bố miễn trừ trước khi bật. Khi tắt, các view Đã dịch ngược và Disassembly bị ẩn.",
         "**Dấu thời gian** — mặc định UTC để cùng một thời điểm đọc giống nhau trên mọi thiết bị. Bật giờ địa phương trong [Cài đặt](/settings) để đổi thời gian trên chuỗi sang múi giờ của trình duyệt. Xuất CSV và dấu thời gian thô đã sao chép vẫn là UTC.",
         "**Ghi đè khóa API** — khóa [geomi.dev](https://geomi.dev) tùy chọn theo mạng để trình duyệt không bị kẹt ở hạn mức ẩn danh dùng chung. Khóa được gửi dưới dạng `Authorization: Bearer`. Khóa máy khách Geomi `AG-*` phải cho phép Origin của trang này. Chỉ chọn **Ghi nhớ trên thiết bị này** trên máy bạn tin cậy; nếu không khóa chỉ tồn tại trong phiên tab.",
+        "**Endpoint testnet và devnet** — mặc định là API staging của Aptos Labs. [Cài đặt](/settings) có thể chuyển hai mạng này sang endpoint công khai. Mainnet không đổi, và URL đặt lúc build được giữ nguyên.",
         "**Giao diện** — sáng hoặc tối từ nút mặt trời/mặt trăng trên header. Lưu trong cookie (`color_scheme`) và theo hệ thống nếu bạn chưa chọn.",
         "**Mạng** — bộ chọn trên header; mã hóa trong `?network=` chứ không phải cài đặt.",
       ],

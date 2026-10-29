@@ -119,6 +119,13 @@ export const nl = {
       localZone: "De tijdzone van je browser is {timeZone}.",
       example: "Voorbeeld: {time}",
     },
+    endpoints: {
+      title: "Testnet- en devnet-eindpunten",
+      description:
+        "Testnet en devnet gebruiken standaard de staging-API van Aptos Labs. Zet dit aan om de openbare eindpunten te gebruiken. Mainnet blijft ongewijzigd. Een URL die bij de build is gezet, blijft zoals geconfigureerd.",
+      ariaLabel: "Openbare testnet- en devnet-eindpunten gebruiken",
+      preview: "Testnet: {testnet}. Devnet: {devnet}.",
+    },
     apiKeys: {
       title: "API-sleuteloverschrijvingen",
       whyAriaLabel: "Waarom uw eigen API-sleutel gebruiken?",
@@ -314,6 +321,7 @@ export const nl = {
         "**Move-bytecode-decompilatie** — standaard uit. Lees de disclaimer voordat u inschakelt. Wanneer uit, zijn Gedecompileerd- en Disassembly-weergaven verborgen.",
         "**Tijdstempels** — standaard UTC, zodat een tijd op elk apparaat hetzelfde wordt gelezen. Zet lokale tijd aan in [Instellingen](/settings) om ketentijden naar de tijdzone van je browser om te zetten. CSV-export en gekopieerde ruwe tijdstempels blijven UTC.",
         "**API-sleuteloverschrijvingen** — optionele [geomi.dev](https://geomi.dev)-sleutels per netwerk, zodat uw browser niet vastzit aan de gedeelde anonieme ratelimiet. Sleutels worden verzonden als `Authorization: Bearer`. Geomi `AG-*`-clientsleutels moeten de Origin van deze site toestaan. Vink **Op dit apparaat onthouden** alleen aan op een apparaat dat u vertrouwt; anders blijven sleutels geldig voor de tabsessie.",
+        "**Testnet- en devnet-eindpunten** — standaard de staging-API van Aptos Labs. Via [Instellingen](/settings) schakelt u deze twee netwerken naar de openbare eindpunten. Mainnet blijft ongewijzigd en een build-URL blijft zoals geconfigureerd.",
         "**Thema** — licht of donker via de zon/maan-knop in de koptekst. Opgeslagen in een cookie (`color_scheme`) en volgt het systeem als u niets hebt gekozen.",
         "**Netwerk** — selector in de koptekst; gecodeerd in `?network=` in plaats van in instellingen.",
       ],

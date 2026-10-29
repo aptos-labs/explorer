@@ -1,6 +1,8 @@
 import {useQuery} from "@tanstack/react-query";
 import {aptosGatewayApiKeyHeaders} from "../../lib/aptosGatewayAuth";
-import {getApiKey, type NetworkName, networks} from "../../lib/constants";
+import {getApiKey, type NetworkName} from "../../lib/constants";
+import {resolveFullnodeUrl} from "../../lib/networkEndpoints";
+import {useAppliedNonStagingEndpoints} from "../../settings";
 import {
   frameworkReleaseFromGasFeatureVersion,
   maxBytecodeFormatVersionFromFlags,
@@ -45,8 +47,8 @@ export type NetworkStatus = {
 
 export async function fetchNetworkStatus(
   networkName: NetworkName,
+  baseUrl = resolveFullnodeUrl(networkName, false),
 ): Promise<NetworkStatus> {
-  const baseUrl = networks[networkName];
   const apiKey = getApiKey(networkName);
   const headers = aptosGatewayApiKeyHeaders(apiKey);
 
@@ -133,9 +135,13 @@ export async function fetchNetworkStatus(
 }
 
 export function useGetNetworkStatus(networkName: NetworkName) {
+  const baseUrl = resolveFullnodeUrl(
+    networkName,
+    useAppliedNonStagingEndpoints(),
+  );
   return useQuery({
-    queryKey: ["deployments", "networkStatus", networkName],
-    queryFn: () => fetchNetworkStatus(networkName),
+    queryKey: ["deployments", "networkStatus", networkName, baseUrl],
+    queryFn: () => fetchNetworkStatus(networkName, baseUrl),
     staleTime: 60_000,
     retry: 1,
   });

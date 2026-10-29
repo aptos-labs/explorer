@@ -13,12 +13,19 @@ export interface ExplorerClientSettings {
   enableDecompilation: boolean;
   /** When true, chain timestamps render in the browser time zone after hydration. */
   displayLocalTimestamps: boolean;
+  /**
+   * When true, testnet and devnet use the public Aptos Labs API instead of
+   * the staging hosts. Applied after hydration so the first paint matches SSR.
+   */
+  useNonStagingEndpoints: boolean;
   localePreference: LocalePreference;
 }
 
 export const EXPLORER_SETTINGS_STORAGE_KEY = "aptos-explorer-settings";
 export const DECOMPILATION_STORAGE_KEY = "aptos-explorer-enable-decompilation";
 export const LOCAL_TIMESTAMPS_STORAGE_KEY = "aptos-explorer-local-timestamps";
+export const NON_STAGING_ENDPOINTS_STORAGE_KEY =
+  "aptos-explorer-non-staging-endpoints";
 export const LOCALE_STORAGE_KEY = "aptos-explorer-locale";
 
 const ALL_NETWORK_NAMES = Object.keys(networks) as NetworkName[];
@@ -28,6 +35,7 @@ export const defaultExplorerClientSettings: ExplorerClientSettings = {
   rememberGeomiDevApiKeyOverride: false,
   enableDecompilation: false,
   displayLocalTimestamps: false,
+  useNonStagingEndpoints: false,
   localePreference: "auto",
 };
 
@@ -38,6 +46,7 @@ export function isExplorerSettingsStorageKey(key: string | null): boolean {
     key === EXPLORER_SETTINGS_STORAGE_KEY ||
     key === DECOMPILATION_STORAGE_KEY ||
     key === LOCAL_TIMESTAMPS_STORAGE_KEY ||
+    key === NON_STAGING_ENDPOINTS_STORAGE_KEY ||
     key === LOCALE_STORAGE_KEY
   );
 }
@@ -163,6 +172,7 @@ export function sanitizeExplorerClientSettings(
 
   const enableDecompilation = value?.enableDecompilation === true;
   const displayLocalTimestamps = value?.displayLocalTimestamps === true;
+  const useNonStagingEndpoints = value?.useNonStagingEndpoints === true;
   const localePreference = normalizeLocalePreference(value?.localePreference);
 
   return {
@@ -170,6 +180,7 @@ export function sanitizeExplorerClientSettings(
     rememberGeomiDevApiKeyOverride,
     enableDecompilation,
     displayLocalTimestamps,
+    useNonStagingEndpoints,
     localePreference,
   };
 }
@@ -219,6 +230,12 @@ export function clearExplorerClientSettings(
 
     try {
       storage.removeItem(LOCAL_TIMESTAMPS_STORAGE_KEY);
+    } catch {
+      // Ignore storage removal failures.
+    }
+
+    try {
+      storage.removeItem(NON_STAGING_ENDPOINTS_STORAGE_KEY);
     } catch {
       // Ignore storage removal failures.
     }
@@ -286,11 +303,18 @@ function loadLocalTimestampsFlag(
   return loadStoredBooleanFlag(storages, LOCAL_TIMESTAMPS_STORAGE_KEY);
 }
 
+function loadNonStagingEndpointsFlag(
+  storages: ExplorerSettingsStorage,
+): boolean | undefined {
+  return loadStoredBooleanFlag(storages, NON_STAGING_ENDPOINTS_STORAGE_KEY);
+}
+
 export function loadExplorerClientSettings(
   storages: ExplorerSettingsStorage = getAvailableStorages(),
 ): ExplorerClientSettings {
   const decompFlag = loadDecompilationFlag(storages);
   const localTimestampsFlag = loadLocalTimestampsFlag(storages);
+  const nonStagingFlag = loadNonStagingEndpointsFlag(storages);
   const localePreference = loadLocalePreference(storages);
 
   const applyIndependentFlags = (settings: ExplorerClientSettings) => {
@@ -299,6 +323,9 @@ export function loadExplorerClientSettings(
     }
     if (localTimestampsFlag !== undefined) {
       settings.displayLocalTimestamps = localTimestampsFlag;
+    }
+    if (nonStagingFlag !== undefined) {
+      settings.useNonStagingEndpoints = nonStagingFlag;
     }
     if (localePreference !== undefined) {
       settings.localePreference = localePreference;
@@ -332,6 +359,7 @@ export function loadExplorerClientSettings(
     ...defaultExplorerClientSettings,
     enableDecompilation: decompFlag ?? false,
     displayLocalTimestamps: localTimestampsFlag ?? false,
+    useNonStagingEndpoints: nonStagingFlag ?? false,
     localePreference: localePreference ?? "auto",
   };
 }
@@ -368,6 +396,13 @@ function persistLocalTimestampsFlag(
   persistBooleanFlag(LOCAL_TIMESTAMPS_STORAGE_KEY, enabled, storages);
 }
 
+function persistNonStagingEndpointsFlag(
+  enabled: boolean,
+  storages: ExplorerSettingsStorage,
+) {
+  persistBooleanFlag(NON_STAGING_ENDPOINTS_STORAGE_KEY, enabled, storages);
+}
+
 export function persistExplorerClientSettings(
   settings: ExplorerClientSettings,
   storages: ExplorerSettingsStorage = getAvailableStorages(),
@@ -378,6 +413,10 @@ export function persistExplorerClientSettings(
   persistDecompilationFlag(sanitizedSettings.enableDecompilation, storages);
   persistLocalTimestampsFlag(
     sanitizedSettings.displayLocalTimestamps,
+    storages,
+  );
+  persistNonStagingEndpointsFlag(
+    sanitizedSettings.useNonStagingEndpoints,
     storages,
   );
   persistLocalePreference(sanitizedSettings.localePreference, storages);
@@ -404,6 +443,11 @@ export function persistExplorerClientSettings(
   } catch {
     // Ignore storage write failures so settings UI changes do not crash the app.
   }
+}
+
+/** Saved testnet/devnet public-endpoint preference. False during SSR. */
+export function readStoredNonStagingEndpoints(): boolean {
+  return loadExplorerClientSettings().useNonStagingEndpoints;
 }
 
 export function getGeomiDevApiKeyOverride(

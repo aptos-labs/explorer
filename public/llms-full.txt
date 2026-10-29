@@ -1,6 +1,6 @@
 # Aptos Explorer — Full LLM Reference
 
-> Last updated: 2026-10-15 (rev 38)
+> Last updated: 2026-10-27 (rev 39)
 
 > Comprehensive reference for AI systems interacting with or answering questions about the Aptos Explorer at [explorer.aptoslabs.com](https://explorer.aptoslabs.com).
 
@@ -101,6 +101,7 @@ Each detail page has tabs accessible via path segments:
 - `/settings` — configure explorer preferences stored locally in the browser
   - **Language**: browser default or an explicit catalog (English ships with the app). Applies to chrome, settings copy, and the user guide.
   - **Timestamps**: off by default, so chain times display in UTC. Turn on local time and save to show those times in the browser time zone after the page loads. CSV export and copied raw timestamps stay UTC.
+  - **Testnet and devnet endpoints**: off by default, so those networks use the staging Aptos Labs API. Turn on and save to use the public hosts (`api.testnet.aptoslabs.com`, `api.devnet.aptoslabs.com`) and their GraphQL indexers. Mainnet is unchanged. A build-time URL override stays as configured. The first paint keeps the staging default, then refetches.
   - **Move Bytecode Decompilation**: opt-in toggle to enable client-side decompilation of on-chain Move bytecode (Decompiled and Disassembly views on module code pages). Disabled by default; users must accept a disclaimer before enabling.
   - **API Key Overrides**: per-network geomi.dev API keys (same functionality previously in the header settings dialog)
 

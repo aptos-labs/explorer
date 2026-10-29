@@ -118,6 +118,13 @@ export const id = {
       localZone: "Zona waktu browser Anda adalah {timeZone}.",
       example: "Contoh: {time}",
     },
+    endpoints: {
+      title: "Endpoint testnet dan devnet",
+      description:
+        "Testnet dan devnet memakai API staging Aptos Labs secara bawaan. Aktifkan ini untuk memakai endpoint publik. Mainnet tidak berubah. URL yang disetel saat build tetap seperti yang dikonfigurasi.",
+      ariaLabel: "Gunakan endpoint publik testnet dan devnet",
+      preview: "Testnet: {testnet}. Devnet: {devnet}.",
+    },
     apiKeys: {
       title: "Override Kunci API",
       whyAriaLabel: "Mengapa menggunakan kunci API sendiri?",
@@ -312,6 +319,7 @@ export const id = {
         "**Dekompilasi bytecode Move** — nonaktif secara default. Baca penafian sebelum mengaktifkan. Saat nonaktif, tampilan Decompiled dan Disassembly disembunyikan.",
         "**Stempel waktu** — UTC secara bawaan agar satu waktu terbaca sama di setiap perangkat. Aktifkan waktu lokal di [Pengaturan](/settings) untuk mengubah waktu rantai ke zona waktu browser. Ekspor CSV dan stempel waktu mentah yang disalin tetap UTC.",
         "**Override kunci API** — kunci [geomi.dev](https://geomi.dev) opsional per jaringan agar browser Anda tidak terjebak pada batas laju anonim bersama. Kunci dikirim sebagai `Authorization: Bearer`. Kunci klien Geomi `AG-*` harus mengizinkan Origin situs ini. Centang **Ingat di perangkat ini** hanya di mesin yang Anda percaya; jika tidak, kunci bertahan untuk sesi tab.",
+        "**Endpoint testnet dan devnet** — API staging Aptos Labs secara bawaan. [Pengaturan](/settings) dapat mengalihkan dua jaringan ini ke endpoint publik. Mainnet tidak berubah, dan URL yang disetel saat build tetap.",
         "**Tema** — terang atau gelap dari kontrol matahari/bulan di header. Disimpan di cookie (`color_scheme`) dan mengikuti sistem jika Anda belum memilih.",
         "**Jaringan** — pemilih header; di-encode di `?network=` alih-alih di pengaturan.",
       ],

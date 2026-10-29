@@ -121,6 +121,13 @@ export const zu = {
       localZone: "Indawo yesikhathi yesiphequluli sakho ngu-{timeZone}.",
       example: "Isibonelo: {time}",
     },
+    endpoints: {
+      title: "Amaphoyinti wokugcina e-testnet ne-devnet",
+      description:
+        "I-testnet ne-devnet zisebenzisa i-staging API ye-Aptos Labs ngokuzenzakalelayo. Vula lokhu ukuze usebenzise amaphoyinti omphakathi. I-mainnet ayishintshi. I-URL esethwe ngesikhathi sokwakha ihlala njengoba ilungisiwe.",
+      ariaLabel: "Sebenzisa amaphoyinti omphakathi e-testnet ne-devnet",
+      preview: "Testnet: {testnet}. Devnet: {devnet}.",
+    },
     apiKeys: {
       title: "Ukushintsha Okhiye be-API",
       whyAriaLabel: "Kungani usebenzise ukhiye wakho we-API?",
@@ -316,6 +323,7 @@ export const zu = {
         "**Ukuhumusha kwe-Move bytecode** — kuvaliwe ngokuzenzakalelayo. Funda isitatimende ngaphambi kokunika amandla. Uma kuvaliwe, izibukwane ze-Decompiled ne-Disassembly ziyafihlwa.",
         "**Izitembu zesikhathi** — i-UTC ngokuzenzakalelayo ukuze isikhathi sifundwe ngendlela efanayo kuwo wonke amadivayisi. Vula isikhathi sendawo ku-[Izilungiselelo](/settings) ukuze uguqule izikhathi zochungechunge zibe yindawo yesikhathi yesiphequluli. Ukuthekelisa kwe-CSV nezitembu ezingahluziwe ezikopishiwe kuhlala ku-UTC.",
         "**Ukushintsha okhiye be-API** — amakhiye e-[geomi.dev](https://geomi.dev) angokukhethwayo ngenethiwekhi ukuze isiphequluli sakho singasebenzi ngomkhawulo ohlwane ongaziwa. Amakhiye athunyelwa njenge-`Authorization: Bearer`. Amakhiye omsebenzisi e-Geomi `AG-*` kufanele avumele i-Origin yale sayithi. Khetha **Remember on this device** kuphela kumshini owethembayo; uma kungenjalo amakhiye aphila iseshini yethebhu.",
+        "**Amaphoyinti wokugcina e-testnet ne-devnet** — i-staging API ye-Aptos Labs ngokuzenzakalelayo. [Izilungiselelo](/settings) zingashintsha lawa manethiwekhi amabili aye kumaphoyinti omphakathi. I-mainnet ayishintshi, futhi i-URL yesikhathi sokwakha ihlala.",
         "**Itimu** — ekhanyayo noma emnyama kusilawuli se-ilanga/inyanga ku-header. Igcinwa ku-cookie (`color_scheme`) futhi ilandela isistimu uma ungakakhethi.",
         "**Inethiwekhi** — isikhethi se-header; ifakwe ku-`?network=` kunokuba kuzilungiselelo.",
       ],

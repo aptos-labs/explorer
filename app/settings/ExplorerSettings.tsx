@@ -8,6 +8,10 @@ import {
   useState,
 } from "react";
 import {
+  appliedNonStagingEndpoints,
+  setClientAppliedNonStagingEndpoints,
+} from "../lib/networkEndpoints";
+import {
   type ExplorerClientSettings,
   isExplorerSettingsStorageKey,
   loadExplorerClientSettings,
@@ -24,10 +28,18 @@ const ExplorerSettingsContext = createContext<
   ExplorerSettingsContextValue | undefined
 >(undefined);
 
+/** False until the settings provider has hydrated, then stays true. */
+const NonStagingHydratedContext = createContext(false);
+
 export function ExplorerSettingsProvider({children}: {children: ReactNode}) {
   const [settings, setSettings] = useState<ExplorerClientSettings>(() =>
     loadExplorerClientSettings(),
   );
+  const [endpointsHydrated, setEndpointsHydrated] = useState(false);
+
+  useEffect(() => {
+    setEndpointsHydrated(true);
+  }, []);
 
   useEffect(() => {
     const handleStorage = (event: StorageEvent) => {
@@ -56,6 +68,13 @@ export function ExplorerSettingsProvider({children}: {children: ReactNode}) {
   const setExplorerSettings = useCallback((value: ExplorerClientSettings) => {
     const nextSettings = sanitizeExplorerClientSettings(value);
     persistExplorerClientSettings(nextSettings);
+    // Publish before React re-renders so the save handler's query refresh
+    // already targets the host the user just chose.
+    if (typeof window !== "undefined") {
+      setClientAppliedNonStagingEndpoints(
+        appliedNonStagingEndpoints(nextSettings.useNonStagingEndpoints, true),
+      );
+    }
     setSettings(nextSettings);
   }, []);
 
@@ -69,7 +88,9 @@ export function ExplorerSettingsProvider({children}: {children: ReactNode}) {
 
   return (
     <ExplorerSettingsContext.Provider value={value}>
-      {children}
+      <NonStagingHydratedContext.Provider value={endpointsHydrated}>
+        {children}
+      </NonStagingHydratedContext.Provider>
     </ExplorerSettingsContext.Provider>
   );
 }
@@ -88,4 +109,19 @@ export function useExplorerSettings() {
 
 export function useDecompilationEnabled(): boolean {
   return useExplorerSettings().settings.enableDecompilation;
+}
+
+/**
+ * Saved testnet/devnet host preference. False until after hydration so the
+ * first client render matches SSR (staging). Also publishes that choice for
+ * non-React callers such as cached SDK clients.
+ */
+export function useAppliedNonStagingEndpoints(): boolean {
+  const enabled = useExplorerSettings().settings.useNonStagingEndpoints;
+  const hydrated = useContext(NonStagingHydratedContext);
+  const applied = appliedNonStagingEndpoints(enabled, hydrated);
+  if (typeof window !== "undefined") {
+    setClientAppliedNonStagingEndpoints(applied);
+  }
+  return applied;
 }

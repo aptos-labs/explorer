@@ -2,7 +2,8 @@ import {createFileRoute} from "@tanstack/react-router";
 import {getClientFromSearch, getNetworkFromSearch} from "../api/createClient";
 import {blockQueryOptions} from "../api/queries";
 import {PagePending} from "../components/NavigationPending";
-import {networks} from "../constants";
+import {resolveFullnodeUrl} from "../lib/networkEndpoints";
+import {readStoredNonStagingEndpoints} from "../settings";
 import BlockPage from "../pages/Block/Index";
 
 // Primary route for block with tab in path
@@ -15,7 +16,10 @@ export const Route = createFileRoute("/block/$height/$tab")({
     ) as Record<string, string>;
     const client = getClientFromSearch(search);
     const networkName = getNetworkFromSearch(search);
-    const networkValue = networks[networkName];
+    const networkValue = resolveFullnodeUrl(
+      networkName,
+      readStoredNonStagingEndpoints(),
+    );
 
     try {
       await queryClient.ensureQueryData(

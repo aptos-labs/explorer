@@ -118,6 +118,13 @@ export const pl = {
       localZone: "Strefa czasowa Twojej przeglądarki to {timeZone}.",
       example: "Przykład: {time}",
     },
+    endpoints: {
+      title: "Punkty końcowe testnet i devnet",
+      description:
+        "Testnet i devnet domyślnie używają staging API Aptos Labs. Włącz to, aby używać publicznych punktów końcowych. Mainnet się nie zmienia. Adres URL ustawiony podczas kompilacji pozostaje bez zmian.",
+      ariaLabel: "Użyj publicznych punktów końcowych testnet i devnet",
+      preview: "Testnet: {testnet}. Devnet: {devnet}.",
+    },
     apiKeys: {
       title: "Nadpisania kluczy API",
       whyAriaLabel: "Dlaczego używać własnego klucza API?",
@@ -313,6 +320,7 @@ export const pl = {
         "**Dekompilacja bajtkodu Move** — domyślnie wyłączona. Przeczytaj zastrzeżenie przed włączeniem. Gdy wyłączona, widoki Dekompilowany i Disassembly są ukryte.",
         "**Znaczniki czasu** — domyślnie UTC, więc ta sama chwila czyta się tak samo na każdym urządzeniu. Włącz czas lokalny w [Ustawieniach](/settings), aby przeliczać czasy łańcucha na strefę przeglądarki. Eksport CSV i skopiowane surowe znaczniki zostają w UTC.",
         "**Nadpisania kluczy API** — opcjonalne klucze [geomi.dev](https://geomi.dev) dla każdej sieci, aby przeglądarka nie utknęła na współdzielonym anonimowym limicie zapytań. Klucze są wysyłane jako `Authorization: Bearer`. Klucze klienta Geomi `AG-*` muszą zezwalać na Origin tej witryny. Zaznacz **Zapamiętaj na tym urządzeniu** tylko na zaufanym komputerze; w przeciwnym razie klucze obowiązują przez sesję karty.",
+        "**Punkty końcowe testnet i devnet** — domyślnie staging API Aptos Labs. [Ustawienia](/settings) mogą przełączyć te dwie sieci na publiczne punkty końcowe. Mainnet się nie zmienia, a URL ustawiony podczas kompilacji pozostaje.",
         "**Motyw** — jasny lub ciemny z kontrolki słońca/księżyca w nagłówku. Przechowywany w ciasteczku (`color_scheme`) i podąża za systemem, jeśli nic nie wybrałeś.",
         "**Sieć** — selektor w nagłówku; zakodowany w `?network=`, a nie w ustawieniach.",
       ],

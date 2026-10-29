@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Public testnet and devnet endpoints**: Settings includes a switch (off by default) that points testnet and devnet at the public Aptos Labs API (`api.testnet.aptoslabs.com` and `api.devnet.aptoslabs.com`) instead of the staging hosts. Mainnet is unchanged. A build-time URL override stays as configured. The first paint keeps the staging default so the page matches during load, then refetches when the preference is on.
 - **Testnet known addresses**: Explorer labels for Decibel Testnet (`0xd368…7bd1`), Chunking Contract (`0x5363…c31e`), and Aptos Names (`0xb1ae…ecf4`).
 - **Genesis time on Releases**: Each network card on `/releases/networks` shows when that chain started. The genesis block timestamp is used when it is set; Aptos leaves it at `0`, so the time comes from transaction 1 (block 1). The time links to that transaction. Pruned history is read from the archive node.
 - **Blocks list range navigation**: The blocks page has Previous and Next controls that move between inclusive block-height ranges (`?start=` is the oldest height, `?end=` is the newest). The default view stays on the chain tip instead of a page number, because the tip moves continuously. `?start=` alone still opens a 20-block window ending at that height.

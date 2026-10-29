@@ -118,6 +118,13 @@ export const ms = {
       localZone: "Zon waktu pelayar anda ialah {timeZone}.",
       example: "Contoh: {time}",
     },
+    endpoints: {
+      title: "Endpoint testnet dan devnet",
+      description:
+        "Testnet dan devnet menggunakan API staging Aptos Labs secara lalai. Hidupkan ini untuk menggunakan endpoint awam. Mainnet tidak berubah. URL yang ditetapkan semasa binaan kekal seperti yang dikonfigurasi.",
+      ariaLabel: "Gunakan endpoint awam testnet dan devnet",
+      preview: "Testnet: {testnet}. Devnet: {devnet}.",
+    },
     apiKeys: {
       title: "Gantian Kunci API",
       whyAriaLabel: "Mengapa menggunakan kunci API sendiri?",
@@ -312,6 +319,7 @@ export const ms = {
         "**Penyahkompilasian bytecode Move** — dimatikan secara lalai. Baca penafian sebelum mendayakan. Apabila dimatikan, paparan Decompiled dan Disassembly disembunyikan.",
         "**Cap masa** — UTC secara lalai supaya satu masa dibaca sama pada setiap peranti. Hidupkan masa tempatan dalam [Tetapan](/settings) untuk menukar masa rantai ke zon waktu pelayar. Eksport CSV dan cap masa mentah yang disalin kekal UTC.",
         "**Gantian kunci API** — kunci [geomi.dev](https://geomi.dev) pilihan bagi setiap rangkaian supaya pelayar anda tidak terperangkap pada had kadar anonim kongsi. Kunci dihantar sebagai `Authorization: Bearer`. Kunci klien Geomi `AG-*` mesti membenarkan Origin laman ini. Tanda **Ingat pada peranti ini** hanya pada mesin yang anda percayai; jika tidak, kunci kekal untuk sesi tab.",
+        "**Endpoint testnet dan devnet** — API staging Aptos Labs secara lalai. [Tetapan](/settings) boleh menukar dua rangkaian ini kepada endpoint awam. Mainnet tidak berubah, dan URL semasa binaan kekal.",
         "**Tema** — cerah atau gelap daripada kawalan matahari/bulan dalam header. Disimpan dalam kuki (`color_scheme`) dan mengikuti sistem jika anda belum memilih.",
         "**Rangkaian** — pemilih header; di-encode dalam `?network=` dan bukannya tetapan.",
       ],

@@ -903,7 +903,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **Navigation** | Header gear icon and mobile nav "Settings" item link to `/settings`. Rate Limit Drawer "Set API key override" button also links there. |
 | **API key overrides** | One optional masked geomi.dev API key field per network (mainnet, testnet, devnet, decibel, shelbynet, local); shared show/hide toggle for all fields. Empty network uses the build default key (if any). Keys are sent as `Authorization: Bearer <key>` (Geomi + TS SDK `API_KEY`). A custom `api-key` header is ignored by the gateway. Geomi `AG-*` client keys also require a matching browser Origin. An info icon next to the section title opens a popover explaining that a personal key provides a dedicated rate limit (useful for heavy use or after HTTP 429) and links to geomi.dev. |
 | **Migration** | Previously saved single-key settings load as the same key applied to every network until the user saves again. |
-| **Persistence** | "Remember on this device" → localStorage, cross-tab sync via `storage` events. Non-API-key preferences (decompilation, local timestamps, language) persist to dedicated localStorage keys (`aptos-explorer-enable-decompilation`, `aptos-explorer-local-timestamps`, `aptos-explorer-locale`); those keys are included in the same cross-tab listener. |
+| **Persistence** | "Remember on this device" → localStorage, cross-tab sync via `storage` events. Non-API-key preferences (decompilation, local timestamps, public testnet/devnet endpoints, language) persist to dedicated localStorage keys (`aptos-explorer-enable-decompilation`, `aptos-explorer-local-timestamps`, `aptos-explorer-non-staging-endpoints`, `aptos-explorer-locale`); those keys are included in the same cross-tab listener. |
 | **On save** | Clears cached SDK clients (`clearCachedV2Clients`, `clearCachedSearchClients`), invalidates all React Query queries, invalidates router. If non-empty API key saved, fires `emitApiKeySaved()` to dismiss rate-limit drawer (see FEAT-RATELIMIT-001). |
 
 ### FEAT-SETTINGS-002 — Decompilation Opt-In
@@ -935,6 +935,16 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **Unchanged** | CSV export keeps the fixed UTC `MM/DD/YY HH:mm:ss.SSS UTC` string. Copy on a timestamp writes the raw chain value, not the formatted clock. Analytics chart day labels stay on the UTC calendar date. Relative ages ("3 minutes ago") are unchanged. |
 | **Preview** | After mount, Settings shows the browser time zone name and an example of the draft choice. Save applies it with the other settings. |
 | **Persistence** | `displayLocalTimestamps` on `ExplorerClientSettings`, stored in `aptos-explorer-local-timestamps` independently of API keys. Other tabs reload it through the settings `storage` listener. |
+
+### FEAT-SETTINGS-005 — Public testnet and devnet endpoints
+
+| Aspect | Detail |
+|--------|--------|
+| **Toggle** | "Testnet and devnet endpoints" switch on the Settings page. Off by default (staging Aptos Labs API). |
+| **Hosts** | Off: testnet `https://api.testnet.staging.aptoslabs.com/v1` and devnet `https://api.devnet.staging.aptoslabs.com/v1`, including the matching `/graphql` indexer. On: the public hosts `https://api.testnet.aptoslabs.com/v1` and `https://api.devnet.aptoslabs.com/v1` (and their `/graphql` URLs). Mainnet is unchanged. |
+| **Build overrides** | A `VITE_APTOS_TESTNET_URL` or `VITE_APTOS_DEVNET_URL` value that is not the staging default stays in place, and that network's indexer stays paired with it. Settings shows the hosts that will actually be used. |
+| **Hydration** | The first server and client render keep the staging default so the page matches. After hydration, a saved preference switches clients and refetches. Save drops cached SDK clients and refreshes queries. |
+| **Persistence** | `useNonStagingEndpoints` on `ExplorerClientSettings`, stored in `aptos-explorer-non-staging-endpoints` independently of API keys. Other tabs reload it through the settings `storage` listener. |
 
 ---
 
@@ -1411,7 +1421,7 @@ top of the HTML site.
 | `/verification` | FEAT-VERIFY-001 |
 | `/guide` | FEAT-GUIDE-001 |
 | `/help` | FEAT-GUIDE-001 (redirect to `/guide`) |
-| `/settings` | FEAT-SETTINGS-001, FEAT-SETTINGS-004 |
+| `/settings` | FEAT-SETTINGS-001, FEAT-SETTINGS-004, FEAT-SETTINGS-005 |
 | `/validators/$tab` | FEAT-VALIDATORS-001 |
 | `/account/$address/$tab` | FEAT-ACCOUNT-005 |
 | `/object/$address/$tab` | FEAT-ACCOUNT-005 |
@@ -1511,8 +1521,9 @@ top of the HTML site.
 | `app/data/defunctProtocols.test.ts` | FEAT-ACCOUNT-003 (defunct protocol registry shape, uniqueness, known-address `// defunct` / `// winding_down` comment drift) |
 | `app/data/functionArgumentNameOverrides/lookup.test.ts` | FEAT-DATA-003 / FEAT-MODULES-006 (argument name override lookup) |
 | `app/types/defunctProtocol.test.ts` | FEAT-ACCOUNT-003 (withdrawal plugin validation) |
-| `app/settings/clientSettings.test.ts` | FEAT-SETTINGS-001 (settings persistence, sanitization), FEAT-I18N-001 (locale preference), FEAT-SETTINGS-003 (locale storage key is part of settings sync), FEAT-SETTINGS-004 (local timestamp preference persists without API keys) |
-| `app/pages/Settings/SettingsPage.test.tsx` | FEAT-SETTINGS-004 (Timestamps switch, local-zone preview, save writes `aptos-explorer-local-timestamps`) |
+| `app/lib/networkEndpoints.test.ts` | FEAT-SETTINGS-005 (staging vs public testnet/devnet REST and GraphQL; build-time URL left in place; preference applies after hydration) |
+| `app/settings/clientSettings.test.ts` | FEAT-SETTINGS-001 (settings persistence, sanitization), FEAT-I18N-001 (locale preference), FEAT-SETTINGS-003 (locale storage key is part of settings sync), FEAT-SETTINGS-004 (local timestamp preference persists without API keys), FEAT-SETTINGS-005 (public-endpoint preference persists without API keys) |
+| `app/pages/Settings/SettingsPage.test.tsx` | FEAT-SETTINGS-004 (Timestamps switch, local-zone preview, save writes `aptos-explorer-local-timestamps`), FEAT-SETTINGS-005 (endpoint switch previews public hosts and saves `aptos-explorer-non-staging-endpoints`) |
 | `app/themes/colors/aptosBrandColors.a11y.test.ts` | FEAT-THEME-001 (WCAG contrast regression) |
 | `app/components/hooks/usePageMetadata.structuredData.test.ts` | FEAT-SEO-001 (JSON-LD generation) |
 | `app/components/IndividualPageContent/ContentValue/CurrencyValue.test.tsx` | Currency formatting (octa → APT) |
