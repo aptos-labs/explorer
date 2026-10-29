@@ -5,7 +5,7 @@
   "packageManager": "pnpm@12.14.0",
   "type": "module",
   "engines": {
-    "node": "^24 || ^25"
+    "node": "^24 || ^25 || ^26.0.0"
   },
   "dependencies": {
     "@aptos-labs/ts-sdk": "7.5.0",
