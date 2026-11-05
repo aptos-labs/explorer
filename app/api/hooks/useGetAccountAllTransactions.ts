@@ -1,7 +1,7 @@
-import type {Aptos} from "@aptos-labs/ts-sdk";
 import {queryOptions, useQuery} from "@tanstack/react-query";
 import {useNetworkValue, useSdkV2Client} from "../../global-config";
 import {tryStandardizeAddress} from "../../utils";
+import type {AptosSdkClient} from "../aptosSdkClient";
 import type {FunctionFilterParams} from "./useFunctionFilter";
 
 /** Page size for the account transactions tab (GraphQL and REST). */
@@ -19,7 +19,7 @@ const ACCOUNT_TRANSACTIONS_COUNT_QUERY = `
 
 export function accountTxnCountQueryOptions(
   addr64Hash: string | undefined,
-  client: Aptos,
+  client: AptosSdkClient,
   networkValue: string,
 ) {
   return queryOptions({
@@ -75,7 +75,7 @@ const ACCOUNT_TRANSACTIONS_QUERY = `
 
 export function accountTxnVersionsQueryOptions(
   addr64Hash: string | undefined,
-  client: Aptos,
+  client: AptosSdkClient,
   networkValue: string,
   limit: number,
   offset?: number,

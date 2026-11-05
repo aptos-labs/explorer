@@ -1,12 +1,9 @@
-import {Aptos, AptosConfig, Network as SdkNetwork} from "@aptos-labs/ts-sdk";
+import {AptosConfig, Network as SdkNetwork} from "@aptos-labs/ts-sdk";
 import {useSearch} from "@tanstack/react-router";
 import Cookies from "js-cookie";
 import React, {createContext, type ReactNode, useContext, useMemo} from "react";
+import {AptosSdkClient} from "../api/aptosSdkClient";
 import {AptosClient} from "../api/legacyClient";
-import {
-  aptosGatewayApiKeyHeaders,
-  aptosSdkClientConfig,
-} from "../lib/aptosGatewayAuth";
 import {
   defaultFeatureName,
   defaultNetworkName,
@@ -18,6 +15,10 @@ import {
   type NetworkName,
   networks,
 } from "../constants";
+import {
+  aptosGatewayApiKeyHeaders,
+  aptosSdkClientConfig,
+} from "../lib/aptosGatewayAuth";
 import {
   getGeomiDevApiKeyOverride,
   normalizeGeomiDevApiKeyOverride,
@@ -181,7 +182,7 @@ function createAptosClient(
 function createAptosV2Client(
   networkName: NetworkName,
   apiKeyOverride?: string,
-): Aptos {
+): AptosSdkClient {
   const nodeUrl = networks[networkName];
   const apiKey = getApiKey(networkName, apiKeyOverride);
   const indexerUrl = getGraphqlURI(networkName);
@@ -209,11 +210,11 @@ function createAptosV2Client(
     clientConfig: aptosSdkClientConfig(apiKey),
   });
 
-  return new Aptos(config);
+  return new AptosSdkClient(config);
 }
 
 // Client cache to prevent unnecessary recreations
-const clientCache = new Map<string, Aptos>();
+const clientCache = new Map<string, AptosSdkClient>();
 
 function getClientCacheKey(networkName: NetworkName, apiKeyOverride?: string) {
   return `${networkName}:${normalizeGeomiDevApiKeyOverride(apiKeyOverride)}`;
@@ -226,7 +227,7 @@ export function clearCachedV2Clients() {
 export function getCachedV2Client(
   networkName: NetworkName,
   apiKeyOverride = getGeomiDevApiKeyOverride(networkName),
-): Aptos {
+): AptosSdkClient {
   const cacheKey = getClientCacheKey(networkName, apiKeyOverride);
   const existing = clientCache.get(cacheKey);
   if (existing) return existing;
@@ -249,7 +250,7 @@ export function useAptosClient(): AptosClient {
   );
 }
 
-export function useAptosClientV2(): Aptos {
+export function useAptosClientV2(): AptosSdkClient {
   const networkName = useNetworkName();
   const {
     settings: {geomiDevApiKeyOverridesByNetwork},
@@ -266,7 +267,7 @@ export function useAptosClientV2(): Aptos {
 export type GlobalState = {
   readonly network_name: NetworkName;
   readonly network_value: string;
-  readonly sdk_v2_client: Aptos;
+  readonly sdk_v2_client: AptosSdkClient;
 };
 
 /**
@@ -299,7 +300,7 @@ export function useGlobalState(): GlobalState {
  * Hook to get the SDK v2 client directly.
  * This is an alias for useAptosClientV2() for backward compatibility.
  */
-export function useSdkV2Client(): Aptos {
+export function useSdkV2Client(): AptosSdkClient {
   return useAptosClientV2();
 }
 

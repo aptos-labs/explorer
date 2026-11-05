@@ -1,6 +1,6 @@
-import type {Aptos} from "@aptos-labs/ts-sdk";
 import type {Types} from "~/types/aptos";
 import {emitRateLimit} from "../context/rate-limit/rateLimitEvents";
+import type {AptosSdkClient} from "./aptosSdkClient";
 import {
   fetchTransactionFromArchival,
   headersFromAptosClient,
@@ -158,7 +158,7 @@ export function isRateLimitError(error: unknown): boolean {
 
 async function fetchTransactionFromFullnode(
   txnHashOrVersion: string,
-  client: Aptos,
+  client: AptosSdkClient,
 ): Promise<Types.Transaction> {
   if (/^\d+$/.test(txnHashOrVersion)) {
     const txn = await client.getTransactionByVersion({
@@ -226,7 +226,7 @@ export async function recoverHistoricalData<T>(
 
 function fetchTransactionFromArchiveNode(
   txnHashOrVersion: string,
-  client: Aptos,
+  client: AptosSdkClient,
 ): Promise<Types.Transaction | null> {
   const fullnode = client.config?.fullnode;
   if (!fullnode) return Promise.resolve(null);
@@ -253,7 +253,7 @@ function fetchTransactionFromArchiveNode(
  */
 export async function getTransaction(
   txnHashOrVersion: string,
-  client: Aptos,
+  client: AptosSdkClient,
 ): Promise<Types.Transaction> {
   try {
     return await fetchTransactionFromFullnode(txnHashOrVersion, client);
@@ -271,14 +271,17 @@ export async function getTransaction(
 /**
  * Fetch account info
  */
-export async function getAccount(address: string, client: Aptos) {
+export async function getAccount(address: string, client: AptosSdkClient) {
   return withResponseError(client.getAccountInfo({accountAddress: address}));
 }
 
 /**
  * Fetch account resources
  */
-export async function getAccountResources(address: string, client: Aptos) {
+export async function getAccountResources(
+  address: string,
+  client: AptosSdkClient,
+) {
   return withResponseError(
     client.getAccountResources({accountAddress: address}),
   );
@@ -287,14 +290,17 @@ export async function getAccountResources(address: string, client: Aptos) {
 /**
  * Fetch account modules
  */
-export async function getAccountModules(address: string, client: Aptos) {
+export async function getAccountModules(
+  address: string,
+  client: AptosSdkClient,
+) {
   return withResponseError(client.getAccountModules({accountAddress: address}));
 }
 
 /**
  * Fetch block by height
  */
-export async function getBlockByHeight(height: number, client: Aptos) {
+export async function getBlockByHeight(height: number, client: AptosSdkClient) {
   return withResponseError(
     client.getBlockByHeight({
       blockHeight: height,
@@ -306,14 +312,14 @@ export async function getBlockByHeight(height: number, client: Aptos) {
 /**
  * Fetch latest block
  */
-export async function getLedgerInfo(client: Aptos) {
+export async function getLedgerInfo(client: AptosSdkClient) {
   return withResponseError(client.getLedgerInfo());
 }
 
 /**
  * Fetch validators
  */
-export async function getValidators(client: Aptos) {
+export async function getValidators(client: AptosSdkClient) {
   return withResponseError(
     client.getAccountResource({
       accountAddress: "0x1",
@@ -326,7 +332,7 @@ export async function getValidators(client: Aptos) {
  * View function call
  */
 export async function viewFunction<T extends unknown[]>(
-  client: Aptos,
+  client: AptosSdkClient,
   payload: {
     function: `${string}::${string}::${string}`;
     typeArguments?: string[];

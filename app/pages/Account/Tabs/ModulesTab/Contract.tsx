@@ -1,4 +1,4 @@
-import {type Aptos, Hex, parseTypeTag} from "@aptos-labs/ts-sdk";
+import {Hex, parseTypeTag} from "@aptos-labs/ts-sdk";
 import {
   type InputTransactionData,
   useWallet,
@@ -38,6 +38,7 @@ import {
 } from "react-hook-form";
 import type {Types} from "~/types/aptos";
 import {view} from "../../../../api";
+import type {AptosSdkClient} from "../../../../api/aptosSdkClient";
 import {ResponseErrorType} from "../../../../api/client";
 import {useGetAccountModules} from "../../../../api/hooks/useGetAccountModules";
 import {useGetAccountPackages} from "../../../../api/hooks/useGetAccountResource";
@@ -51,8 +52,8 @@ import {
   useNetworkName,
   useSdkV2Client,
 } from "../../../../global-config/GlobalConfig";
+import {englishT, type TFunction, useTranslation} from "../../../../i18n";
 import {Link, useNavigate} from "../../../../routing";
-import {englishT, useTranslation, type TFunction} from "../../../../i18n";
 import {
   encodeInputArgsForViewRequest,
   extractFunctionParamNames,
@@ -100,7 +101,7 @@ function hexToBytes(hexString: string): Uint8Array {
  */
 async function resolveAnsName(
   name: string,
-  sdkV2Client: Aptos,
+  sdkV2Client: AptosSdkClient,
 ): Promise<string> {
   const ansName = await sdkV2Client.getName({name});
   const address = ansName?.registered_address ?? ansName?.owner_address;
@@ -116,7 +117,7 @@ async function resolveAnsName(
 async function resolveAnsInArgument(
   arg: string | null | undefined,
   type: string,
-  sdkV2Client: Aptos,
+  sdkV2Client: AptosSdkClient,
 ): Promise<string> {
   if (typeof arg !== "string" || !arg.trim()) {
     return arg ?? "";
@@ -183,7 +184,7 @@ async function resolveAnsInArgument(
 async function resolveAnsInArguments(
   args: (string | undefined)[],
   paramTypes: string[],
-  sdkV2Client: Aptos,
+  sdkV2Client: AptosSdkClient,
 ): Promise<string[]> {
   return Promise.all(
     args.map((arg, i) => resolveAnsInArgument(arg, paramTypes[i], sdkV2Client)),
