@@ -1,8 +1,8 @@
 import {
   DEFAULT_LOCALE,
   type LocalePreference,
-  type SupportedLocale,
   SUPPORTED_LOCALES,
+  type SupportedLocale,
 } from "./locales";
 
 /** Browser tags whose primary subtag should use another registered catalog. */

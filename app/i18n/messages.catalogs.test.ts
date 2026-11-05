@@ -7,6 +7,7 @@ import {
   SUPPORTED_LOCALES,
 } from "./locales";
 import {messageCatalogs} from "./messages";
+import {loadMessageCatalog} from "./messages/loaders";
 import {collectMessageKeys, getMessage, messagePlaceholders} from "./translate";
 
 describe("FEAT-I18N-001 — catalog coverage", () => {
@@ -23,6 +24,14 @@ describe("FEAT-I18N-001 — catalog coverage", () => {
     }
   });
 
+  it("lazy-loads the same catalog for every supported locale", async () => {
+    for (const locale of SUPPORTED_LOCALES) {
+      await expect(loadMessageCatalog(locale), locale).resolves.toBe(
+        messageCatalogs[locale],
+      );
+    }
+  });
+
   it("translates chrome away from English for other locales", () => {
     const englishBlocks =
       createTranslator(DEFAULT_LOCALE).t("chrome.nav.blocks");
@@ -30,7 +39,7 @@ describe("FEAT-I18N-001 — catalog coverage", () => {
       if (locale === DEFAULT_LOCALE) {
         continue;
       }
-      const {t} = createTranslator(locale);
+      const {t} = createTranslator(locale, messageCatalogs[locale]);
       expect(t("chrome.appName")).toBe("Aptos Explorer");
       expect(t("chrome.nav.blocks")).not.toBe(englishBlocks);
       expect(t("guide.meta.title")).not.toBe("User Guide");

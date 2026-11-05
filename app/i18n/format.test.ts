@@ -1,12 +1,12 @@
 import {describe, expect, it} from "vitest";
 import {
+  canonicalIntegerString,
   decimalSeparator,
   formatBigInt,
   formatCompactNumber,
   formatDateTime,
   formatInteger,
   formatIntegerString,
-  canonicalIntegerString,
   formatMonthDay,
   formatNumber,
   formatRelativeTime,

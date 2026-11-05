@@ -1,6 +1,12 @@
 // @vitest-environment jsdom
 import {createTheme, ThemeProvider} from "@mui/material/styles";
-import {cleanup, fireEvent, render, screen} from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
 import {
   I18nProvider,
@@ -53,7 +59,7 @@ function renderSettingsSelect() {
 }
 
 describe("FEAT-SETTINGS-003 / FEAT-CHROME-001 — header language switch", () => {
-  it("shows the current locale code, then persists a catalog from the menu", () => {
+  it("shows the current locale code, then persists a catalog from the menu", async () => {
     renderHeaderButton();
 
     const button = screen.getByRole("button", {name: "Language"});
@@ -74,19 +80,21 @@ describe("FEAT-SETTINGS-003 / FEAT-CHROME-001 — header language switch", () =>
     fireEvent.click(screen.getByRole("menuitem", {name: "Français FR"}));
 
     expect(window.localStorage.getItem("aptos-explorer-locale")).toBe("fr");
-    expect(
-      screen.getByRole("button", {name: /Language|Langue/}).textContent,
-    ).toContain("FR");
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", {name: "Langue"}).textContent,
+      ).toContain("FR"),
+    );
   });
 
-  it("restores the persisted catalog after remount", () => {
+  it("restores the persisted catalog after remount", async () => {
     const {unmount} = renderHeaderButton();
     fireEvent.click(screen.getByRole("button", {name: "Language"}));
     fireEvent.click(screen.getByRole("menuitem", {name: "Français FR"}));
     unmount();
 
     renderHeaderButton();
-    const button = screen.getByRole("button", {name: "Langue"});
+    const button = await screen.findByRole("button", {name: "Langue"});
     expect(button).toBeTruthy();
     expect(button.textContent).toContain("FR");
     expect(window.localStorage.getItem("aptos-explorer-locale")).toBe("fr");
