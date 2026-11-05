@@ -45,7 +45,6 @@ import {Fallback} from "../components/layout/Fallback";
 import Footer from "../components/layout/Footer";
 import Header from "../components/layout/Header";
 import RateLimitDrawer from "../components/RateLimitDrawer";
-import {VercelAnalytics} from "../components/VercelAnalytics";
 import {WebMCPProvider} from "../components/WebMCPProvider";
 import {ProvideColorMode} from "../context/color-mode";
 import {RateLimitProvider} from "../context/rate-limit";
@@ -53,11 +52,10 @@ import {WalletAdapterProvider} from "../context/wallet-adapter";
 import {GlobalConfigProvider} from "../global-config";
 import {useHashToPathRedirect} from "../hooks/useHashToPathRedirect";
 import {useOldUrlRedirect} from "../hooks/useOldUrlRedirect";
+import {I18nProvider, useTranslation} from "../i18n";
 import {BASE_URL} from "../lib/constants";
 import {ExplorerSettingsProvider} from "../settings";
-import {I18nProvider} from "../i18n";
 import {googleFontsStylesheetHref} from "../themes/typography";
-import {useTranslation} from "../i18n";
 
 // Router context type
 interface RouterContext {
@@ -213,7 +211,6 @@ function RootComponent() {
                         <LocalnetUnavailableModal />
                         <RateLimitDrawer />
                         <WebMCPProvider />
-                        <VercelAnalytics />
                         <GraphqlClientProvider>
                           <WalletAdapterProvider>
                             <Box

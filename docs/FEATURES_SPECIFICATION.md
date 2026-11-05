@@ -1291,26 +1291,7 @@ top of the HTML site.
 | **Events** | `walletConnection` (address, name, network) on wallet connect. `searchStats` (network, text, result, duration) on search completion. |
 | **Data layer** | Pushes to `window.dataLayer`. |
 
-### FEAT-TELEMETRY-002 — Vercel Web Analytics
-
-| Aspect | Detail |
-|--------|--------|
-| **Package** | `@vercel/analytics` React component (`VercelAnalytics`) mounted in the root layout (`app/routes/__root.tsx`). |
-| **Script** | Production loads `/_vercel/insights/script.js` (same-origin, injected by Vercel after Web Analytics is enabled on the project). Development uses the debug script. |
-| **Pageviews** | Automatic History API tracking for client-side TanStack Router navigations. |
-| **Redaction** | `beforeSend` rewrites entity URLs to route templates (`/account/$address`, `/txn/$txnHashOrVersion`, …) and keeps only the `network` query param so addresses, hashes, and search text are not sent to Vercel. |
-| **PWA** | `public/sw.js` does not intercept `/_vercel/*` or `va.vercel-scripts.com`. |
-| **Dashboard** | Operators must click **Enable** on the Vercel project **Analytics** tab; the npm package alone does not turn collection on. |
-
-### FEAT-TELEMETRY-003 — Vercel Speed Insights
-
-| Aspect | Detail |
-|--------|--------|
-| **Package** | `@vercel/speed-insights` React component (`SpeedInsights`) mounted alongside Web Analytics in `VercelAnalytics`. |
-| **Script** | Production loads `/_vercel/speed-insights/script.js` (same-origin, injected by Vercel after Speed Insights is enabled on the project). Development uses `va.vercel-scripts.com` debug script. |
-| **Route grouping** | Current TanStack pathname is passed as `route` after the same entity-id redaction as Web Analytics (`/account/$address`, …). `beforeSend` also rewrites the vital `url` and `route`. |
-| **PWA** | Same `/_vercel/*` and `va.vercel-scripts.com` bypass as FEAT-TELEMETRY-002. |
-| **Dashboard** | Operators must enable **Speed Insights** on the Vercel project; the npm package alone does not turn collection on. |
+FEAT-TELEMETRY-002 (Vercel Web Analytics) and FEAT-TELEMETRY-003 (Vercel Speed Insights) were intentionally removed to cut Vercel per-event billing — see `CHANGELOG.md → [Unreleased] → Removed`. Do not re-add `@vercel/analytics` or `@vercel/speed-insights` without explicit approval.
 
 ---
 
@@ -1580,7 +1561,6 @@ top of the HTML site.
 | `app/hooks/useIsInIframe.test.ts` | FEAT-PWA-002 (`detectIsInIframe` helper: SSR fallback, top-level browsing context, same-origin frame, cross-origin frame `window.top` access throws) |
 | `app/components/layout/sharePage.test.ts` | FEAT-PWA-002 (Web Share helper: navigator.share success, AbortError cancellation, clipboard fallback, error paths) |
 | `app/api/hooks/useGoogleTagManager.test.ts` | FEAT-TELEMETRY-001 (GTM event name constants) |
-| `app/utils/vercelAnalytics.test.ts` | FEAT-TELEMETRY-002 (entity URL redaction, query stripping, root mount, SW bypass), FEAT-TELEMETRY-003 (Speed Insights vital URL/route redaction and `SpeedInsights` mount) |
 | `app/components/PageNumberPagination.test.tsx` | FEAT-ACCOUNT-006 / FEAT-TXN-001 (URL-driven `?page=` round-trip: writes new page on click, preserves filter + network params, drops `?page=1` for canonical URLs, no-ops on current page, fires analytics callback) |
 | `app/api/hooks/useFunctionFilter.test.ts` | FEAT-ACCOUNT-006 / FEAT-TXN-001 (entry-function filter: read from `fn_addr` / `fn_module` / `fn_name`, legacy `?fn=` migration, cascade clear, reset `?page=` and `?start=` on filter change, full clear preserves unrelated params) |
 
