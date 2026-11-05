@@ -672,6 +672,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 |--------|--------|
 | **Display** | Sortable table of coins and fungible assets. Virtualized. Desktop body scrolls inside a max-height container (`min(70vh, 720px)`) so the virtualizer has a stable scroll element. |
 | **Filters** | Verified / Recognized / All and optional “Show Emojicoins” toggle; search by name, symbol, or address. |
+| **Recognized mainnet assets** | Hardcoded metadata includes the NEAR Intents fungible assets ZEC, XRP, ETH, LINK, UNI, AAVE, DOGE, LTC, and SOL with on-chain names, symbols, and decimals, even without Panora. They receive Recognized status unless a higher-priority verification applies. Near WBTC (`NBTC`) remains Labs Verified. |
 | **Market data** | On mainnet, CoinGecko market data merged when `coinGeckoId` available (see FEAT-DATA-001). Panora price fallback. |
 | **States** | Loading, error, and empty states handled. |
 
