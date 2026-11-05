@@ -36,7 +36,7 @@ const commissionState = vi.hoisted(() => ({
   nextCommission: 5 as number | undefined,
 }));
 
-vi.mock("@aptos-labs/wallet-adapter-react", () => ({
+vi.mock("../../context/wallet-adapter", () => ({
   useWallet: () => walletState,
 }));
 

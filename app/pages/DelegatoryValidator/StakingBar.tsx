@@ -1,4 +1,3 @@
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
 import {
   Box,
@@ -27,10 +26,11 @@ import StyledTooltip, {
   StyledLearnMoreTooltip,
 } from "../../components/StyledTooltip";
 import {OCTA} from "../../constants";
+import {useWallet} from "../../context/wallet-adapter";
 import {useAptosClient} from "../../global-config/GlobalConfig";
+import {useTranslation} from "../../i18n";
 import {addressFromWallet} from "../../utils";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
-import {useTranslation} from "../../i18n";
 import {MINIMUM_APT_IN_POOL_FOR_EXPLORER} from "./constants";
 import {DelegationStateContext} from "./context/DelegationContext";
 import StakeOperationDialog from "./StakeOperationDialog";

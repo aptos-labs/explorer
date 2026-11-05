@@ -1,4 +1,3 @@
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {Divider, useTheme} from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -10,6 +9,7 @@ import {useGetInMainnet} from "../../api/hooks/useGetInMainnet";
 import CloseIcon from "../../assets/svg/icon_close.svg?react";
 import HamburgerIcon from "../../assets/svg/icon_hamburger.svg?react";
 import {WalletConnector} from "../../components/WalletConnector";
+import {useWallet} from "../../context/wallet-adapter";
 import {useNetworkName} from "../../global-config/GlobalConfig";
 import {useNavigate} from "../../routing";
 import {sortPetraFirst} from "../../utils";

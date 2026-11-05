@@ -1,8 +1,5 @@
 import {Hex, parseTypeTag} from "@aptos-labs/ts-sdk";
-import {
-  type InputTransactionData,
-  useWallet,
-} from "@aptos-labs/wallet-adapter-react";
+import type {InputTransactionData} from "@aptos-labs/wallet-adapter-react";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import ContentCopy from "@mui/icons-material/ContentCopy";
 import ErrorIcon from "@mui/icons-material/Error";
@@ -46,6 +43,7 @@ import useSubmitTransaction from "../../../../api/hooks/useSubmitTransaction";
 import EmptyTabContent from "../../../../components/IndividualPageContent/EmptyTabContent";
 import StyledTooltip from "../../../../components/StyledTooltip";
 import {WalletConnector} from "../../../../components/WalletConnector";
+import {useWallet} from "../../../../context/wallet-adapter";
 import {lookupFunctionArgumentNameOverride} from "../../../../data/functionArgumentNameOverrides";
 import {
   useAptosClient,

@@ -1,4 +1,3 @@
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useQuery} from "@tanstack/react-query";
 import {useMemo} from "react";
 import type {Types} from "~/types/aptos";
@@ -9,6 +8,7 @@ import {
   useGetValidators,
   type ValidatorData,
 } from "../../../../api/hooks/useGetValidators";
+import {useWallet} from "../../../../context/wallet-adapter";
 import {
   useAptosClient,
   useNetworkName,

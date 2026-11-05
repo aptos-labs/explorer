@@ -1,4 +1,3 @@
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {Divider, ListItemIcon, ListItemText, useTheme} from "@mui/material";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
@@ -12,6 +11,7 @@ import IconDark from "../../assets/svg/icon_dark.svg?react";
 import HamburgerIcon from "../../assets/svg/icon_hamburger.svg?react";
 import IconLight from "../../assets/svg/icon_light.svg?react";
 import {useColorMode} from "../../context/color-mode";
+import {useWallet} from "../../context/wallet-adapter";
 import {useNetworkName} from "../../global-config";
 import {useTranslation} from "../../i18n";
 import {useNavigate} from "../../routing";

@@ -1,7 +1,4 @@
-import {
-  type InputTransactionData,
-  useWallet,
-} from "@aptos-labs/wallet-adapter-react";
+import type {InputTransactionData} from "@aptos-labs/wallet-adapter-react";
 import AddIcon from "@mui/icons-material/Add";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import ContentCopy from "@mui/icons-material/ContentCopy";
@@ -32,6 +29,7 @@ import useSubmitTransaction from "../../api/hooks/useSubmitTransaction";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
 import StyledTooltip from "../../components/StyledTooltip";
 import {WalletConnector} from "../../components/WalletConnector";
+import {useWallet} from "../../context/wallet-adapter";
 import {useNetworkName, useSdkV2Client} from "../../global-config/GlobalConfig";
 import {InlineMarkup, useTranslation} from "../../i18n";
 import {Link} from "../../routing";

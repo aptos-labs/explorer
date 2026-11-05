@@ -12,7 +12,7 @@ const walletMock: {account: {address: string} | undefined} = {
   account: undefined,
 };
 
-vi.mock("@aptos-labs/wallet-adapter-react", () => ({
+vi.mock("../../../context/wallet-adapter", () => ({
   useWallet: () => walletMock,
 }));
 

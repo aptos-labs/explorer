@@ -1,5 +1,4 @@
 import {AccountAddress} from "@aptos-labs/ts-sdk";
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {alpha, Typography, useMediaQuery, useTheme} from "@mui/material";
 import MuiAppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -14,6 +13,7 @@ import IconDark from "../../assets/svg/icon_dark.svg?react";
 import IconLight from "../../assets/svg/icon_light.svg?react";
 import {WalletConnector} from "../../components/WalletConnector";
 import {useColorMode} from "../../context";
+import {useWallet} from "../../context/wallet-adapter";
 import {useNetworkName} from "../../global-config/GlobalConfig";
 import {useInView} from "../../hooks/useInView";
 import {Link, useNavigate} from "../../routing";

@@ -1,5 +1,4 @@
 import {AccountAddress} from "@aptos-labs/ts-sdk";
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import {alpha, Box, IconButton, Typography, useTheme} from "@mui/material";
@@ -11,6 +10,7 @@ import {useGetInMainnet} from "../../api/hooks/useGetInMainnet";
 import {sendToGTM} from "../../api/hooks/useGoogleTagManager";
 import LogoIconDark from "../../assets/svg/aptos_logo_icon_dark.svg?react";
 import LogoIconLight from "../../assets/svg/aptos_logo_icon_light.svg?react";
+import {useWallet} from "../../context/wallet-adapter";
 import {useNetworkName} from "../../global-config";
 import {useInView} from "../../hooks/useInView";
 import {useIsInIframe} from "../../hooks/useIsInIframe";

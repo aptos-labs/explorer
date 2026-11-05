@@ -1,5 +1,5 @@
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import type {Types} from "~/types/aptos";
+import {useWallet} from "../../../context/wallet-adapter";
 import {getLockedUtilSecs} from "../../../pages/DelegatoryValidator/utils";
 import {addressFromWallet} from "../../../utils";
 import {useGetAccountAPTBalance} from "../useGetAccountAPTBalance";
