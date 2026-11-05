@@ -870,9 +870,10 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Package** | `@aptos-labs/wallet-adapter-react`. |
+| **Package** | `@aptos-labs/wallet-adapter-react`, loaded on demand. Components read wallet state through `useWallet` from `app/context/wallet-adapter`, never from the package, because the package bundles the full ts-sdk `Aptos` client (keyless, Poseidon; ~500 kB gzip). |
+| **Lazy loading** | `WalletAdapterProvider` mounts `AptosWalletAdapterProvider` beside the app tree (not around it) only after Connect Wallet is clicked, or right after hydration when `localStorage.AptosWalletName` is set. Until then `useWallet()` reports a disconnected wallet and its signing methods reject. `WalletModel` is a lazy chunk; it shows a spinner until the adapter reports state, and re-provides that state to the adapter's `WalletItem`s. |
 | **UI** | `WalletConnector` → `WalletButton` → `WalletModel` / `WalletMenu`. |
-| **Auto-connect** | Enabled. |
+| **Auto-connect** | Enabled. A previously connected wallet (`AptosWalletName` in localStorage) loads the adapter right after hydration so it reconnects. |
 | **Network sync** | Wallet network synced to `useNetworkName()`. Hidden networks → `"local"` for adapter compatibility. |
 | **Aptos Connect** | Supports Aptos Connect dApp ID. |
 | **Wallet sorting** | Petra sorted first via `sortPetraFirst`. |
@@ -1325,7 +1326,7 @@ FEAT-TELEMETRY-002 (Vercel Web Analytics) and FEAT-TELEMETRY-003 (Vercel Speed I
 | **Type arguments** | Dynamic add/remove list of type-tag strings (e.g. `0x1::aptos_coin::AptosCoin`), passed as `typeArguments`. |
 | **Function arguments** | Dynamic add/remove list. Because a script has no on-chain ABI, each argument's Move type must be declared explicitly via a dropdown (`address`, `bool`, `u8`–`u256`, `0x1::string::String`, `vector<u8>`, `vector<address>`, `vector<u64>`, or a free-form **Custom type**). Values are converted to typed BCS arguments by `convertScriptFunctionArguments` in `app/pages/RunScript/scriptArguments.ts`. `signer` / `&signer` params are **not** entered — the wallet supplies them. |
 | **Bytecode validation** | `normalizeScriptBytecode` adds a `0x` prefix if missing and rejects empty, non-hex, or odd-length input. |
-| **Simulate** | Requires a connected wallet. Builds via `sdkV2Client.transaction.build.simple({sender, data})` then `transaction.simulate.simple({signerPublicKey, transaction})`; renders status, gas used, event/change counts, and the full JSON response. |
+| **Simulate** | Requires a connected wallet. Builds via `sdkV2Client.transaction.build.simple({sender, data})` then `transaction.simulate.simple({signerPublicKey, transaction})` (`AptosSdkClient` loads the ts-sdk transaction functions on first use); renders status, gas used, event/change counts, and the full JSON response. |
 | **Execute** | Signs and submits the script `InputTransactionData` via `useSubmitTransaction` (FEAT-WALLET-002); on success shows the tx hash with a link to `/txn/{hash}/overview`. |
 | **Warnings** | Two prominent alerts: an **error** alert stating this is an advanced, potentially irreversible action (a malicious script can move assets), and a **warning** alert urging the user to simulate first and read the simulation output (status, gas, events, changes) carefully. |
 | **Wallet gating** | When disconnected, shows `WalletConnector` instead of the action buttons. Network match is enforced by `useSubmitTransaction`. |
