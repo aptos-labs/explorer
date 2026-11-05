@@ -70,7 +70,9 @@ minimumReleaseAgeExclude:
     "node-releases@2.0.59",
     "@asamuzakjp/dom-selector@10.0.3",
     # Renovate security update: undici@8.12.2
-    undici@8.12.2
+    undici@8.12.2,
+    # Renovate security update: seroval@1.6.11
+    seroval@1.6.11
   ]
 
 allowBuilds:
@@ -124,7 +126,7 @@ overrides:
   # CVE-2026-104846 / GHSA-p6vx-979v-rg4c. solid-js 1.9.15 still resolves
   # seroval@1.5.6 (affected: >=0.12.0 <1.6.2). Pin the patched line so every
   # copy, including that Solid tree, stays on 1.6.8.
-  seroval: 1.6.8
+  seroval: 1.6.11
   seroval-plugins: 1.6.8
 
 patchedDependencies:
