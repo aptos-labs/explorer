@@ -1,13 +1,13 @@
 import {describe, expect, it} from "vitest";
 import {createTranslator} from "./I18nProvider";
 import {isFullUiLocale, LOCALE_META, SUPPORTED_LOCALES} from "./locales";
-import {en} from "./messages/en";
 import {messageCatalogs} from "./messages";
+import {en} from "./messages/en";
 import {
   getMessage,
-  messagePlaceholders,
   type MessageTree,
   type MessageValue,
+  messagePlaceholders,
 } from "./translate";
 
 function isMessageList(value: MessageValue): value is readonly string[] {
@@ -126,7 +126,7 @@ describe("FEAT-I18N-001 — English catalog", () => {
   });
 
   it("binds number and UTC date formatting to the selected locale", () => {
-    const translator = createTranslator("de");
+    const translator = createTranslator("de", messageCatalogs.de);
     expect(translator.formatNumber(1_234.5, {minimumFractionDigits: 1})).toBe(
       "1.234,5",
     );
@@ -216,7 +216,7 @@ describe("FEAT-I18N-001 — shipped locale catalogs", () => {
       if (locale === "en") {
         continue;
       }
-      const {t} = createTranslator(locale);
+      const {t} = createTranslator(locale, messageCatalogs[locale]);
       expect(t("guide.meta.title"), locale).not.toBe(englishTitle);
       expect(t("chrome.nav.transactions").length).toBeGreaterThan(0);
     }
@@ -231,7 +231,7 @@ describe("FEAT-I18N-001 — shipped locale catalogs", () => {
       if (locale === "en") {
         continue;
       }
-      const {t} = createTranslator(locale);
+      const {t} = createTranslator(locale, messageCatalogs[locale]);
       expect(t("pages.home.subtitle"), locale).not.toBe(englishSubtitle);
       expect(t("search.emptyHint"), locale).not.toBe(englishHint);
       expect(t("pages.home.browseTransactions"), locale).not.toBe(

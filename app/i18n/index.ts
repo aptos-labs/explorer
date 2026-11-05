@@ -43,7 +43,8 @@ export {
   SUPPORTED_LOCALES,
   type SupportedLocale,
 } from "./locales";
-export {en, messageCatalogs} from "./messages";
+export {en} from "./messages/en";
+export {loadMessageCatalog} from "./messages/loaders";
 export {translateNetworkName} from "./networkName";
 export {isInternalHref, parseInlineMarkup} from "./parseInlineMarkup";
 export {

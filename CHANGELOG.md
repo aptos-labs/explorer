@@ -24,6 +24,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Releases / network cards**: The `/releases/networks` cards now show both **Framework Release** (from the on-chain gas schedule `feature_version`) and **Gas Schedule Release** (the same value, labeled explicitly). This makes it visible when the gas schedule train has moved ahead of the deployed node/framework train, as is currently the case on testnet.
 - **Releases / feature flags**: Static names now cover aptos-core `FeatureFlag` IDs **113–114** and **116–130** (ID **115** is unassigned upstream), including storage-slot natives, transaction info v1, native trading, MonoMove, and lazy module initialization. **Enable Resource Access Control** (75) and **Permissioned Signer** (84) are labeled `(deprecated)` to match the upstream `_DEPRECATED_` variants.
 
+- **Smaller first page load (Vercel bandwidth)**: Only the English message catalog ships in the initial bundle. Each of the other 30 catalogs is now its own chunk (~30–40 kB gzip), loaded when that locale becomes active. Previously one ~1.1 MB (gzip) chunk with every catalog was preloaded on every page, so a cold home-page visit drops from ~2.1 MB to ~1.0 MB of gzipped JS. Non-English visitors keep seeing the previous catalog (English on first paint, as before) until theirs arrives, and fall back to English if the chunk fails to load. `createTranslator(locale, messages)` now takes the catalog explicitly for non-English locales.
+- **CDN caching**: `sw.js` is served `public, max-age=0, must-revalidate` instead of `no-store`, so the browser's per-navigation service-worker update check revalidates with an ETag (304) instead of re-downloading it. Unhashed public images (`.svg`, `.png`, `.jpg`, `.ico`, including `address-icons/`) cache for 7 days with a 1-day `stale-while-revalidate` (was 1 day), and `world.json` caches for 1 day (was revalidated on every request). An updated icon at the same path can take up to a week to reach returning visitors.
+
+### Removed
+
+- **Vercel Web Analytics and Speed Insights**: `@vercel/analytics` and `@vercel/speed-insights` are removed (FEAT-TELEMETRY-002/003), along with the URL-redaction helpers and the service-worker `/_vercel/*` bypass, to stop per-event Vercel billing. Operators should also turn off **Web Analytics** and **Speed Insights** in the Vercel project dashboard. Google Tag Manager (FEAT-TELEMETRY-001) is unchanged.
+
 ### Fixed
 
 - **`pnpm dev` + Babel 8**: Re-applied the `@babel/traverse@8.0.6` pnpm patch (Proxy `Scope#references` for TanStack Router's code-splitter) and pinned `@babel/traverse` via overrides. Unpatched `8.0.7` had regressed local dev with `Scope#references is not available in Babel 8` on route transforms.

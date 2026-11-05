@@ -25,9 +25,15 @@ import {
   type LocalePreference,
   type SupportedLocale,
 } from "./locales";
-import {messageCatalogs} from "./messages";
+import {en} from "./messages/en";
+import {loadMessageCatalog} from "./messages/loaders";
 import {useResolvedTimestampTimeZone} from "./timestampTimeZone";
-import {type MessageCatalog, translate, translateList} from "./translate";
+import {
+  type MessageCatalog,
+  type MessageTree,
+  translate,
+  translateList,
+} from "./translate";
 
 export type TranslateVars = Record<string, string | number>;
 
@@ -56,24 +62,29 @@ export interface I18nContextValue extends I18nFormatters {
   tList: TListFunction;
 }
 
-function catalogsFor(locale: SupportedLocale): MessageCatalog[] {
-  const primary: MessageCatalog = {
-    locale,
-    messages: messageCatalogs[locale],
-  };
+type Translator = {t: TFunction; tList: TListFunction} & I18nFormatters;
+
+function catalogsFor(
+  locale: SupportedLocale,
+  messages: MessageTree,
+): MessageCatalog[] {
+  const primary: MessageCatalog = {locale, messages};
   if (locale === DEFAULT_LOCALE) {
     return [primary];
   }
-  return [
-    primary,
-    {locale: DEFAULT_LOCALE, messages: messageCatalogs[DEFAULT_LOCALE]},
-  ];
+  return [primary, {locale: DEFAULT_LOCALE, messages: en}];
 }
 
+export function createTranslator(locale: typeof DEFAULT_LOCALE): Translator;
 export function createTranslator(
   locale: SupportedLocale,
-): {t: TFunction; tList: TListFunction} & I18nFormatters {
-  const catalogs = catalogsFor(locale);
+  messages: MessageTree,
+): Translator;
+export function createTranslator(
+  locale: SupportedLocale,
+  messages: MessageTree = en,
+): Translator {
+  const catalogs = catalogsFor(locale, messages);
   return {
     t: (key, vars) => translate(catalogs, key, vars),
     tList: (key, vars) => translateList(catalogs, key, vars),
@@ -113,6 +124,10 @@ const fallbackValue: I18nContextValue = {
   formatRelativeTime: englishTranslator.formatRelativeTime,
 };
 
+type ActiveCatalog = {locale: SupportedLocale; messages: MessageTree};
+
+const englishCatalog: ActiveCatalog = {locale: DEFAULT_LOCALE, messages: en};
+
 function readBrowserLanguages(): string[] {
   if (typeof navigator === "undefined") {
     return [];
@@ -134,12 +149,41 @@ export function I18nProvider({children}: {children: ReactNode}) {
     setBrowserLanguages(readBrowserLanguages());
   }, []);
 
-  const locale = useMemo(
+  const requestedLocale = useMemo(
     () => resolveLocale(settings.localePreference, browserLanguages),
     [settings.localePreference, browserLanguages],
   );
 
-  const translator = useMemo(() => createTranslator(locale), [locale]);
+  // Stays on the previous catalog until the requested one has loaded, so text
+  // and number/date formatting always switch together.
+  const [activeCatalog, setActiveCatalog] =
+    useState<ActiveCatalog>(englishCatalog);
+
+  useEffect(() => {
+    let cancelled = false;
+    loadMessageCatalog(requestedLocale).then(
+      (messages) => {
+        if (cancelled) return;
+        setActiveCatalog((current) =>
+          current.locale === requestedLocale
+            ? current
+            : {locale: requestedLocale, messages},
+        );
+      },
+      () => {
+        if (!cancelled) setActiveCatalog(englishCatalog);
+      },
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, [requestedLocale]);
+
+  const {locale} = activeCatalog;
+  const translator = useMemo(
+    () => createTranslator(activeCatalog.locale, activeCatalog.messages),
+    [activeCatalog],
+  );
   const timestampTimeZone = useResolvedTimestampTimeZone(
     settings.displayLocalTimestamps,
   );

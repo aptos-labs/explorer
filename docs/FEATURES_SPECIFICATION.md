@@ -1291,26 +1291,7 @@ top of the HTML site.
 | **Events** | `walletConnection` (address, name, network) on wallet connect. `searchStats` (network, text, result, duration) on search completion. |
 | **Data layer** | Pushes to `window.dataLayer`. |
 
-### FEAT-TELEMETRY-002 — Vercel Web Analytics
-
-| Aspect | Detail |
-|--------|--------|
-| **Package** | `@vercel/analytics` React component (`VercelAnalytics`) mounted in the root layout (`app/routes/__root.tsx`). |
-| **Script** | Production loads `/_vercel/insights/script.js` (same-origin, injected by Vercel after Web Analytics is enabled on the project). Development uses the debug script. |
-| **Pageviews** | Automatic History API tracking for client-side TanStack Router navigations. |
-| **Redaction** | `beforeSend` rewrites entity URLs to route templates (`/account/$address`, `/txn/$txnHashOrVersion`, …) and keeps only the `network` query param so addresses, hashes, and search text are not sent to Vercel. |
-| **PWA** | `public/sw.js` does not intercept `/_vercel/*` or `va.vercel-scripts.com`. |
-| **Dashboard** | Operators must click **Enable** on the Vercel project **Analytics** tab; the npm package alone does not turn collection on. |
-
-### FEAT-TELEMETRY-003 — Vercel Speed Insights
-
-| Aspect | Detail |
-|--------|--------|
-| **Package** | `@vercel/speed-insights` React component (`SpeedInsights`) mounted alongside Web Analytics in `VercelAnalytics`. |
-| **Script** | Production loads `/_vercel/speed-insights/script.js` (same-origin, injected by Vercel after Speed Insights is enabled on the project). Development uses `va.vercel-scripts.com` debug script. |
-| **Route grouping** | Current TanStack pathname is passed as `route` after the same entity-id redaction as Web Analytics (`/account/$address`, …). `beforeSend` also rewrites the vital `url` and `route`. |
-| **PWA** | Same `/_vercel/*` and `va.vercel-scripts.com` bypass as FEAT-TELEMETRY-002. |
-| **Dashboard** | Operators must enable **Speed Insights** on the Vercel project; the npm package alone does not turn collection on. |
+FEAT-TELEMETRY-002 (Vercel Web Analytics) and FEAT-TELEMETRY-003 (Vercel Speed Insights) were intentionally removed to cut Vercel per-event billing — see `CHANGELOG.md → [Unreleased] → Removed`. Do not re-add `@vercel/analytics` or `@vercel/speed-insights` without explicit approval.
 
 ---
 
@@ -1376,8 +1357,8 @@ top of the HTML site.
 | **Library** | In-repo helpers in `app/i18n/` (no extra npm i18n dependency). Nested JSON-like catalogs, `{name}` interpolation, `t` / `tList`, and a small inline markup parser (`**bold**`, `` `code` ``, `[label](href)`). |
 | **English source** | `app/i18n/messages/en.ts` (and `app/i18n/messages/en/*.ts`) is the complete source catalog for chrome, settings, search, the user guide, and remaining explorer UI copy. |
 | **Shipped locales** | Every registered catalog in `SUPPORTED_LOCALES` (see FEAT-SETTINGS-003) is available in the language picker. The picker lists English first, then other catalogs alphabetically by native name (`LANGUAGE_PICKER_LOCALES`); registration order in `SUPPORTED_LOCALES` does not control display order. Picker rows show the native name plus `localeShortLabel`. Every non-English locale matches the full English key tree (`FULL_UI_LOCALES`). Missing keys fall back to English at runtime. Automated tests enforce key/placeholder parity for full-UI locales and subset/placeholder parity for any chrome-only locale. |
-| **Adding a locale** | Add a catalog file, register it in `SUPPORTED_LOCALES` / `messageCatalogs` / `LOCALE_META`, and update the shipped-locales table in `AGENTS.md` in the same PR (`app/i18n/agentsLocales.test.ts` fails if the list diverges). Also update FEAT-SETTINGS-003 and `CHANGELOG.md`. Generate TypeScript from JSON with `node scripts/i18n-json-to-catalog.mjs`. Missing keys fall back to English. New catalogs do not need to be inserted in picker display order — `LANGUAGE_PICKER_LOCALES` sorts by native name. |
-| **Provider** | `I18nProvider` (inside `ExplorerSettingsProvider`) resolves locale and updates `document.documentElement.lang` / `dir` (and `og:locale` when present) after hydration. `useTranslation()` falls back to English when no provider is mounted. |
+| **Adding a locale** | Add a catalog file, register it in `SUPPORTED_LOCALES` / `messageCatalogs` / `LOCALE_META` and add its loader to `app/i18n/messages/loaders.ts`, and update the shipped-locales table in `AGENTS.md` in the same PR (`app/i18n/agentsLocales.test.ts` fails if the list diverges). Also update FEAT-SETTINGS-003 and `CHANGELOG.md`. Generate TypeScript from JSON with `node scripts/i18n-json-to-catalog.mjs`. Missing keys fall back to English. New catalogs do not need to be inserted in picker display order — `LANGUAGE_PICKER_LOCALES` sorts by native name. |
+| **Provider** | `I18nProvider` (inside `ExplorerSettingsProvider`) resolves locale and updates `document.documentElement.lang` / `dir` (and `og:locale` when present) after hydration. Only the English catalog is in the initial bundle; a non-English catalog is a separate chunk loaded via `loadMessageCatalog` when that locale becomes active. The UI stays on the previous catalog (text and number/date formatting together) until the new one arrives, and falls back to English if the chunk fails to load. `useTranslation()` falls back to English when no provider is mounted. |
 | **Formatting helpers** | Locale-bound `formatNumber`, `formatInteger`, `formatBigInt`, `formatIntegerString`, `canonicalIntegerString`, `formatCompactNumber`, `formatDateTime`, `formatTimestamp`, `formatMonthDay`, and `formatRelativeTime` wrap `Intl`. Locale metadata selects intended regional tags (for example `pt-BR`) so decimal separators, grouping (including Indian grouping), date order, compact suffixes, relative times, and 12/24-hour conventions follow the selected locale. Date/time output defaults to UTC so SSR and hydration match. After hydration, FEAT-SETTINGS-004 can switch displayed chain timestamps to the browser time zone; chart day labels stay on the UTC calendar date. User-visible integers (including ledger versions, block heights, sequence numbers, and counts), decimals, timestamps, chart axes, and currency grouping go through these helpers rather than `toLocaleString("en-US")` or date-fns English relative time. Ledger versions and block heights that use grouped display include a copy control (`IntegerValue` `copyable`) that writes `canonicalIntegerString` (ASCII digits, no grouping) so the clipboard value can be pasted into search, URLs, and APIs. |
 | **Remaining UI copy** | Account balance and CSV export, user-transaction filters, multisig pending/owners, call traces, fee-statement events, FA dispatchable properties, coin/FA supply tooltips, validator epoch/node counts, analytics totals, gas-unit amounts, and the home-page hero/CTAs/empty-search copy read from catalogs rather than hardcoded English. |
 
@@ -1580,7 +1561,6 @@ top of the HTML site.
 | `app/hooks/useIsInIframe.test.ts` | FEAT-PWA-002 (`detectIsInIframe` helper: SSR fallback, top-level browsing context, same-origin frame, cross-origin frame `window.top` access throws) |
 | `app/components/layout/sharePage.test.ts` | FEAT-PWA-002 (Web Share helper: navigator.share success, AbortError cancellation, clipboard fallback, error paths) |
 | `app/api/hooks/useGoogleTagManager.test.ts` | FEAT-TELEMETRY-001 (GTM event name constants) |
-| `app/utils/vercelAnalytics.test.ts` | FEAT-TELEMETRY-002 (entity URL redaction, query stripping, root mount, SW bypass), FEAT-TELEMETRY-003 (Speed Insights vital URL/route redaction and `SpeedInsights` mount) |
 | `app/components/PageNumberPagination.test.tsx` | FEAT-ACCOUNT-006 / FEAT-TXN-001 (URL-driven `?page=` round-trip: writes new page on click, preserves filter + network params, drops `?page=1` for canonical URLs, no-ops on current page, fires analytics callback) |
 | `app/api/hooks/useFunctionFilter.test.ts` | FEAT-ACCOUNT-006 / FEAT-TXN-001 (entry-function filter: read from `fn_addr` / `fn_module` / `fn_name`, legacy `?fn=` migration, cascade clear, reset `?page=` and `?start=` on filter change, full clear preserves unrelated params) |
 
