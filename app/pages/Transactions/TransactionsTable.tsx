@@ -47,17 +47,14 @@ import TokenTransferDisplay, {
   TokenTransferModalProvider,
 } from "./Components/TokenTransferDisplay";
 import TransactionTypeTooltip from "./Components/TransactionTypeTooltip";
+import {isSystemTransaction} from "./isSystemTransaction";
 
 type TransactionCellProps = {
   transaction: Types.Transaction;
   address?: string;
 };
 
-/**
- * Muted placeholder for cells that are structurally empty on system
- * transactions (block metadata, state checkpoints, validator transactions).
- * Without it, rows rendered with four blank cells and looked broken.
- */
+/** Muted placeholder for cells that are structurally empty on system transactions. */
 function SystemCellPlaceholder() {
   const {t} = useTranslation();
   return (
@@ -85,10 +82,6 @@ function SystemCellPlaceholder() {
       </Typography>
     </StyledTooltip>
   );
-}
-
-function isSystemTransaction(transaction: Types.Transaction): boolean {
-  return transaction.type !== TransactionTypeName.User;
 }
 
 function SequenceNumberCell({transaction}: TransactionCellProps) {
@@ -226,7 +219,15 @@ function TransactionTokenTransfer({
   transaction: Types.Transaction;
   address?: string;
 }) {
-  return <TokenTransferDisplay transaction={transaction} address={address} />;
+  return (
+    <TokenTransferDisplay
+      transaction={transaction}
+      address={address}
+      emptyFallback={
+        isSystemTransaction(transaction) ? <SystemCellPlaceholder /> : undefined
+      }
+    />
+  );
 }
 
 function TransactionAmountGasCell({
@@ -235,18 +236,6 @@ function TransactionAmountGasCell({
 }: TransactionCellProps) {
   const theme = useTheme();
   const {t} = useTranslation();
-  const hasGasFields =
-    "gas_used" in transaction && "gas_unit_price" in transaction;
-
-  // System transactions carry no token transfer and usually no gas fields;
-  // show the placeholder rather than a silently empty cell.
-  if (isSystemTransaction(transaction) && !hasGasFields) {
-    return (
-      <GeneralTableCell sx={{paddingY: 1, textAlign: "right"}}>
-        <SystemCellPlaceholder />
-      </GeneralTableCell>
-    );
-  }
 
   return (
     <GeneralTableCell sx={{paddingY: 1}}>
