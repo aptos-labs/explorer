@@ -154,9 +154,6 @@ export default function HeaderOverflowMenu({visible}: {visible?: boolean}) {
         <MenuItem onClick={() => handleCloseAndNavigate("/releases")}>
           {t("chrome.nav.releases")}
         </MenuItem>
-        <MenuItem onClick={() => handleCloseAndNavigate("/run-script")}>
-          {t("chrome.nav.runScript")}
-        </MenuItem>
         <MenuItem onClick={() => handleCloseAndNavigate("/guide")}>
           {t("chrome.nav.guide")}
         </MenuItem>

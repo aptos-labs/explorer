@@ -791,6 +791,7 @@ export const zh = {
     side: "方向",
     user: "用户",
     gas: "Gas",
+    systemPlaceholder: "— 系统 —",
   },
   txn: {
     entity: "交易",
@@ -1001,6 +1002,10 @@ export const zh = {
       tabMetaDescription: "查看 Aptos 区块链上{kind} {address} 的{tab}。",
       kindAccount: "账户",
       kindObject: "对象",
+      notFoundOnNetworkTitle: "在 {network} 上未找到",
+      notFoundOnNetworkBody:
+        "该地址在 {network} 上没有链上数据。每个 Aptos 网络都是独立的链——同一地址在主网、测试网和开发网上可能持有不同的状态。",
+      notFoundOnNetworkTry: "尝试其他网络：",
     },
     validators: {
       title: "验证者",
@@ -1023,6 +1028,9 @@ export const zh = {
       metaDescription:
         "查看 Aptos 网络分析，包括每日活跃用户、交易量、TPS、Gas 费用、质押统计和区块链指标。交互式图表与实时数据。",
       mainnetOnly: "分析仅适用于主网。",
+      dataUnavailableTitle: "分析数据不可用",
+      dataUnavailableBody:
+        "加载分析数据时网络请求失败。这通常是暂时性的——请重试。",
     },
     script: {
       title: "运行 Move 脚本",
@@ -1232,6 +1240,19 @@ export const zh = {
     lastEpochPerformanceBody2: "计算方式为：",
     lastEpochPerformanceFormula: "(成功提案数) / (总提案机会数)",
     lastEpochPerformanceBody3: "该指标可提前提示表现是否正在下降。",
+    ansName:
+      "ANS（Aptos 名称服务）名称是以 .apt 结尾的人类可读名称，可解析为链上地址——就像钱包的网络域名。",
+    octas:
+      "Octas 是 APT 的最小单位：1 APT = 100,000,000 octas，类似于美元与美分的关系。",
+    aggregatedBalanceChange:
+      "聚合（Aggregated）会将同一账户和资产的余额变动合并为一行；非聚合（Non-aggregated）则逐条列出每次变动。",
+    fungibleAsset:
+      "同质化资产（fungible asset）是可互换的代币——任意单位彼此等价，例如 APT 或 USDC。NFT 等独特资产则是非同质化的。",
+    aip: "AIP（Aptos 改进提案）是公开的设计文档，用于提议对 Aptos 协议和生态系统的更改。",
+    entryFunction:
+      "入口函数（entry function）是已发布的 Move 智能合约中可调用的函数。交易通过调用入口函数在链上做出更改。",
+    systemTransaction:
+      "此交易由网络本身创建，而非用户钱包发起，因此没有发送方、接收方或代币金额。",
   },
   verified: {
     level: {

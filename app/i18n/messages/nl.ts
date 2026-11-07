@@ -807,6 +807,7 @@ export const nl = {
     side: "Zijde",
     user: "Gebruiker",
     gas: "Gas",
+    systemPlaceholder: "— Systeem —",
   },
   txn: {
     entity: "Transactie",
@@ -1042,6 +1043,10 @@ export const nl = {
         "Bekijk {tab} voor {kind} {address} op de Aptos-blockchain.",
       kindAccount: "account",
       kindObject: "object",
+      notFoundOnNetworkTitle: "Niet gevonden op {network}",
+      notFoundOnNetworkBody:
+        "Dit adres heeft geen on-chain gegevens op {network}. Elk Aptos-netwerk is een aparte chain — hetzelfde adres kan een andere status hebben op Mainnet, Testnet en Devnet.",
+      notFoundOnNetworkTry: "Probeer een ander netwerk:",
     },
     validators: {
       title: "Validators",
@@ -1064,6 +1069,9 @@ export const nl = {
       metaDescription:
         "Bekijk Aptos-netwerkanalytics, inclusief dagelijks actieve gebruikers, transactievolumes, TPS, gaskosten, stakingstatistieken en blockchainmetrics. Interactieve grafieken en realtime gegevens.",
       mainnetOnly: "Analytics is alleen beschikbaar voor mainnet.",
+      dataUnavailableTitle: "Analysedata niet beschikbaar",
+      dataUnavailableBody:
+        "Een netwerkverzoek is mislukt bij het laden van analysedata. Meestal is dit tijdelijk — probeer het opnieuw.",
     },
     script: {
       title: "Een Move-script uitvoeren",
@@ -1301,6 +1309,19 @@ export const nl = {
       "(aantal geslaagde proposals) / (aantal totale proposal-kansen)",
     lastEpochPerformanceBody3:
       "Deze metric geeft u een vroeg signaal als de prestaties achteruitgaan.",
+    ansName:
+      "Een ANS-naam (Aptos Name Service) is een leesbare naam die eindigt op .apt en verwijst naar een on-chain adres — als een webdomein voor een wallet.",
+    octas:
+      "Octas zijn de kleinste eenheid van APT: 1 APT = 100.000.000 octas, zoals centen bij een dollar.",
+    aggregatedBalanceChange:
+      "Geaggregeerd combineert alle salduswijzigingen van hetzelfde account en asset in één rij. Niet-geaggregeerd toont elke wijziging afzonderlijk.",
+    fungibleAsset:
+      "Een fungibel asset is een onderling uitwisselbare token — elke eenheid is gelijk aan elke andere, zoals APT of USDC. Unieke assets zoals NFT's zijn niet-fungibel.",
+    aip: "Een AIP (Aptos Improvement Proposal) is een openbaar ontwerpdocument dat wijzigingen in het Aptos-protocol en ecosysteem voorstelt.",
+    entryFunction:
+      "Een entry function is een aanroepbare functie in een gepubliceerde Move-smartcontract. Transacties roepen entry functions aan om on-chain wijzigingen door te voeren.",
+    systemTransaction:
+      "Deze transactie is gemaakt door het netwerk zelf, niet door een gebruikerswallet, dus hij heeft geen afzender, ontvanger of tokenbedrag.",
   },
   verified: {
     level: {

@@ -95,14 +95,14 @@ describe("FEAT-SEARCH-003 — groupSearchResults", () => {
 
   it("does not duplicate group headers on re-grouping", () => {
     const results: SearchResult[] = [
-      {label: "Accounts", to: null, isGroupHeader: true, type: "account"},
+      {label: "Addresses", to: null, isGroupHeader: true, type: "address"},
       makeResult("Account 0x1", "account"),
     ];
     const grouped = groupSearchResults(results);
-    const accountHeaders = grouped.filter(
-      (r) => r.isGroupHeader && r.label === "Accounts",
+    const addressHeaders = grouped.filter(
+      (r) => r.isGroupHeader && r.label === "Addresses",
     );
-    expect(accountHeaders).toHaveLength(1);
+    expect(addressHeaders).toHaveLength(1);
   });
 
   it("orders asset type before account type", () => {

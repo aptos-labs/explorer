@@ -798,6 +798,7 @@ export const ar = {
     side: "الجانب",
     user: "المستخدم",
     gas: "الغاز",
+    systemPlaceholder: "— نظام —",
   },
   txn: {
     entity: "معاملة",
@@ -1014,6 +1015,10 @@ export const ar = {
       tabMetaDescription: "عرض {tab} لـ {kind} {address} على سلسلة كتل Aptos.",
       kindAccount: "الحساب",
       kindObject: "الكائن",
+      notFoundOnNetworkTitle: "غير موجود على {network}",
+      notFoundOnNetworkBody:
+        "لا توجد بيانات على السلسلة لهذا العنوان على {network}. كل شبكة Aptos سلسلة منفصلة — قد يكون للعنوان نفسه حالة مختلفة على Mainnet وTestnet وDevnet.",
+      notFoundOnNetworkTry: "جرّب شبكة أخرى:",
     },
     validators: {
       title: "المدققون",
@@ -1036,6 +1041,9 @@ export const ar = {
       metaDescription:
         "عرض تحليلات شبكة Aptos بما في ذلك المستخدمون النشطون يوميًا وأحجام المعاملات وTPS ورسوم الغاز وإحصاءات الستاكينغ ومقاييس سلسلة الكتل. مخططات تفاعلية وبيانات في الوقت الفعلي.",
       mainnetOnly: "التحليلات متاحة لـ Mainnet فقط.",
+      dataUnavailableTitle: "بيانات التحليلات غير متوفرة",
+      dataUnavailableBody:
+        "فشل طلب شبكة أثناء تحميل بيانات التحليلات. هذا عادة مؤقت — حاول مجددًا.",
     },
     script: {
       title: "تشغيل سكربت Move",
@@ -1262,6 +1270,19 @@ export const ar = {
       "(عدد المقترحات الناجحة) / (عدد فرص المقترحات الإجمالية)",
     lastEpochPerformanceBody3:
       "يمنحك هذا المقياس مؤشرًا مبكرًا إذا كان الأداء يتراجع.",
+    ansName:
+      "اسم ANS (Aptos Name Service) هو اسم مقروء ينتهي بـ .apt ويشير إلى عنوان على السلسلة — مثل نطاق ويبر لمحفظة.",
+    octas:
+      "الأوكتا (octa) هي أصغر وحدة من APT: ‏1 APT = 100,000,000 أوكتا، مثل السنت مقابل الدولار.",
+    aggregatedBalanceChange:
+      "العرض المجمّع يجمع كل تغيّرات الرصيد لنفس الحساب والأصل في صف واحد. العرض غير المجمّع يسرد كل حدث تغيير على حدة.",
+    fungibleAsset:
+      "الأصل القابل للاستبدال (fungible asset) هو رمز قابل للتبادل — كل وحدة تساوي أي وحدة أخرى، مثل APT أو USDC. الأصول الفريدة مثل NFT غير قابلة للاستبدال.",
+    aip: "‏AIP (Aptos Improvement Proposal) هو وثيقة تصميم علنية تقترح تغييرات على بروتوكول Aptos ومنظومته.",
+    entryFunction:
+      "دالة الدخول (entry function) هي دالة قابلة للاستدعاء في عقد Move ذكي منشور. تستدعي المعاملات دوال الدخول لإجراء التغييرات على السلسلة.",
+    systemTransaction:
+      "أنشأت هذه المعاملة الشبكة نفسها وليست محفظة مستخدم، لذلك لا مرسل لها ولا مستلم ولا مبلغ رموز.",
   },
   verified: {
     level: {

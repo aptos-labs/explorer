@@ -762,7 +762,12 @@ export function filterSearchResults(
 }
 
 /**
- * Group search results by asset type
+ * Group search results by asset type.
+ *
+ * Accounts, objects, and bare addresses share one "Addresses" group: the same
+ * string can resolve to several of those, and separate ACCOUNTS/OBJECTS
+ * groups made users pick between two identical-looking rows without any
+ * guidance. Rows keep their own type chips and destinations.
  */
 export function groupSearchResults(results: SearchResult[]): SearchResult[] {
   if (results.length === 0) {
@@ -774,10 +779,13 @@ export function groupSearchResults(results: SearchResult[]): SearchResult[] {
     (result) => !result.isGroupHeader,
   );
 
-  // Group results by type
+  // Group results by type, folding account/object into "address"
   const grouped = new Map<string, SearchResult[]>();
   for (const result of resultsWithoutHeaders) {
-    const type = getResultType(result);
+    let type = getResultType(result);
+    if (type === "account" || type === "object") {
+      type = "address";
+    }
     if (!grouped.has(type)) {
       grouped.set(type, []);
     }
@@ -788,15 +796,7 @@ export function groupSearchResults(results: SearchResult[]): SearchResult[] {
   }
 
   // Define priority order for types - assets (coins/fungible assets) first
-  const typeOrder = [
-    "asset",
-    "account",
-    "transaction",
-    "block",
-    "object",
-    "address",
-    "other",
-  ];
+  const typeOrder = ["asset", "address", "transaction", "block", "other"];
 
   // Build grouped results array with headers
   const groupedResults: SearchResult[] = [];

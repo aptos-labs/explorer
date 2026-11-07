@@ -23,6 +23,7 @@ import {
 import {useQueryClient} from "@tanstack/react-query";
 import {useCallback, useEffect, useRef, useState} from "react";
 import {useGetCoinList} from "../../api/hooks/useGetCoinList";
+import {LearnMoreTooltip} from "../../components/IndividualPageContent/LearnMoreTooltip";
 import {
   useNetworkName,
   useNetworkValue,
@@ -300,7 +301,15 @@ export default function SearchWithResults({
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={t("search.placeholder")}
-        helperText={t("search.helper")}
+        helperText={
+          <span style={{display: "inline-flex", alignItems: "center", gap: 4}}>
+            {t("search.helper")}
+            <LearnMoreTooltip
+              text={t("tooltips.ansName")}
+              link="https://aptos.dev/network/glossary#aptos-name-service-ans"
+            />
+          </span>
+        }
         aria-label={t("search.ariaLabel")}
         slotProps={{
           input: {

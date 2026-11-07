@@ -3,7 +3,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import ContentCopy from "@mui/icons-material/ContentCopy";
 import OpenInNew from "@mui/icons-material/OpenInNew";
 import TextSnippetOutlined from "@mui/icons-material/TextSnippetOutlined";
-import {Box, Paper, Stack, useMediaQuery, useTheme} from "@mui/material";
+import {Box, Link, Paper, Stack, useMediaQuery, useTheme} from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -20,9 +20,13 @@ import {useMemo} from "react";
 import type {Types} from "~/types/aptos";
 import {useGetTransaction} from "../../api/hooks/useGetTransaction";
 import HashButton, {HashType} from "../../components/HashButton";
-import {useTranslation} from "../../i18n";
 import GasFeeValue from "../../components/IndividualPageContent/ContentValue/GasFeeValue";
 import IntegerValue from "../../components/IndividualPageContent/ContentValue/IntegerValue";
+import {
+  TransactionCardSkeleton,
+  TransactionRowSkeleton,
+} from "../../components/PageLoadSkeletons";
+import StyledTooltip from "../../components/StyledTooltip";
 import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
@@ -33,6 +37,7 @@ import {
   TableTransactionType,
   TransactionTypeName,
 } from "../../components/TransactionType";
+import {useTranslation} from "../../i18n";
 import {useAugmentToWithGlobalSearchParams, useNavigate} from "../../routing";
 import {assertNever, standardizeAddress} from "../../utils";
 import TransactionFunction from "../Transaction/Tabs/Components/TransactionFunction";
@@ -42,15 +47,49 @@ import TokenTransferDisplay, {
   TokenTransferModalProvider,
 } from "./Components/TokenTransferDisplay";
 import TransactionTypeTooltip from "./Components/TransactionTypeTooltip";
-import {
-  TransactionCardSkeleton,
-  TransactionRowSkeleton,
-} from "../../components/PageLoadSkeletons";
 
 type TransactionCellProps = {
   transaction: Types.Transaction;
   address?: string;
 };
+
+/**
+ * Muted placeholder for cells that are structurally empty on system
+ * transactions (block metadata, state checkpoints, validator transactions).
+ * Without it, rows rendered with four blank cells and looked broken.
+ */
+function SystemCellPlaceholder() {
+  const {t} = useTranslation();
+  return (
+    <StyledTooltip
+      arrow
+      title={
+        <>
+          <Typography variant="body2" sx={{whiteSpace: "normal"}}>
+            {t("tooltips.systemTransaction")}
+          </Typography>
+          <Link
+            href="https://aptos.dev/network/blockchain/txns-states"
+            target="_blank"
+            rel="noopener noreferrer"
+            underline="none"
+            sx={{display: "inline-block", mt: 0.5, fontWeight: 600}}
+          >
+            {t("common.learnMore")}
+          </Link>
+        </>
+      }
+    >
+      <Typography variant="body2" sx={{color: "text.disabled", cursor: "help"}}>
+        {t("table.systemPlaceholder")}
+      </Typography>
+    </StyledTooltip>
+  );
+}
+
+function isSystemTransaction(transaction: Types.Transaction): boolean {
+  return transaction.type !== TransactionTypeName.User;
+}
 
 function SequenceNumberCell({transaction}: TransactionCellProps) {
   return (
@@ -118,7 +157,11 @@ function TransactionSenderCell({transaction}: TransactionCellProps) {
 
   return (
     <GeneralTableCell>
-      {sender && <HashButton hash={sender} type={HashType.ACCOUNT} />}
+      {sender ? (
+        <HashButton hash={sender} type={HashType.ACCOUNT} />
+      ) : (
+        isSystemTransaction(transaction) && <SystemCellPlaceholder />
+      )}
     </GeneralTableCell>
   );
 }
@@ -131,7 +174,7 @@ function TransactionReceiverOrCounterPartyCell({
   // TODO: Look into adding a different column for smart contract, so it doesn't get confused with the receiver.
   return (
     <GeneralTableCell>
-      {counterparty && (
+      {counterparty ? (
         <Box
           sx={{display: "flex", fontSize: "inherit", alignItems: "row", gap: 1}}
         >
@@ -148,6 +191,8 @@ function TransactionReceiverOrCounterPartyCell({
             <HashButton hash={counterparty.address} type={HashType.ACCOUNT} />
           </span>
         </Box>
+      ) : (
+        isSystemTransaction(transaction) && <SystemCellPlaceholder />
       )}
     </GeneralTableCell>
   );
@@ -162,10 +207,14 @@ function TransactionFunctionCell({transaction}: TransactionCellProps) {
         textOverflow: "ellipsis",
       }}
     >
-      <TransactionFunction
-        transaction={transaction}
-        sx={{maxWidth: {xs: 200, md: 300, lg: 400}}}
-      />
+      {"payload" in transaction ? (
+        <TransactionFunction
+          transaction={transaction}
+          sx={{maxWidth: {xs: 200, md: 300, lg: 400}}}
+        />
+      ) : (
+        isSystemTransaction(transaction) && <SystemCellPlaceholder />
+      )}
     </GeneralTableCell>
   );
 }
@@ -186,6 +235,18 @@ function TransactionAmountGasCell({
 }: TransactionCellProps) {
   const theme = useTheme();
   const {t} = useTranslation();
+  const hasGasFields =
+    "gas_used" in transaction && "gas_unit_price" in transaction;
+
+  // System transactions carry no token transfer and usually no gas fields;
+  // show the placeholder rather than a silently empty cell.
+  if (isSystemTransaction(transaction) && !hasGasFields) {
+    return (
+      <GeneralTableCell sx={{paddingY: 1, textAlign: "right"}}>
+        <SystemCellPlaceholder />
+      </GeneralTableCell>
+    );
+  }
 
   return (
     <GeneralTableCell sx={{paddingY: 1}}>

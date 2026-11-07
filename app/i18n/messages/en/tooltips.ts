@@ -83,4 +83,17 @@ export const tooltips = {
     "(number of successful proposals) / (number of total proposal opportunities)",
   lastEpochPerformanceBody3:
     "This metric gives you an early indicator if performance is degrading.",
+  ansName:
+    "An ANS (Aptos Name Service) name is a human-readable name ending in .apt that resolves to an on-chain address — like a web domain for a wallet.",
+  octas:
+    "Octas are the smallest unit of APT: 1 APT = 100,000,000 octas, like cents to a dollar.",
+  aggregatedBalanceChange:
+    "Aggregated combines all balance changes for the same account and asset into one row. Non-aggregated lists each change event separately.",
+  fungibleAsset:
+    "A fungible asset is an interchangeable token — any unit is equal to any other, like APT or USDC. Unique assets such as NFTs are non-fungible.",
+  aip: "An AIP (Aptos Improvement Proposal) is a public design document proposing changes to the Aptos protocol and ecosystem.",
+  entryFunction:
+    "An entry function is a callable function in a published Move smart contract. Transactions invoke entry functions to make changes on chain.",
+  systemTransaction:
+    "This transaction was created by the network itself, not by a user wallet, so it has no sender, recipient, or token amount.",
 } as const;

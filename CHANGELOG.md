@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **"Not Found on network" state for object pages (FEAT-ACCOUNT-014)**: Opening an `/object/...` URL for an address with no on-chain data on the current network (e.g. a mainnet object on testnet) now shows "Not Found on {network}" with one-click switches to the other public networks. Previously this rendered as "Deleted Object", which falsely implied the user's data had been destroyed by switching networks. "Deleted Object" copy remains only when the address still has other resources on this network.
+- **Jargon tooltips with aptos.dev references**: Plain-language tooltips (most linking to the aptos.dev glossary or docs) for ANS names (next to the search helper on both search surfaces), octas (fee-statement values), aggregated vs non-aggregated (Balance Change toggle), fungible assets (Coins heading), AIPs (Releases tab), entry functions (transactions function filter), and system transactions (table placeholder). The TPS analytics card tooltip gained a glossary link. All copy is translated in every shipped catalog.
+- **Analytics load states**: The analytics page shows a skeleton grid while the dataset loads, and an error alert with a Retry button when the request fails — replacing a hardcoded English warning that appeared both while loading and on failure.
+
+### Changed
+
+- **Search suggestions use one "Addresses" group**: Account, Object, and Address results are grouped under a single "Addresses" header instead of separate ACCOUNTS/OBJECTS groups that showed the same string twice with no guidance. Rows keep their own type chips and destinations (FEAT-SEARCH-003).
+- **System transaction rows no longer look broken**: Structurally empty Sender / Sent To / Function / Amount cells on block-metadata, state-checkpoint, and validator transactions now show a muted "— System —" placeholder with an explainer tooltip instead of four blank cells (FEAT-ACCOUNT-006).
+- **Run Script moved out of the public nav**: The wallet-signing advanced tool now lives in the connected-wallet menu (with its advanced-action subtitle) instead of the main nav and header overflow menu, so casual visitors don't land on an irreversible-action tool. The `/run-script` URL and all warnings are unchanged (FEAT-SCRIPT-001).
+
 - **Recognized mainnet assets**: Added ZEC, XRP, ETH, LINK, UNI, AAVE, DOGE, LTC, and SOL fungible assets from NEAR Intents using on-chain names, symbols, and decimals. The existing Near WBTC (`NBTC`) asset keeps its Labs Verified status.
 - **Testnet known addresses**: Explorer labels for Decibel Testnet (`0xd368…7bd1`), Chunking Contract (`0x5363…c31e`), and Aptos Names (`0xb1ae…ecf4`).
 - **Genesis time on Releases**: Each network card on `/releases/networks` shows when that chain started. The genesis block timestamp is used when it is set; Aptos leaves it at `0`, so the time comes from transaction 1 (block 1). The time links to that transaction. Pruned history is read from the archive node.

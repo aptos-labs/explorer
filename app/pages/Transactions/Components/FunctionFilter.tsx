@@ -14,6 +14,7 @@ import {
 import type {KeyboardEvent} from "react";
 import {useCallback, useRef, useState} from "react";
 import type {FunctionFilterParams} from "../../../api/hooks/useFunctionFilter";
+import {LearnMoreTooltip} from "../../../components/IndividualPageContent/LearnMoreTooltip";
 import {useTranslation} from "../../../i18n";
 
 type FunctionFilterProps = {
@@ -265,6 +266,10 @@ export default function FunctionFilter({
         >
           {t("filter.entryFunction")}
         </Typography>
+        <LearnMoreTooltip
+          text={t("tooltips.entryFunction")}
+          link="https://aptos.dev/network/blockchain/transaction-payloads"
+        />
         {isFilterActive && (
           <Chip
             label={t("filter.clearAll")}
