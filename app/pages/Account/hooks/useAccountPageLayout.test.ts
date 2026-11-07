@@ -180,6 +180,24 @@ describe("FEAT-ACCOUNT-014 — isNotFoundOnNetwork", () => {
     expect(isNotFoundOnNetwork(withObject)).toBe(false);
   });
 
+  it("does not flag when a probe hit a non-404 error", () => {
+    const layout = mapAccountLayoutQueries(
+      {
+        account: query(),
+        object: query({
+          isError: true,
+          error: {type: ResponseErrorType.TOO_MANY_REQUESTS},
+        }),
+        token: query(),
+        multisig: query(),
+      },
+      true,
+    );
+    // A rate limit or outage is not evidence the address is absent.
+    expect(layout.error).not.toBeNull();
+    expect(isNotFoundOnNetwork(layout)).toBe(false);
+  });
+
   it("does not flag while the layout is still fetching", () => {
     const layout = mapAccountLayoutQueries(
       {

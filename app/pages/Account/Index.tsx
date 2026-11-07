@@ -153,9 +153,6 @@ export default function AccountPage({
   const isObject =
     alreadyIsObject || (layout.isFetched ? layout.isObject : !!objectData);
   const isDeleted = layout.isFetched && !layout.isObject;
-  // On `/object/...`, "no resources anywhere" means the address has no state
-  // on this network (e.g. a mainnet object opened on testnet) — a different,
-  // friendlier message than "Deleted Object".
   const notFoundOnNetwork = alreadyIsObject && isNotFoundOnNetwork(layout);
   const isToken = layout.isFetched ? layout.isToken : !!tokenData;
   const isMultisig = layout.isFetched ? layout.isMultisig : false;

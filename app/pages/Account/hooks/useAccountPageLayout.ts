@@ -99,16 +99,14 @@ export function shouldRedirectAccountToObject(
 }
 
 /**
- * On the `/object/...` route, a missing object resource historically rendered
- * as "Deleted Object". But when *every* probe came back absent — no account,
- * object, token, or multisig resource — the address simply has no state on
- * this network (e.g. a mainnet object opened on testnet). That case must read
- * as "not found on this network", never as "deleted", or users fear their
- * data was destroyed by switching networks.
+ * Every layout probe came back absent (404), so the address has no state on
+ * this network — e.g. a mainnet object opened on testnet. A non-404 failure is
+ * not proof of absence, so it never counts.
  */
 export function isNotFoundOnNetwork(layout: AccountPageLayout): boolean {
   return (
     layout.isFetched &&
+    layout.error === null &&
     !layout.isObject &&
     !layout.isAccount &&
     !layout.isToken &&
