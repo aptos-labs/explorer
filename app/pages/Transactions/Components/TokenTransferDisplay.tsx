@@ -331,11 +331,14 @@ function VerifiedTokensModal({
 type TokenTransferDisplayProps = {
   transaction: Types.Transaction;
   address?: string;
+  /** Rendered instead of the default "-" when there are no verified transfers */
+  emptyFallback?: React.ReactNode;
 };
 
 export default function TokenTransferDisplay({
   transaction,
   address,
+  emptyFallback,
 }: TokenTransferDisplayProps) {
   const theme = useTheme();
   const networkName = useNetworkName();
@@ -359,14 +362,16 @@ export default function TokenTransferDisplay({
 
   if (verifiedTransfers.length === 0) {
     return (
-      <Typography
-        variant="body2"
-        sx={{
-          color: "text.secondary",
-        }}
-      >
-        -
-      </Typography>
+      emptyFallback ?? (
+        <Typography
+          variant="body2"
+          sx={{
+            color: "text.secondary",
+          }}
+        >
+          -
+        </Typography>
+      )
     );
   }
 

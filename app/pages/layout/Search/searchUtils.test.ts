@@ -1,6 +1,10 @@
 import {afterEach, describe, expect, it, vi} from "vitest";
 import {resetArchivalEndpointCache} from "../../../api/archivalNode";
-import {createFallbackAddressResult, handleTransaction} from "./searchUtils";
+import {
+  createFallbackAddressResult,
+  groupSearchResults,
+  handleTransaction,
+} from "./searchUtils";
 
 describe("createFallbackAddressResult", () => {
   it("returns an address result for valid inputs", () => {
@@ -70,5 +74,49 @@ describe("FEAT-SEARCH-002 — handleTransaction", () => {
         type: "transaction",
       }),
     );
+  });
+});
+
+describe("FEAT-SEARCH-003 — groupSearchResults address merge", () => {
+  it("merges account, object, and address rows into one Addresses group", () => {
+    const grouped = groupSearchResults([
+      {label: "Account 0xabc", to: "/object/0xabc", type: "account"},
+      {label: "Object 0xabc", to: "/object/0xabc", type: "object"},
+      {label: "Address 0xabc", to: "/object/0xabc", type: "address"},
+    ]);
+
+    const headers = grouped.filter((result) => result.isGroupHeader);
+    expect(headers).toHaveLength(1);
+    expect(headers[0]?.labelKey).toBe("search.group.address");
+    // Rows keep their own destinations and type chips.
+    expect(grouped.filter((result) => !result.isGroupHeader)).toHaveLength(3);
+  });
+
+  it("keeps assets, transactions, and blocks as separate groups", () => {
+    const grouped = groupSearchResults([
+      {label: "Coin USDC", to: "/coin/0x1", type: "coin"},
+      {
+        label: "Fungible Asset 0xfee",
+        to: "/fungible_asset/0xfee",
+        type: "fungible-asset",
+      },
+      {label: "Transaction 0xdead", to: "/txn/0xdead", type: "transaction"},
+      {label: "Block 123", to: "/block/123", type: "block"},
+      {label: "Account 0xabc", to: "/object/0xabc", type: "account"},
+    ]);
+
+    const headerKeys = grouped
+      .filter((result) => result.isGroupHeader)
+      .map((result) => result.labelKey);
+    expect(headerKeys).toEqual([
+      "search.group.asset",
+      "search.group.address",
+      "search.group.transaction",
+      "search.group.block",
+    ]);
+  });
+
+  it("returns input unchanged for an empty list", () => {
+    expect(groupSearchResults([])).toEqual([]);
   });
 });

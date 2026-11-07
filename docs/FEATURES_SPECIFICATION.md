@@ -58,7 +58,7 @@ The app shell that wraps every page.
 | Aspect | Detail |
 |--------|--------|
 | **Logo** | Aptos logo links to `/`, scrolls to top. |
-| **Desktop Nav** | Links: Transactions, Analytics (mainnet only), Validators, Blocks, Coins, Releases, Run Script. Active link highlighted via `useLocation`. Shown when the viewport is `lg+` **and** those labels (plus network, language, help, settings, theme, wallet) fit the toolbar. |
+| **Desktop Nav** | Links: Transactions, Analytics (mainnet only), Validators, Blocks, Coins, Releases. Active link highlighted via `useLocation`. Shown when the viewport is `lg+` **and** those labels (plus network, language, help, settings, theme, wallet) fit the toolbar. "Run Script" is intentionally **not** in the public nav — it signs from the connected wallet and lives in the wallet menu (see FEAT-SCRIPT-001). |
 | **Mobile Nav** | Compact chrome uses a 48px hamburger `IconButton` (glyph pinned at 24×24 so the SVG cannot overflow the tap target) that opens `HeaderOverflowMenu` with the same links, plus User Guide, Settings, language, theme toggle, and Wallet. Below `lg`, compact vs desktop chrome is owned by CSS `display` breakpoints (not `useMediaQuery`) so SSR/first paint cannot flash the hamburger on wide viewports. At `lg+`, `useCompactHeader` still measures intrinsic desktop width vs the toolbar and forces the hamburger when translated nav labels (or other chrome) no longer fit, with a 16px hysteresis so the layout does not flicker. The menu does **not** lock document scroll (MUI's default `overflow: hidden` on `body` makes the overlay appear inert on iOS Safari) and is height-capped so items including Wallet stay reachable. Header blur lives on a non-interactive `::before` layer so iOS Safari still hit-tests the hamburger and network Select. The wordmark is hidden on phones and at the `lg` nav breakpoint so logo, network, language, and (when the desktop toolbar fits) help/settings/theme/wallet stay on-screen, including when the PWA Share button is present. |
 | **Search** | Header autocomplete search (see FEAT-SEARCH). |
 | **Network selector** | Dropdown to switch `?network=` param (see FEAT-NETWORK). Visible in the header on every viewport, including the installed PWA. |
@@ -133,7 +133,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 |--------|--------|
 | **Result types** | Account, Address, Transaction, Block, Coin, Fungible Asset, Object. |
 | **Result row** | Shared `SearchResultRow`: leading avatar + colored type chip + label, with a trailing chevron on the spacious home-page list. Used by both the header dropdown and the home inline list. |
-| **Grouping** | Results grouped by type with section headers (shared `SearchResultGroupHeader`). |
+| **Grouping** | Results grouped by type with section headers (shared `SearchResultGroupHeader`). Account, Object, and Address rows share a single "Addresses" group — the same string often resolves to several of those, and separate groups forced an unexplained either/or choice. Rows keep their own type chips and destinations. |
 | **Deduplication** | Prefer coin list coin over struct coin; drop redundant "Address" when Account/FA/Object exists. |
 | **Avatars** | Token logos, known-address brand marks via `identiconKey`, blockies fallback. |
 | **Fallback** | Valid-looking address with no on-chain hits → still link to `/account/...` via `createFallbackAddressResult` (no extra owned-objects round trip). |
@@ -175,6 +175,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 |--------|--------|
 | **Columns** | Version (linked, with a copy control for the ungrouped ledger version), type, timestamp, sender, function, gas. |
 | **Function label** | `0x1::coin::transfer` and `0x1::aptos_account::transfer` show as **Coin Transfer**. `0x1::aptos_account::transfer_fungible_assets` and `0x1::primary_fungible_store::transfer` show as **Fungible Asset Transfer** (same highlighted transfer chip, distinct label). Other entry functions show `module::function`. The same labels appear on the transaction overview function row (FEAT-TXN-002). |
+| **System rows** | Genesis, block metadata, state checkpoint, block epilogue, and validator transactions (`isSystemTransaction`) show a muted "— System —" placeholder with an explainer tooltip in otherwise-empty Sender / Sent To / Function / Amount cells. User and pending transactions never show it. |
 | **Pagination** | Cursor-based pagination with start param. |
 | **Virtualization** | Uses `@tanstack/react-virtual` via `VirtualizedTableBody` when row count > 20. |
 
@@ -486,6 +487,16 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | **First paint** | Header, title (address hash when known), a balance-card skeleton, and default tabs render immediately. The blocking `LoadingModal` overlay is gone. |
 | **Organize then fill** | Title flags (object / token / multisig / deleted) and the object-page redirect wait on the four layout probes, not the full resource list. GraphQL transaction history starts as soon as the address is known. Resources / Info / Multisig tab bodies skeleton until layout (and, for Resources, the full list) arrives. |
 | **404s** | Missing layout resources are treated as absent, not page failures. A missing `0x1::account::Account` resource is a stateless account, so the page does not show an "Account Not Found" warning. Invalid addresses, unresolved ANS names, and non-404 load failures still show an error. |
+
+### FEAT-ACCOUNT-014 — "Not Found on Network" (object route)
+
+| Aspect | Detail |
+|--------|--------|
+| **Trigger** | On `/object/...`, when all four layout probes come back absent (no Account, ObjectCore, Token, or Multisig resource, and no non-404 probe error) the address has no state on the current network — e.g. a mainnet object opened on testnet (`isNotFoundOnNetwork` in `app/pages/Account/hooks/useAccountPageLayout.ts`). |
+| **Message** | Title and description read "Not Found on {network}" / "This address has no on-chain data on {network}…" instead of the old "Deleted Object", which falsely implied data destruction. The address may still have state on other networks. |
+| **Switch CTA** | `NetworkNotFoundNotice` renders one-click buttons for the other public networks (same visibility rule as the header `NetworkSelect`: no hidden networks, no localnet). Buttons switch network the same way as `NetworkSelect`: `setNetworkName` plus navigating to the same path with `search: {network}`. |
+| **Deleted vs missing** | "Deleted Object/Token Object" copy remains only when the address still has some resource on this network but lacks ObjectCore — a genuine deletion-shaped state. |
+| **i18n** | `pages.account.notFoundOnNetworkTitle/Body/Try` in every shipped catalog. |
 
 ---
 
@@ -827,6 +838,8 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 | Daily Block Gap | `daily_block_gap` |
 
 **Display note**: The Daily Block Gap chart is shown in milliseconds and preserves decimal-scale y-axis labels when adjacent medians fall within the same whole-millisecond range.
+
+**Load states**: While the analytics dataset is loading, a skeleton grid mirrors the chart layout (no failure copy during load). If the dataset request fails, an error alert (`pages.analytics.dataUnavailableTitle/Body`) with a Retry button (`refetch`) replaces the charts — failed loads are never silently blank. Exposed via `useGetAnalyticsDataStatus` (shares the cached query with `useGetAnalyticsData`).
 
 ### FEAT-ANALYTICS-003 — Date Range
 
@@ -1320,7 +1333,7 @@ FEAT-TELEMETRY-002 (Vercel Web Analytics) and FEAT-TELEMETRY-003 (Vercel Speed I
 
 | Aspect | Detail |
 |--------|--------|
-| **Page** | `app/pages/RunScript/Index.tsx`. Top-level page reachable from the main `Nav` and the `HeaderOverflowMenu` ("Run Script"). |
+| **Page** | `app/pages/RunScript/Index.tsx`. Reachable from the connected-wallet menu (`WalletMenu`, "Run Script" with the advanced-action subtitle) — it signs from the wallet, so it is grouped with wallet actions instead of the public nav. The `/run-script` URL keeps working directly. |
 | **Purpose** | Build, simulate, and execute a raw Move **script transaction** (`InputScriptData`) from the connected wallet. Distinct from FEAT-MODULES-001 "Run", which calls published entry functions. |
 | **Input mode** | **Bytecode only.** The user pastes compiled Move script bytecode as a hex string (e.g. output of `aptos move compile-script`). Compiler-based "source mode" is intentionally not offered (no in-browser Move compiler / WASM). |
 | **Type arguments** | Dynamic add/remove list of type-tag strings (e.g. `0x1::aptos_coin::AptosCoin`), passed as `typeArguments`. |
@@ -1537,13 +1550,16 @@ FEAT-TELEMETRY-002 (Vercel Web Analytics) and FEAT-TELEMETRY-003 (Vercel Speed I
 | `app/pages/Transaction/cctp/cctpScan.test.ts` | FEAT-TXN-009 (WormholeScan transfer link helper) |
 | `app/pages/Transaction/confidentialAsset/parseConfidentialAssetEvents.test.ts` | FEAT-TXN-009 (confidential asset event and payload parsing) |
 | `app/pages/Account/hooks/useAccountTabValues.test.ts` | FEAT-ACCOUNT-005 (tab set computation: all GraphQL/object/multisig combos, invariants) |
-| `app/pages/Account/hooks/useAccountPageLayout.test.ts` | FEAT-ACCOUNT-013 (layout 404s vs hard errors, derived flags), FEAT-ACCOUNT-004 (object redirect gating) |
+| `app/pages/Account/hooks/useAccountPageLayout.test.ts` | FEAT-ACCOUNT-013 (layout 404s vs hard errors, derived flags), FEAT-ACCOUNT-004 (object redirect gating), FEAT-ACCOUNT-014 (not-found-on-network detection, non-404 errors excluded) |
+| `app/pages/Account/Components/NetworkNotFoundNotice.test.tsx` | FEAT-ACCOUNT-014 (switch buttons list other public networks; switching sets the network and navigates with `search: {network}`) |
+| `app/pages/Transactions/isSystemTransaction.test.ts` | FEAT-TXLIST-003 (system-row placeholder applies to chain-generated types only, never user/pending) |
+| `app/pages/layout/Search/SearchInput.test.tsx` | FEAT-SEARCH-001 (helper text with ANS tooltip renders without block-in-`<p>` nesting) |
 | `app/pages/Account/utils/accountInfo.test.ts` | FEAT-ACCOUNT-010 (stateless account info: auth key = address, sequence number 0, only when the address holds funds or has sent a transaction; on-chain Account resource wins), FEAT-ACCOUNT-013 (missing Account resource is not a page error) |
 | `app/api/prefetchEntityPages.test.ts` | FEAT-ACCOUNT-013 (layout resources before full resource list), FEAT-TXN-015 (non-blocking transaction prefetch) |
 | `app/pages/Account/Tabs/ModulesTab/Contract.test.ts` | FEAT-MODULES-001 (contract result utilities, copy serialization) |
 | `app/pages/Account/Error.test.tsx` | FEAT-MODULES-008 (`AccountError` optional NOT_FOUND title/message) |
 | `app/pages/layout/Search/searchConstants.test.ts` | FEAT-SEARCH-001 (shared input tokens: placeholder, helper text, debounce, font, icon color), FEAT-SEARCH-003 (result-row type chip colors and labels) |
-| `app/pages/layout/Search/searchUtils.test.ts` | FEAT-SEARCH-003 (fallback address results), FEAT-SEARCH-002 (pruned hash search via archival) |
+| `app/pages/layout/Search/searchUtils.test.ts` | FEAT-SEARCH-003 (fallback address results, account/object/address single-group merge), FEAT-SEARCH-002 (pruned hash search via archival) |
 | `app/pages/layout/Search/searchDetection.test.ts` | FEAT-SEARCH-002 (all input type detection: ANS, struct, numeric including grouped integers, hex, address, emoji, generic) |
 | `app/pages/layout/Search/searchFiltering.test.ts` | FEAT-SEARCH-003 (result filtering/deduplication, grouping with headers and type ordering) |
 | `app/pages/layout/Search/searchHelpers.test.ts` | FEAT-SEARCH-001 (normalization, cache keys), FEAT-SEARCH-002 (label lookup, coin lookup), FEAT-SEARCH-003 (definitiveResult) |

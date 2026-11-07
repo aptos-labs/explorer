@@ -795,6 +795,7 @@ export const th = {
     side: "ฝั่ง",
     user: "ผู้ใช้",
     gas: "แก๊ส",
+    systemPlaceholder: "— ระบบ —",
   },
   txn: {
     entity: "ธุรกรรม",
@@ -1008,6 +1009,10 @@ export const th = {
       tabMetaDescription: "ดู {tab} ของ {kind} {address} บนบล็อกเชน Aptos",
       kindAccount: "บัญชี",
       kindObject: "ออบเจ็กต์",
+      notFoundOnNetworkTitle: "ไม่พบบน {network}",
+      notFoundOnNetworkBody:
+        "ที่อยู่นี้ไม่มีข้อมูลออนเชนบน {network} เครือข่าย Aptos แต่ละเครือข่ายเป็นเชนแยกจากกัน ที่อยู่เดียวกันอาจมีสถานะต่างกันบน Mainnet, Testnet และ Devnet",
+      notFoundOnNetworkTry: "ลองเครือข่ายอื่น:",
     },
     validators: {
       title: "ตัวตรวจสอบ",
@@ -1030,6 +1035,9 @@ export const th = {
       metaDescription:
         "ดูการวิเคราะห์เครือข่าย Aptos รวมถึงผู้ใช้ที่ใช้งานรายวัน ปริมาณธุรกรรม TPS ค่าแก๊ส สถิติ staking และตัวชี้วัดบล็อกเชน กราฟเชิงโต้ตอบและข้อมูลเรียลไทม์",
       mainnetOnly: "การวิเคราะห์มีเฉพาะ Mainnet",
+      dataUnavailableTitle: "ข้อมูลวิเคราะห์ไม่พร้อมใช้งาน",
+      dataUnavailableBody:
+        "คำขอเครือข่ายล้มเหลวขณะโหลดข้อมูลวิเคราะห์ มักเป็นปัญหาชั่วคราว โปรดลองอีกครั้ง",
     },
     script: {
       title: "รันสคริปต์ Move",
@@ -1244,6 +1252,19 @@ export const th = {
     lastEpochPerformanceBody2: "คำนวณดังนี้:",
     lastEpochPerformanceFormula: "(จำนวนข้อเสนอที่สำเร็จ) / (จำนวนโอกาสเสนอทั้งหมด)",
     lastEpochPerformanceBody3: "ตัวชี้วัดนี้ให้สัญญาณเร็วหากประสิทธิภาพลดลง",
+    ansName:
+      "ชื่อ ANS (Aptos Name Service) คือชื่อที่อ่านง่ายซึ่งลงท้ายด้วย .apt และชี้ไปยังที่อยู่ออนเชน เหมือนโดเมนเว็บของกระเป๋าเงิน",
+    octas:
+      "Octa คือหน่วยที่เล็กที่สุดของ APT: 1 APT = 100,000,000 octa เหมือนเซนต์ของดอลลาร์",
+    aggregatedBalanceChange:
+      "โหมดรวม (Aggregated) รวมการเปลี่ยนแปลงยอดคงเหลือของบัญชีและสินทรัพย์เดียวกันไว้ในหนึ่งแถว ส่วนโหมดไม่รวมแสดงแต่ละเหตุการณ์แยกกัน",
+    fungibleAsset:
+      "สินทรัพย์ทดแทนได้ (fungible asset) คือโทเคนที่แลกเปลี่ยนกันได้ ทุกหน่วยเท่ากัน เช่น APT หรือ USDC สินทรัพย์ที่ไม่ซ้ำอย่าง NFT ไม่สามารถทดแทนกันได้",
+    aip: "AIP (Aptos Improvement Proposal) คือเอกสารออกแบบสาธารณะที่เสนอการเปลี่ยนแปลงต่อโปรโตคอลและระบบนิเวศของ Aptos",
+    entryFunction:
+      "entry function คือฟังก์ชันที่เรียกใช้ได้ในสัญญาอัจฉริยะ Move ที่เผยแพร่แล้ว ธุรกรรมเรียก entry function เพื่อทำการเปลี่ยนแปลงออนเชน",
+    systemTransaction:
+      "ธุรกรรมนี้ถูกสร้างโดยเครือข่ายเอง ไม่ใช่จากกระเป๋าเงินผู้ใช้ จึงไม่มีผู้ส่ง ผู้รับ หรือจำนวนโทเคน",
   },
   verified: {
     level: {

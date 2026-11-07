@@ -1,4 +1,4 @@
-import {Box, Stack} from "@mui/material";
+import {Box, Link, Stack} from "@mui/material";
 import {useGetPeakTPS, useGetTPS} from "../../../api/hooks/useGetTPS";
 import {useNetworkName} from "../../../global-config/GlobalConfig";
 import {useTranslation} from "../../../i18n";
@@ -40,6 +40,15 @@ export default function TPS() {
             </Box>
             <Box>{t("analytics.peakLast30DaysNetworkTip")}</Box>
           </Box>
+          <Link
+            href="https://aptos.dev/network/glossary#transaction"
+            target="_blank"
+            rel="noopener noreferrer"
+            underline="none"
+            sx={{alignSelf: "flex-end", fontWeight: 600}}
+          >
+            {t("common.learnMore")}
+          </Link>
         </Stack>
       }
     />

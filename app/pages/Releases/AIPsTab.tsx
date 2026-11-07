@@ -24,6 +24,7 @@ import {
 import {useQueryClient} from "@tanstack/react-query";
 import {useState} from "react";
 import {type AIP, useGetAIPs} from "../../api/hooks/useGetAIPs";
+import {LearnMoreTooltip} from "../../components/IndividualPageContent/LearnMoreTooltip";
 import {useTranslation} from "../../i18n";
 
 type StatusColor =
@@ -122,7 +123,14 @@ export default function AIpsTab() {
           {t("aips.loadFailed")}
         </Alert>
       )}
-      <Stack direction="row" sx={{mb: 2, flexWrap: "wrap", gap: 1}}>
+      <Stack
+        direction="row"
+        sx={{mb: 2, flexWrap: "wrap", gap: 1, alignItems: "center"}}
+      >
+        <LearnMoreTooltip
+          text={t("tooltips.aip")}
+          link="https://github.com/aptos-foundation/aips"
+        />
         {STATUS_FILTERS.map((s) => (
           <Chip
             key={s.id}

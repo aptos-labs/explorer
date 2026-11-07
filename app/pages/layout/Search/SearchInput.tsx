@@ -5,8 +5,9 @@ import {
   InputAdornment,
   TextField,
 } from "@mui/material";
-import {SEARCH_ICON_COLOR, SEARCH_INPUT_FONT_SIZE} from "./searchConstants";
 import {useTranslation} from "../../../i18n";
+import SearchHelperText from "./SearchHelperText";
+import {SEARCH_ICON_COLOR, SEARCH_INPUT_FONT_SIZE} from "./searchConstants";
 
 interface SearchInputProps extends AutocompleteRenderInputParams {
   loading?: boolean;
@@ -21,6 +22,7 @@ export default function SearchInput({loading, ...params}: SearchInputProps) {
         {...params}
         slotProps={{
           ...params.slotProps,
+          formHelperText: {component: "div"},
           input: {
             ...params.slotProps.input,
             sx: {
@@ -44,7 +46,7 @@ export default function SearchInput({loading, ...params}: SearchInputProps) {
           },
         }}
         placeholder={t("search.placeholder")}
-        helperText={t("search.helper")}
+        helperText={<SearchHelperText />}
         fullWidth
       />
     </form>

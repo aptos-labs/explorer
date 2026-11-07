@@ -809,6 +809,7 @@ export const fil = {
     side: "Side",
     user: "User",
     gas: "Gas",
+    systemPlaceholder: "— System —",
   },
   txn: {
     entity: "Transaksyon",
@@ -1044,6 +1045,10 @@ export const fil = {
         "Tingnan ang {tab} para sa {kind} {address} sa Aptos blockchain.",
       kindAccount: "account",
       kindObject: "object",
+      notFoundOnNetworkTitle: "Hindi nahanap sa {network}",
+      notFoundOnNetworkBody:
+        "Walang on-chain data ang address na ito sa {network}. Magkakahiwalay ang bawat Aptos network — maaaring magkaiba ang estado ng parehong address sa Mainnet, Testnet, at Devnet.",
+      notFoundOnNetworkTry: "Sumubok ng ibang network:",
     },
     validators: {
       title: "Mga validator",
@@ -1066,6 +1071,9 @@ export const fil = {
       metaDescription:
         "Tingnan ang analytics ng Aptos network kabilang ang daily active users, dami ng transaksyon, TPS, gas fee, stats ng staking, at metrics ng blockchain. Interactive na chart at real-time na data.",
       mainnetOnly: "Available lang ang analytics para sa Mainnet.",
+      dataUnavailableTitle: "Hindi available ang analytics data",
+      dataUnavailableBody:
+        "Nabigo ang isang network request habang naglo-load ng analytics data. Karaniwang pansamantala lamang ito — subukan muli.",
     },
     script: {
       title: "Patakbuhin ang Move script",
@@ -1303,6 +1311,19 @@ export const fil = {
       "(bilang ng matagumpay na proposal) / (bilang ng kabuuang pagkakataon sa proposal)",
     lastEpochPerformanceBody3:
       "Nagbibigay ang metric na ito ng maagang senyales kung bumababa ang performance.",
+    ansName:
+      "Ang pangalang ANS (Aptos Name Service) ay isang nababasang pangalan na nagtatapos sa .apt at tumuturo sa isang on-chain address — parang web domain para sa isang wallet.",
+    octas:
+      "Ang octa ang pinakamaliit na yunit ng APT: 1 APT = 100,000,000 octa, parang sentimo sa dolyar.",
+    aggregatedBalanceChange:
+      "Pinagsasama ng Aggregated ang lahat ng pagbabago sa balanse ng parehong account at asset sa isang row. Inililista ng Non-aggregated ang bawat pagbabago nang hiwalay.",
+    fungibleAsset:
+      "Ang fungible asset ay isang napagpapalitan-palitang token — pareho ang halaga ng bawat yunit, tulad ng APT o USDC. Ang mga natatanging asset tulad ng NFT ay hindi fungible.",
+    aip: "Ang AIP (Aptos Improvement Proposal) ay isang pampublikong design document na nagmumungkahi ng mga pagbabago sa Aptos protocol at ecosystem.",
+    entryFunction:
+      "Ang entry function ay isang tatawaging function sa isang nai-publish na Move smart contract. Tinatawag ng mga transaksyon ang mga entry function upang makagawa ng mga pagbabago on-chain.",
+    systemTransaction:
+      "Ang transaksyong ito ay ginawa ng mismong network, hindi ng wallet ng user, kaya walang sender, recipient, o halaga ng token.",
   },
   verified: {
     level: {

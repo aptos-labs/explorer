@@ -805,6 +805,7 @@ export const tr = {
     side: "Taraf",
     user: "Kullanıcı",
     gas: "Gas",
+    systemPlaceholder: "— Sistem —",
   },
   txn: {
     entity: "İşlem",
@@ -1035,6 +1036,10 @@ export const tr = {
         "Aptos blockchain'de {kind} {address} için {tab} görünümünü açın.",
       kindAccount: "hesap",
       kindObject: "nesne",
+      notFoundOnNetworkTitle: "{network} üzerinde bulunamadı",
+      notFoundOnNetworkBody:
+        "Bu adresin {network} üzerinde zincir üstü verisi yoktur. Her Aptos ağı ayrı bir zincirdir — aynı adres Mainnet, Testnet ve Devnet üzerinde farklı bir duruma sahip olabilir.",
+      notFoundOnNetworkTry: "Başka bir ağ dene:",
     },
     validators: {
       title: "Doğrulayıcılar",
@@ -1057,6 +1062,9 @@ export const tr = {
       metaDescription:
         "Günlük aktif kullanıcılar, işlem hacimleri, TPS, gas ücretleri, staking istatistikleri ve blockchain ölçütleri dahil Aptos ağ analitiğini görün. Etkileşimli grafikler ve gerçek zamanlı veri.",
       mainnetOnly: "Analitik yalnızca Mainnet için kullanılabilir.",
+      dataUnavailableTitle: "Analitik verileri kullanılamıyor",
+      dataUnavailableBody:
+        "Analitik verileri yüklenirken bir ağ isteği başarısız oldu. Bu genellikle geçicidir — tekrar deneyin.",
     },
     script: {
       title: "Move Betiği Çalıştır",
@@ -1289,6 +1297,19 @@ export const tr = {
       "(başarılı öneri sayısı) / (toplam öneri fırsatı sayısı)",
     lastEpochPerformanceBody3:
       "Bu ölçüt, performans düşüyorsa erken bir göstergedir.",
+    ansName:
+      "ANS (Aptos Name Service) adı, .apt ile biten ve bir zincin üstü adrese çözümlenen okunabilir bir addır — tıpkı bir cüzdan için web alan adı gibi.",
+    octas:
+      "Octa, APT'nin en küçük birimidir: 1 APT = 100.000.000 octa; dolar karşısındaki sent gibi.",
+    aggregatedBalanceChange:
+      "Toplanmış (Aggregated) görünümü, aynı hesap ve varlığa ait tüm bakiye değişikliklerini tek satırda birleştirir. Toplanmamış görünüm her değişiklik olayını ayrı ayrı listeler.",
+    fungibleAsset:
+      "Fungible asset (değiştirilebilir varlık), karşılıklı olarak takas edilebilen bir token'dır — her birim diğerine eşittir, APT veya USDC gibi. NFT gibi benzersiz varlıklar değiştirilemez.",
+    aip: "AIP (Aptos Improvement Proposal), Aptos protokolüne ve ekosistemine değişiklikler öneren herkese açık bir tasarım belgesidir.",
+    entryFunction:
+      "Entry function (giriş fonksiyonu), yayınlanmış bir Move akıllı sözleşmesinde çağrılabilen bir fonksiyondur. İşlemler, zincin üstü değişiklikler yapmak için giriş fonksiyonlarını çağırır.",
+    systemTransaction:
+      "Bu işlem bir kullanıcı cüzdanı tarafından değil, ağın kendisi tarafından oluşturulmuştur; bu nedenle gönderici, alıcı veya token tutarı yoktur.",
   },
   verified: {
     level: {

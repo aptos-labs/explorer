@@ -809,6 +809,7 @@ export const es = {
     side: "Lado",
     user: "Usuario",
     gas: "Gas",
+    systemPlaceholder: "— Sistema —",
   },
   txn: {
     entity: "Transacción",
@@ -1044,6 +1045,10 @@ export const es = {
         "Consulta {tab} de {kind} {address} en la cadena de bloques Aptos.",
       kindAccount: "la cuenta",
       kindObject: "el objeto",
+      notFoundOnNetworkTitle: "No encontrado en {network}",
+      notFoundOnNetworkBody:
+        "Esta dirección no tiene datos on-chain en {network}. Cada red de Aptos es una cadena independiente: la misma dirección puede tener un estado distinto en Mainnet, Testnet y Devnet.",
+      notFoundOnNetworkTry: "Prueba otra red:",
     },
     validators: {
       title: "Validadores",
@@ -1066,6 +1071,9 @@ export const es = {
       metaDescription:
         "Consulta la analítica de la red Aptos, incluidos usuarios activos diarios, volúmenes de transacciones, TPS, tarifas de gas, estadísticas de staking y métricas de la cadena. Gráficos interactivos y datos en tiempo real.",
       mainnetOnly: "La analítica está disponible solo para Mainnet.",
+      dataUnavailableTitle: "Datos de análisis no disponibles",
+      dataUnavailableBody:
+        "Una solicitud de red falló al cargar los datos de análisis. Suele ser temporal; inténtalo de nuevo.",
     },
     script: {
       title: "Ejecutar un script de Move",
@@ -1307,6 +1315,19 @@ export const es = {
       "(número de propuestas exitosas) / (número total de oportunidades de propuesta)",
     lastEpochPerformanceBody3:
       "Esta métrica te da un indicador temprano si el rendimiento se está degradando.",
+    ansName:
+      "Un nombre ANS (Aptos Name Service) es un nombre legible que termina en .apt y se resuelve a una dirección on-chain, como un dominio web para un monedero.",
+    octas:
+      "Los octas son la unidad más pequeña de APT: 1 APT = 100 000 000 de octas, como los céntimos respecto al dólar.",
+    aggregatedBalanceChange:
+      "Agregado combina todos los cambios de saldo de la misma cuenta y activo en una sola fila. No agregado muestra cada evento de cambio por separado.",
+    fungibleAsset:
+      "Un activo fungible es un token intercambiable: cualquier unidad equivale a cualquier otra, como APT o USDC. Los activos únicos como los NFT no son fungibles.",
+    aip: "Un AIP (Aptos Improvement Proposal) es un documento de diseño público que propone cambios en el protocolo y el ecosistema de Aptos.",
+    entryFunction:
+      "Una función de entrada (entry function) es una función invocable de un contrato inteligente Move publicado. Las transacciones invocan funciones de entrada para realizar cambios on-chain.",
+    systemTransaction:
+      "Esta transacción la creó la propia red, no un monedero de usuario, por lo que no tiene remitente, destinatario ni importe de tokens.",
   },
   verified: {
     level: {
