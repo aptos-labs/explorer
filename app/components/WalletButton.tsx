@@ -1,10 +1,15 @@
-import {truncateAddress, useWallet} from "@aptos-labs/wallet-adapter-react";
 import {AccountBalanceWalletOutlined as AccountBalanceWalletOutlinedIcon} from "@mui/icons-material";
 import {Avatar, Button, Typography} from "@mui/material";
 import type React from "react";
 import {type JSX, useState} from "react";
+import {useWallet} from "../context/wallet-adapter";
 import {useTranslation} from "../i18n";
 import WalletMenu from "./WalletMenu";
+
+function truncateAddress(address?: string) {
+  if (!address) return;
+  return `${address.slice(0, 6)}...${address.slice(-5)}`;
+}
 
 type WalletButtonProps = {
   handleModalOpen: () => void;

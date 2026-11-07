@@ -1,4 +1,3 @@
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
 import HubOutlinedIcon from "@mui/icons-material/HubOutlined";
 import {Box} from "@mui/material";
@@ -7,9 +6,10 @@ import type * as React from "react";
 import StyledTab from "../../components/StyledTab";
 import StyledTabs from "../../components/StyledTabs";
 import {Network, type NetworkName} from "../../constants";
+import {useWallet} from "../../context/wallet-adapter";
 import {useNetworkName} from "../../global-config/GlobalConfig";
-import {useNavigate} from "../../routing";
 import {useTranslation} from "../../i18n";
+import {useNavigate} from "../../routing";
 import {addressFromWallet, assertNever} from "../../utils";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 import {EnhancedDelegationValidatorsTable} from "./Delegation/EnhancedDelegationValidatorsTable";

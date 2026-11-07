@@ -1,4 +1,3 @@
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -27,6 +26,7 @@ import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
 import {TransactionTypeName} from "../../../components/TransactionType";
+import {useWallet} from "../../../context/wallet-adapter";
 import {useNetworkName} from "../../../global-config/GlobalConfig";
 import {type TFunction, useTranslation} from "../../../i18n";
 import {getSemanticColors} from "../../../themes/colors/aptosBrandColors";

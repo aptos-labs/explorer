@@ -7,7 +7,7 @@ import {I18nProvider} from "../../i18n";
 import {ExplorerSettingsProvider} from "../../settings";
 import getDesignTokens from "../../themes/theme";
 
-vi.mock("@aptos-labs/wallet-adapter-react", () => ({
+vi.mock("../../context/wallet-adapter", () => ({
   useWallet: () => ({account: null}),
 }));
 

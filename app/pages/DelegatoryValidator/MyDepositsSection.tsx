@@ -1,4 +1,3 @@
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {
   Box,
   Button,
@@ -31,10 +30,11 @@ import GeneralTableBody from "../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../components/Table/GeneralTableHeaderCell";
 import GeneralTableRow from "../../components/Table/GeneralTableRow";
+import {useWallet} from "../../context/wallet-adapter";
 import {useAptosClient} from "../../global-config/GlobalConfig";
+import {useTranslation} from "../../i18n";
 import {addressFromWallet, assertNever} from "../../utils";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
-import {useTranslation} from "../../i18n";
 import MyDepositsStatusTooltip from "./Components/MyDepositsStatusTooltip";
 import StakingStatusIcon, {
   STAKING_STATUS_STEPS,

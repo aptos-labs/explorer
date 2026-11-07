@@ -1,8 +1,10 @@
 import type {WalletSortingOptions} from "@aptos-labs/wallet-adapter-react";
 import type {Breakpoint} from "@mui/material";
-import {useState} from "react";
+import {lazy, Suspense, useState} from "react";
+import {useWalletAdapterLoader} from "../context/wallet-adapter";
 import WalletButton from "./WalletButton";
-import WalletsModal from "./WalletModel";
+
+const WalletsModal = lazy(() => import("./WalletModel"));
 
 export interface WalletConnectorProps extends WalletSortingOptions {
   networkSupport?: string;
@@ -17,8 +19,14 @@ export function WalletConnector({
   modalMaxWidth,
   ...walletSortingOptions
 }: WalletConnectorProps) {
+  const {load: loadWalletAdapter} = useWalletAdapterLoader();
   const [modalOpen, setModalOpen] = useState(false);
-  const handleModalOpen = () => setModalOpen(true);
+  const [modalRequested, setModalRequested] = useState(false);
+  const handleModalOpen = () => {
+    loadWalletAdapter();
+    setModalRequested(true);
+    setModalOpen(true);
+  };
   const handleClose = () => setModalOpen(false);
 
   return (
@@ -27,13 +35,17 @@ export function WalletConnector({
         handleModalOpen={handleModalOpen}
         handleNavigate={handleNavigate}
       />
-      <WalletsModal
-        handleClose={handleClose}
-        modalOpen={modalOpen}
-        networkSupport={networkSupport}
-        modalMaxWidth={modalMaxWidth}
-        {...walletSortingOptions}
-      />
+      {modalRequested ? (
+        <Suspense fallback={null}>
+          <WalletsModal
+            handleClose={handleClose}
+            modalOpen={modalOpen}
+            networkSupport={networkSupport}
+            modalMaxWidth={modalMaxWidth}
+            {...walletSortingOptions}
+          />
+        </Suspense>
+      ) : null}
     </>
   );
 }

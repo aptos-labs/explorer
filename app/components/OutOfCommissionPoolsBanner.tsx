@@ -1,11 +1,11 @@
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useEffect, useState} from "react";
 import {getValidatorCommission} from "../api";
 import {useGetDelegatedStaking} from "../api/hooks/delegations/useGetDelegatedStaking";
+import {useWallet} from "../context/wallet-adapter";
 import {useAptosClient} from "../global-config/GlobalConfig";
+import {useTranslation} from "../i18n";
 import {addressFromWallet} from "../utils";
 import {Banner} from "./Banner";
-import {useTranslation} from "../i18n";
 
 /**
  * Component that checks if a user has any pools with 0% commission

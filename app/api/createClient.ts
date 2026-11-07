@@ -2,7 +2,7 @@
  * Create Aptos client for route loaders.
  * Used to create a client based on network from URL search params or cookies.
  */
-import {Aptos, AptosConfig, Network as SdkNetwork} from "@aptos-labs/ts-sdk";
+import {AptosConfig, Network as SdkNetwork} from "@aptos-labs/ts-sdk";
 import Cookies from "js-cookie";
 import {aptosSdkClientConfig} from "../lib/aptosGatewayAuth";
 import {
@@ -18,6 +18,7 @@ import {
   getGeomiDevApiKeyOverride,
   normalizeGeomiDevApiKeyOverride,
 } from "../settings";
+import {AptosSdkClient} from "./aptosSdkClient";
 
 const NETWORK_COOKIE_NAME = "network";
 
@@ -58,7 +59,7 @@ export function getNetworkFromSearch(
 export function createAptosClient(
   networkName: NetworkName,
   apiKeyOverride?: string,
-): Aptos {
+): AptosSdkClient {
   const nodeUrl = networks[networkName];
   const apiKey =
     typeof window === "undefined"
@@ -92,11 +93,11 @@ export function createAptosClient(
     clientConfig: aptosSdkClientConfig(apiKey),
   });
 
-  return new Aptos(config);
+  return new AptosSdkClient(config);
 }
 
 // Cache clients to avoid recreating them
-const clientCache = new Map<string, Aptos>();
+const clientCache = new Map<string, AptosSdkClient>();
 
 function getClientCacheKey(networkName: NetworkName, apiKeyOverride?: string) {
   return `${networkName}:${normalizeGeomiDevApiKeyOverride(apiKeyOverride)}`;
@@ -109,7 +110,7 @@ export function clearCachedSearchClients() {
 /**
  * Get a cached Aptos client for the given network.
  */
-export function getCachedClient(networkName: NetworkName): Aptos {
+export function getCachedClient(networkName: NetworkName): AptosSdkClient {
   const apiKeyOverride =
     typeof window === "undefined"
       ? undefined
@@ -129,7 +130,7 @@ export function getCachedClient(networkName: NetworkName): Aptos {
  */
 export function getClientFromSearch(
   search: Record<string, string | undefined>,
-): Aptos {
+): AptosSdkClient {
   const networkName = getNetworkFromSearch(search);
   return getCachedClient(networkName);
 }

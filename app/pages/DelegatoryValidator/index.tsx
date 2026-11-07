@@ -1,4 +1,3 @@
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {Grid, Skeleton, Stack} from "@mui/material";
 import {useParams} from "@tanstack/react-router";
 import {useMemo} from "react";
@@ -13,6 +12,7 @@ import {useGetValidatorPageSkeletonLoading} from "../../api/hooks/useGetValidato
 import {useGetValidators} from "../../api/hooks/useGetValidators";
 import {moveResourceData, toMoveResource} from "../../api/moveResource";
 import {Banner} from "../../components/Banner";
+import {useWallet} from "../../context/wallet-adapter";
 import {useTranslation} from "../../i18n";
 import {tryStandardizeAddress} from "../../utils";
 import AccountError from "../Account/Error";
@@ -21,8 +21,8 @@ import {DelegationStateContext} from "./context/DelegationContext";
 import ValidatorDetailCard from "./DetailCard";
 import MyDepositsSection from "./MyDepositsSection";
 import {
-  type StakePoolResourceData,
   resolveValidatorData,
+  type StakePoolResourceData,
 } from "./resolveValidatorData";
 import ValidatorStakingBar from "./StakingBar";
 import ValidatorTitle from "./Title";

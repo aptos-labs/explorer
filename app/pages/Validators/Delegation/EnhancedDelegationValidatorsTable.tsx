@@ -1,4 +1,3 @@
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import {
   alpha,
@@ -20,18 +19,18 @@ import {
   useTheme,
 } from "@mui/material";
 import React, {useMemo, useState} from "react";
-import {useTranslation} from "../../../i18n";
 import type {Types} from "~/types/aptos";
 import {useGetValidatorSet} from "../../../api/hooks/useGetValidatorSet";
 import HashButton, {HashType} from "../../../components/HashButton";
 import {APTCurrencyValue} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
-import {RewardsEarnedApt} from "./RewardsEarnedApt";
 import {StyledLearnMoreTooltip} from "../../../components/StyledTooltip";
 import GeneralTableBody from "../../../components/Table/GeneralTableBody";
 import GeneralTableCell from "../../../components/Table/GeneralTableCell";
 import GeneralTableHeaderCell from "../../../components/Table/GeneralTableHeaderCell";
 import GeneralTableRow from "../../../components/Table/GeneralTableRow";
 import VirtualizedTableBody from "../../../components/Table/VirtualizedTableBody";
+import {useWallet} from "../../../context/wallet-adapter";
+import {useTranslation} from "../../../i18n";
 import {
   useAugmentToWithGlobalSearchParams,
   useNavigate,
@@ -48,6 +47,7 @@ import {
   useValidatorDelegationData,
   type ValidatorWithExtendedData,
 } from "./hooks/useValidatorDelegationData";
+import {RewardsEarnedApt} from "./RewardsEarnedApt";
 
 // Define column types
 type Column =
