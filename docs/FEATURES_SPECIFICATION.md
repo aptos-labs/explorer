@@ -1439,6 +1439,7 @@ FEAT-TELEMETRY-002 (Vercel Web Analytics) and FEAT-TELEMETRY-003 (Vercel Speed I
 | `app/utils/authDiscovery.test.ts` | FEAT-SEO-004 (`/auth.md` H1 + public RFC 9728 PRM) |
 | `app/components/webMcpTools.test.ts` | FEAT-SEO-004 (WebMCP navigation tools: routing, validation), FEAT-GUIDE-001 (`open_guide`) |
 | `app/i18n/translate.test.ts` | FEAT-I18N-001 (interpolation, nested keys, catalog fallback) |
+| `app/i18n/I18nProvider.test.tsx` | FEAT-I18N-001 (lazy catalog loading: stale loads ignored, English fallback when a chunk fails) |
 | `app/i18n/detectLocale.test.ts` | FEAT-I18N-001 (locale preference and browser-language resolution) |
 | `app/i18n/format.test.ts` | FEAT-I18N-001 (`Intl` number/date helpers; `canonicalIntegerString` for clipboard identifiers), FEAT-SETTINGS-004 (explicit local time zone shifts `formatTimestamp`) |
 | `app/i18n/timestampTimeZone.test.ts` | FEAT-SETTINGS-004 (UTC until hydration; browser zone only when the preference is on) |
