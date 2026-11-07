@@ -122,12 +122,8 @@ export function useGetAnalyticsData() {
   return data;
 }
 
-/**
- * Loading/error status for the analytics dataset so pages can distinguish
- * "still loading" from "failed to load" and offer a retry. Shares the same
- * cached query as `useGetAnalyticsData`.
- */
+/** Load state for the analytics dataset; shares the `useGetAnalyticsData` query. */
 export function useGetAnalyticsDataStatus() {
-  const {isPending, isError, refetch, data} = useAnalyticsDataQuery();
-  return {isPending, isError, refetch, hasData: data !== undefined};
+  const {isPending, isFetching, refetch} = useAnalyticsDataQuery();
+  return {isPending, isFetching, refetch};
 }

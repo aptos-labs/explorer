@@ -175,6 +175,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 |--------|--------|
 | **Columns** | Version (linked, with a copy control for the ungrouped ledger version), type, timestamp, sender, function, gas. |
 | **Function label** | `0x1::coin::transfer` and `0x1::aptos_account::transfer` show as **Coin Transfer**. `0x1::aptos_account::transfer_fungible_assets` and `0x1::primary_fungible_store::transfer` show as **Fungible Asset Transfer** (same highlighted transfer chip, distinct label). Other entry functions show `module::function`. The same labels appear on the transaction overview function row (FEAT-TXN-002). |
+| **System rows** | Genesis, block metadata, state checkpoint, block epilogue, and validator transactions (`isSystemTransaction`) show a muted "— System —" placeholder with an explainer tooltip in otherwise-empty Sender / Sent To / Function / Amount cells. User and pending transactions never show it. |
 | **Pagination** | Cursor-based pagination with start param. |
 | **Virtualization** | Uses `@tanstack/react-virtual` via `VirtualizedTableBody` when row count > 20. |
 
@@ -491,9 +492,9 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 
 | Aspect | Detail |
 |--------|--------|
-| **Trigger** | On `/object/...`, when all four layout probes come back absent (no Account, ObjectCore, Token, or Multisig resource) the address has no state on the current network — e.g. a mainnet object opened on testnet (`isNotFoundOnNetwork` in `app/pages/Account/hooks/useAccountPageLayout.ts`). |
+| **Trigger** | On `/object/...`, when all four layout probes come back absent (no Account, ObjectCore, Token, or Multisig resource, and no non-404 probe error) the address has no state on the current network — e.g. a mainnet object opened on testnet (`isNotFoundOnNetwork` in `app/pages/Account/hooks/useAccountPageLayout.ts`). |
 | **Message** | Title and description read "Not Found on {network}" / "This address has no on-chain data on {network}…" instead of the old "Deleted Object", which falsely implied data destruction. The address may still have state on other networks. |
-| **Switch CTA** | `NetworkNotFoundNotice` renders one-click buttons for the other public networks (same visibility rule as the header `NetworkSelect`: no hidden networks, no localnet). Buttons navigate to the same path with `?network=` overridden (inline param wins over the routing helper's network-preserving merge). |
+| **Switch CTA** | `NetworkNotFoundNotice` renders one-click buttons for the other public networks (same visibility rule as the header `NetworkSelect`: no hidden networks, no localnet). Buttons switch network the same way as `NetworkSelect`: `setNetworkName` plus navigating to the same path with `search: {network}`. |
 | **Deleted vs missing** | "Deleted Object/Token Object" copy remains only when the address still has some resource on this network but lacks ObjectCore — a genuine deletion-shaped state. |
 | **i18n** | `pages.account.notFoundOnNetworkTitle/Body/Try` in every shipped catalog. |
 
@@ -1548,7 +1549,10 @@ FEAT-TELEMETRY-002 (Vercel Web Analytics) and FEAT-TELEMETRY-003 (Vercel Speed I
 | `app/pages/Transaction/cctp/cctpScan.test.ts` | FEAT-TXN-009 (WormholeScan transfer link helper) |
 | `app/pages/Transaction/confidentialAsset/parseConfidentialAssetEvents.test.ts` | FEAT-TXN-009 (confidential asset event and payload parsing) |
 | `app/pages/Account/hooks/useAccountTabValues.test.ts` | FEAT-ACCOUNT-005 (tab set computation: all GraphQL/object/multisig combos, invariants) |
-| `app/pages/Account/hooks/useAccountPageLayout.test.ts` | FEAT-ACCOUNT-013 (layout 404s vs hard errors, derived flags), FEAT-ACCOUNT-004 (object redirect gating), FEAT-ACCOUNT-014 (not-found-on-network detection) |
+| `app/pages/Account/hooks/useAccountPageLayout.test.ts` | FEAT-ACCOUNT-013 (layout 404s vs hard errors, derived flags), FEAT-ACCOUNT-004 (object redirect gating), FEAT-ACCOUNT-014 (not-found-on-network detection, non-404 errors excluded) |
+| `app/pages/Account/Components/NetworkNotFoundNotice.test.tsx` | FEAT-ACCOUNT-014 (switch buttons list other public networks; switching sets the network and navigates with `search: {network}`) |
+| `app/pages/Transactions/isSystemTransaction.test.ts` | FEAT-TXLIST-003 (system-row placeholder applies to chain-generated types only, never user/pending) |
+| `app/pages/layout/Search/SearchInput.test.tsx` | FEAT-SEARCH-001 (helper text with ANS tooltip renders without block-in-`<p>` nesting) |
 | `app/pages/Account/utils/accountInfo.test.ts` | FEAT-ACCOUNT-010 (stateless account info: auth key = address, sequence number 0, only when the address holds funds or has sent a transaction; on-chain Account resource wins), FEAT-ACCOUNT-013 (missing Account resource is not a page error) |
 | `app/api/prefetchEntityPages.test.ts` | FEAT-ACCOUNT-013 (layout resources before full resource list), FEAT-TXN-015 (non-blocking transaction prefetch) |
 | `app/pages/Account/Tabs/ModulesTab/Contract.test.ts` | FEAT-MODULES-001 (contract result utilities, copy serialization) |

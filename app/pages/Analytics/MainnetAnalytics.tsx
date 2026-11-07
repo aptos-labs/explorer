@@ -27,9 +27,8 @@ export default function MainnetAnalytics() {
   );
 
   const data = useGetAnalyticsData();
-  const {isPending, isError, refetch} = useGetAnalyticsDataStatus();
+  const {isPending, isFetching, refetch} = useGetAnalyticsDataStatus();
 
-  // Loading: skeleton layout mirroring the chart grid (no failure copy).
   if (isPending) {
     return (
       <Grid
@@ -49,7 +48,6 @@ export default function MainnetAnalytics() {
     );
   }
 
-  // Failed load: say so and offer a retry instead of silently blank charts.
   if (!data) {
     return (
       <Grid
@@ -63,7 +61,12 @@ export default function MainnetAnalytics() {
           <Alert
             severity="error"
             action={
-              <Button color="inherit" size="small" onClick={() => refetch()}>
+              <Button
+                color="inherit"
+                size="small"
+                disabled={isFetching}
+                onClick={() => refetch()}
+              >
                 {t("common.tryAgain")}
               </Button>
             }

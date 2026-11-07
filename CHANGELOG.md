@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **Search suggestions use one "Addresses" group**: Account, Object, and Address results are grouped under a single "Addresses" header instead of separate ACCOUNTS/OBJECTS groups that showed the same string twice with no guidance. Rows keep their own type chips and destinations (FEAT-SEARCH-003).
-- **System transaction rows no longer look broken**: Structurally empty Sender / Sent To / Function / Amount cells on block-metadata, state-checkpoint, and validator transactions now show a muted "— System —" placeholder with an explainer tooltip instead of four blank cells (FEAT-ACCOUNT-006).
+- **System transaction rows no longer look broken**: Structurally empty Sender / Sent To / Function / Amount cells on genesis, block-metadata, state-checkpoint, block-epilogue, and validator transactions now show a muted "— System —" placeholder with an explainer tooltip instead of blank cells. Real token transfers on those rows still display, and user/pending transactions are unaffected (FEAT-TXLIST-003).
 - **Run Script moved out of the public nav**: The wallet-signing advanced tool now lives in the connected-wallet menu (with its advanced-action subtitle) instead of the main nav and header overflow menu, so casual visitors don't land on an irreversible-action tool. The `/run-script` URL and all warnings are unchanged (FEAT-SCRIPT-001).
 
 - **Recognized mainnet assets**: Added ZEC, XRP, ETH, LINK, UNI, AAVE, DOGE, LTC, and SOL fungible assets from NEAR Intents using on-chain names, symbols, and decimals. The existing Near WBTC (`NBTC`) asset keeps its Labs Verified status.

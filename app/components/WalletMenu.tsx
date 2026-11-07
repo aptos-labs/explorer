@@ -91,8 +91,6 @@ export default function WalletMenu({
             </ListItemButton>
           </ListItem>
         )}
-        {/* Run Script signs from the connected wallet, so it lives here —
-            next to wallet actions — instead of the public nav. */}
         <ListItem disablePadding>
           <ListItemButton onClick={onRunScriptClicked}>
             <ListItemText
