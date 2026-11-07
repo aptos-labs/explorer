@@ -5,8 +5,8 @@ import {
   InputAdornment,
   TextField,
 } from "@mui/material";
-import {LearnMoreTooltip} from "../../../components/IndividualPageContent/LearnMoreTooltip";
 import {useTranslation} from "../../../i18n";
+import SearchHelperText from "./SearchHelperText";
 import {SEARCH_ICON_COLOR, SEARCH_INPUT_FONT_SIZE} from "./searchConstants";
 
 interface SearchInputProps extends AutocompleteRenderInputParams {
@@ -22,6 +22,7 @@ export default function SearchInput({loading, ...params}: SearchInputProps) {
         {...params}
         slotProps={{
           ...params.slotProps,
+          formHelperText: {component: "div"},
           input: {
             ...params.slotProps.input,
             sx: {
@@ -45,15 +46,7 @@ export default function SearchInput({loading, ...params}: SearchInputProps) {
           },
         }}
         placeholder={t("search.placeholder")}
-        helperText={
-          <span style={{display: "inline-flex", alignItems: "center", gap: 4}}>
-            {t("search.helper")}
-            <LearnMoreTooltip
-              text={t("tooltips.ansName")}
-              link="https://aptos.dev/network/glossary#aptos-name-service-ans"
-            />
-          </span>
-        }
+        helperText={<SearchHelperText />}
         fullWidth
       />
     </form>
