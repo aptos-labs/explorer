@@ -806,6 +806,7 @@ export const pl = {
     side: "Strona",
     user: "Użytkownik",
     gas: "Gas",
+    systemPlaceholder: "— Systemowa —",
   },
   txn: {
     entity: "Transakcja",
@@ -1030,6 +1031,10 @@ export const pl = {
         "Zobacz {tab} dla {kind} {address} w blockchainie Aptos.",
       kindAccount: "konta",
       kindObject: "obiektu",
+      notFoundOnNetworkTitle: "Nie znaleziono w sieci {network}",
+      notFoundOnNetworkBody:
+        "Ten adres nie ma danych on-chain w sieci {network}. Każda sieć Aptos to osobny blockchain — ten sam adres może mieć inny stan w Mainnet, Testnet i Devnet.",
+      notFoundOnNetworkTry: "Wypróbuj inną sieć:",
     },
     validators: {
       title: "Walidatorzy",
@@ -1052,6 +1057,9 @@ export const pl = {
       metaDescription:
         "Zobacz analitykę sieci Aptos, w tym dziennych aktywnych użytkowników, wolumeny transakcji, TPS, opłaty gas, statystyki stakingu i metryki blockchainu. Interaktywne wykresy i dane w czasie rzeczywistym.",
       mainnetOnly: "Analityka jest dostępna tylko dla Mainnetu.",
+      dataUnavailableTitle: "Dane analityczne niedostępne",
+      dataUnavailableBody:
+        "Żądanie sieciowe nie powiodło się podczas ładowania danych analitycznych. Zwykle jest to tymczasowe — spróbuj ponownie.",
     },
     script: {
       title: "Uruchom skrypt Move",
@@ -1287,6 +1295,19 @@ export const pl = {
       "(liczba udanych propozycji) / (liczba wszystkich szans na propozycję)",
     lastEpochPerformanceBody3:
       "Ta metryka daje wczesny sygnał, jeśli wydajność spada.",
+    ansName:
+      "Nazwa ANS (Aptos Name Service) to czytelna nazwa kończąca się na .apt, która wskazuje adres on-chain — jak domena internetowa dla portfela.",
+    octas:
+      "Octa to najmniejsza jednostka APT: 1 APT = 100 000 000 octa, jak centy względem dolara.",
+    aggregatedBalanceChange:
+      "Widok zagregowany łączy wszystkie zmiany salda tego samego konta i aktywa w jeden wiersz. Widok niezagregowany wyświetla każde zdarzenie osobno.",
+    fungibleAsset:
+      "Aktywo zamiennikowe (fungible asset) to wymienialny token — każda jednostka jest równa każdej innej, jak APT czy USDC. Unikalne aktywa, takie jak NFT, nie są zamienne.",
+    aip: "AIP (Aptos Improvement Proposal) to publiczny dokument projektowy proponujący zmiany w protokole i ekosystemie Aptos.",
+    entryFunction:
+      "Funkcja wejściowa (entry function) to funkcja wywoływalna w opublikowanym kontrakcie Move. Transakcje wywołują funkcje wejściowe, aby dokonywać zmian on-chain.",
+    systemTransaction:
+      "Ta transakcja została utworzona przez samą sieć, a nie portfel użytkownika, dlatego nie ma nadawcy, odbiorcy ani kwoty tokenów.",
   },
   verified: {
     level: {

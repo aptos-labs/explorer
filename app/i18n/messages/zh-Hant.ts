@@ -791,6 +791,7 @@ export const zhHant = {
     side: "方向",
     user: "使用者",
     gas: "Gas",
+    systemPlaceholder: "— 系統 —",
   },
   txn: {
     entity: "交易",
@@ -1001,6 +1002,10 @@ export const zhHant = {
       tabMetaDescription: "查看 Aptos 區塊鏈上{kind} {address} 的{tab}。",
       kindAccount: "帳戶",
       kindObject: "物件",
+      notFoundOnNetworkTitle: "在 {network} 上未找到",
+      notFoundOnNetworkBody:
+        "該地址在 {network} 上沒有鏈上資料。每個 Aptos 網路都是獨立的鏈——同一地址在主網、測試網和開發網上可能持有不同的狀態。",
+      notFoundOnNetworkTry: "嘗試其他網路：",
     },
     validators: {
       title: "驗證者",
@@ -1023,6 +1028,9 @@ export const zhHant = {
       metaDescription:
         "查看 Aptos 網路分析，包括每日活躍使用者、交易量、TPS、Gas 費用、質押統計和區塊鏈指標。互動式圖表與即時資料。",
       mainnetOnly: "分析僅適用於主網。",
+      dataUnavailableTitle: "分析資料無法使用",
+      dataUnavailableBody:
+        "載入分析資料時網路請求失敗。這通常是暫時性的——請再試一次。",
     },
     script: {
       title: "執行 Move 腳本",
@@ -1232,6 +1240,19 @@ export const zhHant = {
     lastEpochPerformanceBody2: "計算方式為：",
     lastEpochPerformanceFormula: "(成功提案數) / (總提案機會數)",
     lastEpochPerformanceBody3: "該指標可提前提示表現是否正在下降。",
+    ansName:
+      "ANS（Aptos 名稱服務）名稱是以 .apt 結尾的人類可讀名稱，可解析為鏈上地址——就像錢包的網路網域。",
+    octas:
+      "Octas 是 APT 的最小單位：1 APT = 100,000,000 octas，類似美元與美分的關係。",
+    aggregatedBalanceChange:
+      "聚合（Aggregated）會將同一帳戶和資產的餘額變動合併為一行；非聚合（Non-aggregated）則逐條列出每次變動。",
+    fungibleAsset:
+      "同質化資產（fungible asset）是可互換的代幣——任意單位彼此等價，例如 APT 或 USDC。NFT 等獨特資產則是非同質化的。",
+    aip: "AIP（Aptos 改進提案）是公開的設計文件，用於提議對 Aptos 協定和生態系統的變更。",
+    entryFunction:
+      "入口函式（entry function）是已發布的 Move 智慧合約中可呼叫的函式。交易透過呼叫入口函式在鏈上做出變更。",
+    systemTransaction:
+      "此交易由網路本身建立，而非使用者錢包發起，因此沒有傳送方、接收方或代幣金額。",
   },
   verified: {
     level: {

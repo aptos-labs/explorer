@@ -7,6 +7,7 @@ export const table = {
   receiver: "Receiver",
   contract: "Contract",
   smartContract: "Smart Contract",
+  systemPlaceholder: "— System —",
   sentTo: "Sent To",
   function: "Function",
   amount: "Amount",

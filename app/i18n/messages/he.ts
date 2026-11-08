@@ -797,6 +797,7 @@ export const he = {
     side: "צד",
     user: "משתמש",
     gas: "Gas",
+    systemPlaceholder: "— מערכת —",
   },
   txn: {
     entity: "עסקה",
@@ -1012,6 +1013,10 @@ export const he = {
       tabMetaDescription: "הצג {tab} עבור {kind} {address} בבלוקצ'יין Aptos.",
       kindAccount: "חשבון",
       kindObject: "אובייקט",
+      notFoundOnNetworkTitle: "לא נמצא ב-{network}",
+      notFoundOnNetworkBody:
+        "לכתובת זו אין נתוני on-chain ב-{network}. כל רשת Aptos היא שרשרת נפרדת — לאותה כתובת עשוי מצב שונה ב-Mainnet, Testnet ו-Devnet.",
+      notFoundOnNetworkTry: "נסה רשת אחרת:",
     },
     validators: {
       title: "מאמתים",
@@ -1034,6 +1039,9 @@ export const he = {
       metaDescription:
         "הצג אנליטיקת רשת Aptos כולל משתמשים פעילים יומיים, נפחי עסקאות, TPS, עמלות gas, סטטיסטיקות staking ומדדי בלוקצ'יין. תרשימים אינטראקטיביים ונתונים בזמן אמת.",
       mainnetOnly: "אנליטיקה זמינה ל-Mainnet בלבד.",
+      dataUnavailableTitle: "נתוני האנליטיקה אינם זמינים",
+      dataUnavailableBody:
+        "בקשת רשת נכשלה בעת טעינת נתוני האנליטיקה. בדרך כלל מדובר בבעיה זמנית — נסה שוב.",
     },
     script: {
       title: "הרץ סקריפט Move",
@@ -1257,6 +1265,19 @@ export const he = {
       "(מספר הצעות מוצלחות) / (מספר הזדמנויות ההצעה הכולל)",
     lastEpochPerformanceBody3:
       "המדד הזה נותן לך אינדיקציה מוקדמת אם הביצועים מידרדרים.",
+    ansName:
+      "שם ANS (Aptos Name Service) הוא שם קריא המסתיים ב-.apt שמתורגם לכתובת on-chain — כמו דומיין אינטרנט עבור ארנק.",
+    octas:
+      "אוקטה (octa) היא היחידה הקטנה ביותר של APT: ‏1 APT = 100,000,000 אוקטה, כמו סנטים ביחס לדולר.",
+    aggregatedBalanceChange:
+      "תצוגה מצרפית (Aggregated) מאחדת את כל שינויי היתרה של אותו חשבון ונכס לשורה אחת. תצוגה לא מצרפית מציגה כל אירוע שינוי בנפרד.",
+    fungibleAsset:
+      "נכס פטיש (fungible asset) הוא טוקן ניתן להחלפה — כל יחידה שווה לכל אחת אחרת, כמו APT או USDC. נכסים ייחודיים כמו NFT אינם פטישיים.",
+    aip: "‏AIP (Aptos Improvement Proposal) הוא מסמך עיצוב ציבורי המציע שינויים בפרוטוקול Aptos ובאקוסיסטם שלו.",
+    entryFunction:
+      "פונקציית כניסה (entry function) היא פונקציה הניתנת לקריאה בחוזה חכם Move שפורסם. עסקאות קוראות לפונקציות כניסה כדי לבצע שינויים on-chain.",
+    systemTransaction:
+      "עסקה זו נוצרה על ידי הרשת עצמה ולא על ידי ארנק משתמש, ולכן אין לה שולח, מקבל או סכום טוקנים.",
   },
   verified: {
     level: {

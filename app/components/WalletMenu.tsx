@@ -1,4 +1,5 @@
 import {
+  Divider,
   List,
   ListItem,
   ListItemButton,
@@ -9,6 +10,7 @@ import {
 import {type JSX, useState} from "react";
 import {useWallet} from "../context/wallet-adapter";
 import {useTranslation} from "../i18n";
+import {useNavigate} from "../routing";
 
 type WalletMenuProps = {
   popoverAnchor: HTMLButtonElement | null;
@@ -23,6 +25,7 @@ export default function WalletMenu({
 }: WalletMenuProps): JSX.Element {
   const {account, disconnect} = useWallet();
   const {t} = useTranslation();
+  const navigate = useNavigate();
   const popoverOpen = Boolean(popoverAnchor);
   const id = popoverOpen ? "wallet-popover" : undefined;
 
@@ -31,6 +34,11 @@ export default function WalletMenu({
       handleNavigate();
     }
     handlePopoverClose();
+  };
+
+  const onRunScriptClicked = () => {
+    handlePopoverClose();
+    navigate({to: "/run-script"});
   };
 
   const handleLogout = () => {
@@ -83,6 +91,25 @@ export default function WalletMenu({
             </ListItemButton>
           </ListItem>
         )}
+        <ListItem disablePadding>
+          <ListItemButton onClick={onRunScriptClicked}>
+            <ListItemText
+              primary={t("chrome.nav.runScript")}
+              secondary={t("chrome.nav.runScriptTitle")}
+              slotProps={{
+                secondary: {
+                  sx: {
+                    fontSize: "0.7rem",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  },
+                },
+              }}
+            />
+          </ListItemButton>
+        </ListItem>
+        <Divider component="li" />
         <ListItem disablePadding>
           <ListItemButton onClick={handleLogout}>
             <ListItemText primary={t("common.logout")} />

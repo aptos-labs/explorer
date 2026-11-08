@@ -10,9 +10,11 @@ import TitleHashButton, {
   NameType,
 } from "../../components/TitleHashButton";
 import {useKnownAddressBranding, useKnownAddressName} from "../../data/hooks";
-import {useTranslation} from "../../i18n";
+import {useNetworkName} from "../../global-config";
+import {translateNetworkName, useTranslation} from "../../i18n";
 import {truncateAddress} from "../../utils";
 import {getAccountTabHeadLabel} from "./accountTabLabels";
+import NetworkNotFoundNotice from "./Components/NetworkNotFoundNotice";
 import {useIsDaaAccount} from "./hooks/useIsDaaAccount";
 
 type AccountTitleProps = {
@@ -25,6 +27,8 @@ type AccountTitleProps = {
   pathTab?: string;
   isDeleted?: boolean;
   isToken?: boolean;
+  /** Address has no resources at all on the current network */
+  notFoundOnNetwork?: boolean;
 };
 
 export default function AccountTitle({
@@ -35,11 +39,14 @@ export default function AccountTitle({
   objectRoute = false,
   pathTab,
   isDeleted = false,
+  notFoundOnNetwork = false,
 }: AccountTitleProps) {
   const {t} = useTranslation();
   const isDAA = useIsDaaAccount(address);
   const knownBranding = useKnownAddressBranding(address);
   const knownLabel = useKnownAddressName(address);
+  const networkName = useNetworkName();
+  const networkLabel = translateNetworkName(networkName, t);
 
   let titleKind: "account" | "object" | "other" = "account";
   let title = t("pages.account.entity");
@@ -47,7 +54,15 @@ export default function AccountTitle({
   let pageType: PageType = "account";
   let keywords: string[] = ["account", "wallet", "address"];
 
-  if (isMultisig) {
+  if (notFoundOnNetwork) {
+    titleKind = "other";
+    pageType = "object";
+    title = t("pages.account.notFoundOnNetworkTitle", {network: networkLabel});
+    description = t("pages.account.notFoundOnNetworkBody", {
+      network: networkLabel,
+    });
+    keywords = ["address", "network", "not found"];
+  } else if (isMultisig) {
     titleKind = "other";
     title = t("pages.account.multisig");
     description = t("pages.account.multisigDescription", {address});
@@ -169,6 +184,7 @@ export default function AccountTitle({
           nameType={NameType.ANS}
         />
       </Stack>
+      {notFoundOnNetwork && <NetworkNotFoundNotice />}
       {isDAA && (
         <Box sx={{mb: 4}}>
           <Box sx={{display: "flex", alignItems: "center", gap: 1, mb: 1}}>

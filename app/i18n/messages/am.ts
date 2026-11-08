@@ -794,6 +794,7 @@ export const am = {
     side: "ጎን",
     user: "ተጠቃሚ",
     gas: "ጋዝ",
+    systemPlaceholder: "— ሲስተም —",
   },
   txn: {
     entity: "ግብይት",
@@ -1004,6 +1005,10 @@ export const am = {
       tabMetaDescription: "በAptos ብሎክቼይን ላይ ለ{kind} {address} {tab} ይመልከቱ።",
       kindAccount: "መለያ",
       kindObject: "ነገር",
+      notFoundOnNetworkTitle: "በ{network} አልተገኘም",
+      notFoundOnNetworkBody:
+        "ይህ አድራሻ በ{network} ላይ የኦን-ቸይን ዳታ የለውም። እያንዳንዱ የAptos ኔትወርክ ተለይቶ የቀረ ሰንሰለት ነው — ተመሳሳይ አድራሻ በMainnet፣ Testnet እና Devnet ላይ የተለየ ሁኔታ ሊኖረው ይችላል።",
+      notFoundOnNetworkTry: "ሌላ ኔትወርክ ይሞክሩ፦",
     },
     validators: {
       title: "ማረጋገጫዎች",
@@ -1026,6 +1031,9 @@ export const am = {
       metaDescription:
         "ዕለታዊ ንቁ ተጠቃሚዎች፣ የግብይት መጠኖች፣ TPS፣ የጋዝ ክፍያዎች፣ የስቴኪንግ ስታትስ እና የብሎክቼይን መለኪያዎችን ጨምሮ የAptos አውታረ መረብ ትንታኔ ይመልከቱ። በይነተገናኝ ቻርቶች እና የቀጥታ ውሂብ።",
       mainnetOnly: "ትንታኔ ለMainnet ብቻ ይገኛል።",
+      dataUnavailableTitle: "የትንተና ዳታ አይገኝም",
+      dataUnavailableBody:
+        "የትንተና ዳታ በመጫን ላይ ሳለ የኔትወርክ ጥያቄ አልተሳካም። ብዙውን ጊዜ ጊዜያዊ ነው — እንደገና ይሞክሩ።",
     },
     script: {
       title: "Move ስክሪፕት አሂድ",
@@ -1240,6 +1248,18 @@ export const am = {
     lastEpochPerformanceBody2: "እንደሚከተለው ይሰላል፦",
     lastEpochPerformanceFormula: "(የተሳኩ ቅናሾች ብዛት) / (ጠቅላላ የቅናሽ እድሎች ብዛት)",
     lastEpochPerformanceBody3: "ይህ መለኪያ አፈጻጸም እየቀነሰ ከሆነ ቀደምት አመላካች ይሰጥዎታል።",
+    ansName:
+      "የANS (Aptos Name Service) ስም በ.apt የሚጨርስ አንባቢ ስም ሲሆን ወደ ኦን-ቸይን አድራሻ ይመራል — ለዋሌት እንደ ዌብ ጎራ።",
+    octas: "Octa የAPT ትንሹ ክፍል ነው፦ 1 APT = 100,000,000 octa፣ እንደ ዶላር ከሴንት ጋር።",
+    aggregatedBalanceChange:
+      "የተጠቃለለ (Aggregated) እይታ ተመሳሳይ መለያ እና ንብረት ሁሉንም የሂሳብ ለውጦች በአንድ ረድፍ ያጠቃልላል። ያልተጠቃለለ እይታ እያንዳንዱን ለውጥ በተናጠል ይዘረዝራል።",
+    fungibleAsset:
+      "ሊለዋወጅ የሚችል ንብረት (fungible asset) የሚለዋወጅ ቶከን ነው — እያንዳንዱ ክፍል ከሌላው ጋር እኩል ነው፣ እንደ APT ወይም USDC። እንደ NFT ያሉ ልዩ ንብረቶች አይለዋወጁም።",
+    aip: "AIP (Aptos Improvement Proposal) የAptos ፕሮቶኮል እና ኢኮሲስተም ለውጦችን የሚጠቁም ይፋዊ ዲዛይን ሰነድ ነው።",
+    entryFunction:
+      "የግቤት ተግባር (entry function) በታተመ የMove ስማርት ኮንትራት ውስጥ የሚጠራ ተግባር ነው። ግብይቶች በኦን-ቸይን ለውጦችን ለማድረግ የግቤት ተግባራትን ይጠራሉ።",
+    systemTransaction:
+      "ይህ ግብይት በተጠቃሚ ዋሌት ሳይሆን በኔትወርኩ ራሱ ተፈጥሯል፤ ስለዚህ ላኪ፣ ተቀባይ ወይም የቶከን መጠን የለውም።",
   },
   verified: {
     level: {
