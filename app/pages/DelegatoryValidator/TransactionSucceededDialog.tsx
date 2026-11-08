@@ -1,4 +1,3 @@
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import {
   Box,
@@ -15,8 +14,9 @@ import {
 import {useState} from "react";
 import {StakeOperation} from "../../api/hooks/delegations";
 import StyledDialog from "../../components/StyledDialog";
-import {addressFromWallet} from "../../utils";
+import {useWallet} from "../../context/wallet-adapter";
 import {InlineMarkup, useTranslation} from "../../i18n";
+import {addressFromWallet} from "../../utils";
 import {useLogEventWithBasic} from "../Account/hooks/useLogEventWithBasic";
 
 type TransactionSucceededDialogProps = {

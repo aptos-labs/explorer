@@ -1,5 +1,5 @@
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {useState} from "react";
+import {useWallet} from "../../context/wallet-adapter";
 
 type useGetValidatorPageSkeletonLoadingResponse = {
   setIsMyDepositsSectionSkeletonLoading: (arg: boolean) => void;

@@ -253,20 +253,14 @@ export default defineConfig({
                   name: "vendor-charts",
                   test: /[\\/]node_modules[\\/](chart\.js|react-chartjs-2)[\\/]/,
                 },
-                // Aptos SDK - core blockchain functionality
-                {
-                  name: "vendor-aptos",
-                  test: /[\\/]node_modules[\\/]@aptos-labs[\\/]ts-sdk[\\/]/,
-                },
+                // No group for @aptos-labs/ts-sdk or wallet-adapter-react:
+                // a group is one eager chunk, and the app imports SDK
+                // functions individually so the full client (keyless,
+                // poseidon) only loads with the lazy wallet adapter.
                 // Data fetching - stable utilities
                 {
                   name: "vendor-query",
                   test: /[\\/]node_modules[\\/]@tanstack[\\/]react-query[\\/]/,
-                },
-                // Wallet adapters - only needed for wallet interactions
-                {
-                  name: "vendor-wallet",
-                  test: /[\\/]node_modules[\\/]@aptos-labs[\\/]wallet-adapter-react[\\/]/,
                 },
               ],
             },

@@ -1,4 +1,3 @@
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {
   Box,
   DialogActions,
@@ -9,10 +8,11 @@ import {
 import ConnectWalletModalIcon from "../../assets/forum_icon.svg?react";
 import StyledDialog from "../../components/StyledDialog";
 import {WalletConnector} from "../../components/WalletConnector";
+import {useWallet} from "../../context/wallet-adapter";
 import {useNetworkName} from "../../global-config/GlobalConfig";
+import {useTranslation} from "../../i18n";
 import {useNavigate} from "../../routing";
 import {sortPetraFirst} from "../../utils";
-import {useTranslation} from "../../i18n";
 
 type WalletConnectionDialogProps = {
   handleDialogClose: () => void;

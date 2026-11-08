@@ -5,7 +5,6 @@
 
 import {
   APTOS_COIN,
-  type Aptos,
   type InputViewFunctionData,
   TypeTagAddress,
   TypeTagU64,
@@ -17,6 +16,7 @@ import {
   isRateLimitLike,
 } from "../context/rate-limit/rateLimitEvents";
 import {objectCoreResource, tokenV2Address} from "../lib/constants";
+import type {AptosSdkClient} from "./aptosSdkClient";
 import {getTransaction, type ResponseError, withResponseError} from "./client";
 import {toMoveResource} from "./moveResource";
 import {getBlockByHeight} from "./v2";
@@ -34,7 +34,7 @@ export const ACCOUNT_LAYOUT_RESOURCE_TYPES = [
 ] as const;
 
 // Transactions list query
-export function transactionsQueryOptions(client: Aptos) {
+export function transactionsQueryOptions(client: AptosSdkClient) {
   return queryOptions({
     queryKey: ["transactions", "latest"],
     queryFn: async () => {
@@ -49,7 +49,7 @@ export function transactionsQueryOptions(client: Aptos) {
 
 // Ledger info query
 export function ledgerInfoQueryOptions(
-  client: Aptos,
+  client: AptosSdkClient,
   networkKey: string,
   staleTime: number = 1000,
 ) {
@@ -61,7 +61,10 @@ export function ledgerInfoQueryOptions(
 }
 
 // Blocks list query (depends on block height)
-export function blocksQueryOptions(client: Aptos, currentBlockHeight: number) {
+export function blocksQueryOptions(
+  client: AptosSdkClient,
+  currentBlockHeight: number,
+) {
   return queryOptions({
     queryKey: ["blocks", currentBlockHeight],
     queryFn: async () => {
@@ -89,7 +92,7 @@ export function blocksQueryOptions(client: Aptos, currentBlockHeight: number) {
 // Single transaction query
 export function transactionQueryOptions(
   txnHashOrVersion: string,
-  client: Aptos,
+  client: AptosSdkClient,
   networkKey: string,
 ) {
   return queryOptions<Types.Transaction, ResponseError>({
@@ -104,7 +107,7 @@ export function transactionQueryOptions(
 // Single block query
 export function blockQueryOptions(
   height: string,
-  client: Aptos,
+  client: AptosSdkClient,
   networkKey: string,
 ) {
   return queryOptions({
@@ -121,7 +124,7 @@ export function blockQueryOptions(
 // Account info query
 export function accountInfoQueryOptions(
   address: string,
-  client: Aptos,
+  client: AptosSdkClient,
   networkKey: string,
 ) {
   return queryOptions({
@@ -145,7 +148,7 @@ export function accountInfoQueryOptions(
 export function accountResourceQueryOptions(
   address: string,
   resource: string,
-  client: Aptos,
+  client: AptosSdkClient,
   networkKey: string,
   ledgerVersion?: number,
 ) {
@@ -179,7 +182,7 @@ export function accountResourceQueryOptions(
 // Account resources query
 export function accountResourcesQueryOptions(
   address: string,
-  client: Aptos,
+  client: AptosSdkClient,
   networkKey: string,
 ) {
   return queryOptions<Types.MoveResource[], ResponseError>({
@@ -200,7 +203,7 @@ export function accountResourcesQueryOptions(
 
 export function aptBalanceQueryOptions(
   address: string,
-  client: Aptos,
+  client: AptosSdkClient,
   networkKey: string,
 ) {
   return queryOptions<string, ResponseError>({
@@ -226,7 +229,10 @@ export function aptBalanceQueryOptions(
 }
 
 // Account modules query
-export function accountModulesQueryOptions(address: string, client: Aptos) {
+export function accountModulesQueryOptions(
+  address: string,
+  client: AptosSdkClient,
+) {
   return queryOptions({
     queryKey: ["accountModules", address],
     queryFn: async () => {
@@ -247,7 +253,7 @@ export function accountModulesQueryOptions(address: string, client: Aptos) {
 // Account transactions query
 export function accountTransactionsQueryOptions(
   address: string,
-  client: Aptos,
+  client: AptosSdkClient,
 ) {
   return queryOptions({
     queryKey: ["accountTransactions", address],

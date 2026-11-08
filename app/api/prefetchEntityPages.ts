@@ -7,10 +7,10 @@
  * connection window.
  */
 
-import type {Aptos} from "@aptos-labs/ts-sdk";
 import type {QueryClient} from "@tanstack/react-query";
-import {getGraphqlURI, networks, type NetworkName} from "../lib/constants";
+import {getGraphqlURI, type NetworkName, networks} from "../lib/constants";
 import {tryStandardizeAddress} from "../utils";
+import type {AptosSdkClient} from "./aptosSdkClient";
 import {getClientFromSearch, getNetworkFromSearch} from "./createClient";
 import {
   ACCOUNT_TXN_PAGE_SIZE,
@@ -35,7 +35,7 @@ export function tryStandardizeRouteAddress(
 export type PrefetchAccountPageArgs = {
   queryClient: QueryClient;
   address: string;
-  client: Aptos;
+  client: AptosSdkClient;
   networkName: NetworkName;
   networkValue: string;
   page?: number;
@@ -97,7 +97,7 @@ export function prefetchAccountPageData({
 export function prefetchTransactionPageData(
   queryClient: QueryClient,
   txnHashOrVersion: string,
-  client: Aptos,
+  client: AptosSdkClient,
   networkValue: string,
 ): void {
   if (!txnHashOrVersion) return;

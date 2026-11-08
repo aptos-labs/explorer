@@ -1,4 +1,3 @@
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {
   Box,
   Button,
@@ -20,8 +19,8 @@ import {
 import type {ValidatorData} from "../../api/hooks/useGetValidators";
 import ContentBoxSpaceBetween from "../../components/IndividualPageContent/ContentBoxSpaceBetween";
 import ContentRowSpaceBetween from "../../components/IndividualPageContent/ContentRowSpaceBetween";
-import TimestampValue from "../../components/IndividualPageContent/ContentValue/TimestampValue";
 import {APTCurrencyValue} from "../../components/IndividualPageContent/ContentValue/CurrencyValue";
+import TimestampValue from "../../components/IndividualPageContent/ContentValue/TimestampValue";
 import LoadingModal from "../../components/LoadingModal";
 import StyledDialog from "../../components/StyledDialog";
 import StyledTooltip, {
@@ -30,6 +29,7 @@ import StyledTooltip, {
 import TransactionResponseSnackbar from "../../components/snakebar/TransactionResponseSnackbar";
 import TooltipTypography from "../../components/TooltipTypography";
 import {OCTA} from "../../constants";
+import {useWallet} from "../../context/wallet-adapter";
 import {
   useAptosClient,
   useNetworkValue,

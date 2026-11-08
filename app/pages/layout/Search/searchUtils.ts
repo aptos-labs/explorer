@@ -1,6 +1,6 @@
-import type {Aptos} from "@aptos-labs/ts-sdk";
 import type {QueryClient} from "@tanstack/react-query";
 import type {Types} from "~/types/aptos";
+import type {AptosSdkClient} from "../../../api/aptosSdkClient";
 import {
   fetchBlockFromArchival,
   headersFromAptosClient,
@@ -134,7 +134,7 @@ export function prefixMatchLongerThan3(
  */
 export async function handleAnsName(
   searchText: string,
-  sdkV2Client: Aptos,
+  sdkV2Client: AptosSdkClient,
   signal?: AbortSignal,
 ): Promise<SearchResult | null> {
   if (signal?.aborted) return null;
@@ -169,7 +169,7 @@ export async function handleAnsName(
  */
 export async function handleCoin(
   searchText: string,
-  sdkV2Client: Aptos,
+  sdkV2Client: AptosSdkClient,
   signal?: AbortSignal,
 ): Promise<SearchResult | null> {
   if (signal?.aborted) return null;
@@ -283,7 +283,7 @@ export function buildContainingBlockSearchResult(
 async function lookupContainingBlockHeight(
   version: bigint,
   ledger: SearchLedgerBounds,
-  sdkV2Client: Aptos,
+  sdkV2Client: AptosSdkClient,
   signal?: AbortSignal,
 ): Promise<bigint | null> {
   if (signal?.aborted) return null;
@@ -350,7 +350,7 @@ async function lookupContainingBlockHeight(
  */
 export async function handleBlockHeightOrVersion(
   searchText: string,
-  sdkV2Client: Aptos,
+  sdkV2Client: AptosSdkClient,
   signal?: AbortSignal,
 ): Promise<SearchResult[]> {
   if (signal?.aborted) return [];
@@ -394,7 +394,7 @@ export async function handleBlockHeightOrVersion(
  */
 export async function handleTransaction(
   searchText: string,
-  sdkV2Client: Aptos,
+  sdkV2Client: AptosSdkClient,
   signal?: AbortSignal,
 ): Promise<SearchResult | null> {
   if (signal?.aborted) return null;
@@ -425,7 +425,7 @@ export async function handleTransaction(
  */
 export async function handleAddress(
   searchText: string,
-  sdkV2Client: Aptos,
+  sdkV2Client: AptosSdkClient,
   queryClient: QueryClient,
   networkValue: string,
   signal?: AbortSignal,
@@ -610,7 +610,7 @@ export function createFallbackAddressResult(
  */
 export async function handleEmojiCoinLookup(
   searchText: string,
-  sdkV2Client: Aptos,
+  sdkV2Client: AptosSdkClient,
   signal?: AbortSignal,
 ): Promise<SearchResult[]> {
   if (signal?.aborted) return [];

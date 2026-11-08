@@ -1,4 +1,3 @@
-import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {
   Divider,
   List,
@@ -9,6 +8,7 @@ import {
   Tooltip,
 } from "@mui/material";
 import {type JSX, useState} from "react";
+import {useWallet} from "../context/wallet-adapter";
 import {useTranslation} from "../i18n";
 import {useNavigate} from "../routing";
 

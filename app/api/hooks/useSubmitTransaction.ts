@@ -1,9 +1,7 @@
-import {
-  type InputTransactionData,
-  useWallet,
-} from "@aptos-labs/wallet-adapter-react";
+import type {InputTransactionData} from "@aptos-labs/wallet-adapter-react";
 import {useState} from "react";
 import {FailedTransactionError} from "~/types/aptos";
+import {useWallet} from "../../context/wallet-adapter";
 import {useAptosClient, useNetworkName} from "../../global-config";
 import {allowsCustomNetworkForLocalExplorer} from "../../utils/walletNetwork";
 

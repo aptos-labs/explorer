@@ -8,6 +8,7 @@ import {
   groupAndSortWallets,
   isInstallRequired,
   useWallet,
+  WalletContext,
   WalletItem,
   type WalletSortingOptions,
 } from "@aptos-labs/wallet-adapter-react";
@@ -20,6 +21,7 @@ import LanOutlinedIcon from "@mui/icons-material/LanOutlined";
 import {
   Box,
   Button,
+  CircularProgress,
   Dialog,
   Divider,
   IconButton,
@@ -30,6 +32,10 @@ import {
   useTheme,
 } from "@mui/material";
 import {type JSX, useMemo} from "react";
+import {
+  useWalletAdapterLoader,
+  useWallet as useWalletState,
+} from "../context/wallet-adapter";
 import {useTranslation} from "../i18n";
 import type {WalletConnectorProps} from "./WalletConnector";
 
@@ -50,7 +56,39 @@ interface WalletsModalProps
   modalOpen: boolean;
 }
 
-export default function WalletsModal({
+/**
+ * Rendered outside the lazily mounted `AptosWalletAdapterProvider`, so it
+ * re-provides the mirrored wallet state to the adapter's `WalletItem`s.
+ */
+export default function WalletsModal(props: WalletsModalProps): JSX.Element {
+  const walletState = useWalletState();
+  const {ready} = useWalletAdapterLoader();
+  const {t} = useTranslation();
+
+  if (!ready) {
+    return (
+      <Dialog
+        open={props.modalOpen}
+        onClose={props.handleClose}
+        aria-label={t("wallet.selectorAriaLabel")}
+        maxWidth={props.modalMaxWidth ?? "xs"}
+        fullWidth
+      >
+        <Box sx={{display: "flex", justifyContent: "center", py: 6}}>
+          <CircularProgress aria-label={t("common.loadingEllipsis")} />
+        </Box>
+      </Dialog>
+    );
+  }
+
+  return (
+    <WalletContext.Provider value={walletState}>
+      <WalletsDialog {...props} />
+    </WalletContext.Provider>
+  );
+}
+
+function WalletsDialog({
   handleClose,
   modalOpen,
   networkSupport,

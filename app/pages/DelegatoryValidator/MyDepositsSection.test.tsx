@@ -9,7 +9,7 @@ import type {ValidatorData} from "../../api/hooks/useGetValidators";
 
 const OCTA = 100_000_000;
 
-vi.mock("@aptos-labs/wallet-adapter-react", () => ({
+vi.mock("../../context/wallet-adapter", () => ({
   useWallet: () => ({
     connected: true,
     account: {address: "0x1"},
