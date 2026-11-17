@@ -806,6 +806,7 @@ export const id = {
     side: "Sisi",
     user: "Pengguna",
     gas: "Gas",
+    systemPlaceholder: "— Sistem —",
   },
   txn: {
     entity: "Transaksi",
@@ -1030,6 +1031,10 @@ export const id = {
         "Lihat {tab} untuk {kind} {address} di blockchain Aptos.",
       kindAccount: "akun",
       kindObject: "objek",
+      notFoundOnNetworkTitle: "Tidak ditemukan di {network}",
+      notFoundOnNetworkBody:
+        "Alamat ini tidak memiliki data on-chain di {network}. Setiap jaringan Aptos adalah chain terpisah — alamat yang sama dapat memiliki status berbeda di Mainnet, Testnet, dan Devnet.",
+      notFoundOnNetworkTry: "Coba jaringan lain:",
     },
     validators: {
       title: "Validator",
@@ -1052,6 +1057,9 @@ export const id = {
       metaDescription:
         "Lihat analitik jaringan Aptos termasuk pengguna aktif harian, volume transaksi, TPS, biaya gas, statistik staking, dan metrik blockchain. Grafik interaktif dan data real-time.",
       mainnetOnly: "Analitik hanya tersedia untuk Mainnet.",
+      dataUnavailableTitle: "Data analitik tidak tersedia",
+      dataUnavailableBody:
+        "Permintaan jaringan gagal saat memuat data analitik. Ini biasanya sementara — coba lagi.",
     },
     script: {
       title: "Jalankan skrip Move",
@@ -1285,6 +1293,19 @@ export const id = {
       "(jumlah proposal berhasil) / (jumlah total peluang proposal)",
     lastEpochPerformanceBody3:
       "Metrik ini memberi indikasi dini jika kinerja menurun.",
+    ansName:
+      "Nama ANS (Aptos Name Service) adalah nama yang mudah dibaca dan berakhiran .apt yang merujuk ke alamat on-chain — seperti domain web untuk dompet.",
+    octas:
+      "Octa adalah satuan terkecil APT: 1 APT = 100.000.000 octa, seperti sen terhadap dolar.",
+    aggregatedBalanceChange:
+      "Agregat menggabungkan semua perubahan saldo untuk akun dan aset yang sama menjadi satu baris. Non-agregat mencantumkan setiap peristiwa perubahan secara terpisah.",
+    fungibleAsset:
+      "Aset fungible adalah token yang dapat dipertukarkan — setiap unit setara dengan unit lain, seperti APT atau USDC. Aset unik seperti NFT tidak fungible.",
+    aip: "AIP (Aptos Improvement Proposal) adalah dokumen desain publik yang mengusulkan perubahan pada protokol dan ekosistem Aptos.",
+    entryFunction:
+      "Entry function adalah fungsi yang dapat dipanggil dalam smart contract Move yang telah dipublikasikan. Transaksi memanggil entry function untuk membuat perubahan on-chain.",
+    systemTransaction:
+      "Transaksi ini dibuat oleh jaringan itu sendiri, bukan oleh dompet pengguna, sehingga tidak memiliki pengirim, penerima, atau jumlah token.",
   },
   verified: {
     level: {

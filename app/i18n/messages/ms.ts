@@ -807,6 +807,7 @@ export const ms = {
     side: "Sisi",
     user: "Pengguna",
     gas: "Gas",
+    systemPlaceholder: "— Sistem —",
   },
   txn: {
     entity: "Transaksi",
@@ -1035,6 +1036,10 @@ export const ms = {
         "Lihat {tab} untuk {kind} {address} pada blockchain Aptos.",
       kindAccount: "akaun",
       kindObject: "objek",
+      notFoundOnNetworkTitle: "Tidak ditemui di {network}",
+      notFoundOnNetworkBody:
+        "Alamat ini tiada data on-chain di {network}. Setiap rangkaian Aptos ialah rantaian berasingan — alamat yang sama boleh mempunyai keadaan berbeza di Mainnet, Testnet dan Devnet.",
+      notFoundOnNetworkTry: "Cuba rangkaian lain:",
     },
     validators: {
       title: "Validator",
@@ -1057,6 +1062,9 @@ export const ms = {
       metaDescription:
         "Lihat analitik rangkaian Aptos termasuk pengguna aktif harian, volum transaksi, TPS, yuran gas, statistik staking, dan metrik blockchain. Carta interaktif dan data masa nyata.",
       mainnetOnly: "Analitik hanya tersedia untuk Mainnet.",
+      dataUnavailableTitle: "Data analitik tidak tersedia",
+      dataUnavailableBody:
+        "Permintaan rangkaian gagal semasa memuatkan data analitik. Biasanya sementara — cuba lagi.",
     },
     script: {
       title: "Jalankan skrip Move",
@@ -1290,6 +1298,19 @@ export const ms = {
       "(bilangan cadangan berjaya) / (bilangan jumlah peluang cadangan)",
     lastEpochPerformanceBody3:
       "Metrik ini memberi petunjuk awal jika prestasi merosot.",
+    ansName:
+      "Nama ANS (Aptos Name Service) ialah nama boleh baca yang berakhir dengan .apt dan merujuk kepada alamat on-chain — seperti domain web untuk dompet.",
+    octas:
+      "Octa ialah unit terkecil APT: 1 APT = 100,000,000 octa, seperti sen kepada dolar.",
+    aggregatedBalanceChange:
+      "Dagregat menggabungkan semua perubahan baki bagi akaun dan aset yang sama ke dalam satu baris. Tidak dagregat menyenaraikan setiap peristiwa perubahan secara berasingan.",
+    fungibleAsset:
+      "Aset boleh tukar (fungible asset) ialah token boleh saling tukar — setiap unit sama nilainya, seperti APT atau USDC. Aset unik seperti NFT tidak boleh tukar.",
+    aip: "AIP (Aptos Improvement Proposal) ialah dokumen reka bentuk awam yang mencadangkan perubahan kepada protokol dan ekosistem Aptos.",
+    entryFunction:
+      "Fungsi kemasukan (entry function) ialah fungsi boleh panggil dalam kontrak pintar Move yang telah diterbitkan. Transaksi memanggil fungsi kemasukan untuk membuat perubahan on-chain.",
+    systemTransaction:
+      "Transaksi ini dicipta oleh rangkaian itu sendiri, bukan oleh dompet pengguna, maka tiada pengirim, penerima atau amaun token.",
   },
   verified: {
     level: {

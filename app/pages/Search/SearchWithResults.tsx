@@ -34,6 +34,7 @@ import {
   getLocalStorageWithExpiry,
   setLocalStorageWithExpiry,
 } from "../../utils/cacheManager";
+import SearchHelperText from "../layout/Search/SearchHelperText";
 import {
   SearchResultGroupHeader,
   SearchResultRow,
@@ -300,9 +301,10 @@ export default function SearchWithResults({
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={t("search.placeholder")}
-        helperText={t("search.helper")}
+        helperText={<SearchHelperText />}
         aria-label={t("search.ariaLabel")}
         slotProps={{
+          formHelperText: {component: "div"},
           input: {
             startAdornment: (
               <InputAdornment position="start">

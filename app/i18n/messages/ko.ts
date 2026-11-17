@@ -800,6 +800,7 @@ export const ko = {
     side: "방향",
     user: "사용자",
     gas: "가스",
+    systemPlaceholder: "— 시스템 —",
   },
   txn: {
     entity: "트랜잭션",
@@ -1027,6 +1028,10 @@ export const ko = {
         "Aptos 블록체인에서 {kind} {address}의 {tab}을(를) 봅니다.",
       kindAccount: "계정",
       kindObject: "오브젝트",
+      notFoundOnNetworkTitle: "{network}에서 찾을 수 없음",
+      notFoundOnNetworkBody:
+        "이 주소는 {network}에 온체인 데이터가 없습니다. 각 Aptos 네트워크는 독립적인 체인이며, 같은 주소가 Mainnet·Testnet·Devnet에서 서로 다른 상태를 가질 수 있습니다.",
+      notFoundOnNetworkTry: "다른 네트워크 시도:",
     },
     validators: {
       title: "밸리데이터",
@@ -1049,6 +1054,9 @@ export const ko = {
       metaDescription:
         "일일 활성 사용자, 트랜잭션 볼륨, TPS, 가스 수수료, 스테이킹 통계, 블록체인 지표를 포함한 Aptos 네트워크 분석을 봅니다. 대화형 차트와 실시간 데이터.",
       mainnetOnly: "분석은 메인넷에서만 사용할 수 있습니다.",
+      dataUnavailableTitle: "분석 데이터를 사용할 수 없음",
+      dataUnavailableBody:
+        "분석 데이터를 불러오는 중 네트워크 요청이 실패했습니다. 일반적으로 일시적인 문제입니다. 다시 시도해 주세요.",
     },
     script: {
       title: "Move 스크립트 실행",
@@ -1275,6 +1283,19 @@ export const ko = {
     lastEpochPerformanceFormula: "(성공한 제안 수) / (전체 제안 기회 수)",
     lastEpochPerformanceBody3:
       "이 지표는 성과가 저하되고 있는지에 대한 조기 신호입니다.",
+    ansName:
+      "ANS(Aptos Name Service) 이름은 .apt로 끝나는 사람이 읽을 수 있는 이름으로, 온체인 주소로 변환됩니다. 월렛의 웹 도메인과 같습니다.",
+    octas:
+      "Octa는 APT의 최소 단위입니다. 1 APT = 100,000,000 octa이며, 달러와 센트의 관계와 같습니다.",
+    aggregatedBalanceChange:
+      "집계(Aggregated)는 동일한 계정과 자산의 잔액 변화를 한 행으로 합칩니다. 비집계(Non-aggregated)는 각 변화 이벤트를 개별적으로 표시합니다.",
+    fungibleAsset:
+      "대체 가능 자산(fungible asset)은 상호 교환 가능한 토큰입니다. APT나 USDC처럼 어떤 단위든 동등합니다. NFT 같은 고유 자산은 대체 불가능합니다.",
+    aip: "AIP(Aptos Improvement Proposal)는 Aptos 프로토콜과 생태계에 대한 변경을 제안하는 공개 설계 문서입니다.",
+    entryFunction:
+      "진입 함수(entry function)는 게시된 Move 스마트 컨트랙트에서 호출 가능한 함수입니다. 트랜잭션은 진입 함수를 호출하여 온체인 변경을 수행합니다.",
+    systemTransaction:
+      "이 트랜잭션은 사용자 월렛이 아닌 네트워크 자체가 생성했으므로 발신자, 수신자, 토큰 금액이 없습니다.",
   },
   verified: {
     level: {

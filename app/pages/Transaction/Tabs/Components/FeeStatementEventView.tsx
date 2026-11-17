@@ -1,6 +1,7 @@
 import {Box, Paper, Typography, useTheme} from "@mui/material";
 import {APTCurrencyValue} from "../../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import GasValue from "../../../../components/IndividualPageContent/ContentValue/GasValue";
+import StyledTooltip from "../../../../components/StyledTooltip";
 import {
   ResponsiveKeyValueRow,
   ResponsiveKeyValueTable,
@@ -73,9 +74,18 @@ function GasUnitsWithOptionalApt({
           sx={{display: "block", color: theme.palette.text.secondary, mt: 0.25}}
         >
           <APTCurrencyValue amount={octas} />{" "}
-          <span>
-            {t("common.octasParens", {amount: formatIntegerString(octas)})}
-          </span>
+          <StyledTooltip
+            arrow
+            title={
+              <Typography variant="body2" sx={{whiteSpace: "normal"}}>
+                {t("tooltips.octas")}
+              </Typography>
+            }
+          >
+            <span style={{cursor: "help", textDecoration: "underline dotted"}}>
+              {t("common.octasParens", {amount: formatIntegerString(octas)})}
+            </span>
+          </StyledTooltip>
         </Typography>
       ) : null}
     </Box>

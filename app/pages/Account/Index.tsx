@@ -24,6 +24,7 @@ import {PetraVaultBanner} from "./Components/PetraVaultBanner";
 import AccountError from "./Error";
 import {useAccountOnChainActivity} from "./hooks/useAccountOnChainActivity";
 import {
+  isNotFoundOnNetwork,
   shouldRedirectAccountToObject,
   useAccountPageLayout,
 } from "./hooks/useAccountPageLayout";
@@ -152,6 +153,7 @@ export default function AccountPage({
   const isObject =
     alreadyIsObject || (layout.isFetched ? layout.isObject : !!objectData);
   const isDeleted = layout.isFetched && !layout.isObject;
+  const notFoundOnNetwork = alreadyIsObject && isNotFoundOnNetwork(layout);
   const isToken = layout.isFetched ? layout.isToken : !!tokenData;
   const isMultisig = layout.isFetched ? layout.isMultisig : false;
 
@@ -241,6 +243,7 @@ export default function AccountPage({
             pathTab={pathTab}
             isDeleted={isDeleted}
             isToken={isToken}
+            notFoundOnNetwork={notFoundOnNetwork}
           />
         ) : (
           <Stack direction="column" spacing={2} sx={{marginX: 1}}>

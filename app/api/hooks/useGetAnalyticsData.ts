@@ -94,12 +94,12 @@ export type NodeCountData = {
 const ANALYTICS_DATA_STALE_TIME = 10 * 60 * 1000;
 const ANALYTICS_DATA_GC_TIME = 60 * 60 * 1000;
 
-export function useGetAnalyticsData() {
+function useAnalyticsDataQuery() {
   // Only subscribe to network_name changes - prevents re-renders when other state changes
   const networkName = useNetworkName();
   const isEnabled = networkName === defaultNetworkName;
 
-  const {data} = useQuery<AnalyticsData>({
+  return useQuery<AnalyticsData>({
     queryKey: ["analyticsData", networkName],
     queryFn: async () => {
       const response = await fetch(ANALYTICS_DATA_URL);
@@ -115,6 +115,15 @@ export function useGetAnalyticsData() {
     refetchOnMount: false,
     retry: 1,
   });
+}
 
-  return isEnabled ? data : undefined;
+export function useGetAnalyticsData() {
+  const {data} = useAnalyticsDataQuery();
+  return data;
+}
+
+/** Load state for the analytics dataset; shares the `useGetAnalyticsData` query. */
+export function useGetAnalyticsDataStatus() {
+  const {isPending, isFetching, refetch} = useAnalyticsDataQuery();
+  return {isPending, isFetching, refetch};
 }

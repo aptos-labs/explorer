@@ -806,6 +806,7 @@ export const ha = {
     side: "Bangare",
     user: "Mai amfani",
     gas: "Gas",
+    systemPlaceholder: "— Tsari —",
   },
   txn: {
     entity: "Ma'amala",
@@ -1035,6 +1036,10 @@ export const ha = {
         "Duba {tab} na {kind} {address} a kan blockchain na Aptos.",
       kindAccount: "asusun",
       kindObject: "abu",
+      notFoundOnNetworkTitle: "Ba a samu a {network} ba",
+      notFoundOnNetworkBody:
+        "Wannan adireshin ba shi da bayanan on-chain a {network}. Kowane hanyar sadarwar Aptos keɓantaccen sarka ce — adireshi ɗaya na iya samun yanayi daban a Mainnet, Testnet da Devnet.",
+      notFoundOnNetworkTry: "Ka ƙoƙari wata hanyar sadarwa:",
     },
     validators: {
       title: "Masu tabbatarwa",
@@ -1057,6 +1062,9 @@ export const ha = {
       metaDescription:
         "Duba nazarin hanyar sadarwar Aptos ciki har da masu amfani masu aiki na yau da kullum, ƙarar ma'amaloli, TPS, kuɗin gas, ƙididdigar saka hannun jari, da ma'aunin blockchain. Zane-zane masu hulɗa da bayanai na ainihin lokaci.",
       mainnetOnly: "Nazari yana samuwa ga Mainnet kawai.",
+      dataUnavailableTitle: "Bayanan bincike ba a samu ba",
+      dataUnavailableBody:
+        "Buƙatar hanyar sadarwa ta gaza lokacin lodin bayanan bincike. Wannan yawanci na ɗan lokaci ne — ka sake gwadawa.",
     },
     script: {
       title: "Gudanar da script na Move",
@@ -1293,6 +1301,19 @@ export const ha = {
       "(adadin ƙaddamarwa masu nasara) / (adadin duk damar ƙaddamarwa)",
     lastEpochPerformanceBody3:
       "Wannan ma'auni yana ba ku alamar farko idan aiki yana raguwa.",
+    ansName:
+      "Sunan ANS (Aptos Name Service) suna ne mai karantawa wanda ke ƙare da .apt kuma yana nuna adireshin on-chain — kamar yankin yanar gizo na asusu.",
+    octas:
+      "Octa ita ce mafi ƙanƙantar naúrar APT: ‏1 APT = octa 100,000,000, kamar kobo ga dala.",
+    aggregatedBalanceChange:
+      "Tsarin haɗe (Aggregated) yana haɗa duk sauyin ma'aunin asusu da kadari ɗaya a cikin layi ɗaya. Tsarin da ba a haɗa ba yana lissafta kowane abin da ya faru dabam.",
+    fungibleAsset:
+      "Kadari mai musanyawa (fungible asset) alama ce da za a musanya — kowane naúra daidai ce da wata, kamar APT ko USDC. Kadarai na musamman kamar NFT ba a musanya su ba.",
+    aip: "‏AIP (Aptos Improvement Proposal) takarda ce ta jama'a da ke gabatar da sauye-sauye ga tsarin Aptos da muhallinsa.",
+    entryFunction:
+      "Aikin shiga (entry function) aiki ne da ake kira a cikin kwangilar Move da aka buga. Ma'amaloli na kira ayyukan shiga don yin sauye-sauye a on-chain.",
+    systemTransaction:
+      "An ƙirƙiri wannan ma'aikalar da hanyar sadarwa kanta, ba asusun mai amfani ba, saboda haka babu mai aikawa, mai karɓa, ko adadin alama.",
   },
   verified: {
     level: {

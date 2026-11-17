@@ -803,6 +803,7 @@ export const ja = {
     side: "サイド",
     user: "ユーザー",
     gas: "ガス",
+    systemPlaceholder: "— システム —",
   },
   txn: {
     entity: "トランザクション",
@@ -1034,6 +1035,10 @@ export const ja = {
         "Aptos ブロックチェーン上の {kind} {address} の {tab} を表示します。",
       kindAccount: "アカウント",
       kindObject: "オブジェクト",
+      notFoundOnNetworkTitle: "{network} 上に見つかりません",
+      notFoundOnNetworkBody:
+        "このアドレスには {network} 上にオンチェーンデータがありません。Aptos の各ネットワークは独立したチェーンであり、同じアドレスでも Mainnet・Testnet・Devnet で状態が異なる場合があります。",
+      notFoundOnNetworkTry: "別のネットワークを試す：",
     },
     validators: {
       title: "バリデータ",
@@ -1056,6 +1061,9 @@ export const ja = {
       metaDescription:
         "日次アクティブユーザー、トランザクション量、TPS、ガス手数料、ステーキング統計、ブロックチェーン指標を含む Aptos ネットワーク分析を表示します。インタラクティブなチャートとリアルタイムデータ。",
       mainnetOnly: "分析はメインネットでのみ利用できます。",
+      dataUnavailableTitle: "アナリティクスデータを利用できません",
+      dataUnavailableBody:
+        "アナリティクスデータの読み込み中にネットワークリクエストが失敗しました。通常は一時的な問題です。もう一度お試しください。",
     },
     script: {
       title: "Move スクリプトを実行",
@@ -1289,6 +1297,19 @@ export const ja = {
     lastEpochPerformanceFormula: "(成功した提案数) / (提案機会の総数)",
     lastEpochPerformanceBody3:
       "この指標は、パフォーマンス低下の早期サインになります。",
+    ansName:
+      "ANS（Aptos Name Service）名は .apt で終わる人が読める名前で、オンチェーンのアドレスに解決されます。ウォレットのウェブドメインのようなものです。",
+    octas:
+      "Octa は APT の最小単位です。1 APT = 100,000,000 octa で、ドルに対するセントのような関係です。",
+    aggregatedBalanceChange:
+      "集約（Aggregated）は同じアカウントと資産の残高変動を 1 行にまとめます。非集約（Non-aggregated）は各変動イベントを個別に表示します。",
+    fungibleAsset:
+      "ファンジブル資産（fungible asset）は互換性のあるトークンです。APT や USDC のようにどの単位も等価です。NFT のような一意の資産はノンファンジブルです。",
+    aip: "AIP（Aptos Improvement Proposal）は、Aptos プロトコルとエコシステムへの変更を提案する公開の設計文書です。",
+    entryFunction:
+      "エントリ関数（entry function）は公開済みの Move スマートコントラクト内で呼び出し可能な関数です。トランザクションはエントリ関数を呼び出してオンチェーンの変更を行います。",
+    systemTransaction:
+      "このトランザクションはユーザーウォレットではなくネットワーク自体が生成したため、送信者・受信者・トークン金額はありません。",
   },
   verified: {
     level: {
