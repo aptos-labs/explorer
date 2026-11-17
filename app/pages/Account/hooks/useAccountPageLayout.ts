@@ -99,6 +99,22 @@ export function shouldRedirectAccountToObject(
 }
 
 /**
+ * Every layout probe came back absent (404), so the address has no state on
+ * this network — e.g. a mainnet object opened on testnet. A non-404 failure is
+ * not proof of absence, so it never counts.
+ */
+export function isNotFoundOnNetwork(layout: AccountPageLayout): boolean {
+  return (
+    layout.isFetched &&
+    layout.error === null &&
+    !layout.isObject &&
+    !layout.isAccount &&
+    !layout.isToken &&
+    !layout.isMultisig
+  );
+}
+
+/**
  * Fetch the four resources that decide title, tabs, and object redirect.
  * The full resource list is a separate, lower-priority query.
  */

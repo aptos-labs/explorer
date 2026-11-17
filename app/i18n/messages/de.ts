@@ -813,6 +813,7 @@ export const de = {
     side: "Seite",
     user: "Nutzer",
     gas: "Gas",
+    systemPlaceholder: "— System —",
   },
   txn: {
     entity: "Transaktion",
@@ -1049,6 +1050,10 @@ export const de = {
         "{tab} für {kind} {address} auf der Aptos-Blockchain anzeigen.",
       kindAccount: "Konto",
       kindObject: "Objekt",
+      notFoundOnNetworkTitle: "Auf {network} nicht gefunden",
+      notFoundOnNetworkBody:
+        "Diese Adresse hat keine On-Chain-Daten auf {network}. Jedes Aptos-Netzwerk ist eine eigene Chain — dieselbe Adresse kann auf Mainnet, Testnet und Devnet einen unterschiedlichen Zustand haben.",
+      notFoundOnNetworkTry: "Anderes Netzwerk ausprobieren:",
     },
     validators: {
       title: "Validatoren",
@@ -1071,6 +1076,9 @@ export const de = {
       metaDescription:
         "Aptos-Netzwerkanalysen anzeigen, einschließlich täglich aktiver Nutzer, Transaktionsvolumina, TPS, Gasgebühren, Staking-Statistiken und Blockchain-Kennzahlen. Interaktive Diagramme und Echtzeitdaten.",
       mainnetOnly: "Analysen sind nur für Mainnet verfügbar.",
+      dataUnavailableTitle: "Analysedaten nicht verfügbar",
+      dataUnavailableBody:
+        "Beim Laden der Analysedaten ist eine Netzwerkanfrage fehlgeschlagen. Dies ist meist vorübergehend — bitte erneut versuchen.",
     },
     script: {
       title: "Ein Move-Skript ausführen",
@@ -1312,6 +1320,19 @@ export const de = {
       "(Anzahl erfolgreicher Proposals) / (Anzahl aller Proposal-Gelegenheiten)",
     lastEpochPerformanceBody3:
       "Diese Kennzahl gibt Ihnen einen frühen Hinweis, wenn die Leistung nachlässt.",
+    ansName:
+      "Ein ANS-Name (Aptos Name Service) ist ein lesbarer Name mit der Endung .apt, der zu einer On-Chain-Adresse aufgelöst wird — wie eine Webdomain für eine Wallet.",
+    octas:
+      "Octas sind die kleinste Einheit von APT: 1 APT = 100.000.000 Octas, wie Cent zu einem Dollar.",
+    aggregatedBalanceChange:
+      "Aggregiert fasst alle Saldoänderungen desselben Kontos und Assets in einer Zeile zusammen. Nicht aggregiert listet jedes Änderungsereignis einzeln auf.",
+    fungibleAsset:
+      "Ein fungibles Asset ist ein austauschbarer Token — jede Einheit ist gleichwertig, wie APT oder USDC. Einzigartige Assets wie NFTs sind nicht fungibel.",
+    aip: "Ein AIP (Aptos Improvement Proposal) ist ein öffentliches Design-Dokument, das Änderungen am Aptos-Protokoll und -Ökosystem vorschlägt.",
+    entryFunction:
+      "Eine Entry-Funktion ist eine aufrufbare Funktion in einem veröffentlichten Move-Smart-Contract. Transaktionen rufen Entry-Funktionen auf, um On-Chain-Änderungen vorzunehmen.",
+    systemTransaction:
+      "Diese Transaktion wurde vom Netzwerk selbst erzeugt, nicht von einer Benutzer-Wallet, daher hat sie keinen Absender, Empfänger oder Token-Betrag.",
   },
   verified: {
     level: {

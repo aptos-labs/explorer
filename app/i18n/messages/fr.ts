@@ -810,6 +810,7 @@ export const fr = {
     side: "Côté",
     user: "Utilisateur",
     gas: "Gas",
+    systemPlaceholder: "— Système —",
   },
   txn: {
     entity: "Transaction",
@@ -1045,6 +1046,10 @@ export const fr = {
         "Consulter {tab} pour {kind} {address} sur la blockchain Aptos.",
       kindAccount: "le compte",
       kindObject: "l'objet",
+      notFoundOnNetworkTitle: "Introuvable sur {network}",
+      notFoundOnNetworkBody:
+        "Cette adresse n'a aucune donnée on-chain sur {network}. Chaque réseau Aptos est une chaîne distincte — la même adresse peut avoir un état différent sur Mainnet, Testnet et Devnet.",
+      notFoundOnNetworkTry: "Essayer un autre réseau :",
     },
     validators: {
       title: "Validateurs",
@@ -1067,6 +1072,9 @@ export const fr = {
       metaDescription:
         "Consultez les analyses du réseau Aptos, notamment les utilisateurs actifs quotidiens, les volumes de transactions, le TPS, les frais de gas, les statistiques de staking et les métriques blockchain. Graphiques interactifs et données en temps réel.",
       mainnetOnly: "Les analyses sont disponibles uniquement pour Mainnet.",
+      dataUnavailableTitle: "Données d'analyse indisponibles",
+      dataUnavailableBody:
+        "Une requête réseau a échoué pendant le chargement des données d'analyse. C'est généralement temporaire — réessayez.",
     },
     script: {
       title: "Exécuter un script Move",
@@ -1306,6 +1314,19 @@ export const fr = {
       "(nombre de propositions réussies) / (nombre total d'opportunités de proposition)",
     lastEpochPerformanceBody3:
       "Cette métrique vous donne un indicateur précoce d'une éventuelle dégradation des performances.",
+    ansName:
+      "Un nom ANS (Aptos Name Service) est un nom lisible se terminant par .apt qui renvoie vers une adresse on-chain — comme un domaine web pour un portefeuille.",
+    octas:
+      "Les octas sont la plus petite unité d'APT : 1 APT = 100 000 000 octas, comme les centimes pour un dollar.",
+    aggregatedBalanceChange:
+      "Agrégé combine tous les changements de solde d'un même compte et actif en une seule ligne. Non agrégé liste chaque événement séparément.",
+    fungibleAsset:
+      "Un actif fongible est un jeton interchangeable — toute unité équivaut à une autre, comme APT ou USDC. Les actifs uniques comme les NFT ne sont pas fongibles.",
+    aip: "Un AIP (Aptos Improvement Proposal) est un document de conception public proposant des modifications au protocole et à l'écosystème Aptos.",
+    entryFunction:
+      "Une fonction d'entrée (entry function) est une fonction appelable d'un contrat intelligent Move publié. Les transactions appellent des fonctions d'entrée pour effectuer des changements on-chain.",
+    systemTransaction:
+      "Cette transaction a été créée par le réseau lui-même, et non par un portefeuille utilisateur : elle n'a donc ni expéditeur, ni destinataire, ni montant de jetons.",
   },
   verified: {
     level: {

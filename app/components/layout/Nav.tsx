@@ -88,11 +88,6 @@ export default function Nav() {
         title={t("chrome.nav.releasesTitle")}
         label={t("chrome.nav.releases")}
       />
-      <NavButton
-        to="/run-script"
-        title={t("chrome.nav.runScriptTitle")}
-        label={t("chrome.nav.runScript")}
-      />
     </Box>
   );
 }

@@ -126,6 +126,10 @@ export const pages = {
       "View {tab} for {kind} {address} on the Aptos blockchain.",
     kindAccount: "account",
     kindObject: "object",
+    notFoundOnNetworkTitle: "Not Found on {network}",
+    notFoundOnNetworkBody:
+      "This address has no on-chain data on {network}. Each Aptos network is a separate chain — the same address can hold different state on Mainnet, Testnet, and Devnet.",
+    notFoundOnNetworkTry: "Try another network:",
   },
   validators: {
     title: "Validators",
@@ -148,6 +152,9 @@ export const pages = {
     metaDescription:
       "View Aptos network analytics including daily active users, transaction volumes, TPS, gas fees, staking stats, and blockchain metrics. Interactive charts and real-time data.",
     mainnetOnly: "Analytics are available for Mainnet only.",
+    dataUnavailableTitle: "Analytics Data Unavailable",
+    dataUnavailableBody:
+      "A network request failed while loading analytics data. This is usually temporary — try again.",
   },
   script: {
     title: "Run a Move Script",

@@ -1,6 +1,10 @@
-import {Alert, Grid} from "@mui/material";
+import {Alert, Button, Grid, Skeleton} from "@mui/material";
 import {useState} from "react";
-import {useGetAnalyticsData} from "../../api/hooks/useGetAnalyticsData";
+import {
+  useGetAnalyticsData,
+  useGetAnalyticsDataStatus,
+} from "../../api/hooks/useGetAnalyticsData";
+import {useTranslation} from "../../i18n";
 import DailyActiveUserChart from "./Charts/DailyActiveUserChart";
 import DailyAvgGasUnitPriceChart from "./Charts/DailyAvgGasUnitPriceChart";
 import DailyBlockGapChart from "./Charts/DailyBlockGapChart";
@@ -17,11 +21,32 @@ import ChartRangeDaysSelect, {
 import NetworkInfo from "./NetworkInfo/NetworkInfo";
 
 export default function MainnetAnalytics() {
+  const {t} = useTranslation();
   const [days, setDays] = useState<ChartRangeDays>(
     ChartRangeDays.DEFAULT_RANGE,
   );
 
   const data = useGetAnalyticsData();
+  const {isPending, isFetching, refetch} = useGetAnalyticsDataStatus();
+
+  if (isPending) {
+    return (
+      <Grid
+        container
+        spacing={3}
+        sx={{
+          marginTop: 3,
+        }}
+      >
+        {Array.from({length: 12}, (_, index) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: static skeleton placeholders
+          <Grid key={index} size={{xs: 12, md: 6, lg: 3}}>
+            <Skeleton variant="rounded" height={280} />
+          </Grid>
+        ))}
+      </Grid>
+    );
+  }
 
   if (!data) {
     return (
@@ -33,9 +58,21 @@ export default function MainnetAnalytics() {
         }}
       >
         <Grid size={{xs: 12}}>
-          <Alert severity="warning">
-            Analytics data is not available at this time. Please try again
-            later.
+          <Alert
+            severity="error"
+            action={
+              <Button
+                color="inherit"
+                size="small"
+                disabled={isFetching}
+                onClick={() => refetch()}
+              >
+                {t("common.tryAgain")}
+              </Button>
+            }
+          >
+            {t("pages.analytics.dataUnavailableTitle")} —{" "}
+            {t("pages.analytics.dataUnavailableBody")}
           </Alert>
         </Grid>
       </Grid>

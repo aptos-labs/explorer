@@ -1,6 +1,7 @@
-import {Box, Typography} from "@mui/material";
+import {Box, Stack, Typography} from "@mui/material";
 import {useGetCoinList} from "../../api/hooks/useGetCoinList";
 import {PageMetadata} from "../../components/hooks/usePageMetadata";
+import {LearnMoreTooltip} from "../../components/IndividualPageContent/LearnMoreTooltip";
 import LoadingModal from "../../components/LoadingModal";
 import {useTranslation} from "../../i18n";
 import PageHeader from "../layout/PageHeader";
@@ -30,15 +31,19 @@ export default function CoinsPage() {
       <LoadingModal open={isLoading} />
       <Box>
         <PageHeader />
-        <Typography
-          variant="h3"
-          component="h1"
-          sx={{
-            marginBottom: 2,
-          }}
+        <Stack
+          direction="row"
+          spacing={1}
+          sx={{alignItems: "center", marginBottom: 2}}
         >
-          {t("pages.coins.title")}
-        </Typography>
+          <Typography variant="h3" component="h1">
+            {t("pages.coins.title")}
+          </Typography>
+          <LearnMoreTooltip
+            text={t("tooltips.fungibleAsset")}
+            link="https://aptos.dev/network/glossary#fungible-asset"
+          />
+        </Stack>
         {error ? (
           <Typography color="error">{t("pages.coins.loadError")}</Typography>
         ) : (

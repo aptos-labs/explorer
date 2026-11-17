@@ -810,6 +810,7 @@ export const zu = {
     side: "Uhlangothi",
     user: "Umsebenzisi",
     gas: "I-Gas",
+    systemPlaceholder: "— Isistimu —",
   },
   txn: {
     entity: "Ukuthengiselana",
@@ -1038,6 +1039,10 @@ export const zu = {
       tabMetaDescription: "Buka {tab} ye-{kind} {address} ku-Aptos blockchain.",
       kindAccount: "akhawunti",
       kindObject: "into",
+      notFoundOnNetworkTitle: "Ayitholakali ku-{network}",
+      notFoundOnNetworkBody:
+        "Le khasi ayinadata ye-on-chain ku-{network}. I-inethiwekhi ngayinye ye-Aptos isintiweko esihlukile — ikhasi efanayo ingaba nesimo esihlukile ku-Mainnet, Testnet ne-Devnet.",
+      notFoundOnNetworkTry: "Zama enye i-inethiwekhi:",
     },
     validators: {
       title: "Abaqinisekisi",
@@ -1060,6 +1065,9 @@ export const zu = {
       metaDescription:
         "Buka ukuhlaziya kwenethiwekhi ye-Aptos kufaka abasebenzisi abasebenzayo nsuku zonke, amavolumu okuthengiselana, i-TPS, izinkokhelo ze-gas, izibalo zokubeka isitoko, nezilinganiso ze-blockchain. Amashadi asebenzisanayo nedatha yesikhathi sangempela.",
       mainnetOnly: "Ukuhlaziya kutholakala ku-Mainnet kuphela.",
+      dataUnavailableTitle: "Idatha yokuhlaziya ayitholakali",
+      dataUnavailableBody:
+        "Isicelo senkundla yonke sehlulekile ekulayisheni idatha yokuhlaziya. Lokhu kuvamile okwesikhashana — zama futhi.",
     },
     script: {
       title: "Qalisa i-Move Script",
@@ -1299,6 +1307,19 @@ export const zu = {
       "(inani leziphakamiso eziphumelele) / (inani lamathuba esiphakamiso aphelele)",
     lastEpochPerformanceBody3:
       "Lesi silinganiso sikunikeza inkomba yokuqala uma ukusebenza kuncipha.",
+    ansName:
+      "Igama le-ANS (Aptos Name Service) igama elifundekayo eliphela ngo-.apt futhi libhekisela ekhasini le-on-chain — njengendawo yewebhu yewalithi.",
+    octas:
+      "I-octa yiyunithi encane kakhulu ye-APT: ‏1 APT = 100,000,000 ama-octa, njengezinti uma kuqhathaniswa nedola.",
+    aggregatedBalanceChange:
+      "Ukubukwa okuhlanganisiwe (Aggregated) kuhlanganisa wonke izinguquko zesisaldo zofinyelelo nempahla efanayo emugqeni owodwa. Ukungahlanganisiwe kubala ngaguquko nganguquko.",
+    fungibleAsset:
+      "Impahla esetshenziselwa ukushintshana (fungible asset) yitokeni engashintshana — yonke iyunithi ilingana nenye, njenge-APT noma i-USDC. Impahla eyingqayizivele njenge-NFT ayishintshani.",
+    aip: "‏I-AIP (Aptos Improvement Proposal) idokhumenti yesizulu yokwakha echaza izinguquko kumphumela we-Aptos nomhlaba waso.",
+    entryFunction:
+      "Isigaba sokungena (entry function) isigaba esibizwayo kukhontradi ye-Move eshicilelwe. Izinkokheli zibiza izigaba zokungena ukuzenza izinguquko ze-on-chain.",
+    systemTransaction:
+      "Le nkokheli yidalwe yi-inethiwekhi yona, kungewalithi yomsebenzisi, ngakho-ke ayinomthumeli, ongamukeli, noma inani le-tokeni.",
   },
   verified: {
     level: {

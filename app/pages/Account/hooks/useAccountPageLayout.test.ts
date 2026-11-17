@@ -1,7 +1,8 @@
 import {describe, expect, it} from "vitest";
-import {ResponseErrorType} from "../../../api/client";
 import type {Types} from "~/types/aptos";
+import {ResponseErrorType} from "../../../api/client";
 import {
+  isNotFoundOnNetwork,
   type LayoutResourceQuery,
   mapAccountLayoutQueries,
   shouldRedirectAccountToObject,
@@ -136,5 +137,77 @@ describe("FEAT-ACCOUNT-004 — shouldRedirectAccountToObject", () => {
 
   it("does not redirect when already on the object route", () => {
     expect(shouldRedirectAccountToObject(true, true, false, true)).toBe(false);
+  });
+});
+
+describe("FEAT-ACCOUNT-014 — isNotFoundOnNetwork", () => {
+  it("flags a fetched layout with no resources at all", () => {
+    const layout = mapAccountLayoutQueries(
+      {
+        account: query(),
+        object: query(),
+        token: query(),
+        multisig: query(),
+      },
+      true,
+    );
+    // An address absent everywhere on this network (e.g. a mainnet object
+    // opened on testnet) must read "not found", never "deleted".
+    expect(isNotFoundOnNetwork(layout)).toBe(true);
+  });
+
+  it("does not flag an address that still has any resource", () => {
+    const withAccount = mapAccountLayoutQueries(
+      {
+        account: query({data: resource("0x1::account::Account")}),
+        object: query(),
+        token: query(),
+        multisig: query(),
+      },
+      true,
+    );
+    expect(isNotFoundOnNetwork(withAccount)).toBe(false);
+
+    const withObject = mapAccountLayoutQueries(
+      {
+        account: query(),
+        object: query({data: resource("0x1::object::ObjectCore")}),
+        token: query(),
+        multisig: query(),
+      },
+      true,
+    );
+    expect(isNotFoundOnNetwork(withObject)).toBe(false);
+  });
+
+  it("does not flag when a probe hit a non-404 error", () => {
+    const layout = mapAccountLayoutQueries(
+      {
+        account: query(),
+        object: query({
+          isError: true,
+          error: {type: ResponseErrorType.TOO_MANY_REQUESTS},
+        }),
+        token: query(),
+        multisig: query(),
+      },
+      true,
+    );
+    // A rate limit or outage is not evidence the address is absent.
+    expect(layout.error).not.toBeNull();
+    expect(isNotFoundOnNetwork(layout)).toBe(false);
+  });
+
+  it("does not flag while the layout is still fetching", () => {
+    const layout = mapAccountLayoutQueries(
+      {
+        account: query({isPending: true, isFetched: false}),
+        object: query(),
+        token: query(),
+        multisig: query(),
+      },
+      true,
+    );
+    expect(isNotFoundOnNetwork(layout)).toBe(false);
   });
 });

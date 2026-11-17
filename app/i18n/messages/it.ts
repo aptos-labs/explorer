@@ -809,6 +809,7 @@ export const it = {
     side: "Lato",
     user: "Utente",
     gas: "Gas",
+    systemPlaceholder: "— Sistema —",
   },
   txn: {
     entity: "Transazione",
@@ -1040,6 +1041,10 @@ export const it = {
         "Visualizza {tab} per {kind} {address} sulla blockchain Aptos.",
       kindAccount: "account",
       kindObject: "oggetto",
+      notFoundOnNetworkTitle: "Non trovato su {network}",
+      notFoundOnNetworkBody:
+        "Questo indirizzo non ha dati on-chain su {network}. Ogni rete Aptos è una blockchain separata — lo stesso indirizzo può avere stati diversi su Mainnet, Testnet e Devnet.",
+      notFoundOnNetworkTry: "Prova un'altra rete:",
     },
     validators: {
       title: "Validatori",
@@ -1062,6 +1067,9 @@ export const it = {
       metaDescription:
         "Visualizza le analisi della rete Aptos, tra cui utenti attivi giornalieri, volumi di transazioni, TPS, commissioni gas, statistiche di staking e metriche della blockchain. Grafici interattivi e dati in tempo reale.",
       mainnetOnly: "Le analisi sono disponibili solo per Mainnet.",
+      dataUnavailableTitle: "Dati analitici non disponibili",
+      dataUnavailableBody:
+        "Una richiesta di rete non è riuscita durante il caricamento dei dati analitici. Di solito è temporaneo — riprova.",
     },
     script: {
       title: "Esegui uno script Move",
@@ -1304,6 +1312,19 @@ export const it = {
       "(numero di proposte riuscite) / (numero totale di opportunità di proposta)",
     lastEpochPerformanceBody3:
       "Questa metrica è un indicatore precoce se il rendimento sta calando.",
+    ansName:
+      "Un nome ANS (Aptos Name Service) è un nome leggibile che termina con .apt e si risolve in un indirizzo on-chain, come un dominio web per un wallet.",
+    octas:
+      "Gli octas sono l'unità più piccola di APT: 1 APT = 100.000.000 octas, come i centesimi rispetto al dollaro.",
+    aggregatedBalanceChange:
+      "Aggregato combina tutte le variazioni di saldo dello stesso conto e asset in un'unica riga. Non aggregato elenca ogni evento di variazione separatamente.",
+    fungibleAsset:
+      "Un asset fungibile è un token intercambiabile — ogni unità equivale a qualsiasi altra, come APT o USDC. Asset unici come gli NFT non sono fungibili.",
+    aip: "Un AIP (Aptos Improvement Proposal) è un documento di progettazione pubblico che propone modifiche al protocollo e all'ecosistema Aptos.",
+    entryFunction:
+      "Una funzione entry è una funzione richiamabile in uno smart contract Move pubblicato. Le transazioni invocano funzioni entry per apportare modifiche on-chain.",
+    systemTransaction:
+      "Questa transazione è stata creata dalla rete stessa, non da un wallet utente, quindi non ha mittente, destinatario né importo di token.",
   },
   verified: {
     level: {

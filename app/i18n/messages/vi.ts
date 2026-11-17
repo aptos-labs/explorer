@@ -801,6 +801,7 @@ export const vi = {
     side: "Phía",
     user: "Người dùng",
     gas: "Gas",
+    systemPlaceholder: "— Hệ thống —",
   },
   txn: {
     entity: "Giao dịch",
@@ -1027,6 +1028,10 @@ export const vi = {
         "Xem {tab} của {kind} {address} trên blockchain Aptos.",
       kindAccount: "tài khoản",
       kindObject: "đối tượng",
+      notFoundOnNetworkTitle: "Không tìm thấy trên {network}",
+      notFoundOnNetworkBody:
+        "Địa chỉ này không có dữ liệu on-chain trên {network}. Mỗi mạng Aptos là một chuỗi riêng biệt — cùng một địa chỉ có thể có trạng thái khác nhau trên Mainnet, Testnet và Devnet.",
+      notFoundOnNetworkTry: "Thử mạng khác:",
     },
     validators: {
       title: "Validator",
@@ -1049,6 +1054,9 @@ export const vi = {
       metaDescription:
         "Xem phân tích mạng Aptos gồm người dùng hoạt động hằng ngày, khối lượng giao dịch, TPS, phí gas, thống kê staking và chỉ số blockchain. Biểu đồ tương tác và dữ liệu thời gian thực.",
       mainnetOnly: "Phân tích chỉ khả dụng trên Mainnet.",
+      dataUnavailableTitle: "Dữ liệu phân tích không khả dụng",
+      dataUnavailableBody:
+        "Một yêu cầu mạng đã thất bại khi tải dữ liệu phân tích. Đây thường là tạm thời — hãy thử lại.",
     },
     script: {
       title: "Chạy script Move",
@@ -1280,6 +1288,19 @@ export const vi = {
       "(số đề xuất thành công) / (tổng số cơ hội đề xuất)",
     lastEpochPerformanceBody3:
       "Chỉ số này cho bạn tín hiệu sớm nếu hiệu suất đang giảm.",
+    ansName:
+      "Tên ANS (Aptos Name Service) là tên dễ đọc kết thúc bằng .apt và trỏ đến một địa chỉ on-chain — giống như tên miền web cho ví.",
+    octas:
+      "Octa là đơn vị nhỏ nhất của APT: 1 APT = 100.000.000 octa, giống như cent so với đô-la.",
+    aggregatedBalanceChange:
+      "Tổng hợp (Aggregated) gộp tất cả các thay đổi số dư của cùng một tài khoản và tài sản thành một hàng. Không tổng hợp liệt kê từng sự kiện thay đổi riêng lẻ.",
+    fungibleAsset:
+      "Tài sản có thể thay thế (fungible asset) là token có thể hoán đổi — mọi đơn vị đều bằng nhau, như APT hay USDC. Tài sản độc nhất như NFT là không thể thay thế.",
+    aip: "AIP (Aptos Improvement Proposal) là tài liệu thiết kế công khai đề xuất các thay đổi đối với giao thức và hệ sinh thái Aptos.",
+    entryFunction:
+      "Hàm nhập (entry function) là hàm có thể gọi trong hợp đồng thông minh Move đã xuất bản. Giao dịch gọi hàm nhập để tạo thay đổi on-chain.",
+    systemTransaction:
+      "Giao dịch này do chính mạng tạo ra, không phải từ ví người dùng, nên không có người gửi, người nhận hay số lượng token.",
   },
   verified: {
     level: {

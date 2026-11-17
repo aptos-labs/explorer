@@ -10,11 +10,13 @@ import React from "react";
 import type {Types} from "~/types/aptos";
 import {useGetCoinList} from "../../../api/hooks/useGetCoinList";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
+import {LearnMoreTooltip} from "../../../components/IndividualPageContent/LearnMoreTooltip";
 import {
   VerifiedType,
   verifiedLevel,
 } from "../../../components/Table/VerifiedCell";
 import {useNetworkName} from "../../../global-config/GlobalConfig";
+import {useTranslation} from "../../../i18n";
 import {getAssetSymbol} from "../../../utils";
 import {
   type BalanceChange,
@@ -110,6 +112,7 @@ function AggregatedBalanceTable({
 
 export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
   const theme = useTheme();
+  const {t} = useTranslation();
   const networkName = useNetworkName();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const {data: coinData} = useGetCoinList();
@@ -443,6 +446,7 @@ export default function BalanceChangeTab({transaction}: BalanceChangeTabProps) {
       >
         Aggregated
       </Button>
+      <LearnMoreTooltip text={t("tooltips.aggregatedBalanceChange")} />
     </Stack>
   );
 

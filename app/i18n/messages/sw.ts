@@ -806,6 +806,7 @@ export const sw = {
     side: "Upande",
     user: "Mtumiaji",
     gas: "Gesi",
+    systemPlaceholder: "— Mfumo —",
   },
   txn: {
     entity: "Muamala",
@@ -1039,6 +1040,10 @@ export const sw = {
         "Tazama {tab} ya {kind} {address} kwenye mnyororo wa Aptos.",
       kindAccount: "akaunti",
       kindObject: "kitu",
+      notFoundOnNetworkTitle: "Haipatikani kwenye {network}",
+      notFoundOnNetworkBody:
+        "Anwani hii haina data ya on-chain kwenye {network}. Kila mtandao wa Aptos ni mnyororo tofauti — anwani ile ile inaweza kuwa na hali tofauti kwenye Mainnet, Testnet na Devnet.",
+      notFoundOnNetworkTry: "Jaribu mtandao mwingine:",
     },
     validators: {
       title: "Wathibitishaji",
@@ -1061,6 +1066,9 @@ export const sw = {
       metaDescription:
         "Tazama takwimu za mtandao wa Aptos ikiwa ni pamoja na watumiaji hai wa kila siku, kiasi cha miamala, TPS, ada za gesi, takwimu za stake, na vipimo vya mnyororo. Chati shirikishi na data ya wakati halisi.",
       mainnetOnly: "Takwimu zinapatikana kwa Mainnet pekee.",
+      dataUnavailableTitle: "Data za uchambuzi hazipatikani",
+      dataUnavailableBody:
+        "Ombi la mtandao limefeli wakati wa kupakia data za uchambuzi. Hii kwa kawaida ni ya muda — jaribu tena.",
     },
     script: {
       title: "Endesha script ya Move",
@@ -1297,6 +1305,19 @@ export const sw = {
       "(idadi ya mapendekezo yaliyofaulu) / (idadi ya fursa jumla za mapendekezo)",
     lastEpochPerformanceBody3:
       "Kipimo hiki kinakupa ishara ya mapema ikiwa utendaji unashuka.",
+    ansName:
+      "Jina la ANS (Aptos Name Service) ni jina linalosomeka linaloishia kwa .apt na linaelekeza kwa anwani ya on-chain — kama kikoa cha wavuti cha pochi.",
+    octas:
+      "Octa ni kipimo cha chini kabisa cha APT: ‏1 APT = octa 100,000,000, kama senti kwa dola.",
+    aggregatedBalanceChange:
+      "Muktadha wa kujumlisha (Aggregated) huunganisha mabadiliko yote ya salio la akaunti na mali ilemile kwenye safu moja. Muktadha usioujumlisha huorodhesha kila tukio la mabadiliko peke yake.",
+    fungibleAsset:
+      "Mali inayobadilishwa (fungible asset) ni tokeni inayoweza kubadilishana — kila kipimo kina sawa na kingine, kama APT au USDC. Mali za kipekee kama NFT hazibadilishwi.",
+    aip: "‏AIP (Aptos Improvement Proposal) ni waraka wa umma wa kubuni unaothibitisha mabadiliko kwenye itifaki ya Aptos na mfumo wake.",
+    entryFunction:
+      "Kazi ya kuingia (entry function) ni kazi inayoitwa ndani ya mkataba mahiri wa Move uliochapishwa. Miamala huita kazi za kuingia kufanya mabadiliko on-chain.",
+    systemTransaction:
+      "Muamala huu uliumbwa na mtandao wenyewe, si pochi ya mtumiaji, kwa hivyo huna mtumaji, mpokeaji, wala kiasi cha tokeni.",
   },
   verified: {
     level: {
