@@ -29,4 +29,10 @@ it("formats balances correctly", () => {
   expect(getFormattedBalanceStr("1000000000", 0, undefined, "en")).toEqual(
     "1,000,000,000",
   );
+  expect(getFormattedBalanceStr("-77405700", 8, undefined, "en")).toEqual(
+    "-0.774057",
+  );
+  expect(getFormattedBalanceStr("-100000000", 8, undefined, "en")).toEqual(
+    "-1",
+  );
 });

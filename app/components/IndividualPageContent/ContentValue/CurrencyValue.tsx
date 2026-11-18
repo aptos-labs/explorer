@@ -1,7 +1,7 @@
 import type React from "react";
+import {useTranslation} from "../../../i18n";
 import {decimalSeparator, formatBigInt} from "../../../i18n/format";
 import {DEFAULT_LOCALE} from "../../../i18n/locales";
-import {useTranslation} from "../../../i18n";
 
 const APTOS_DECIMALS = 8;
 
@@ -18,29 +18,40 @@ export function getFormattedBalanceStr(
   fixedDecimalPlaces?: number,
   locale: string = DEFAULT_LOCALE,
 ): string {
-  if (balance === "0") {
+  const trimmed = balance.trim();
+  if (trimmed === "0" || trimmed === "-0") {
+    return "0";
+  }
+
+  let sign = "";
+  let magnitude = trimmed;
+  if (magnitude.startsWith("-")) {
+    sign = "-";
+    magnitude = magnitude.slice(1);
+  }
+  if (magnitude === "" || !/^\d+$/.test(magnitude)) {
     return balance;
   }
 
   const resolvedDecimals = decimals ?? APTOS_DECIMALS;
   if (resolvedDecimals === 0) {
-    return formatBigInt(BigInt(balance), locale);
+    return `${sign}${formatBigInt(BigInt(magnitude), locale)}`;
   }
 
-  const len = balance.length;
+  const len = magnitude.length;
   const decimal = decimalSeparator(locale);
 
   if (len <= resolvedDecimals) {
-    return `0${decimal}${trimRight("0".repeat(resolvedDecimals - len) + balance) || "0"}`;
+    return `${sign}0${decimal}${trimRight("0".repeat(resolvedDecimals - len) + magnitude) || "0"}`;
   }
 
   const leftSide = formatBigInt(
-    BigInt(balance.slice(0, len - resolvedDecimals)),
+    BigInt(magnitude.slice(0, len - resolvedDecimals)),
     locale,
   );
-  let rightSide = balance.slice(len - resolvedDecimals);
+  let rightSide = magnitude.slice(len - resolvedDecimals);
   if (BigInt(rightSide) === BigInt(0)) {
-    return leftSide;
+    return `${sign}${leftSide}`;
   }
 
   rightSide = trimRight(rightSide);
@@ -52,10 +63,10 @@ export function getFormattedBalanceStr(
   }
 
   if (rightSide.length === 0 || rightSide === "0") {
-    return leftSide;
+    return `${sign}${leftSide}`;
   }
 
-  return `${leftSide}${decimal}${trimRight(rightSide)}`;
+  return `${sign}${leftSide}${decimal}${trimRight(rightSide)}`;
 }
 
 type CurrencyValueProps = {
