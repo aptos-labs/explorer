@@ -53,6 +53,40 @@ describe("vercel.json headers", () => {
     expect(headerValue("/(.*)", "Vary")).toBe("Accept");
   });
 
+  // Covers FEAT-SEO-004 — skill documents must never execute as same-origin HTML.
+  it("serves every published SKILL.md as a sandboxed plain-text download", () => {
+    const source = "/.well-known/agent-skills/:skill/SKILL.md";
+    const index = JSON.parse(
+      readFileSync(
+        join(repoRoot, "public/.well-known/agent-skills/index.json"),
+        "utf8",
+      ),
+    ) as {skills: Array<{name: string; url: string}>};
+
+    for (const skill of index.skills) {
+      expect(source.replace(":skill", skill.name)).toBe(skill.url);
+    }
+
+    expect(headerValue(source, "Content-Type")).toBe(
+      "text/plain; charset=utf-8",
+    );
+    expect(headerValue(source, "Content-Disposition")).toBe(
+      'attachment; filename="SKILL.md"',
+    );
+    expect(headerValue(source, "X-Content-Type-Options")).toBe("nosniff");
+    expect(headerValue(source, "Access-Control-Allow-Origin")).toBe("*");
+    const policy = headerValue(source, "Content-Security-Policy")?.split("; ");
+    expect(policy).toEqual(
+      expect.arrayContaining([
+        "default-src 'none'",
+        "base-uri 'none'",
+        "form-action 'none'",
+        "sandbox",
+        FRAME_ANCESTORS_CSP,
+      ]),
+    );
+  });
+
   // Covers FEAT-SEC-001 — Petra Vault must be able to iframe explorer HTML
   it("allowlists Petra Vault via CSP frame-ancestors instead of X-Frame-Options DENY", () => {
     for (const source of ["/", "/(.*)"]) {

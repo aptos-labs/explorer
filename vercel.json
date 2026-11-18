@@ -183,6 +183,22 @@
       ]
     },
     {
+      "source": "/.well-known/agent-skills/:skill/SKILL.md",
+      "headers": [
+        { "key": "Content-Type", "value": "text/plain; charset=utf-8" },
+        {
+          "key": "Content-Disposition",
+          "value": "attachment; filename=\"SKILL.md\""
+        },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'none'; base-uri 'none'; form-action 'none'; sandbox; frame-ancestors 'self' https://vault.petra.app"
+        },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    },
+    {
       "source": "/.well-known/mcp/server-card.json",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=3600" },
