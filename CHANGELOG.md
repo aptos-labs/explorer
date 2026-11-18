@@ -44,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Transaction detail crash when net fee is negative**: Large storage-fee refunds (for example package upgrades) can make the FeeStatement net fee negative. Payment-flow formatting now handles negative octas strings instead of throwing `Cannot convert - to a BigInt`, which previously broke the whole transaction page (including overview) while tab metadata was computed.
 - **`pnpm dev` + Babel 8**: Re-applied the `@babel/traverse@8.0.6` pnpm patch (Proxy `Scope#references` for TanStack Router's code-splitter) and pinned `@babel/traverse` via overrides. Unpatched `8.0.7` had regressed local dev with `Scope#references is not available in Babel 8` on route transforms.
 - **FA amount column**: Account and transaction tables resolve FA symbol and decimals from network hardcoded coin metadata when the Panora list is still loading, fails to fetch, or missing an entry, instead of showing misleading values such as `+15.6 FA` for USDt deposits. `useGetCoinList` now seeds and preserves that baseline list for all consumers (Payments tab, balance changes, coin lookup).
 - **Fungible asset transfers**: `0x1::aptos_account::transfer_fungible_assets` and `0x1::primary_fungible_store::transfer` use the same highlighted transfer chip as coin transfers. The label is **Fungible Asset Transfer** (coin sends stay **Coin Transfer**) in the transactions table and on the transaction overview.

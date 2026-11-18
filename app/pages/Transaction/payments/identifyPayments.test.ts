@@ -8,9 +8,9 @@ import {
   hasIdentifiedPayment,
   identifyPayments,
   isControlledTransferFunction,
+  P2P_ENTRY_FUNCTIONS,
   parseExchangeEvent,
   parsePaymentFees,
-  P2P_ENTRY_FUNCTIONS,
   sameAddress,
 } from "./identifyPayments";
 import {
@@ -541,6 +541,44 @@ describe("FEAT-TXN-016 — fees", () => {
     expect(result.primaryKind).toBe("fees_only");
     expect(result.headline).toMatch(/Network fees only/);
     expect(result.fees.some((fee) => fee.kind === "net")).toBe(true);
+    expect(hasIdentifiedPayment(tx)).toBe(false);
+  });
+
+  it("formats payment flow when storage refund exceeds gas (negative net fee)", () => {
+    const tx = makeUserTx({
+      gas_used: "2619",
+      payload: {
+        type: "entry_function_payload",
+        function:
+          "0x5096168d5f6d63eb2bd3621c9d96e6ad90fa65e46f8f53992b1b0e64941590dc::large_packages::upgrade_object_staged_package",
+        type_arguments: [],
+        arguments: ["0x0", {inner: "0x8"}],
+      },
+      events: [
+        makeEvent("0x1::code::PublishPackage", {
+          code_address:
+            "0x8b4a2c4bb53857c718a04c020b98f8c2e1f99a68b0f57389a8bf5434cd22e05c",
+          is_upgrade: true,
+        }),
+        makeEvent("0x1::transaction_fee::FeeStatement", {
+          execution_gas_units: "1256",
+          io_gas_units: "1263",
+          storage_fee_octas: "10000",
+          storage_fee_refund_octas: "77667600",
+          total_charge_gas_units: "2619",
+        }),
+      ],
+    });
+    const fees = parsePaymentFees(tx);
+    const net = fees.find((fee) => fee.kind === "net");
+    expect(net?.amountOctas).toBe("-77405700");
+
+    const result = identifyPayments({transaction: tx});
+    expect(result.primaryKind).toBe("fees_only");
+    expect(result.flow.edges.some((edge) => edge.kind === "fee")).toBe(true);
+    expect(
+      result.flow.edges.find((edge) => edge.kind === "fee")?.label,
+    ).toMatch(/774/);
     expect(hasIdentifiedPayment(tx)).toBe(false);
   });
 });
