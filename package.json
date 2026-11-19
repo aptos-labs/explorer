@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@aptos-labs/ts-sdk": "7.5.0",
-    "@aptos-labs/wallet-adapter-react": "8.3.3",
+    "@aptos-labs/wallet-adapter-react": "9.0.0",
     "@download/blockies": "1.0.3",
     "@emotion/react": "11.14.0",
     "@emotion/styled": "11.14.1",
