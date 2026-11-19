@@ -19,8 +19,8 @@ const Helmet = ((ReactHelmetAsync as {Helmet?: typeof ReactHelmetAsync.Helmet})
   (ReactHelmetAsync as {default?: typeof ReactHelmetAsync}).default
     ?.Helmet) as typeof ReactHelmetAsync.Helmet;
 
-import {BASE_URL, DEFAULT_OG_IMAGE} from "../../lib/constants";
 import {englishT, LOCALE_META, useTranslation} from "../../i18n";
+import {BASE_URL, DEFAULT_OG_IMAGE} from "../../lib/constants";
 
 const SITE_NAME = englishT("chrome.appName");
 const TWITTER_HANDLE = "@aptaboratories";
@@ -637,13 +637,13 @@ export function PageMetadata(props: PageMetadataProps) {
       <meta name="twitter:image" content={ogImage} />
       <meta name="twitter:image:alt" content={fullTitle} />
 
-      {/* JSON-LD Structured Data */}
+      {/* Escape opening angle brackets so JSON values cannot end the script tag. */}
       {Array.from(structuredData.entries()).map(([entryIndex, data]) => (
         <script
           key={`${data["@type"]}-${entryIndex}`}
           type="application/ld+json"
         >
-          {JSON.stringify(data)}
+          {JSON.stringify(data).replaceAll("<", "\\u003c")}
         </script>
       ))}
     </Helmet>
