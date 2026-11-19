@@ -1103,6 +1103,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 |--------|--------|
 | **Hook** | `usePageMetadata` sets title, description, canonical URL, JSON-LD structured data per page type. |
 | **JSON-LD types** | `WebSite` (home with `SearchAction`), `Article`, `WebPage`, `CollectionPage`, entity-specific schemas. |
+| **JSON-LD serialization** | Escape `<` as `\u003c` in the serialized JSON before embedding it in HTML. Search text and other metadata remain intact when the JSON is parsed. |
 | **Search action** | `/?search={search_term_string}`. |
 
 ### FEAT-SEO-002 — LLM Documentation
@@ -1511,7 +1512,7 @@ FEAT-TELEMETRY-002 (Vercel Web Analytics) and FEAT-TELEMETRY-003 (Vercel Speed I
 | `app/settings/clientSettings.test.ts` | FEAT-SETTINGS-001 (settings persistence, sanitization), FEAT-I18N-001 (locale preference), FEAT-SETTINGS-003 (locale storage key is part of settings sync), FEAT-SETTINGS-004 (local timestamp preference persists without API keys) |
 | `app/pages/Settings/SettingsPage.test.tsx` | FEAT-SETTINGS-004 (Timestamps switch, local-zone preview, save writes `aptos-explorer-local-timestamps`) |
 | `app/themes/colors/aptosBrandColors.a11y.test.ts` | FEAT-THEME-001 (WCAG contrast regression) |
-| `app/components/hooks/usePageMetadata.structuredData.test.ts` | FEAT-SEO-001 (JSON-LD generation) |
+| `app/components/hooks/usePageMetadata.structuredData.test.ts` | FEAT-SEO-001 (JSON-LD generation and safe HTML serialization), FEAT-SEARCH-001 (search text survives JSON-LD serialization) |
 | `app/components/IndividualPageContent/ContentValue/CurrencyValue.test.tsx` | Currency formatting (octa → APT) |
 | `app/components/Table/verifiedLevel.test.ts` | FEAT-COIN-003 / FEAT-UI-002 (verification level determination: native, verified, banned, recognized, unverified, disabled) |
 | `app/pages/Transaction/utils.test.ts` | FEAT-TXN-002/003 (tx amounts, counterparty including decrypted encrypted payloads, balance changes), FEAT-TXN-013 (multisig transaction detection) |
