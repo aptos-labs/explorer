@@ -1103,6 +1103,7 @@ Both search surfaces share their input tokens (placeholder, helper text, debounc
 |--------|--------|
 | **Hook** | `usePageMetadata` sets title, description, canonical URL, JSON-LD structured data per page type. |
 | **JSON-LD types** | `WebSite` (home with `SearchAction`), `Article`, `WebPage`, `CollectionPage`, entity-specific schemas. |
+| **JSON-LD serialization** | Escape `<` as `\u003c` in the serialized JSON before embedding it in HTML. Search text and other metadata remain intact when the JSON is parsed. |
 | **Search action** | `/?search={search_term_string}`. |
 
 ### FEAT-SEO-002 — LLM Documentation
@@ -1131,7 +1132,6 @@ top of the HTML site.
 | **Production HTML** | SSR from `app/routes/__root.tsx` (`<HeadContent />` for metadata, `<Scripts />` for hashed client assets). The repository has **no root `index.html`**, and `vite.config.ts` passes `renderer: false` to `nitro()` — otherwise Nitro adopts a root `index.html` as `renderer.template`, mounts `renderer-template` on `/**`, and never installs the `ssr-renderer` handler, so every response is that raw HTML file. `vercel.json` sets `"framework": "tanstack-start"` and `"buildCommand": "pnpm build"` with no `outputDirectory`, so Vercel consumes Nitro’s `.vercel/output` Build Output API. |
 | **API catalog (RFC 9727)** | `public/.well-known/api-catalog` served as `application/linkset+json`. Lists upstream Aptos fullnode REST APIs (mainnet/testnet/devnet), **archive** REST APIs (mainnet/testnet), the indexer GraphQL API, and the explorer itself, with `service-desc`, `service-doc`, and `status` links. |
 | **Agent Skills index** | `public/.well-known/agent-skills/index.json` conforms to cloudflare/agent-skills-discovery-rfc v0.2.0. Publishes `aptos-explorer-urls` and `aptos-explorer-search` skills, each with a SHA-256 `digest`. Regenerate via `node scripts/update-agent-skills-index.mjs`. |
-| **Agent Skills document safety** | Vercel serves `/.well-known/agent-skills/:skill/SKILL.md` as `text/plain; charset=utf-8` with `Content-Disposition: attachment`, `X-Content-Type-Options: nosniff`, and a sandbox CSP (`default-src 'none'`, `base-uri 'none'`, `form-action 'none'`). This prevents skill contents from executing as same-origin HTML. Raw Markdown bytes, discovery URLs, SHA-256 digests, and cross-origin fetch access are preserved. |
 | **MCP Server Card** | `public/.well-known/mcp/server-card.json` publishes a draft SEP-1649 / SEP-2127 MCP Server Card with `serverInfo`, a WebMCP transport endpoint, read-only tool capabilities, and the currently exposed browser WebMCP navigation tools. Served as `application/json` with CORS enabled for agent discovery. |
 | **A2A Agent Card** | `public/.well-known/agent-card.json` publishes name, version, `supportedInterfaces`, capabilities, and skills aligned with the WebMCP navigation tools. Describes HTTPS GET / markdown / WebMCP interaction; it does **not** claim an A2A JSON-RPC task endpoint. |
 | **auth.md** | `public/auth.md` (H1 contains `auth.md`). Documents that the explorer is a public read-only site: no agent registration, no OAuth Authorization Server, no `POST /agent/auth`. |
@@ -1441,7 +1441,7 @@ FEAT-TELEMETRY-002 (Vercel Web Analytics) and FEAT-TELEMETRY-003 (Vercel Speed I
 | `app/utils/llmsRouteCoverage.test.ts` | FEAT-SEO-003 (LLM doc drift) |
 | `app/utils/serovalCve.test.ts` | CVE-2026-104846 / GHSA-p6vx-979v-rg4c (lockfile and installed `seroval` stay on `>=1.6.2`; dist includes the thenable guard) |
 | `app/utils/agentSkillsIndex.test.ts` | FEAT-SEO-004 (agent-skills index schema, digest integrity, frontmatter) |
-| `app/utils/vercelHeaders.test.ts` | FEAT-SEO-004 (homepage and global RFC 8288 discovery `Link` headers; sandboxed plain-text downloads for every published `SKILL.md`; `framework: tanstack-start`, `buildCommand`, and no pinned `outputDirectory` so production is Nitro SSR), FEAT-SEC-001 (`Content-Security-Policy: frame-ancestors` allowlist; no `X-Frame-Options`) |
+| `app/utils/vercelHeaders.test.ts` | FEAT-SEO-004 (homepage and global RFC 8288 discovery `Link` headers; `framework: tanstack-start`, `buildCommand`, and no pinned `outputDirectory` so production is Nitro SSR), FEAT-SEC-001 (`Content-Security-Policy: frame-ancestors` allowlist; no `X-Frame-Options`) |
 | `app/utils/frameAncestors.test.ts` | FEAT-SEC-001 (CSP allowlist is `'self'` + Petra Vault; SSR helper sets CSP when missing and does not send `X-Frame-Options`) |
 | `app/utils/nitroSsrRenderer.test.ts` | FEAT-SEO-004 (`nitro({renderer: false})` and no root `index.html`, so Start SSR owns the `/**` route instead of Nitro's `renderer-template`) |
 | `app/utils/registerServiceWorker.test.ts` | FEAT-PWA-001 (service worker registration from the hydrated client bundle) |
@@ -1512,7 +1512,7 @@ FEAT-TELEMETRY-002 (Vercel Web Analytics) and FEAT-TELEMETRY-003 (Vercel Speed I
 | `app/settings/clientSettings.test.ts` | FEAT-SETTINGS-001 (settings persistence, sanitization), FEAT-I18N-001 (locale preference), FEAT-SETTINGS-003 (locale storage key is part of settings sync), FEAT-SETTINGS-004 (local timestamp preference persists without API keys) |
 | `app/pages/Settings/SettingsPage.test.tsx` | FEAT-SETTINGS-004 (Timestamps switch, local-zone preview, save writes `aptos-explorer-local-timestamps`) |
 | `app/themes/colors/aptosBrandColors.a11y.test.ts` | FEAT-THEME-001 (WCAG contrast regression) |
-| `app/components/hooks/usePageMetadata.structuredData.test.ts` | FEAT-SEO-001 (JSON-LD generation) |
+| `app/components/hooks/usePageMetadata.structuredData.test.ts` | FEAT-SEO-001 (JSON-LD generation and safe HTML serialization), FEAT-SEARCH-001 (search text survives JSON-LD serialization) |
 | `app/components/IndividualPageContent/ContentValue/CurrencyValue.test.tsx` | Currency formatting (octa → APT) |
 | `app/components/Table/verifiedLevel.test.ts` | FEAT-COIN-003 / FEAT-UI-002 (verification level determination: native, verified, banned, recognized, unverified, disabled) |
 | `app/pages/Transaction/utils.test.ts` | FEAT-TXN-002/003 (tx amounts, counterparty including decrypted encrypted payloads, balance changes), FEAT-TXN-013 (multisig transaction detection) |

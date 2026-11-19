@@ -1,6 +1,9 @@
+import {JSDOM} from "jsdom";
+import {createElement} from "react";
+import {renderToString} from "react-dom/server";
 import {describe, expect, it} from "vitest";
 import {BASE_URL} from "../../lib/constants";
-import {generateStructuredData} from "./usePageMetadata";
+import {generateStructuredData, PageMetadata} from "./usePageMetadata";
 
 describe("generateStructuredData", () => {
   it("emits Article for type article", () => {
@@ -117,4 +120,36 @@ describe("generateStructuredData", () => {
       expect(JSON.parse(JSON.stringify(node))).toBeTruthy();
     }
   });
+});
+
+// Covers FEAT-SEO-001 and FEAT-SEARCH-001.
+it("keeps search text inside valid JSON-LD during server rendering", () => {
+  const searchQuery = 'Move<Example> & "quoted"';
+  const title = `Search · ${searchQuery}`;
+  const description = `Search Aptos for ${searchQuery}`;
+  const html = renderToString(
+    createElement(PageMetadata, {
+      type: "website",
+      canonicalPath: "/",
+      searchQuery,
+      title,
+      description,
+    }),
+  );
+  const scripts = JSDOM.fragment(html).querySelectorAll("script");
+
+  expect(scripts).toHaveLength(2);
+  const nodes = Array.from(scripts, (script) => {
+    expect(script.type).toBe("application/ld+json");
+    expect(script.textContent).not.toContain("<");
+    return JSON.parse(script.textContent ?? "");
+  });
+  expect(nodes).toContainEqual(
+    expect.objectContaining({
+      "@type": "WebPage",
+      name: expect.stringContaining(title),
+      description,
+      about: expect.objectContaining({description: searchQuery}),
+    }),
+  );
 });

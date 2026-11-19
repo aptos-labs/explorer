@@ -52,7 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Filipino**: Phrases that were still English now follow the rest of the Filipino catalog. Staking status, suggested max, commission, and node counts; partner and protocol fees; signature key descriptions; multisig votes, abort location, and error codes; and guide labels that still used the English tab names (**All Nodes**, **User vs All**). Loanwords the catalog already uses (Account, Address, Block, user transaction) stay as they are.
 ### Security
 
-- **Agent skill document safety**: Serve published `SKILL.md` files, including `aptos-explorer-search`, as plain-text downloads with MIME sniffing disabled and a restrictive sandbox CSP to prevent active HTML content from executing on the explorer origin. Agent discovery URLs and file digests are unchanged (FEAT-SEO-004).
+- **Home search JSON-LD**: Escape angle brackets that could terminate the JSON-LD script block when server-rendered metadata includes the `search` query parameter (FEAT-SEO-001).
 
 - **seroval thenable assimilation (CVE-2026-104846)**: `solid-js@1.9.15` (pulled in with the non-major dependency bump) still resolved `seroval@1.5.6` and `seroval-plugins@1.5.6`. That line is in the affected range (`>=0.12.0 <1.6.2`): `fromJSON` of a fulfilled Promise node can pass a plugin-produced thenable to a native Promise resolver and invoke attacker-controlled callables, bypassing the CVE-2026-59940 fix. pnpm overrides pin `seroval` and `seroval-plugins` to `1.6.8` (first patched release is `1.6.2`; `1.6.8` is past both the 5-day `minimumReleaseAge` gate and Safe Chain's 48h floor). TanStack Start already used `1.6.8`; the override collapses the leftover 1.5.6 copy.
 
