@@ -58,13 +58,14 @@ minimumReleaseAgeExclude: [
     # Direct dependency updates inside pnpm 5-day gate.
     # baseline-browser-mapping held at 2.11.27; 2.11.38 is inside the 5-day gate.
     # browserslist held at 4.29.3; 4.29.6 is inside the 5-day gate.
-    "jsdom@30.1.3",
+    # jsdom 31.0.1. Published 2026-11-13. Inside pnpm's 5-day gate
+    # (Safe Chain's 48h floor already cleared). Remove after 2026-11-18.
+    "jsdom@31.0.1",
 
     # Transitive dependency updates inside pnpm 5-day gate.
     "argparse@3.0.3",
     "electron-to-chromium@1.5.459",
     "node-releases@2.0.59",
-    "@asamuzakjp/dom-selector@10.0.3",
     # Renovate security update: undici@8.12.2
     undici@8.12.2,
   ]

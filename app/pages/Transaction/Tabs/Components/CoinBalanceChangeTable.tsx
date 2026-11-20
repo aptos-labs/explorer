@@ -20,7 +20,6 @@ import * as React from "react";
 import {useCallback, useState} from "react";
 import type {Types} from "~/types/aptos";
 import {useGetFaMetadata} from "../../../../api/hooks/useGetFaMetadata";
-import {useTranslation} from "../../../../i18n";
 import HashButton, {HashType} from "../../../../components/HashButton";
 import IdenticonImg from "../../../../components/IdenticonImg";
 import CurrencyValue, {
@@ -36,8 +35,13 @@ import {
   VerifiedCoinCell,
 } from "../../../../components/Table/VerifiedCell";
 import {useKnownAddressBranding} from "../../../../data/hooks";
+import {useTranslation} from "../../../../i18n";
 import {getSemanticColors} from "../../../../themes/colors/aptosBrandColors";
-import {assertNever, tryStandardizeAddress} from "../../../../utils";
+import {
+  assertNever,
+  toSafeExternalUrl,
+  tryStandardizeAddress,
+} from "../../../../utils";
 import {isValidAccountAddress} from "../../../utils";
 import {getLearnMoreTooltip} from "../../helpers";
 import type {BalanceChange} from "../../utils";
@@ -397,7 +401,10 @@ function BalanceChangeCard({balanceChange, onClick}: BalanceChangeCardProps) {
     enabled: balanceChange.logoUrl === undefined && isFa,
   });
 
-  const logoUrl = balanceChange.logoUrl || metadata?.icon_uri;
+  // logoUrl falls back to on-chain FA icon_uri (attacker-controlled): http(s) only
+  const logoUrl = toSafeExternalUrl(
+    balanceChange.logoUrl || metadata?.icon_uri || "",
+  );
 
   const accountBranding = useKnownAddressBranding(balanceChange.address);
 

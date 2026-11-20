@@ -21,6 +21,7 @@ import {
   useGetCoinList,
 } from "../api/hooks/useGetCoinList";
 import {useKnownAddressBranding} from "../data/hooks";
+import {useTranslation} from "../i18n";
 import {
   isValidAccountAddress,
   truncate,
@@ -28,9 +29,8 @@ import {
   truncateAddressMiddle,
 } from "../pages/utils";
 import {Link} from "../routing";
-import {useTranslation} from "../i18n";
 import {getSemanticColors} from "../themes/colors/aptosBrandColors";
-import {assertNever, standardizeAddress} from "../utils";
+import {assertNever, standardizeAddress, toSafeExternalUrl} from "../utils";
 import IdenticonImg from "./IdenticonImg";
 import IntegerValue from "./IndividualPageContent/ContentValue/IntegerValue";
 
@@ -430,23 +430,30 @@ const AssetHashButtonInner = memo(function AssetHashButtonInner({
       </Box>
     );
   } else if (img) {
-    icon = (
-      <Box component="span" sx={{mr: 1, display: "flex", alignItems: "center"}}>
-        <img src={img} height={20} width={20} loading="lazy" alt="" />
-      </Box>
-    );
+    // img can come from on-chain metadata (e.g. FA icon_uri): http(s) only
+    const safeImgUrl = toSafeExternalUrl(img);
+    if (safeImgUrl) {
+      icon = (
+        <Box
+          component="span"
+          sx={{mr: 1, display: "flex", alignItems: "center"}}
+        >
+          <img src={safeImgUrl} height={20} width={20} loading="lazy" alt="" />
+        </Box>
+      );
+    }
   } else if (legitCoin?.logoUrl) {
-    icon = (
-      <Box component="span" sx={{mr: 1, display: "flex", alignItems: "center"}}>
-        <img
-          src={legitCoin.logoUrl}
-          height={20}
-          width={20}
-          loading="lazy"
-          alt=""
-        />
-      </Box>
-    );
+    const safeLogoUrl = toSafeExternalUrl(legitCoin.logoUrl);
+    if (safeLogoUrl) {
+      icon = (
+        <Box
+          component="span"
+          sx={{mr: 1, display: "flex", alignItems: "center"}}
+        >
+          <img src={safeLogoUrl} height={20} width={20} loading="lazy" alt="" />
+        </Box>
+      );
+    }
   }
 
   return (

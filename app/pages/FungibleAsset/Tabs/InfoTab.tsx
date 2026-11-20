@@ -9,8 +9,8 @@ import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
 import {getFormattedBalanceStr} from "../../../components/IndividualPageContent/ContentValue/CurrencyValue";
 import EmptyTabContent from "../../../components/IndividualPageContent/EmptyTabContent";
-import {getAssetSymbol} from "../../../utils";
 import {useTranslation} from "../../../i18n";
+import {getAssetSymbol, toSafeExternalUrl} from "../../../utils";
 import type {FACombinedData} from "../Index";
 import DispatchablePropertiesValue from "./DispatchablePropertiesValue";
 
@@ -72,6 +72,9 @@ export default function InfoTab({address, data}: InfoTabProps) {
   }
 
   const icon_uri = data?.coinData?.logoUrl ?? data?.metadata?.icon_uri;
+  // icon_uri comes from on-chain FA metadata (attacker-controlled) or the
+  // third-party token list; only render it as an image when it is http(s).
+  const safeIconUri = toSafeExternalUrl(icon_uri ?? "");
   const supplyIcon = (
     <Tooltip title={t("pages.fa.supplyOnChain")}>
       <VerifiedOutlined />
@@ -150,13 +153,13 @@ export default function InfoTab({address, data}: InfoTabProps) {
           <ContentRow
             titleKey="fields.icon"
             value={
-              icon_uri && (
+              safeIconUri && (
                 <img
                   width={100}
                   alt={t("common.iconAlt", {
-                    name: `${data?.metadata?.name ?? ""} (${icon_uri})`,
+                    name: `${data?.metadata?.name ?? ""} (${safeIconUri})`,
                   })}
-                  src={icon_uri}
+                  src={safeIconUri}
                 />
               )
             }

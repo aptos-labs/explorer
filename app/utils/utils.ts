@@ -708,6 +708,27 @@ export function isValidUrl(url: string): boolean {
 }
 
 /**
+ * Returns the normalized URL when it is an absolute http(s) URL, else null.
+ *
+ * On-chain metadata (token `token_uri`/`image` fields, FA `icon_uri`) is fully
+ * attacker-controlled. `isValidUrl` accepts any absolute scheme — including
+ * `javascript:` and `data:` — so it must not gate href/src sinks. Convert IPFS
+ * inputs with `toIpfsUrl` first; this helper then accepts the gateway URL.
+ */
+export function toSafeExternalUrl(url: string): string | null {
+  if (!url) return null;
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== "https:" && parsed.protocol !== "http:") {
+      return null;
+    }
+    return parsed.toString();
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Check if a URL is an IPFS URL (either native ipfs:// or gateway URL)
  * Matches:
  * - ipfs://hash
