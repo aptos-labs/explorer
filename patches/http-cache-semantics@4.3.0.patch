@@ -1,8 +1,7 @@
 diff --git a/index.js b/index.js
-index f01e9a1..24d98a6 100644
 --- a/index.js
 +++ b/index.js
-@@ -423,6 +423,14 @@ module.exports = class CachePolicy {
+@@ -424,6 +424,14 @@
          // the stored response is either:
          // fresh, or allowed to be served stale
          if (this.stale()) {
@@ -17,7 +16,7 @@ index f01e9a1..24d98a6 100644
              // If a value is present, then the client is willing to accept a response that has
              // exceeded its freshness lifetime by no more than the specified number of seconds
              const allowsStaleWithoutRevalidation = 'max-stale' in requestCC &&
-@@ -588,38 +596,54 @@ module.exports = class CachePolicy {
+@@ -611,38 +619,54 @@
      }
  
      /**
@@ -88,7 +87,7 @@ index f01e9a1..24d98a6 100644
              // if a response includes the s-maxage directive, a shared cache recipient MUST ignore the Expires field.
              if (this._rescc['s-maxage']) {
                  return toNumberOrZero(this._rescc['s-maxage']);
-@@ -665,6 +689,10 @@ module.exports = class CachePolicy {
+@@ -688,6 +712,10 @@
       */
      timeToLive() {
          const age = this.maxAge() - this.age();
@@ -99,7 +98,7 @@ index f01e9a1..24d98a6 100644
          const staleIfErrorAge = age + toNumberOrZero(this._rescc['stale-if-error']);
          const staleWhileRevalidateAge = age + toNumberOrZero(this._rescc['stale-while-revalidate']);
          return Math.round(Math.max(0, age, staleIfErrorAge, staleWhileRevalidateAge) * 1000);
-@@ -683,6 +711,9 @@ module.exports = class CachePolicy {
+@@ -706,6 +734,9 @@
       * @returns {boolean} `true` if `stale-if-error` condition allows use of a stale response.
       */
      _useStaleIfError() {
@@ -109,7 +108,7 @@ index f01e9a1..24d98a6 100644
          return this.maxAge() + toNumberOrZero(this._rescc['stale-if-error']) > this.age();
      }
  
-@@ -690,6 +721,9 @@ module.exports = class CachePolicy {
+@@ -713,6 +744,9 @@
       * @returns {boolean} `true` if `stale-while-revalidate` is currently allowed.
       */
      useStaleWhileRevalidate() {

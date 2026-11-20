@@ -1,8 +1,7 @@
 diff --git a/lib/index.js b/lib/index.js
-index 191fdb0550e1065885f884a660fc692d50b31e36..3a0ff8c87335c268e245ed0e2554583254cf368e 100644
 --- a/lib/index.js
 +++ b/lib/index.js
-@@ -1175,7 +1175,24 @@ class Scope {
+@@ -1183,7 +1183,24 @@
      return parent?.scope;
    }
    get references() {
