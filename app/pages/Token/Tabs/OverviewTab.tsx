@@ -6,13 +6,13 @@ import {useGetTokenOwners} from "../../../api/hooks/useGetAccountTokens";
 import HashButton, {HashType} from "../../../components/HashButton";
 import ContentBox from "../../../components/IndividualPageContent/ContentBox";
 import ContentRow from "../../../components/IndividualPageContent/ContentRow";
-import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import IntegerValue from "../../../components/IndividualPageContent/ContentValue/IntegerValue";
+import JsonViewCard from "../../../components/IndividualPageContent/JsonViewCard";
 import {
   isValidIpfsUrl,
-  isValidUrl,
   toIpfsDisplayUrl,
   toIpfsUrl,
+  toSafeExternalUrl,
 } from "../../utils";
 
 function OwnersRow() {
@@ -66,35 +66,36 @@ export default function OverviewTab({data}: OverviewTabProps) {
   const rawUrl = data?.token_uri ?? "";
   const metadataLoadUrl = getLoadUrl(rawUrl);
   const metadataDisplayUrl = getDisplayUrl(rawUrl);
+  // token_uri is attacker-controlled on-chain data: only load/link http(s).
+  // isValidUrl alone would also pass javascript:/data: scheme URIs.
+  const safeMetadataLoadUrl = toSafeExternalUrl(metadataLoadUrl);
 
   // Check if URL looks like it could be a direct image
   const looksLikeDirectImage = useMemo(
     () =>
       Boolean(
-        metadataLoadUrl &&
-          (metadataLoadUrl.endsWith(".png") ||
-            metadataLoadUrl.endsWith(".jpg") ||
-            metadataLoadUrl.endsWith(".jpeg") ||
-            metadataLoadUrl.endsWith(".gif") ||
-            metadataLoadUrl.endsWith(".webp") ||
-            metadataLoadUrl.endsWith(".svg")),
+        safeMetadataLoadUrl &&
+          (safeMetadataLoadUrl.endsWith(".png") ||
+            safeMetadataLoadUrl.endsWith(".jpg") ||
+            safeMetadataLoadUrl.endsWith(".jpeg") ||
+            safeMetadataLoadUrl.endsWith(".gif") ||
+            safeMetadataLoadUrl.endsWith(".webp") ||
+            safeMetadataLoadUrl.endsWith(".svg")),
       ),
-    [metadataLoadUrl],
+    [safeMetadataLoadUrl],
   );
 
   // For direct images, use URL directly; for metadata URLs, use fetched URL
   const resolvedImageUrl = looksLikeDirectImage
-    ? metadataLoadUrl
+    ? safeMetadataLoadUrl
     : fetchedImageUrl;
+  // The fetched metadata JSON is attacker-hosted, so its image field is too
+  const safeResolvedImageUrl = toSafeExternalUrl(resolvedImageUrl ?? "");
 
   // Fetch metadata JSON to extract image URL (only for non-direct images)
   useEffect(() => {
-    // Skip if it's a direct image URL or invalid
-    if (
-      looksLikeDirectImage ||
-      !metadataLoadUrl ||
-      !isValidUrl(metadataLoadUrl)
-    ) {
+    // Skip if it's a direct image URL or not a loadable external URL
+    if (looksLikeDirectImage || !safeMetadataLoadUrl) {
       return;
     }
 
@@ -111,7 +112,7 @@ export default function OverviewTab({data}: OverviewTabProps) {
     });
 
     // Try to fetch metadata as JSON
-    fetch(metadataLoadUrl, {signal: controller.signal})
+    fetch(safeMetadataLoadUrl, {signal: controller.signal})
       .then((response) => {
         const contentType = response.headers.get("content-type");
         // If it's JSON, parse it and look for image field
@@ -131,7 +132,7 @@ export default function OverviewTab({data}: OverviewTabProps) {
       .then((metadata) => {
         if (isCancelled) return;
         if (metadata._directImage) {
-          setFetchedImageUrl(metadataLoadUrl);
+          setFetchedImageUrl(safeMetadataLoadUrl);
         } else if (metadata.image) {
           // Found image field in JSON metadata - normalize it for loading
           setFetchedImageUrl(getLoadUrl(metadata.image));
@@ -140,13 +141,13 @@ export default function OverviewTab({data}: OverviewTabProps) {
           setFetchedImageUrl(getLoadUrl(metadata.animation_url));
         } else {
           // No image field found, try using the URL directly
-          setFetchedImageUrl(metadataLoadUrl);
+          setFetchedImageUrl(safeMetadataLoadUrl);
         }
       })
       .catch(() => {
         // Failed to parse as JSON, try using URL directly as image
         if (!isCancelled) {
-          setFetchedImageUrl(metadataLoadUrl);
+          setFetchedImageUrl(safeMetadataLoadUrl);
         }
       })
       .finally(() => {
@@ -159,9 +160,9 @@ export default function OverviewTab({data}: OverviewTabProps) {
       isCancelled = true;
       controller.abort();
     };
-  }, [metadataLoadUrl, looksLikeDirectImage]);
+  }, [safeMetadataLoadUrl, looksLikeDirectImage]);
 
-  const showImage = resolvedImageUrl && imageState !== "failed";
+  const showImage = safeResolvedImageUrl !== null && imageState !== "failed";
 
   return (
     <Box
@@ -198,9 +199,9 @@ export default function OverviewTab({data}: OverviewTabProps) {
                     wordBreak: "break-all",
                   }}
                 >
-                  {isValidUrl(metadataLoadUrl) ? (
+                  {safeMetadataLoadUrl ? (
                     <a
-                      href={metadataLoadUrl}
+                      href={safeMetadataLoadUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{color: "inherit"}}
@@ -236,12 +237,12 @@ export default function OverviewTab({data}: OverviewTabProps) {
                   }}
                 >
                   <a
-                    href={resolvedImageUrl}
+                    href={safeResolvedImageUrl ?? undefined}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     <img
-                      src={resolvedImageUrl}
+                      src={safeResolvedImageUrl ?? undefined}
                       alt={data?.token_name}
                       width={150}
                       onLoad={() => setImageState("loaded")}

@@ -21,6 +21,7 @@ const Helmet = ((ReactHelmetAsync as {Helmet?: typeof ReactHelmetAsync.Helmet})
 
 import {englishT, LOCALE_META, useTranslation} from "../../i18n";
 import {BASE_URL, DEFAULT_OG_IMAGE} from "../../lib/constants";
+import {toSafeExternalUrl} from "../../utils";
 
 const SITE_NAME = englishT("chrome.appName");
 const TWITTER_HANDLE = "@aptaboratories";
@@ -496,11 +497,11 @@ export function generateStructuredData(
  * Get page-specific OG image based on page type
  */
 function getOgImage(props: PageMetadataProps): string {
-  // If a custom image is provided, use it
+  // If a custom image is provided, use it. Images can originate from
+  // on-chain metadata, so only absolute http(s) URLs pass through; anything
+  // else is treated as a site-relative path.
   if (props.image) {
-    return props.image.startsWith("http")
-      ? props.image
-      : `${BASE_URL}${props.image}`;
+    return toSafeExternalUrl(props.image) ?? `${BASE_URL}${props.image}`;
   }
 
   // For now, use the default OG image

@@ -21,6 +21,7 @@ import {
   timestampDisplay,
   toIpfsDisplayUrl,
   toIpfsUrl,
+  toSafeExternalUrl,
   truncateAddress,
   truncateAddressMiddle,
   tryStandardizeAddress,
@@ -190,6 +191,47 @@ describe("URL validation", () => {
     it("should reject invalid URLs", () => {
       expect(isValidUrl("not a url")).toBe(false);
       expect(isValidUrl("")).toBe(false);
+    });
+  });
+
+  describe("toSafeExternalUrl", () => {
+    it("should accept http and https URLs", () => {
+      expect(toSafeExternalUrl("https://example.com/nft.json")).toBe(
+        "https://example.com/nft.json",
+      );
+      expect(toSafeExternalUrl("http://localhost:3000/img.png")).toBe(
+        "http://localhost:3000/img.png",
+      );
+    });
+
+    it("should normalize accepted URLs", () => {
+      expect(toSafeExternalUrl("HTTPS://Example.com/nft.json")).toBe(
+        "https://example.com/nft.json",
+      );
+      expect(toSafeExternalUrl("https://example.com/a b.png")).toBe(
+        "https://example.com/a%20b.png",
+      );
+    });
+
+    it("should reject script and data schemes", () => {
+      expect(toSafeExternalUrl("javascript:alert(1)")).toBeNull();
+      expect(toSafeExternalUrl("javascript:alert(1)//.png")).toBeNull();
+      expect(toSafeExternalUrl("data:text/html,<script>1</script>")).toBeNull();
+      expect(toSafeExternalUrl("vbscript:msgbox(1)")).toBeNull();
+    });
+
+    it("should reject native ipfs/ipns URIs (convert with toIpfsUrl first)", () => {
+      expect(toSafeExternalUrl("ipfs://QmHash123")).toBeNull();
+      expect(toSafeExternalUrl("ipns://QmHash123")).toBeNull();
+      expect(toSafeExternalUrl(toIpfsUrl("ipfs://QmHash123"))).toBe(
+        "https://ipfs.io/ipfs/QmHash123",
+      );
+    });
+
+    it("should reject relative and invalid URLs", () => {
+      expect(toSafeExternalUrl("/og-image.png")).toBeNull();
+      expect(toSafeExternalUrl("not a url")).toBeNull();
+      expect(toSafeExternalUrl("")).toBeNull();
     });
   });
 
