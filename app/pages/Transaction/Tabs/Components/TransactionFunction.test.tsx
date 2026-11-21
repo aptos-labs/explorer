@@ -35,18 +35,19 @@ function entryTx(functionId: string): Types.Transaction {
   } as unknown as Types.Transaction;
 }
 
+function FunctionTestWrapper({children}: {children: ReactNode}) {
+  return (
+    <ExplorerSettingsProvider>
+      <I18nProvider>
+        <ThemeProvider theme={theme}>{children}</ThemeProvider>
+      </I18nProvider>
+    </ExplorerSettingsProvider>
+  );
+}
+
 function renderFunction(functionId: string) {
-  function Wrapper({children}: {children: ReactNode}) {
-    return (
-      <ExplorerSettingsProvider>
-        <I18nProvider>
-          <ThemeProvider theme={theme}>{children}</ThemeProvider>
-        </I18nProvider>
-      </ExplorerSettingsProvider>
-    );
-  }
   return render(<TransactionFunction transaction={entryTx(functionId)} />, {
-    wrapper: Wrapper,
+    wrapper: FunctionTestWrapper,
   });
 }
 

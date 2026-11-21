@@ -82,6 +82,26 @@ const COLUMNS_WITHOUT_WALLET_CONNECTION: Column[] = [
   "rewardsEarned",
 ];
 
+const LoadingSkeletonRow = React.memo(function LoadingSkeletonRow({
+  columns,
+}: {
+  columns: Column[];
+}) {
+  return (
+    <GeneralTableRow>
+      {columns.map((column) => (
+        <GeneralTableCell key={column} sx={{paddingRight: 5}}>
+          <Skeleton
+            variant="text"
+            width={column === "addr" ? 200 : column === "status" ? 80 : 100}
+            height={24}
+          />
+        </GeneralTableCell>
+      ))}
+    </GeneralTableRow>
+  );
+});
+
 /**
  * Sort validators based on the selected column and direction
  */
@@ -862,21 +882,6 @@ export function EnhancedDelegationValidatorsTable() {
     );
   }
 
-  // Loading skeleton component
-  const LoadingSkeletonRow = React.memo(() => (
-    <GeneralTableRow>
-      {columns.map((column) => (
-        <GeneralTableCell key={column} sx={{paddingRight: 5}}>
-          <Skeleton
-            variant="text"
-            width={column === "addr" ? 200 : column === "status" ? 80 : 100}
-            height={24}
-          />
-        </GeneralTableCell>
-      ))}
-    </GeneralTableRow>
-  ));
-
   if (isLoading) {
     // Mobile loading state
     if (isMobile) {
@@ -972,7 +977,7 @@ export function EnhancedDelegationValidatorsTable() {
                 "sk-8",
                 "sk-9",
               ].map((skeletonKey) => (
-                <LoadingSkeletonRow key={skeletonKey} />
+                <LoadingSkeletonRow key={skeletonKey} columns={columns} />
               ))}
             </GeneralTableBody>
           </Table>

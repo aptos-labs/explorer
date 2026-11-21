@@ -30,6 +30,22 @@ function isAffected(version: string): boolean {
   return !isLess(parsed, FIRST_AFFECTED) && isLess(parsed, FIRST_PATCHED);
 }
 
+function readJavaScriptSources(directory: string): string {
+  const chunks: string[] = [];
+  const visit = (dir: string) => {
+    for (const entry of readdirSync(dir, {withFileTypes: true})) {
+      const path = join(dir, entry.name);
+      if (entry.isDirectory()) {
+        visit(path);
+      } else if (entry.name.endsWith(".js")) {
+        chunks.push(readFileSync(path, "utf8"));
+      }
+    }
+  };
+  visit(directory);
+  return chunks.join("\n");
+}
+
 function lockedSerovalVersions(lockfile: string): string[] {
   const versions = new Set<string>();
   const packageKey = /^ {2}seroval@([^:(]+):$/gm;
@@ -65,9 +81,10 @@ describe("CVE-2026-104846 — seroval thenable assimilation", () => {
     ).toEqual([]);
 
     for (const entry of entries) {
-      const dist = readFileSync(
-        join(store, entry, "node_modules/seroval/dist/index.js"),
-        "utf8",
+      // seroval 1.8 splits the deserializer out of dist/index.js. The
+      // thenable guard still has to be in the published build.
+      const dist = readJavaScriptSources(
+        join(store, entry, "node_modules/seroval/dist"),
       );
       expect(dist).toContain("function isThennable(");
       expect(dist).toContain("if (isThennable(deserialized))");

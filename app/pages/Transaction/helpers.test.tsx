@@ -16,17 +16,18 @@ import {getLearnMoreTooltip} from "./helpers";
 
 const theme = createTheme();
 
+function TooltipTestWrapper({children}: {children: ReactNode}) {
+  return (
+    <ExplorerSettingsProvider>
+      <I18nProvider>
+        <ThemeProvider theme={theme}>{children}</ThemeProvider>
+      </I18nProvider>
+    </ExplorerSettingsProvider>
+  );
+}
+
 function renderTooltip(field: string) {
-  function Wrapper({children}: {children: ReactNode}) {
-    return (
-      <ExplorerSettingsProvider>
-        <I18nProvider>
-          <ThemeProvider theme={theme}>{children}</ThemeProvider>
-        </I18nProvider>
-      </ExplorerSettingsProvider>
-    );
-  }
-  return render(getLearnMoreTooltip(field), {wrapper: Wrapper});
+  return render(getLearnMoreTooltip(field), {wrapper: TooltipTestWrapper});
 }
 
 async function openTooltip() {
