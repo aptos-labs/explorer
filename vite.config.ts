@@ -161,10 +161,18 @@ export default defineConfig({
     // skips installing TanStack Start's SSR handler entirely — so every request
     // answers with that raw HTML file instead of a rendered page.
     // On Vercel (`VERCEL=1`), pin the Node serverless preset — never vercel-edge.
-    nitro({
-      renderer: false,
-      ...(process.env.VERCEL ? {preset: "vercel"} : {}),
-    }),
+    // Nitro 3 RC's Vite plugin rewrites module resolution for every Vite
+    // environment, including Vitest's, where it breaks ESM dependency
+    // resolution (55 suites fail to load `@aptos-labs/ts-sdk`). Vitest never
+    // serves or builds the Nitro server, so skip the plugin under test.
+    ...(process.env.VITEST
+      ? []
+      : [
+          nitro({
+            renderer: false,
+            ...(process.env.VERCEL ? {preset: "vercel"} : {}),
+          }),
+        ]),
     react(),
     viteSvgr(),
     // Pre-compress assets. Vercel also gzip/brotli-encodes at the CDN; these
