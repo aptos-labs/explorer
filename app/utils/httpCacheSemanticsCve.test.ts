@@ -30,12 +30,12 @@ function loadCachePolicy(): CachePolicyCtor {
   const store = join(process.cwd(), "node_modules/.pnpm");
   const entry = readdirSync(store).find(
     (name) =>
-      name.startsWith("http-cache-semantics@4.2.0") &&
+      name.startsWith("http-cache-semantics@4.3.0") &&
       name.includes("patch_hash="),
   );
   if (!entry) {
     throw new Error(
-      "patched http-cache-semantics@4.2.0 is not installed; the CVE-2026-93748 patch cannot be checked",
+      "patched http-cache-semantics@4.3.0 is not installed; the CVE-2026-93748 patch cannot be checked",
     );
   }
   const require = createRequire(import.meta.url);
